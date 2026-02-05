@@ -59,7 +59,7 @@ const StayNearSUSL = () => {
                 {accommodations.map((acc, index) => (
                     <div
                         key={index}
-                        className="group flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                        className="group flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:border-primary/50  transition-shadow"
                     >
                         <div className="relative h-48 w-full overflow-hidden">
                             <div className="absolute top-3 right-3 bg-white/90 backdrop-blur px-2 py-1 rounded text-xs font-bold flex items-center gap-1 shadow-sm z-10">
