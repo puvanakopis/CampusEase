@@ -5,7 +5,7 @@ import Navbar from "./components/user/Navbar";
 import Footer from "./components/user/Footer";
 
 import Home from "./pages/user/Home";
-;
+import Contact from "./pages/user/Contact";
 
 function App() {
 
@@ -14,6 +14,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
       <Footer />
     </>
