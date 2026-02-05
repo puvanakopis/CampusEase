@@ -44,11 +44,13 @@ const vehiclesNearSUSL = [
 
 const VehiclesNearSUSL = () => {
     return (
-        <section className="px-4 my-16 md:px-10 max-w-7xl mx-auto">
+        <section className="px-4 my-20 md:px-10 max-w-7xl mx-auto">
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">Vehicles Near SUSL</h2>
-                <a
+            <div className="flex items-center justify-between mt-4">
+                <div className="text-start mb-10">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">Vehicles Near SUSL</h2>
+                    <p className="text-slate-600 text-lg">Find convenient transport options close to campus</p>
+                </div>                <a
                     className="text-primary font-bold text-sm hover:underline flex items-center gap-1"
                     href="#"
                 >

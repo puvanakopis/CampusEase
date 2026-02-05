@@ -41,11 +41,13 @@ const StayNearSUSL = () => {
     ];
 
     return (
-        <section className="px-4 my-16 md:px-10 max-w-7xl mx-auto">
+        <section className="px-4 my-20 md:px-10 max-w-7xl mx-auto">
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">Stay Near SUSL</h2>
-                <a
+            <div className="flex items-center justify-between mt-4">
+                <div className="text-start mb-10">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">Accommodations Near SUSL</h2>
+                    <p className="text-slate-600 text-lg">Find convenient housing options close to campus</p>
+                </div>                   <a
                     className="text-primary font-bold text-sm hover:underline flex items-center gap-1"
                     href="#"
                 >
@@ -59,7 +61,7 @@ const StayNearSUSL = () => {
                 {accommodations.map((acc, index) => (
                     <div
                         key={index}
-                        className="group flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:border-primary/50  transition-shadow"
+                        className="group flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:border-primary/50 transition-shadow"
                     >
                         <div className="relative h-48 w-full overflow-hidden">
                             <div className="absolute top-3 right-3 bg-white/90 backdrop-blur px-2 py-1 rounded text-xs font-bold flex items-center gap-1 shadow-sm z-10">

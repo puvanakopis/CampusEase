@@ -2,7 +2,7 @@ import Hero from '../../containers/user/home/Hero'
 import StayNearSUSL from '../../containers/user/home/StayNearSUSL '
 import ServicesSection from '../../containers/user/home/SectionServices'
 import VehiclesNearSUSL from '../../containers/user/home/VehiclesNearSUSL'
-import CampusLife from '../../containers/user/home/CampusLife'
+import StudentTestimonials from '../../containers/user/home/StudentTestimonials'
 
 const Home = () => {
   return (
@@ -11,7 +11,7 @@ const Home = () => {
       <ServicesSection />
       <StayNearSUSL />
       <VehiclesNearSUSL />
-      <CampusLife />
+      <StudentTestimonials />
     </div>)
 }
 
