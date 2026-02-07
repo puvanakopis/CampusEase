@@ -1,7 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import useNavigateTo from "../../hooks/useNavigateTo";
 
 const NotFound = () => {
+    const navigateTo = useNavigateTo();
+
     return (
         <div className="bg-background-light min-h-screen flex flex-col">
 
@@ -45,13 +47,13 @@ const NotFound = () => {
 
                     {/* Back to Home Button */}
                     <div className="flex px-4 py-3 justify-center w-full">
-                        <Link
-                            to="/"
+                        <button
+                            onClick={() => navigateTo("/")}
                             className="flex min-w-[200px] items-center justify-center overflow-hidden rounded-xl h-14 px-8 bg-primary text-white text-lg font-bold leading-normal tracking-wide shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95"
                         >
                             <span className="material-symbols-outlined mr-2">home</span>
                             <span className="truncate">Back to Home</span>
-                        </Link>
+                        </button>
                     </div>
 
                     {/* Search Bar */}
@@ -70,9 +72,9 @@ const NotFound = () => {
                         </div>
                         <p className="mt-4 text-sm text-slate-500">
                             Can't find what you need?{" "}
-                            <Link className="text-primary hover:underline font-medium" to="/contact">
+                            <button className="text-primary hover:underline font-medium" to="/contact">
                                 Contact Support
-                            </Link>
+                            </button>
                         </p>
                     </div>
                 </div>
