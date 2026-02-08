@@ -1,17 +1,17 @@
 import React from 'react';
 
-const BookingCard = () => {
+const BookingCard = ({ price, currency, period, rating, paymentDetails, hostName }) => {
     return (
         <div className="lg:col-span-1">
-            <div className="sticky top-28 bg-white border border-slate-200 rounded-xl shadow-xl p-6">
+            <div className="sticky top-28 bg-white border border-slate-200 rounded-xl shadow-sm p-6">
                 <div className="flex items-baseline justify-between mb-6">
                     <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-bold text-slate-900">LKR 18,000</span>
-                        <span className="text-slate-500">/ month</span>
+                        <span className="text-2xl font-bold text-slate-900">{currency} {price.toLocaleString()}</span>
+                        <span className="text-slate-500">/ {period}</span>
                     </div>
                     <div className="flex items-center gap-1 text-sm text-slate-600">
                         <span className="material-symbols-outlined text-primary text-sm fill-current">star</span>
-                        <span className="font-bold">4.88</span>
+                        <span className="font-bold">{rating}</span>
                     </div>
                 </div>
 
@@ -43,17 +43,17 @@ const BookingCard = () => {
                 </button>
 
                 <p className="text-center text-xs text-slate-500 mb-6 font-medium">
-                    Your request will be sent to Mrs. Priyani
+                    Your request will be sent to {hostName}
                 </p>
 
                 <div className="space-y-3 text-sm text-slate-600">
                     <div className="flex justify-between">
                         <span className="underline decoration-slate-300">Monthly Rent</span>
-                        <span>LKR 18,000</span>
+                        <span>{currency} {paymentDetails.monthlyRent.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="underline decoration-slate-300">Key Money (Refundable)</span>
-                        <span>LKR 36,000</span>
+                        <span>{currency} {paymentDetails.keyMoney.toLocaleString()}</span>
                     </div>
                 </div>
 
@@ -61,7 +61,7 @@ const BookingCard = () => {
 
                 <div className="flex justify-between font-bold text-lg text-slate-900">
                     <span>Initial Payment</span>
-                    <span>LKR 54,000</span>
+                    <span>{currency} {paymentDetails.initialPayment.toLocaleString()}</span>
                 </div>
 
                 <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">

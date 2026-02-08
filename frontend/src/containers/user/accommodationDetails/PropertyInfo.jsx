@@ -1,18 +1,12 @@
 import React from 'react';
 
-const PropertyInfo = () => {
-    const tags = [
-        { icon: 'school', text: 'Near SUSL Main Gate', bg: 'bg-blue-50', textColor: 'text-blue-700', border: 'border-blue-100' },
-        { icon: 'verified', text: 'CampusEase Verified', bg: 'bg-green-50', textColor: 'text-green-700', border: 'border-green-100' },
-        { icon: 'bolt', text: 'Electricity Included', bg: 'bg-purple-50', textColor: 'text-purple-700', border: 'border-purple-100' }
-    ];
-
+const PropertyInfo = ({ title, subtitle, tags, description }) => {
     return (
         <div className="lg:col-span-2 space-y-10">
             <div className="flex justify-between items-center py-6 border-b border-slate-200">
                 <div>
-                    <h2 className="text-xl font-semibold mb-1">Private Room in Belihuloya</h2>
-                    <p className="text-slate-500">Ideal for SUSL Students • 1 bedroom • 2 beds • 1 private bath</p>
+                    <h2 className="text-xl font-semibold mb-1">{title}</h2>
+                    <p className="text-slate-500">{subtitle}</p>
                 </div>
                 <div
                     className="bg-center bg-cover rounded-full h-14 w-14 border border-slate-200"
@@ -35,16 +29,11 @@ const PropertyInfo = () => {
             <div>
                 <h3 className="text-xl font-bold mb-4">About this place</h3>
                 <div className="prose prose-slate max-w-none text-slate-600">
-                    <p className="mb-4">
-                        Perfectly located for Sabaragamuwa University students and staff. This modern annex is
-                        situated in the peaceful environment of Belihuloya, exactly a 10-minute walk from the SUSL
-                        main gate. Avoid the morning rush and live within walking distance of your lectures.
-                    </p>
-                    <p className="mb-4">
-                        The room features a dedicated study area with a large desk, ideal for late-night exam prep.
-                        Surrounded by greenery, it offers a quiet atmosphere essential for focused study. High-speed
-                        internet is available to access SUSL's LMS and online resources without interruption.
-                    </p>
+                    {description.paragraphs.map((paragraph, index) => (
+                        <p key={index} className="mb-4">
+                            {paragraph}
+                        </p>
+                    ))}
                 </div>
                 <button
                     className="flex items-center gap-1 mt-2 font-semibold decoration-primary text-slate-900 hover:text-primary transition-colors"

@@ -1,32 +1,32 @@
 import React from "react";
 
-const HeaderInfo = () => (
+const HeaderInfo = ({ title, location, walkDistance, rating, reviewsCount }) => (
     <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
         <div>
             <h1 className="text-xl md:text-3xl font-bold text-slate-900 mb-2">
-                Modern Student Annex near Sabaragamuwa University
+                {title}
             </h1>
             <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600">
                 <span className="flex items-center gap-1">
                     <span className="material-symbols-outlined text-base fill-current text-primary">
                         location_on
                     </span>
-                    Belihuloya, Sabaragamuwa Province
+                    {location}
                 </span>
                 <span className="hidden md:inline text-slate-300">•</span>
                 <span className="flex items-center gap-1 bg-blue-50 px-2 py-0.5 rounded text-primary font-bold">
                     <span className="material-symbols-outlined text-base">
                         directions_walk
                     </span>
-                    10 min walk to SUSL Main Gate
+                    {walkDistance}
                 </span>
                 <span className="hidden md:inline text-slate-300">•</span>
                 <span className="flex items-center gap-1">
                     <span className="material-symbols-outlined text-base fill-current text-yellow-400">
                         star
                     </span>
-                    <span className="font-semibold text-slate-900">4.88</span>
-                    (32 reviews)
+                    <span className="font-semibold text-slate-900">{rating}</span>
+                    ({reviewsCount} reviews)
                 </span>
             </div>
         </div>

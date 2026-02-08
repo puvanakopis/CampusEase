@@ -1,15 +1,6 @@
 import React from 'react';
 
-const AmenitiesList = () => {
-    const amenities = [
-        { icon: 'wifi', text: 'High-speed Wifi (LMS Ready)' },
-        { icon: 'desk', text: 'Ergonomic Study Desk & Chair' },
-        { icon: 'water_drop', text: '24/7 Water Supply' },
-        { icon: 'local_laundry_service', text: 'Laundry Facilities' },
-        { icon: 'kitchen', text: 'Small Pantry Area' },
-        { icon: 'security', text: 'Safe Student Neighborhood' }
-    ];
-
+const AmenitiesList = ({ amenities }) => {
     return (
         <div className="border-t border-slate-200 pt-10">
             <h3 className="text-xl font-bold mb-6">What this place offers</h3>

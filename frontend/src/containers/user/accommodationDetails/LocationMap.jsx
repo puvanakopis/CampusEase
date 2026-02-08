@@ -1,12 +1,6 @@
 import React from 'react';
 
-const LocationMap = () => {
-    const locations = [
-        { name: 'SUSL Main Gate', distance: '10 min walk (800m)' },
-        { name: 'Belihuloya Town', distance: '5 min by bus/tuk-tuk' },
-        { name: 'Pambahinna Junction', distance: '15 min walk' }
-    ];
-
+const LocationMap = ({ mapImage, nearbyLocations }) => {
     return (
         <div className="border-t border-slate-200 pt-10">
             <h3 className="text-xl font-bold mb-2">Location in Belihuloya</h3>
@@ -16,7 +10,7 @@ const LocationMap = () => {
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBr0WTSK4jeNlSatbcZnAFAWeTILWxXsvYC5G-UYAscN1vNPf94bdopuzVTyRmMHCaAy7W75JRF3kI7wbuoYZKVpvvJ-9DUOampwFL08TSpwoSHHSrEipMtQ0SMTEbzoVLCa84dH-dZ_2zXyC_PuxVGmUmwhS7l5QNDKoDy7lbnk5MOIza0AEX_VSzPnzALhTNTvDgTsunQRszsoe_HUxjwJQEPupXk7kg6vAppCls_YqAZl6k-_fHzrgRPIW3d_O5jKLBCCMzQThU")',
+                        backgroundImage: `url('${mapImage}')`,
                         filter: 'contrast(1.1) saturate(0.8)'
                     }}
                 ></div>
@@ -37,7 +31,7 @@ const LocationMap = () => {
             </div>
 
             <div className="mt-4 flex flex-wrap gap-6 text-sm text-slate-600">
-                {locations.map((location, index) => (
+                {nearbyLocations.map((location, index) => (
                     <div key={index}>
                         <span className="font-semibold block text-slate-900">{location.name}</span>
                         {location.distance}
