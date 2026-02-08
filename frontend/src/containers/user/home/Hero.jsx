@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const Hero = () => {
-    const [mode, setMode] = useState("accommodation"); 
+    const [mode, setMode] = useState("accommodation");
     const [location, setLocation] = useState("Belihuloya, Pambahinna");
 
     const handleSearch = () => {
@@ -27,7 +27,7 @@ const Hero = () => {
                         Simplifying Campus Life at Sabaragamuwa University
                     </h1>
                     <p className="text-slate-100 text-lg md:text-xl font-medium max-w-2xl mx-auto drop-shadow-md">
-                        Find verified hostels in Belihuloya and reliable transport routes to Pambahinna in just a few clicks.
+                        Rent verified vehicles in Belihuloya for your campus trips in just a few clicks.
                     </p>
 
                     {/* Select Mode Buttons */}
@@ -44,14 +44,14 @@ const Hero = () => {
                                 Find Accommodation
                             </button>
                             <button
-                                className={`flex-1 py-2 text-sm font-bold rounded-lg flex items-center justify-center gap-2 transition-colors ${mode === "transport"
+                                className={`flex-1 py-2 text-sm font-bold rounded-lg flex items-center justify-center gap-2 transition-colors ${mode === "vehicle"
                                     ? "text-primary bg-primary/10"
                                     : "text-slate-500 hover:bg-slate-100"
                                     }`}
-                                onClick={() => setMode("transport")}
+                                onClick={() => setMode("vehicle")}
                             >
-                                <span className="material-symbols-outlined text-lg">directions_bus</span>
-                                Book a Ride
+                                <span className="material-symbols-outlined text-lg">directions_car</span>
+                                Rent a Vehicle
                             </button>
                         </div>
 
@@ -62,6 +62,7 @@ const Hero = () => {
                                 <input
                                     type="text"
                                     className="w-full bg-transparent text-slate-900 placeholder-slate-400 text-sm md:text-base ml-2 outline-none focus:outline-none focus:ring-0"
+                                    placeholder={mode === "vehicle" ? "Enter pickup location" : "Enter location"}
                                     value={location}
                                     onChange={(e) => setLocation(e.target.value)}
                                 />
@@ -70,7 +71,7 @@ const Hero = () => {
                                 className="h-12 px-8 bg-primary hover:bg-blue-600 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
                                 onClick={handleSearch}
                             >
-                                Search
+                                {mode === "vehicle" ? "Search Vehicles" : "Search Accommodations"}
                             </button>
                         </div>
                     </div>

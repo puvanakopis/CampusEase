@@ -17,7 +17,6 @@ const ServicesSection = () => {
                 {/* Accommodation Card */}
                 <a
                     className="group relative overflow-hidden rounded-2xl h-64 md:h-80 shadow-md"
-                    href="#"
                 >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 transition-opacity group-hover:from-black/90"></div>
 
@@ -43,10 +42,9 @@ const ServicesSection = () => {
                     </div>
                 </a>
 
-                {/* Transport Card */}
+                {/* Vehicle Rentals Card */}
                 <a
                     className="group relative overflow-hidden rounded-2xl h-64 md:h-80 shadow-md"
-                    href="#"
                 >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 transition-opacity group-hover:from-black/90"></div>
 
@@ -58,14 +56,14 @@ const ServicesSection = () => {
 
                     <div className="absolute bottom-0 left-0 p-6 z-20 flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-primary bg-white/90 w-fit px-3 py-1 rounded-full text-xs font-bold backdrop-blur-md">
-                            <span className="material-symbols-outlined text-sm">directions_bus</span>
-                            Transport
+                            <span className="material-symbols-outlined text-sm">directions_car</span>
+                            Vehicle Rentals
                         </div>
 
-                        <h3 className="text-white text-2xl font-bold">University Shuttles</h3>
+                        <h3 className="text-white text-2xl font-bold">Campus Vehicle Rentals</h3>
 
                         <p className="text-slate-200 text-sm font-medium opacity-90">
-                            Daily routes from Balangoda, Haputale, and Bandarawela.
+                            Rent verified cars, vans, and bikes for your campus and nearby trips.
                         </p>
                     </div>
                 </a>

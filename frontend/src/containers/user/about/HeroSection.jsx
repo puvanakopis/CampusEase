@@ -26,9 +26,9 @@ function HeroSection() {
                             Explore Accommodation
                         </PrimaryButton>
                         <OutlineButton
-                            onClick={() => navigateTo("/transport")}
+                            onClick={() => navigateTo("/vehicle")}
                         >
-                            Explore Transport
+                            Explore Vehicle
                         </OutlineButton>
                     </div>
                 </div>

@@ -99,8 +99,8 @@ const StudentTestimonials = () => {
                         Find Accommodation
                     </PrimaryButton>
 
-                    <OutlineButton onClick={() => navigateTo("/transport")}>
-                        Browse Transport Options
+                    <OutlineButton onClick={() => navigateTo("/vehicle")}>
+                        Browse vehicle Options
                     </OutlineButton>
                 </div>
 

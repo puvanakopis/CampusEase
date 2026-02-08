@@ -51,8 +51,8 @@ const VehiclesNearSUSL = () => {
                     <h2 className="text-2xl font-bold text-slate-900 mb-2">Vehicles Near SUSL</h2>
                     <p className="text-slate-600 text-lg">Find convenient transport options close to campus</p>
                 </div>                <a
-                    className="text-primary font-bold text-sm hover:underline flex items-center gap-1"
-                    href="#"
+                    className="text-primary font-bold text-sm flex items-center gap-1"
+                    href="/vehicle"
                 >
                     View All Vehicles
                     <span className="material-symbols-outlined text-base">arrow_forward</span>
