@@ -1,4 +1,5 @@
 import React from 'react';
+import PrimaryButton from '../../../components/common/PrimaryButton';
 
 const BookingCard = ({ price, currency, period, rating, paymentDetails, hostName }) => {
     return (
@@ -38,9 +39,11 @@ const BookingCard = ({ price, currency, period, rating, paymentDetails, hostName
                     </div>
                 </div>
 
-                <button className="w-full bg-primary hover:bg-blue-600 text-white font-bold py-3.5 rounded-lg text-lg transition-transform active:scale-[0.98] mb-4 shadow-lg shadow-blue-500/30">
+                <PrimaryButton
+                 className="w-full py-3.5 text-lg mb-4"
+                 >
                     Request Booking
-                </button>
+                </PrimaryButton>
 
                 <p className="text-center text-xs text-slate-500 mb-6 font-medium">
                     Your request will be sent to {hostName}
@@ -48,12 +51,12 @@ const BookingCard = ({ price, currency, period, rating, paymentDetails, hostName
 
                 <div className="space-y-3 text-sm text-slate-600">
                     <div className="flex justify-between">
-                        <span className="underline decoration-slate-300">Monthly Rent</span>
-                        <span>{currency} {paymentDetails.monthlyRent.toLocaleString()}</span>
+                        <span className="underline decoration-slate-300">{paymentDetails.rentalType}</span>
+                        <span>{currency} {paymentDetails.rentalRate}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="underline decoration-slate-300">Key Money (Refundable)</span>
-                        <span>{currency} {paymentDetails.keyMoney.toLocaleString()}</span>
+                        <span>{currency} {paymentDetails.keyMoney}</span>
                     </div>
                 </div>
 
@@ -78,11 +81,6 @@ const BookingCard = ({ price, currency, period, rating, paymentDetails, hostName
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div className="mt-6 flex justify-center gap-2 text-slate-500 text-sm items-center">
-                <span className="material-symbols-outlined text-lg">flag</span>
-                <a className="hover:underline" href="#">Report this listing</a>
             </div>
         </div>
     );

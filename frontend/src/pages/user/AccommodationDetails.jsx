@@ -1,13 +1,13 @@
 import React from 'react';
-import Breadcrumbs from '../../containers/user/accommodationDetails/Breadcrumbs';
-import HeaderInfo from '../../containers/user/accommodationDetails/HeaderInfo';
-import PhotoGrid from '../../containers/user/accommodationDetails/PhotoGrid';
-import PropertyInfo from '../../containers/user/accommodationDetails/PropertyInfo';
-import AmenitiesList from '../../containers/user/accommodationDetails/AmenitiesList';
-import LocationMap from '../../containers/user/accommodationDetails/LocationMap';
-import ReviewsSection from '../../containers/user/accommodationDetails/ReviewsSection';
-import HostInfo from '../../containers/user/accommodationDetails/HostInfo';
-import BookingCard from '../../containers/user/accommodationDetails/BookingCard';
+import Breadcrumbs from '../../containers/user/itemDetails/Breadcrumbs';
+import HeaderInfo from '../../containers/user/itemDetails/HeaderInfo';
+import PhotoGrid from '../../containers/user/itemDetails/PhotoGrid';
+import PropertyInfo from '../../containers/user/itemDetails/PropertyInfo';
+import AmenitiesList from '../../containers/user/itemDetails/AmenitiesList';
+import LocationMap from '../../containers/user/itemDetails/LocationMap';
+import ReviewsSection from '../../containers/user/itemDetails/ReviewsSection';
+import HostInfo from '../../containers/user/itemDetails/HostInfo';
+import BookingCard from '../../containers/user/itemDetails/BookingCard';
 
 const AccommodationDetails = () => {
     const accommodationData = {
@@ -39,7 +39,8 @@ const AccommodationDetails = () => {
             { icon: 'security', text: 'Safe Student Neighborhood' }
         ],
         paymentDetails: {
-            monthlyRent: 18000,
+            rentalRate: 18000,
+            rentalType: 'Monthly Rent',
             keyMoney: 36000,
             initialPayment: 54000
         },
