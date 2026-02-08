@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import FiltersSidebar from "../../containers/user/accommodation/FiltersSidebar";
 import PageHeader from "../../containers/user/accommodation/PageHeader"
 import SortBar from "../../containers/user/accommodation/SortBar"
 import AccommodationGrid from "../../containers/user/accommodation/AccommodationGrid"
+import Pagination from "../../components/user/Pagination";
 
 const accommodations = [
     {
@@ -127,17 +128,37 @@ const accommodations = [
         favorite: false,
     }
 ];
-
+const ITEMS_PER_PAGE = 9;
 
 const Accommodations = () => {
+
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const totalPages = Math.ceil(accommodations.length / ITEMS_PER_PAGE);
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) setCurrentPage(page);
+    };
+
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const currentAccommodations = accommodations.slice(
+        startIndex,
+        startIndex + ITEMS_PER_PAGE
+    );
+
     return (
-        <div className='bg-[#f6f7f8]'>
-            <div className="flex flex-1 flex-col lg:flex-row px-4 py-10 md:px-10 max-w-7xl mx-auto mx-auto">
+        <div className="bg-[#f6f7f8]">
+            <div className="flex flex-1 flex-col lg:flex-row px-4 py-10 md:px-10 max-w-7xl mx-auto">
                 <FiltersSidebar />
                 <main className="flex-1 flex flex-col pl-4 md:pl-6 lg:pl-10 w-full gap-y-4">
                     <PageHeader />
                     <SortBar />
-                    <AccommodationGrid accommodations={accommodations} />
+                    <AccommodationGrid accommodations={currentAccommodations} />
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
                 </main>
             </div>
         </div>
