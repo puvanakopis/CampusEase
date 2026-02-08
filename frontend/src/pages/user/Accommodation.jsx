@@ -151,7 +151,7 @@ const Accommodations = () => {
             <div className="flex flex-col lg:flex-row px-4 py-10 md:px-10 max-w-7xl mx-auto gap-6">
                 <FiltersSidebar />
                 <main className="flex-1 flex flex-col gap-6">
-                    <PageHeader title="Sabaragamuwa Accommodations" description="Student housing near Sabaragamuwa University of Sri Lanka (SUSL)." />
+                    <PageHeader title="Accommodation Rentals" description="Student housing near Sabaragamuwa University of Sri Lanka (SUSL)." />
                     <SortBar total={accommodations.length} location="Belihuloya & Pambahinna" />
                     <AccommodationGrid accommodations={currentAccommodations} />
                     <Pagination
