@@ -47,7 +47,7 @@ const PropertyInfo = () => {
                     </p>
                 </div>
                 <button
-                    className="flex items-center gap-1 mt-2 font-semibold underline underline-offset-4 decoration-primary text-slate-900 hover:text-primary transition-colors"
+                    className="flex items-center gap-1 mt-2 font-semibold decoration-primary text-slate-900 hover:text-primary transition-colors"
                 >
                     Show more
                     <span className="material-symbols-outlined text-lg">chevron_right</span>

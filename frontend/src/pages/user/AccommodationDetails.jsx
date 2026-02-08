@@ -4,6 +4,10 @@ import HeaderInfo from '../../containers/user/accommodationDetails/HeaderInfo'
 import PhotoGrid from '../../containers/user/accommodationDetails/PhotoGrid'
 import PropertyInfo from '../../containers/user/accommodationDetails/PropertyInfo'
 import AmenitiesList from '../../containers/user/accommodationDetails/AmenitiesList'
+import LocationMap from '../../containers/user/accommodationDetails/LocationMap'
+import ReviewsSection from '../../containers/user/accommodationDetails/ReviewsSection'
+import HostInfo from '../../containers/user/accommodationDetails/HostInfo'
+import BookingCard from '../../containers/user/accommodationDetails/BookingCard'
 
 const AccommodationDetails = () => {
     return (
@@ -16,7 +20,11 @@ const AccommodationDetails = () => {
                     <div className="lg:col-span-2 space-y-10">
                         <PropertyInfo />
                         <AmenitiesList />
+                        <LocationMap />
+                        <ReviewsSection />
+                        <HostInfo />
                     </div>
+                    <BookingCard />
                 </div>
 
             </div>
