@@ -8,6 +8,7 @@ import Home from "./pages/user/Home";
 import Contact from "./pages/user/Contact";
 import About from "./pages/user/About";
 import Accommodation from "./pages/user/Accommodation";
+import AccommodationDetails from "./pages/user/AccommodationDetails";
 import NotFound from "./pages/user/NotFound";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route path="/accommodation" element={<Accommodation />} />
+        <Route path="/accommodation/:id" element={<AccommodationDetails />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
