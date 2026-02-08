@@ -1,9 +1,21 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import useNavigateTo from "../../hooks/useNavigateTo";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const navigateTo = useNavigateTo();
+    const location = useLocation();
+
+    const navItems = [
+        { name: "Home", path: "/" },
+        { name: "Accommodation", path: "/accommodation" },
+        { name: "Transport", path: "/transport" },
+        { name: "About", path: "/about" },
+        { name: "Contact", path: "/contact" },
+    ];
+
+    const isActive = (path) => location.pathname === path;
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-background-light/95 backdrop-blur-sm">
@@ -23,11 +35,16 @@ const Navbar = () => {
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex flex-1 justify-center gap-8">
-                    <button onClick={() => navigateTo("/")} className="text-sm font-medium hover:text-primary transition-colors">Home</button>
-                    <button onClick={() => navigateTo("/accommodation")} className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">Accommodation</button>
-                    <button onClick={() => navigateTo("/transport")} className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">Transport</button>
-                    <button onClick={() => navigateTo("/about")} className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">About</button>
-                    <button onClick={() => navigateTo("/contact")} className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">Contact</button>
+                    {navItems.map((item) => (
+                        <button
+                            key={item.path}
+                            onClick={() => navigateTo(item.path)}
+                            className={`text-sm font-medium transition-colors ${isActive(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
+                                }`}
+                        >
+                            {item.name}
+                        </button>
+                    ))}
                 </div>
 
                 {/* Buttons + Mobile Hamburger */}
@@ -40,7 +57,7 @@ const Navbar = () => {
                     </button>
                     <button
                         onClick={() => navigateTo("/signup")}
-                        className="flex items-center justify-center rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold shadow-md hover:bg-blue-600 transition-colors"
+                        className="flex items-center justify-center rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold shadow-md hover:bg-primary/90 transition-colors"
                     >
                         Sign Up
                     </button>
@@ -61,13 +78,24 @@ const Navbar = () => {
             {isOpen && (
                 <div className="md:hidden bg-background-light border-t border-slate-200">
                     <div className="flex flex-col items-center px-4 py-4 gap-4">
-                        <button onClick={() => navigateTo("/")} className="text-sm font-medium hover:text-primary transition-colors">Home</button>
-                        <button onClick={() => navigateTo("/accommodation")} className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">Accommodation</button>
-                        <button onClick={() => navigateTo("/transport")} className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">Transport</button>
-                        <button onClick={() => navigateTo("/about")} className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">About</button>
-                        <button onClick={() => navigateTo("/contact")} className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">Contact</button>
+                        {navItems.map((item) => (
+                            <button
+                                key={item.path}
+                                onClick={() => {
+                                    navigateTo(item.path);
+                                    setIsOpen(false);
+                                }}
+                                className={`w-full text-center text-sm font-medium transition-colors ${isActive(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
+                                    }`}
+                            >
+                                {item.name}
+                            </button>
+                        ))}
                         <button
-                            onClick={() => navigateTo("/signin")}
+                            onClick={() => {
+                                navigateTo("/signin");
+                                setIsOpen(false);
+                            }}
                             className="w-full sm:w-auto text-center px-6 py-2 rounded-lg text-sm font-bold bg-transparent text-slate-700 hover:bg-slate-200 transition-colors"
                         >
                             Sign In

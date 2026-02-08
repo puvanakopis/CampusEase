@@ -32,7 +32,7 @@ const WhyChooseCampusEase = () => {
                     {features.map((feature, index) => (
                         <div
                             key={index}
-                            className="bg-white p-8 rounded-2xl border border-[#e7edf3] shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center"
+                            className="bg-white p-8 rounded-2xl border border-[#e7edf3] shadow-sm hover:border-primary/50 transition-shadow flex flex-col items-center text-center"
                         >
                             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-6">
                                 <span className="material-symbols-outlined text-4xl">

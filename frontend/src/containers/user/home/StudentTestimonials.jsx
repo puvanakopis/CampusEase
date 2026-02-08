@@ -1,6 +1,11 @@
 import React from "react";
+import PrimaryButton from "../../../components/common/PrimaryButton";
+import OutlineButton from "../../../components/common/OutlineButton";
+import useNavigateTo from "../../../hooks/useNavigateTo";
 
 const StudentTestimonials = () => {
+    const navigateTo = useNavigateTo();
+
     const testimonials = [
         {
             id: 1,
@@ -38,6 +43,7 @@ const StudentTestimonials = () => {
 
     return (
         <section className="px-4 my-20 md:px-10 max-w-7xl mx-auto">
+
             {/* Header */}
             <div className="text-center mb-10">
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">What Students Say</h2>
@@ -87,14 +93,17 @@ const StudentTestimonials = () => {
                 <p className="text-slate-600 mb-6 max-w-2xl mx-auto">
                     Join thousands of SUSL students who've found their perfect accommodation and transport solutions
                 </p>
+
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button className="px-8 py-3 bg-primary hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors">
+                    <PrimaryButton onClick={() => navigateTo("/accommodation")}>
                         Find Accommodation
-                    </button>
-                    <button className="px-8 py-3 border border-primary/30 hover:bg-primary/10 text-primary font-semibold rounded-lg transition-colors">
+                    </PrimaryButton>
+
+                    <OutlineButton onClick={() => navigateTo("/transport")}>
                         Browse Transport Options
-                    </button>
+                    </OutlineButton>
                 </div>
+
                 <p className="text-slate-600 text-sm mt-6">
                     No hidden fees • Verified listings • Student discounts available
                 </p>

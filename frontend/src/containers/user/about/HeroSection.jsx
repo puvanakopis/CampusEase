@@ -1,4 +1,6 @@
 import React from "react";
+import PrimaryButton from "../../../components/common/PrimaryButton";
+import OutlineButton from "../../../components/common/OutlineButton";
 import useNavigateTo from "../../../hooks/useNavigateTo";
 
 function HeroSection() {
@@ -9,7 +11,7 @@ function HeroSection() {
             <div className="px-4 my-20 md:px-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div className="z-10">
                     <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-bold mb-4">
-                        Established {new Date().getFullYear()}
+                        Established 2025
                     </span>
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight font-display mb-6 text-[#0d141b]">
                         Empowering the Sabaragamuwa University Community
@@ -18,18 +20,16 @@ function HeroSection() {
                         Your all-in-one companion for campus life. We bridge the gap between students, service providers, and university resources to make your academic journey seamless.
                     </p>
                     <div className="flex flex-wrap gap-4">
-                        <button
+                        <PrimaryButton
                             onClick={() => navigateTo("/accommodation")}
-                            className="px-8 py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
                         >
                             Explore Accommodation
-                        </button>
-                        <button
+                        </PrimaryButton>
+                        <OutlineButton
                             onClick={() => navigateTo("/transport")}
-                            className="px-8 py-4 bg-white border border-[#e7edf3] font-bold rounded-xl hover:bg-gray-50 transition-colors"
                         >
                             Explore Transport
-                        </button>
+                        </OutlineButton>
                     </div>
                 </div>
                 <div className="relative">

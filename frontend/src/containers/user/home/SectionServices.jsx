@@ -2,7 +2,7 @@ import React from "react";
 
 const ServicesSection = () => {
     return (
-        <section className="px-4 my-20 md:px-10 max-w-7xl mx-auto">
+        <section className="px-4 mt-20 my-20 md:px-10 max-w-7xl mx-auto">
             <div className="flex flex-col gap-2 pb-4">
                 <h2 className="text-slate-900 text-3xl font-bold">
                     Services for SUSL Students &amp; Staff

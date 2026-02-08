@@ -5,7 +5,7 @@ import MapSection from "../../containers/user/contact/MapSection";
 
 const Contact = () => (
     <div className="bg-background-light text-[#0d141b] transition-colors duration-200 min-h-screen">
-        <main className="px-4 md:px-10 max-w-7xl mx-auto">
+        <main className="px-4 py-20 md:px-10 max-w-7xl mx-auto">
             <div className="mb-12">
                 <h1 className="text-[#0d141b] text-4xl md:text-5xl font-black leading-tight tracking-tight font-display">
                     Contact Our Team

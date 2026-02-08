@@ -1,4 +1,5 @@
 import React from 'react';
+import PrimaryButton from "../../../components/common/PrimaryButton";
 
 const ContactForm = () => (
     <div className="lg:col-span-3 bg-white p-6 md:p-10 rounded-xl border border-[#e7edf3] shadow-sm">
@@ -47,13 +48,13 @@ const ContactForm = () => (
                 ></textarea>
             </label>
 
-            <button
-                className="w-full bg-blue-600 text-white font-bold py-4 rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
+            <PrimaryButton
+                className="w-full py-4 flex items-center justify-center gap-2"
                 type="submit"
             >
                 <span className="material-symbols-outlined">send</span>
                 Send Message
-            </button>
+            </PrimaryButton>
         </form>
     </div>
 );

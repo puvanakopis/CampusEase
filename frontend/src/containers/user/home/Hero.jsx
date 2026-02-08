@@ -10,7 +10,7 @@ const Hero = () => {
 
     return (
         <section className="relative w-full">
-            <div className="relative flex min-h-[560px] flex-col items-center justify-center p-4 text-center">
+            <div className="relative flex min-h-[80vh] flex-col items-center justify-center p-4 text-center">
                 {/* Background */}
                 <div className="absolute inset-0 z-0 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/40 to-slate-900/80 z-10"></div>
