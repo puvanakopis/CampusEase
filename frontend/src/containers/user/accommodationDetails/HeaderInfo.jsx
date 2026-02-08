@@ -3,7 +3,7 @@ import React from "react";
 const HeaderInfo = () => (
     <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
         <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
+            <h1 className="text-xl md:text-3xl font-bold text-slate-900 mb-2">
                 Modern Student Annex near Sabaragamuwa University
             </h1>
             <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600">
