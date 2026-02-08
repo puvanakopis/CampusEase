@@ -2,7 +2,7 @@ import React from "react";
 
 const FiltersSidebar = () => {
     return (
-        <aside className="hidden lg:flex w-80 flex-col gap-4 border border-[#e7edf3] rounded-xl bg-white p-6 sticky top-[65px]">
+        <aside className="hidden lg:h-max lg:flex w-80 flex-col gap-4 border border-[#e7edf3] rounded-xl bg-white p-6 sticky top-[65px]">
             {/* Header */}
             <div className="flex flex-col gap-1 pb-4 border-b border-[#e7edf3]">
                 <h1 className="text-[#0d141b] text-lg font-bold leading-normal">Filters</h1>
@@ -111,7 +111,7 @@ const FiltersSidebar = () => {
 
             {/* Apply Button */}
             <div className="mt-auto pt-4">
-                <button className="flex w-full cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 transition-colors shadow-sm">
+                <button className="flex w-full cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors shadow-sm">
                     Apply Filters
                 </button>
             </div>
