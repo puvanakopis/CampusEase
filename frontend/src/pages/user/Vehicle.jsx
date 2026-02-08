@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import FiltersSidebar from "../../containers/user/transport/FiltersSidebar";
-import PageHeader from "../../containers/user/transport/PageHeader";
-import SortBar from "../../containers/user/transport/SortBar";
-import TransportGrid from "../../containers/user/transport/TransportGrid";
+import FiltersSidebar from "../../containers/user/vehicle/FiltersSidebar";
+import PageHeader from "../../containers/user/vehicle/PageHeader";
+import SortBar from "../../containers/user/vehicle/SortBar";
+import VehicleGrid from "../../containers/user/vehicle/VehicleGrid";
 import Pagination from "../../components/user/Pagination";
 
-const transports = [
+const vehicles = [
     {
         title: "Honda Dio Scooter",
         rating: 4.8,
@@ -175,9 +175,9 @@ const transports = [
 
 const ITEMS_PER_PAGE = 9;
 
-const Transport = () => {
+const Vehicle = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = Math.ceil(transports.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(vehicles.length / ITEMS_PER_PAGE);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) setCurrentPage(page);
@@ -185,7 +185,7 @@ const Transport = () => {
     };
 
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentTransports = transports.slice(
+    const currentVehicles = vehicles.slice(
         startIndex,
         startIndex + ITEMS_PER_PAGE
     );
@@ -200,10 +200,10 @@ const Transport = () => {
                         description="Scooters, cars, vans, and bikes available for rent near Sabaragamuwa University."
                     />
                     <SortBar
-                        total={transports.length}
+                        total={vehicles.length}
                         location="Belihuloya & Pambahinna"
                     />
-                    <TransportGrid transports={currentTransports} />
+                    <VehicleGrid vehicles={currentVehicles} />
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
@@ -215,4 +215,4 @@ const Transport = () => {
     );
 };
 
-export default Transport;
+export default Vehicle;

@@ -1,7 +1,7 @@
 import React from "react";
 import useNavigateTo from "../../../hooks/useNavigateTo";
 
-const TransportCard = ({ data }) => {
+const VehicleCard = ({ data }) => {
     const navigateTo = useNavigateTo();
 
     const { title, rating, location, tags, price, priceLabel, badge, image, favorite } = data;
@@ -9,7 +9,7 @@ const TransportCard = ({ data }) => {
     return (
         <div
             className="group flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:border-primary/50 cursor-pointer transition-shadow border border-[#e7edf3]"
-            onClick={() => navigateTo("/transport/01")}
+            onClick={() => navigateTo("/vehicle/01")}
         >
             <div className="relative h-48 w-full overflow-hidden">
                 <div className="absolute top-3 right-3 z-10 p-1.5 bg-white/80 rounded-full cursor-pointer">
@@ -65,4 +65,4 @@ const TransportCard = ({ data }) => {
     );
 };
 
-export default TransportCard;
+export default VehicleCard;
