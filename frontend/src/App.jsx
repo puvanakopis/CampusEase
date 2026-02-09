@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 import Navbar from "./components/user/Navbar";
 import Footer from "./components/user/Footer";
@@ -16,20 +16,25 @@ import Booking from "./pages/user/Booking";
 import Payment from "./pages/user/Payment";
 import NotFound from "./pages/user/NotFound";
 
-
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 
 function App() {
+  const location = useLocation();
+  const authPages = ["/login", "/register", "/forgot-password"];
+  const showNavbar = !authPages.includes(location.pathname);
 
   return (
     <>
-      <Navbar />
+      {showNavbar && <Navbar />}
       <Routes>
+        {/* Auth Routes */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        
+        {/* User Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
@@ -41,9 +46,10 @@ function App() {
         <Route path="/booking" element={<Booking />} />
         <Route path="/payment" element={<Payment />} />
 
+        {/* 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Footer />
+      {showNavbar && <Footer />}
     </>
   );
 }

@@ -40,7 +40,14 @@ const LoginForm = () => {
                                 required
                             />
                         </div>
+                        {/* Forgot password link */}
+                        <div className="text-right mt-1">
+                            <a href="/forgot-password" className="text-sm text-primary font-medium hover:underline">
+                                Forgot password?
+                            </a>
+                        </div>
                     </div>
+
                     {/* Remember me */}
                     <div className="flex items-center gap-2">
                         <input
