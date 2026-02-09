@@ -1,7 +1,7 @@
 import React from "react";
 import PrimaryButton from '../../../components/common/PrimaryButton';
 
-const OrderSummary = () => {
+const OrderSummary = ({ onConfirm }) => {
     return (
         <div className="lg:col-span-1">
             <div className="sticky top-24 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col gap-6">
@@ -69,7 +69,10 @@ const OrderSummary = () => {
                 </div>
 
                 {/* Confirm Button */}
-                <PrimaryButton className="w-full py-4 flex items-center justify-center gap-2 group">
+                <PrimaryButton
+                    onClick={onConfirm}
+                    className="w-full py-4 flex items-center justify-center gap-2 group"
+                >
                     Confirm and Pay
                     <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">
                         arrow_forward
