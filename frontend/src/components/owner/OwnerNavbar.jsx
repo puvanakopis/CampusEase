@@ -24,7 +24,6 @@ const OwnerNavbar = () => {
         { label: "Accommodation", path: "/owner/accommodation", key: "accommodation" },
         { label: "Vehicle", path: "/owner/vehicle", key: "vehicle" },
         { label: "Bookings", path: "/owner/bookings", key: "bookings" },
-        { label: "Earnings", path: "/owner/earnings", key: "earnings" },
     ];
 
     const profileMenu = [
