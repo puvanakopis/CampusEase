@@ -12,6 +12,7 @@ import AccommodationDetails from "./pages/user/AccommodationDetails";
 import Vehicle from "./pages/user/Vehicle";
 import VehicleDetails from "./pages/user/VehicleDetails";
 import Owner from "./pages/user/Owner";
+import Booking from "./pages/user/Booking";
 import NotFound from "./pages/user/NotFound";
 
 function App() {
@@ -27,7 +28,8 @@ function App() {
         <Route path="/accommodation/:id" element={<AccommodationDetails />} />
         <Route path="/vehicle" element={<Vehicle />} />
         <Route path="/vehicle/:id" element={<VehicleDetails />} />
-        <Route path="owner/:id" element={<Owner />} />
+        <Route path="/owner/:id" element={<Owner />} />
+        <Route path="/booking" element={<Booking />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
