@@ -4,6 +4,13 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/user/Navbar";
 import Footer from "./components/user/Footer";
 
+import OwnerNavbar from './components/owner/OwnerNavbar'
+import OwnerFooter from './components/owner/OwnerFooter'
+
+import Register from "./pages/auth/Register";
+import Login from "./pages/auth/Login";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+
 import Home from "./pages/user/Home";
 import Contact from "./pages/user/Contact";
 import About from "./pages/user/About";
@@ -21,18 +28,19 @@ import Settings from "./pages/user/Settings";
 import Support from "./pages/user/Support";
 import NotFound from "./pages/user/NotFound";
 
-import Register from "./pages/auth/Register";
-import Login from "./pages/auth/Login";
-import ForgotPassword from "./pages/auth/ForgotPassword";
+import OwnerDashboard from "./pages/owner/OwnerDashboard";
 
 function App() {
+  const role = 'owner'
+
   const location = useLocation();
   const authPages = ["/login", "/register", "/forgot-password"];
   const showNavbar = !authPages.includes(location.pathname);
 
   return (
     <>
-      {showNavbar && <Navbar />}
+      {showNavbar && (role === "owner" ? <OwnerNavbar /> : <Navbar />)}
+
       <Routes>
         {/* Auth Routes */}
         <Route path="/register" element={<Register />} />
@@ -56,10 +64,13 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/support" element={<Support />} />
 
+        <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {showNavbar && <Footer />}
+
+      {showNavbar && (role === "owner" ? <OwnerFooter /> : <Footer />)}
     </>
   );
 }
