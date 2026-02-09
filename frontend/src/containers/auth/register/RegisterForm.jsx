@@ -100,7 +100,7 @@ const RegisterForm = () => {
                 <div className="mt-8 pt-6 border-t border-slate-100 text-center">
                     <p className="text-slate-600 text-sm">
                         Already have an account?
-                        <a className="text-primary font-bold hover:underline ml-1" >Log in</a>
+                        <a className="text-primary font-bold hover:underline ml-1" href="/login">Log in</a>
                     </p>
                 </div>
             </div>
