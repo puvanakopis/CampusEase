@@ -1,6 +1,6 @@
 import React from "react";
 
-const BookingsPage = () => {
+const MyBookingsPage = () => {
   return (
     <div className="flex-1 w-full max-w-7xl mx-auto flex flex-col gap-8 px-4 md:px-10">
       {/* Header */}
@@ -154,4 +154,4 @@ const BookingsPage = () => {
   );
 };
 
-export default BookingsPage;
+export default MyBookingsPage;

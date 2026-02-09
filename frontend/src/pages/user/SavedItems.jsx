@@ -4,8 +4,8 @@ import Sidebar from "../../components/user/Sidebar";
 
 function SavedItems() {
     return (
-        <div className="bg-slate-100 ">
-            <div className="px-4 py-10 md:px-10 max-w-7xl mx-auto gap-6 min-h-screen flex">
+        <div className="bg-[#f6f7f8] ">
+            <div className="px-4 py-10 md:px-24 max-w-8xl mx-auto gap-6 min-h-screen flex">
                 <Sidebar />
                 <SavedItemsPage />
             </div>

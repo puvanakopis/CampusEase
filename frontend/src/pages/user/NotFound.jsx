@@ -1,7 +1,6 @@
 import React from "react";
 import useNavigateTo from "../../hooks/useNavigateTo";
 import PrimaryButton from "../../components/common/PrimaryButton";
-import OutlineButton from "../../components/common/OutlineButton";
 
 const NotFound = () => {
     const navigateTo = useNavigateTo();

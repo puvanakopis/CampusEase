@@ -1,9 +1,12 @@
 import React from "react";
+import useNavigateTo from "../../hooks/useNavigateTo";
 
 const Footer = () => {
+    const navigateTo = useNavigateTo();
+
     return (
         <footer className="mt-auto border-t border-slate-200 bg-white pt-16 pb-8">
-            <div className="max-w-7xl mx-auto px-4 md:px-10">
+            <div className="max-w-8xl mx-auto px-4 md:px-24 ">
                 {/* Top Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-12">
                     {/* Logo & Description */}
@@ -19,20 +22,22 @@ const Footer = () => {
                         </p>
                     </div>
 
-                    {/* Areas */}
+                    {/* Pages */}
                     <div className="flex flex-col gap-3 hidden md:flex">
-                        <h3 className="font-bold text-slate-900">Sabaragamuwa Areas</h3>
-                        <a className="text-slate-500 hover:text-primary text-sm" href="#">Belihuloya Town</a>
-                        <a className="text-slate-500 hover:text-primary text-sm" href="#">Pambahinna Junction</a>
-                        <a className="text-slate-500 hover:text-primary text-sm" href="#">Balangoda Town</a>
+                        <h3 className="font-bold text-slate-900">Pages</h3>
+                        <button onClick={() => navigateTo("/")} className="text-slate-500 hover:text-primary text-sm text-left">Home</button>
+                        <button onClick={() => navigateTo("/accommodation")} className="text-slate-500 hover:text-primary text-sm text-left">Accommodation</button>
+                        <button onClick={() => navigateTo("/vehicle")} className="text-slate-500 hover:text-primary text-sm text-left">Vehicle</button>
+                        <button onClick={() => navigateTo("/bookings")} className="text-slate-500 hover:text-primary text-sm text-left">My Bookings</button>
                     </div>
 
                     {/* Support */}
                     <div className="flex flex-col gap-3 hidden md:flex">
                         <h3 className="font-bold text-slate-900">Support</h3>
-                        <a className="text-slate-500 hover:text-primary text-sm" href="#">How to Book</a>
-                        <a className="text-slate-500 hover:text-primary text-sm" href="#">Contact Us</a>
-                        <a className="text-slate-500 hover:text-primary text-sm" href="#">Landlord Portal</a>
+                        <button onClick={() => navigateTo("/about")} className="text-slate-500 hover:text-primary text-sm text-left">About Us</button>
+                        <button onClick={() => navigateTo("/contact")} className="text-slate-500 hover:text-primary text-sm text-left">Contact Us</button>
+                        <button onClick={() => navigateTo("/owner")} className="text-slate-500 hover:text-primary text-sm text-left">Landlord Portal</button>
+                        <button onClick={() => navigateTo("/support")} className="text-slate-500 hover:text-primary text-sm text-left">Support Center</button>
                     </div>
 
                     {/* Contact */}
@@ -53,10 +58,10 @@ const Footer = () => {
                         © {new Date().getFullYear()} CampusEase - Dedicated to SUSL. All rights reserved.
                     </p>
                     <div className="flex gap-4">
-                        <a className="text-slate-400 hover:text-primary" href="#">
+                        <a className="text-slate-400 hover:text-primary" href="https://www.susl.lk" target="_blank" rel="noreferrer">
                             <span className="material-symbols-outlined">public</span>
                         </a>
-                        <a className="text-slate-400 hover:text-primary" href="#">
+                        <a className="text-slate-400 hover:text-primary" href="https://www.facebook.com/CampusEaseSUSL" target="_blank" rel="noreferrer">
                             <span className="material-symbols-outlined">share</span>
                         </a>
                     </div>

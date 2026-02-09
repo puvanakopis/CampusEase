@@ -41,7 +41,7 @@ const StayNearSUSL = () => {
     ];
 
     return (
-        <section className="px-4 my-20 md:px-10 max-w-7xl mx-auto">
+        <section className="px-4 py-20 md:px-24 max-w-8xl mx-auto">
             {/* Header */}
             <div className="flex items-center justify-between mt-4">
                 <div className="text-start mb-10">

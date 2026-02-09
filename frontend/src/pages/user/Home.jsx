@@ -6,13 +6,14 @@ import StudentTestimonials from '../../containers/user/home/StudentTestimonials'
 
 const Home = () => {
   return (
-    <div className='bg-[#f6f7f8]'>
+    <div className='bg-[#f6f7f8] h-max'>
       <Hero />
       <ServicesSection />
       <StayNearSUSL />
       <VehiclesNearSUSL />
       <StudentTestimonials />
-    </div>)
+    </div>
+    )
 }
 
 export default Home

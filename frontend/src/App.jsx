@@ -15,7 +15,7 @@ import Owner from "./pages/user/Owner";
 import Booking from "./pages/user/Booking";
 import Payment from "./pages/user/Payment";
 import Profile from "./pages/user/Profile";
-import Bookings from "./pages/user/Bookings";
+import MyBookings from "./pages/user/MyBookings";
 import SavedItems from "./pages/user/SavedItems";
 import Settings from "./pages/user/Settings";
 import Support from "./pages/user/Support";
@@ -51,7 +51,7 @@ function App() {
         <Route path="/booking" element={<Booking />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/bookings" element={<Bookings />} />
+        <Route path="/my-bookings" element={<MyBookings />} />
         <Route path="/saved-items" element={<SavedItems />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/support" element={<Support />} />

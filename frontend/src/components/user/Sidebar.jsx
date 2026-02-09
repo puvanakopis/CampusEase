@@ -21,7 +21,7 @@ const Sidebar = () => {
                 </button>
 
                 <button
-                    onClick={() => navigateTo("/bookings")}
+                    onClick={() => navigateTo("/my-bookings")}
                     className={`flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors w-full text-left ${isActive("/bookings") ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"
                         }`}
                 >
