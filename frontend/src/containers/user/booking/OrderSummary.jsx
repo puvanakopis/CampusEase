@@ -1,7 +1,10 @@
 import React from "react";
 import PrimaryButton from '../../../components/common/PrimaryButton'
+import useNavigateTo from "../../../hooks/useNavigateTo";
 
 const OrderSummary = () => {
+    const navigateTo = useNavigateTo();
+
     return (
         <div className="lg:col-span-1">
             <div className="sticky top-24 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
@@ -42,12 +45,16 @@ const OrderSummary = () => {
                     </div>
                 </div>
 
-                <PrimaryButton className="w-full py-4 flex items-center justify-center gap-2 group"                >
+                <PrimaryButton
+                    className="w-full py-4 flex items-center justify-center gap-2 group"
+                    onClick={() => navigateTo("/payment")}
+                >
                     Confirm and Pay
                     <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">
                         arrow_forward
                     </span>
                 </PrimaryButton>
+
 
                 <p className="text-center text-xs text-slate-500 mt-4">
                     By clicking "Confirm and Pay" you agree to the{" "}
