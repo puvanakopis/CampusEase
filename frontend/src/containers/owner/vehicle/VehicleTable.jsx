@@ -1,113 +1,118 @@
-import React from "react";
+import React from 'react';
 
-const VehicleTable = ({ vehicles }) => {
+const VehicleTable = ({ vehicles, handleViewVehicle, handleEditClick, handleDeleteVehicle }) => {
     return (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-12">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+            <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                <h3 className="text-lg font-bold text-slate-900">All Vehicles ({vehicles.length})</h3>
+                <div className="flex items-center gap-3">
+                    <div className="relative">
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+                        <input 
+                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all" 
+                            placeholder="Search vehicles..." 
+                            type="text" 
+                        />
+                    </div>
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                        <option>Status: All</option>
+                        <option>Active</option>
+                        <option>Inactive</option>
+                    </select>
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                        <option>Type: All</option>
+                        <option>Car</option>
+                        <option>Scooter</option>
+                        <option>Motorcycle</option>
+                        <option>Van</option>
+                    </select>
+                </div>
+            </div>
             <table className="w-full text-left border-collapse">
-                <thead>
-                    <tr className="bg-slate-50">
-                        <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
-                            Vehicle
-                        </th>
-                        <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
-                            Location
-                        </th>
-                        <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
-                            Type
-                        </th>
-                        <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
-                            Price (LKR)
-                        </th>
-                        <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
-                            Status
-                        </th>
-                        <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 text-right">
-                            Actions
-                        </th>
+                <thead className="bg-slate-50">
+                    <tr>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Vehicle</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Type & Location</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Price</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Rental Status</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Actions</th>
                     </tr>
                 </thead>
 
-                <tbody className="divide-y divide-slate-200">
+                <tbody className="divide-y divide-slate-100">
                     {vehicles.map((vehicle) => (
-                        <tr
-                            key={vehicle.id}
-                            className="hover:bg-slate-50 transition-colors"
-                        >
+                        <tr key={vehicle.id} className="hover:bg-slate-50 transition-colors">
                             <td className="px-6 py-4">
                                 <div className="flex items-center gap-3">
-                                    <img
-                                        alt={vehicle.name}
-                                        className="h-10 w-10 rounded-lg object-cover"
-                                        src={vehicle.image}
-                                    />
+                                    <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                                        <img
+                                            src={vehicle.image}
+                                            alt={vehicle.name}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                e.target.src = "https://via.placeholder.com/100x100?text=Vehicle";
+                                            }}
+                                        />
+                                    </div>
                                     <div>
-                                        <div className="font-bold text-slate-900">
-                                            {vehicle.name}
-                                        </div>
-                                        <div className="text-xs text-slate-500">
-                                            ID: {vehicle.id}
-                                        </div>
+                                        <p className="text-sm font-semibold text-slate-900">{vehicle.name}</p>
+                                        <p className="text-[10px] text-slate-400">ID: {vehicle.id}</p>
+                                        <p className="text-[10px] text-slate-400">{vehicle.year} • {vehicle.mileage}</p>
                                     </div>
                                 </div>
                             </td>
-
-                            <td className="px-6 py-4 text-sm text-slate-600">
-                                {vehicle.location}
-                            </td>
-
                             <td className="px-6 py-4">
-                                <span
-                                    className={`text-xs font-medium px-2 py-1 rounded ${vehicle.type === "Car"
-                                            ? "bg-blue-50 text-blue-600"
-                                            : vehicle.type === "Scooter"
-                                                ? "bg-purple-50 text-purple-600"
-                                                : "bg-green-50 text-green-600"
-                                        }`}
-                                >
-                                    {vehicle.type}
+                                <p className="text-sm text-slate-600">{vehicle.type}</p>
+                                <p className="text-[10px] text-slate-400">{vehicle.location}</p>
+                                <p className="text-[10px] text-slate-400">{vehicle.seats} seats • {vehicle.transmission}</p>
+                            </td>
+                            <td className="px-6 py-4">
+                                <p className="text-sm font-bold text-green-600">LKR {vehicle.price.toLocaleString()}</p>
+                                <p className="text-[10px] text-slate-400">per month</p>
+                            </td>
+                            <td className="px-6 py-4">
+                                <span className={`px-3 py-1 rounded-full text-xs font-bold ${vehicle.status === "Active" ? "bg-green-100 text-green-800" : vehicle.status === "Inactive" ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800"}`}>
+                                    {vehicle.status}
                                 </span>
                             </td>
-
-                            <td className="px-6 py-4 font-semibold text-slate-900">
-                                {vehicle.price.toLocaleString()}
-                                <span className="text-xs font-normal text-slate-500">
-                                    /day
-                                </span>
-                            </td>
-
                             <td className="px-6 py-4">
-                                <label className="relative inline-flex items-center cursor-pointer">
-                                    <input
-                                        checked={vehicle.status === "Active"}
-                                        type="checkbox"
-                                        className="sr-only peer"
-                                        readOnly
-                                    />
-                                    <div className="w-9 h-5 bg-slate-200 rounded-full peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
-                                    <span className="ml-2 text-xs font-medium text-slate-500">
-                                        {vehicle.status}
-                                    </span>
-                                </label>
-                            </td>
-
-                            <td className="px-6 py-4 text-right">
-                                <div className="flex justify-end gap-2">
-                                    <button
-                                        className="p-2 text-slate-400 hover:text-primary transition-colors"
-                                        title="Edit"
-                                    >
-                                        <span className="material-symbols-outlined text-xl">
-                                            edit
+                                {vehicle.currentlyRented ? (
+                                    <div className="flex flex-col">
+                                        <span className="text-xs font-medium text-blue-600">Rented</span>
+                                        <span className="text-[10px] text-slate-500">
+                                            Until {vehicle.rentedUntil}
                                         </span>
+                                        <span className="text-[10px] text-slate-400">
+                                            To: {vehicle.rentedTo}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <span className="text-xs font-medium text-green-600">Available</span>
+                                )}
+                            </td>
+                            <td className="px-6 py-4">
+                                <div className="flex items-center justify-center gap-2">
+                                    <button
+                                        onClick={() => handleViewVehicle(vehicle)}
+                                        className="bg-blue-100 text-blue-600 p-2 rounded-lg hover:bg-blue-200 transition-colors"
+                                        title="View Details"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">visibility</span>
                                     </button>
-
                                     <button
-                                        className="p-2 text-slate-400 hover:text-red-500 transition-colors"
-                                        title="Delete"
+                                        onClick={() => handleEditClick(vehicle)}
+                                        className="bg-green-100 text-green-600 p-2 rounded-lg hover:bg-green-200 transition-colors"
+                                        title="Edit Vehicle"
                                     >
-                                        <span className="material-symbols-outlined text-xl">
-                                            delete
-                                        </span>
+                                        <span className="material-symbols-outlined text-sm">edit</span>
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteVehicle(vehicle.id)}
+                                        className="bg-red-100 text-red-600 p-2 rounded-lg hover:bg-red-200 transition-colors"
+                                        title="Delete Vehicle"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">delete</span>
                                     </button>
                                 </div>
                             </td>
@@ -115,6 +120,18 @@ const VehicleTable = ({ vehicles }) => {
                     ))}
                 </tbody>
             </table>
+            <div className="px-6 py-4 border-t border-slate-200 flex justify-between items-center text-sm text-slate-500">
+                <div>Showing {vehicles.length} of {vehicles.length} vehicles</div>
+                <div className="flex items-center gap-2">
+                    <button className="p-1 rounded border border-slate-200 hover:bg-slate-50">
+                        <span className="material-symbols-outlined text-sm">chevron_left</span>
+                    </button>
+                    <button className="size-8 rounded bg-primary text-white">1</button>
+                    <button className="p-1 rounded border border-slate-200 hover:bg-slate-50">
+                        <span className="material-symbols-outlined text-sm">chevron_right</span>
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };

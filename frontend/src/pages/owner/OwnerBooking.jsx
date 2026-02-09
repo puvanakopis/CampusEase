@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import StatsCards from "../../containers/owner/booking/StatsCards";
-import OrderTable from "../../containers/owner/booking/OrderTable";
-import OrderTabs from "../../containers/owner/booking/OrderTabs";
+import OrderTable from "../../containers/owner/booking/BookingTable";
+import OrderTabs from "../../containers/owner/booking/BookingTabs";
 import Filters from "../../containers/owner/booking/Filters";
 import Pagination from "../../containers/owner/booking/Pagination";
 import AcceptPopup from "../../containers/owner/booking/AcceptPopup";

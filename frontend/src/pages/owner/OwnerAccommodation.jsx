@@ -223,7 +223,7 @@ const OwnerAccommodation = () => {
             )}
 
             <Heading
-                title="Accommodation Properties Management"
+                title="Accommodation Management"
                 subtitle="Manage your Sabaragamuwa University area listings."
                 buttonText="Add New Property"
                 onButtonClick={handleAddPropertyClick}
