@@ -1,5 +1,5 @@
 import React from "react";
-import Heading from "../../containers/owner/Heading";
+import Heading from "../../containers/owner/accommodation/Heading";
 import PropertyTable from "../../containers/owner/accommodation/PropertyTable";
 import StatsCards from "../../containers/owner/accommodation/StatsCards";
 

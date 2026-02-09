@@ -1,5 +1,5 @@
 import React from "react";
-import Heading from "../../containers/owner/Heading";
+import Heading from "../../containers/owner/dashboard/Heading";
 import TopStats from "../../containers/owner/dashboard/TopStats";
 import RevenueOverview from "../../containers/owner/dashboard/RevenueOverview";
 import RecentBookings from "../../containers/owner/dashboard/RecentBookings";
