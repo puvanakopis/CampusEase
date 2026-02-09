@@ -29,6 +29,7 @@ import Support from "./pages/user/Support";
 import NotFound from "./pages/user/NotFound";
 
 import OwnerDashboard from "./pages/owner/OwnerDashboard";
+import OwnerAccommodation from "./pages/owner/OwnerAccommodation";
 
 function App() {
   const role = 'owner'
@@ -65,6 +66,7 @@ function App() {
         <Route path="/support" element={<Support />} />
 
         <Route path="/owner/" element={<OwnerDashboard />} />
+        <Route path="/owner/accommodation" element={<OwnerAccommodation />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
