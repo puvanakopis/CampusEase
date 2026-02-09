@@ -15,6 +15,7 @@ import Owner from "./pages/user/Owner";
 import Booking from "./pages/user/Booking";
 import Payment from "./pages/user/Payment";
 import Profile from "./pages/user/Profile";
+import Bookings from "./pages/user/Bookings";
 import NotFound from "./pages/user/NotFound";
 
 import Register from "./pages/auth/Register";
@@ -47,6 +48,7 @@ function App() {
         <Route path="/booking" element={<Booking />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/bookings" element={<Bookings />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
