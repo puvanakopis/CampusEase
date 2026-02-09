@@ -14,6 +14,11 @@ import VehicleDetails from "./pages/user/VehicleDetails";
 import Owner from "./pages/user/Owner";
 import Booking from "./pages/user/Booking";
 import Payment from "./pages/user/Payment";
+import Profile from "./pages/user/Profile";
+import MyBookings from "./pages/user/MyBookings";
+import SavedItems from "./pages/user/SavedItems";
+import Settings from "./pages/user/Settings";
+import Support from "./pages/user/Support";
 import NotFound from "./pages/user/NotFound";
 
 import Register from "./pages/auth/Register";
@@ -45,6 +50,11 @@ function App() {
         <Route path="/owner/:id" element={<Owner />} />
         <Route path="/booking" element={<Booking />} />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/my-bookings" element={<MyBookings />} />
+        <Route path="/saved-items" element={<SavedItems />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/support" element={<Support />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />

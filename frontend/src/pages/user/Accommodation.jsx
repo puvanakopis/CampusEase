@@ -148,7 +148,7 @@ const Accommodations = () => {
 
     return (
         <div className="bg-[#f6f7f8]">
-            <div className="flex flex-col lg:flex-row px-4 py-10 md:px-10 max-w-7xl mx-auto gap-6">
+            <div className="flex flex-col lg:flex-row px-4 py-10 md:px-24 max-w-8xl mx-auto gap-6">
                 <FiltersSidebar />
                 <main className="flex-1 flex flex-col gap-6">
                     <PageHeader title="Accommodation Rentals" description="Student housing near Sabaragamuwa University of Sri Lanka (SUSL)." />
