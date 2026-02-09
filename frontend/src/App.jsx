@@ -14,6 +14,7 @@ import VehicleDetails from "./pages/user/VehicleDetails";
 import Owner from "./pages/user/Owner";
 import Booking from "./pages/user/Booking";
 import Payment from "./pages/user/Payment";
+import Profile from "./pages/user/Profile";
 import NotFound from "./pages/user/NotFound";
 
 import Register from "./pages/auth/Register";
@@ -45,6 +46,7 @@ function App() {
         <Route path="/owner/:id" element={<Owner />} />
         <Route path="/booking" element={<Booking />} />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/profile" element={<Profile />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
