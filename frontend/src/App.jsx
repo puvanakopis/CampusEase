@@ -31,6 +31,7 @@ import NotFound from "./pages/user/NotFound";
 import OwnerDashboard from "./pages/owner/OwnerDashboard";
 import OwnerAccommodation from "./pages/owner/OwnerAccommodation";
 import OwnerVehicle from "./pages/owner/OwnerVehicle";
+import OwnerBooking from "./pages/owner/OwnerBooking";
 
 function App() {
   const role = 'owner'
@@ -69,6 +70,7 @@ function App() {
         <Route path="/owner/" element={<OwnerDashboard />} />
         <Route path="/owner/accommodation" element={<OwnerAccommodation />} />
         <Route path="/owner/vehicle" element={<OwnerVehicle />} />
+        <Route path="/owner/bookings" element={<OwnerBooking />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />

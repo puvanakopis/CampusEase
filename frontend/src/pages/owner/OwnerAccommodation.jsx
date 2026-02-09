@@ -61,14 +61,12 @@ const OwnerAccommodation = () => {
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
             <Heading
-                title="Owner Properties Management"
+                title="Accommodation Properties Management"
                 subtitle="Manage your Sabaragamuwa University area listings."
                 buttonText="Add New Property"
             />
-
-            <PropertyTable properties={properties} />
-
             <StatsCards stats={stats} />
+            <PropertyTable properties={properties} />
         </main>
     );
 };
