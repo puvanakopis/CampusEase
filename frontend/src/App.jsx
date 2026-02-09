@@ -64,7 +64,7 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/support" element={<Support />} />
 
-        <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+        <Route path="/owner/" element={<OwnerDashboard />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />

@@ -1,11 +1,10 @@
-import React from 'react'
+import React from "react";
+import OwnerDashboardPage from "../../containers/owner/OwnerDashboardPage";
 
 const OwnerDashboard = () => {
   return (
-    <div>
-      OwnerDashboard
-    </div>
-  )
-}
+    <OwnerDashboardPage/>
+  );
+};
 
 export default OwnerDashboard;
