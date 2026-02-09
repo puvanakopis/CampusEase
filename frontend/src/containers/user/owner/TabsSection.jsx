@@ -113,7 +113,7 @@ const TabsSection = () => {
                         : "tab-inactive text-slate-500"
                         }`}
                 >
-                    <span className="material-symbols-outlined text-lg">airport_shuttle</span> Transport Services
+                    <span className="material-symbols-outlined text-lg">airport_shuttle</span> Transport
                 </button>
             </div>
 
