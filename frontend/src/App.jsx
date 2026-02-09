@@ -16,12 +16,18 @@ import Booking from "./pages/user/Booking";
 import Payment from "./pages/user/Payment";
 import NotFound from "./pages/user/NotFound";
 
+
+import Register from "./pages/auth/Register";
+
 function App() {
 
   return (
     <>
       <Navbar />
       <Routes>
+        <Route path="/register" element={<Register />} />
+
+        
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
