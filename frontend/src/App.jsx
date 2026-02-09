@@ -18,6 +18,7 @@ import Profile from "./pages/user/Profile";
 import Bookings from "./pages/user/Bookings";
 import SavedItems from "./pages/user/SavedItems";
 import Settings from "./pages/user/Settings";
+import Support from "./pages/user/Support";
 import NotFound from "./pages/user/NotFound";
 
 import Register from "./pages/auth/Register";
@@ -53,6 +54,7 @@ function App() {
         <Route path="/bookings" element={<Bookings />} />
         <Route path="/saved-items" element={<SavedItems />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/support" element={<Support />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />

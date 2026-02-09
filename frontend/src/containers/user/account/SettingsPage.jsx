@@ -12,7 +12,7 @@ const SettingsPage = () => {
             </div>
 
             {/* Security & Password Section */}
-            <section className="pt-8 border-t border-slate-200">
+            <section className="">
                 <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
                     <span className="material-symbols-outlined text-primary">security</span>
                     Security & Password
@@ -32,7 +32,7 @@ const SettingsPage = () => {
             </section>
 
             {/* Notification Preferences Section */}
-            <section className="pt-8 border-t border-slate-200">
+            <section className="pt-8 ">
                 <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
                     <span className="material-symbols-outlined text-primary">notifications_active</span>
                     Notification Preferences

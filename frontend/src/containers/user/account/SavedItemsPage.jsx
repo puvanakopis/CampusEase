@@ -65,7 +65,7 @@ const SavedItemsPage = () => {
             {/* Saved Accommodations */}
             <section className="flex flex-col gap-6">
                 <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">favorite</span>
+                    <span className="material-symbols-outlined text-primary">bed</span>
                     <h2 className="text-xl font-bold text-slate-900">Saved Accommodations ({accommodations.length})</h2>
                 </div>
 
