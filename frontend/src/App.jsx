@@ -16,6 +16,7 @@ import Booking from "./pages/user/Booking";
 import Payment from "./pages/user/Payment";
 import Profile from "./pages/user/Profile";
 import Bookings from "./pages/user/Bookings";
+import SavedItems from "./pages/user/SavedItems";
 import NotFound from "./pages/user/NotFound";
 
 import Register from "./pages/auth/Register";
@@ -49,6 +50,7 @@ function App() {
         <Route path="/payment" element={<Payment />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/bookings" element={<Bookings />} />
+        <Route path="/saved-items" element={<SavedItems />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />

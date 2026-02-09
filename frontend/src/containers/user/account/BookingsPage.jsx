@@ -107,7 +107,7 @@ const BookingsPage = () => {
       {/* Completed Bookings */}
       <section className="flex flex-col gap-6 mt-4">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-slate-500">history</span>
+          <span className="material-symbols-outlined text-primary">history</span>
           <h2 className="text-xl font-bold text-slate-900">Completed Bookings</h2>
         </div>
 
