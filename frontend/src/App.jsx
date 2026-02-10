@@ -47,6 +47,7 @@ import OwnerNotFound from "./pages/owner/OwnerNotFound";
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminAccommodation from "./pages/admin/AdminAccommodation";
+import AdminVehicles from "./pages/admin/AdminVehicles";
 import AdminNotFound from "./pages/admin/AdminNotFound";
 
 // --- Protected Route Wrapper ---
@@ -138,6 +139,7 @@ function App() {
         <Route element={<ProtectedRoute role={role} allowedRoles={["admin"]} />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/accommodation" element={<AdminAccommodation />} />
+          <Route path="/admin/vehicles" element={<AdminVehicles />} />
         </Route>
 
         {/* 404 */}

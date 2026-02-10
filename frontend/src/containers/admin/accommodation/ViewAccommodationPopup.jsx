@@ -1,6 +1,6 @@
 import React from "react";
 
-const ViewAccommodationPopup = ({ property, onClose, onEdit }) => {
+const ViewAccommodationPopup = ({ property, onClose }) => {
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl p-6 max-w-4xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
@@ -10,13 +10,6 @@ const ViewAccommodationPopup = ({ property, onClose, onEdit }) => {
                         <p className="text-slate-500">Property ID: {property.id}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button
-                            onClick={onEdit}
-                            className="border border-slate-200 text-slate-700 py-2 px-4 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center gap-2"
-                        >
-                            <span className="material-symbols-outlined text-sm">edit</span>
-                            Edit
-                        </button>
                         <button
                             onClick={onClose}
                             className="text-slate-400 hover:text-slate-600"
