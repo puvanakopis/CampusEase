@@ -114,7 +114,7 @@ const AccommodationDetails = () => {
 
     return (
         <div className='bg-background-light'>
-            <div className='px-4 py-10 md:px-10 max-w-7xl mx-auto'>
+            <div className='px-4 py-10 md:px-24 max-w-8xl mx-auto'>
                 <Breadcrumbs items={accommodationData.breadcrumbs} />
                 <HeaderInfo
                     title={accommodationData.title}

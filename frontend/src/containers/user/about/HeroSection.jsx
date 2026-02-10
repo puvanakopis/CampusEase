@@ -8,7 +8,7 @@ function HeroSection() {
 
     return (
         <section className="relative w-full overflow-hidden bg-background-light">
-            <div className="px-4 my-20 md:px-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="px-4 my-20 md:px-24 max-w-8xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div className="z-10">
                     <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-bold mb-4">
                         Established 2025

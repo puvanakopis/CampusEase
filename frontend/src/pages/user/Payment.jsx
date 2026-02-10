@@ -16,7 +16,7 @@ const Payment = () => {
 
     return (
         <div className="bg-[#f6f7f8] pb-16 relative">
-            <div className='px-4 pt-10 md:px-10 max-w-7xl mx-auto gap-6'>
+            <div className='px-4 pt-10 md:px-24 max-w-8xl mx-auto gap-6'>
                 <h1 className="text-3xl font-bold text-slate-900 mb-6">
                     Secure Checkout
                 </h1>
