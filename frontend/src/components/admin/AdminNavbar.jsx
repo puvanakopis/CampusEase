@@ -21,7 +21,7 @@ const AdminNavbar = () => {
 
     const navItems = [
         { label: "Dashboard", path: "/admin/dashboard", key: "dashboard" },
-        { label: "Properties", path: "/admin/properties", key: "properties" },
+        { label: "Accommodation", path: "/admin/accommodation", key: "accommodation" },
         { label: "Vehicles", path: "/admin/vehicles", key: "vehicles" },
         { label: "Users", path: "/admin/users", key: "users" },
     ];

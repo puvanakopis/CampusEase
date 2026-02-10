@@ -1,6 +1,6 @@
 import React from "react";
 
-const AdminHeading = ({ title, subtitle }) => {
+const Heading = ({ title, subtitle }) => {
     return (
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
@@ -11,4 +11,4 @@ const AdminHeading = ({ title, subtitle }) => {
     );
 };
 
-export default AdminHeading;
+export default Heading;
