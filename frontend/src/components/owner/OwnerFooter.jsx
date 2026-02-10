@@ -7,7 +7,7 @@ const OwnerFooter = () => {
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-center gap-2 text-primary">
                         <span className="material-symbols-outlined text-2xl">school</span>
-                        <h2 className="text-slate-900 text-lg font-bold">CampusEase SUSL</h2>
+                        <h2 className="text-slate-900 text-lg font-bold">CampusEase Owner</h2>
                     </div>
 
                     <div className="flex gap-8 text-sm text-slate-500">
