@@ -42,9 +42,11 @@ import OwnerProfile from "./pages/owner/OwnerProfile";
 import OwnerSettings from "./pages/owner/OwnerSettings";
 import OwnerSupport from "./pages/owner/OwnerSupport";
 import OwnerApplication from "./pages/owner/OwnerApplication";
+import OwnerNotFound from "./pages/owner/OwnerNotFound";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminNotFound from "./pages/admin/AdminNotFound";
 
 // --- Protected Route Wrapper ---
 const ProtectedRoute = ({ role, allowedRoles }) => {
@@ -52,7 +54,7 @@ const ProtectedRoute = ({ role, allowedRoles }) => {
 };
 
 function App() {
-  const role = "owner"; // "student", "staff", "owner", "admin"
+  const role = "admin"; // "student", "staff", "owner", "admin"
   const location = useLocation();
 
   const authPages = ["/login", "/register", "/forgot-password"];
@@ -137,7 +139,11 @@ function App() {
         </Route>
 
         {/* 404 */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={
+          role === "owner" ? <OwnerNotFound /> :
+            role === "admin" ? <AdminNotFound /> :
+              <NotFound />
+        } />
       </Routes>
 
       {renderFooter()}
