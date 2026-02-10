@@ -8,13 +8,38 @@ const VehicleRequestsTable = ({
 }) => {
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-            <div className="px-6 py-4 border-b border-slate-200">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
                 <h3 className="text-lg font-bold text-slate-900">
                     Vehicle Requests ({vehicleRequests.length})
                 </h3>
-                <p className="text-slate-500 text-sm">
-                    Review and approve new vehicle submissions from owners
-                </p>
+                <div className="flex items-center gap-3">
+                    {/* Search */}
+                    <div className="relative">
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+                            search
+                        </span>
+                        <input
+                            type="text"
+                            placeholder="Search vehicles..."
+                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                        />
+                    </div>
+                    {/* Status Filter */}
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                        <option>Status: All</option>
+                        <option>Active</option>
+                        <option>Inactive</option>
+                    </select>
+                    {/* Type Filter */}
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                        <option>Type: All</option>
+                        <option>Shuttle</option>
+                        <option>Van</option>
+                        <option>Bus</option>
+                        <option>Car</option>
+                    </select>
+                </div>
             </div>
 
             <div className="overflow-x-auto">

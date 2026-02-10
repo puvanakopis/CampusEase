@@ -1,6 +1,20 @@
 import React from "react";
 
-const PropertyTable = ({ properties, onView, onDelete }) => {
+const PropertyTable = ({
+    properties,
+    onView,
+    onDelete,
+    onToggleStatus,
+    isAdmin = false
+}) => {
+
+    const handleToggleStatusClick = (property, e) => {
+        e.stopPropagation();
+        if (onToggleStatus) {
+            onToggleStatus(property.id, property.status);
+        }
+    };
+
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
@@ -111,7 +125,20 @@ const PropertyTable = ({ properties, onView, onDelete }) => {
                                     >
                                         View
                                     </button>
-                        
+
+                                    {isAdmin && onToggleStatus && (
+                                        <button
+                                            onClick={(e) => handleToggleStatusClick(property, e)}
+                                            className={`${property.status === "Active"
+                                                ? "bg-yellow-600 hover:bg-yellow-500"
+                                                : "bg-blue-600 hover:bg-blue-500"
+                                                } text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors`}
+                                            title={property.status === "Active" ? "Deactivate Property" : "Activate Property"}
+                                        >
+                                            {property.status === "Active" ? "Deactivate" : "Activate"}
+                                        </button>
+                                    )}
+
                                     <button
                                         onClick={() => onDelete(property.id)}
                                         className="bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"

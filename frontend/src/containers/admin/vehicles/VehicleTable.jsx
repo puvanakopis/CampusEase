@@ -1,6 +1,14 @@
 import React from "react";
 
-const VehicleTable = ({ vehicles, onView, onDelete, isAdmin }) => {
+const VehicleTable = ({ vehicles, onView, onDelete, onToggleStatus, isAdmin = false }) => {
+
+    const handleToggleStatusClick = (vehicle, e) => {
+        e.stopPropagation();
+        if (onToggleStatus) {
+            onToggleStatus(vehicle.id, vehicle.status);
+        }
+    };
+
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
@@ -126,6 +134,20 @@ const VehicleTable = ({ vehicles, onView, onDelete, isAdmin }) => {
                                     >
                                         View
                                     </button>
+
+                                    {isAdmin && onToggleStatus && (
+                                        <button
+                                            onClick={(e) => handleToggleStatusClick(vehicle, e)}
+                                            className={`${vehicle.status === "Active"
+                                                ? "bg-yellow-600 hover:bg-yellow-500"
+                                                : "bg-blue-600 hover:bg-blue-500"
+                                                } text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors`}
+                                            title={vehicle.status === "Active" ? "Deactivate Vehicle" : "Activate Vehicle"}
+                                        >
+                                            {vehicle.status === "Active" ? "Deactivate" : "Activate"}
+                                        </button>
+                                    )}
+
                                     <button
                                         onClick={() => onDelete(vehicle.id)}
                                         className="bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"

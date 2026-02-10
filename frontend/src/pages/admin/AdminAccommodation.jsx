@@ -2,15 +2,17 @@ import React, { useState } from "react";
 import Heading from "../../containers/admin/Heading";
 import StatsCards from "../../containers/admin/StatsCards";
 import Tabs from "../../containers/admin/accommodation/Tabs";
-
 import PropertyTable from "../../containers/admin/accommodation/PropertyTable";
 import ViewAccommodationPopup from "../../containers/admin/accommodation/ViewAccommodationPopup";
 import PropertyRequestsTable from "../../containers/admin/accommodation/PropertyRequestsTable";
+import StatusChangePopup from "../../containers/admin/accommodation/StatusChangePopup"; // Import the new popup
 
 const AdminAccommodation = () => {
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedProperty, setSelectedProperty] = useState(null);
     const [activeTab, setActiveTab] = useState("current");
+    const [showStatusPopup, setShowStatusPopup] = useState(false); // New state for status popup
+    const [propertyToChangeStatus, setPropertyToChangeStatus] = useState(null); // New state for property data
 
     const [allProperties, setAllProperties] = useState([
         {
@@ -195,21 +197,33 @@ const AdminAccommodation = () => {
         const property = allProperties.find(p => p.id === propertyId);
         if (!property) return;
 
-        const newStatus = currentStatus === "Active" ? "Inactive" : "Active";
-        const reason = newStatus === "Inactive"
-            ? prompt("Please provide reason for deactivation:")
-            : null;
+        // Set the property for status change and show popup
+        setPropertyToChangeStatus({ ...property, currentStatus });
+        setShowStatusPopup(true);
+    };
 
+    const handleConfirmStatusChange = async (reason) => {
+        if (!propertyToChangeStatus) return;
+
+        const newStatus = propertyToChangeStatus.currentStatus === "Active" ? "Inactive" : "Active";
+        
         setAllProperties(allProperties.map(prop =>
-            prop.id === propertyId ? {
+            prop.id === propertyToChangeStatus.id ? {
                 ...prop,
                 status: newStatus,
                 lastUpdated: new Date().toISOString().split('T')[0],
-                ...(newStatus === "Inactive" && { inactiveReason: reason })
+                ...(newStatus === "Inactive" ? { inactiveReason: reason } : { inactiveReason: null })
             } : prop
         ));
 
-        alert(`Property "${property.name}" has been ${newStatus.toLowerCase()}.`);
+        // Optional: Send notification to property owner
+        // await sendStatusChangeNotification(propertyToChangeStatus.ownerEmail, newStatus, reason);
+
+        alert(`Property "${propertyToChangeStatus.name}" has been ${newStatus.toLowerCase()}.`);
+        
+        // Close popup and reset
+        setShowStatusPopup(false);
+        setPropertyToChangeStatus(null);
     };
 
     return (
@@ -223,6 +237,19 @@ const AdminAccommodation = () => {
                         setSelectedProperty(null);
                     }}
                     isAdmin={true}
+                />
+            )}
+
+            {/* Status Change Popup */}
+            {showStatusPopup && propertyToChangeStatus && (
+                <StatusChangePopup
+                    property={propertyToChangeStatus}
+                    currentStatus={propertyToChangeStatus.currentStatus}
+                    onClose={() => {
+                        setShowStatusPopup(false);
+                        setPropertyToChangeStatus(null);
+                    }}
+                    onConfirm={handleConfirmStatusChange}
                 />
             )}
 

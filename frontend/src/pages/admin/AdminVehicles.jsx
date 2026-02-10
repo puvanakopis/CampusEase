@@ -5,11 +5,14 @@ import Tabs from "../../containers/admin/vehicles/Tabs";
 import VehicleTable from "../../containers/admin/vehicles/VehicleTable";
 import ViewVehiclePopup from "../../containers/admin/vehicles/ViewVehiclePopup";
 import VehicleRequestsTable from "../../containers/admin/vehicles/VehicleRequestsTable";
+import StatusChangePopup from "../../containers/admin/vehicles/StatusChangePopup"; // Import the new popup
 
 const AdminVehicles = () => {
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [activeTab, setActiveTab] = useState("current");
+    const [showStatusPopup, setShowStatusPopup] = useState(false); // New state for status popup
+    const [vehicleToChangeStatus, setVehicleToChangeStatus] = useState(null); // New state for vehicle data
 
     const [allVehicles, setAllVehicles] = useState([
         {
@@ -240,21 +243,34 @@ const AdminVehicles = () => {
         const vehicle = allVehicles.find(v => v.id === vehicleId);
         if (!vehicle) return;
 
-        const newStatus = currentStatus === "Active" ? "Inactive" : "Active";
-        const reason = newStatus === "Inactive"
-            ? prompt("Please provide reason for deactivation:")
-            : null;
+        // Set the vehicle for status change and show popup
+        setVehicleToChangeStatus({ ...vehicle, currentStatus });
+        setShowStatusPopup(true);
+    };
+
+    const handleConfirmStatusChange = async (reason) => {
+        if (!vehicleToChangeStatus) return;
+
+        const newStatus = vehicleToChangeStatus.currentStatus === "Active" ? "Inactive" : "Active";
 
         setAllVehicles(allVehicles.map(v =>
-            v.id === vehicleId ? {
+            v.id === vehicleToChangeStatus.id ? {
                 ...v,
                 status: newStatus,
                 lastUpdated: new Date().toISOString().split('T')[0],
-                ...(newStatus === "Inactive" && { inactiveReason: reason })
+                schedule: newStatus === "Inactive" ? "Suspended" : v.schedule,
+                ...(newStatus === "Inactive" ? { inactiveReason: reason } : { inactiveReason: null })
             } : v
         ));
 
-        alert(`Vehicle "${vehicle.name}" has been ${newStatus.toLowerCase()}.`);
+        // Optional: Send notification to vehicle owner and driver
+        // await sendStatusChangeNotification(vehicleToChangeStatus.ownerEmail, newStatus, reason);
+
+        alert(`Vehicle "${vehicleToChangeStatus.name}" has been ${newStatus.toLowerCase()}.`);
+
+        // Close popup and reset
+        setShowStatusPopup(false);
+        setVehicleToChangeStatus(null);
     };
 
     return (
@@ -268,6 +284,19 @@ const AdminVehicles = () => {
                         setSelectedVehicle(null);
                     }}
                     isAdmin={true}
+                />
+            )}
+
+            {/* Status Change Popup */}
+            {showStatusPopup && vehicleToChangeStatus && (
+                <StatusChangePopup
+                    vehicle={vehicleToChangeStatus}
+                    currentStatus={vehicleToChangeStatus.currentStatus}
+                    onClose={() => {
+                        setShowStatusPopup(false);
+                        setVehicleToChangeStatus(null);
+                    }}
+                    onConfirm={handleConfirmStatusChange}
                 />
             )}
 
