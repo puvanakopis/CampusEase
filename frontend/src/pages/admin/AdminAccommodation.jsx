@@ -162,6 +162,35 @@ const AdminAccommodation = () => {
         }
     };
 
+    const handleApproveRequest = (requestId) => {
+        const request = propertyRequests.find(req => req.id === requestId);
+        if (!request) return;
+
+        const newProperty = {
+            ...request,
+            id: `SUSL-${Math.floor(1000 + Math.random() * 9000)}`,
+            status: "Active",
+            occupied: 0,
+            createdAt: new Date().toISOString().split('T')[0],
+            lastUpdated: new Date().toISOString().split('T')[0],
+            approvedBy: "Admin User",
+            approvedDate: new Date().toISOString().split('T')[0]
+        };
+
+        setAllProperties([...allProperties, newProperty]);
+        setPropertyRequests(propertyRequests.filter(req => req.id !== requestId));
+
+        alert(`Property "${request.name}" has been approved and listed. Owner has been notified.`);
+    };
+
+    const handleRejectRequest = (requestId) => {
+        const request = propertyRequests.find(req => req.id === requestId);
+        if (window.confirm(`Are you sure you want to reject "${request?.name}"?`)) {
+            setPropertyRequests(propertyRequests.filter(req => req.id !== requestId));
+            alert(`Property request for "${request?.name}" has been rejected. Owner has been notified.`);
+        }
+    };
+
     const handleTogglePropertyStatus = (propertyId, currentStatus) => {
         const property = allProperties.find(p => p.id === propertyId);
         if (!property) return;
@@ -220,7 +249,25 @@ const AdminAccommodation = () => {
                     isAdmin={true}
                 />
             )}
-            
+
+            {activeTab === "requests" && (
+                <PropertyRequestsTable
+                    propertyRequests={propertyRequests}
+                    onViewRequest={handleViewProperty}
+                    onApproveRequest={handleApproveRequest}
+                    onRejectRequest={handleRejectRequest}
+                />
+            )}
+
+            {activeTab === "inactive" && (
+                <PropertyTable
+                    properties={allProperties.filter(prop => prop.status === "Inactive")}
+                    onView={handleViewProperty}
+                    onDelete={handleDeleteProperty}
+                    onToggleStatus={handleTogglePropertyStatus}
+                    isAdmin={true}
+                />
+            )}
         </main>
     );
 };
