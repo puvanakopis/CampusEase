@@ -20,7 +20,7 @@ const OwnerNavbar = () => {
     });
 
     const navItems = [
-        { label: "Overview", path: "/owner/", key: "" },
+        { label: "Overview", path: "/owner/overview", key: "overview" },
         { label: "Accommodation", path: "/owner/accommodation", key: "accommodation" },
         { label: "Vehicle", path: "/owner/vehicle", key: "vehicle" },
         { label: "Bookings", path: "/owner/bookings", key: "bookings" },

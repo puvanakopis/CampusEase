@@ -13,7 +13,7 @@ const Sidebar = () => {
             <nav className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden py-2">
                 <button
                     onClick={() => navigateTo("/owner/profile")}
-                    className={`flex items-center gap-3 px-6 py-4 text-sm font-bold transition-colors w-full text-left ${isActive("/profile") ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"
+                    className={`flex items-center gap-3 px-6 py-4 text-sm font-bold transition-colors w-full text-left ${isActive("/owner/profile") ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"
                         }`}
                 >
                     <span className="material-symbols-outlined">person</span>
@@ -22,7 +22,7 @@ const Sidebar = () => {
 
                 <button
                     onClick={() => navigateTo("/owner/settings")}
-                    className={`flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors w-full text-left ${isActive("/settings") ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"
+                    className={`flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors w-full text-left ${isActive("/owner/settings") ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"
                         }`}
                 >
                     <span className="material-symbols-outlined">settings</span>
@@ -31,7 +31,7 @@ const Sidebar = () => {
 
                 <button
                     onClick={() => navigateTo("/owner/support")}
-                    className={`flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors w-full text-left ${isActive("/support") ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"
+                    className={`flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors w-full text-left ${isActive("/owner/support") ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"
                         }`}
                 >
                     <span className="material-symbols-outlined">help</span>

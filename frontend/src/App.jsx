@@ -35,6 +35,7 @@ import OwnerBooking from "./pages/owner/OwnerBooking";
 import OwnerProfile from "./pages/owner/OwnerProfile";
 import OwnerSettings from "./pages/owner/OwnerSettings";
 import OwnerSupport from "./pages/owner/OwnerSupport";
+import OwnerApplication from "./pages/owner/OwnerApplication";
 
 function App() {
   const role = 'owner'
@@ -70,13 +71,14 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/support" element={<Support />} />
 
-        <Route path="/owner/" element={<OwnerDashboard />} />
+        <Route path="/owner/overview" element={<OwnerDashboard />} />
         <Route path="/owner/accommodation" element={<OwnerAccommodation />} />
         <Route path="/owner/vehicle" element={<OwnerVehicle />} />
         <Route path="/owner/bookings" element={<OwnerBooking />} />
         <Route path="/owner/profile" element={<OwnerProfile />} />
         <Route path="/owner/settings" element={<OwnerSettings />} />
         <Route path="/owner/support" element={<OwnerSupport />} />
+        <Route path="/owner/" element={<OwnerApplication />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />

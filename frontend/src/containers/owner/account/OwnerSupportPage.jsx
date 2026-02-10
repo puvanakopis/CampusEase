@@ -14,11 +14,6 @@ const OwnerSupportPage = () => {
 
             {/* Create Ticket */}
             <section className="flex flex-col gap-6">
-                <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">support_agent</span>
-                    <h2 className="text-xl font-bold text-slate-900">Report an Issue</h2>
-                </div>
-
                 <form className="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col gap-6 shadow-sm hover:shadow-md transition-shadow">
 
                     {/* Issue Category */}
