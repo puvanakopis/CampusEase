@@ -1,10 +1,85 @@
-import React from "react";
+import React, { useState } from "react";
+import ApplicationPopup from "../../containers/owner/application/ApplicationPopup";
+import StatusPopup from "../../containers/owner/application/StatusPopup";
 
 const OwnerApplication = () => {
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        nic: "",
+        address: "",
+        termsAgreed: false,
+        identityDocument: null
+    });
+
+    const [currentStep, setCurrentStep] = useState(1);
+    const [submittedApplications, setSubmittedApplications] = useState([]);
+    const [showApplicationPopup, setShowApplicationPopup] = useState(false);
+    const [showStatusPopup, setShowStatusPopup] = useState(false);
+
+    const handleInputChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+
+    const handleFileUpload = (e, fieldName) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFormData(prev => ({ ...prev, [fieldName]: file }));
+        }
+    };
+
+    const handleNextStep = () => {
+        if (validateStep(currentStep)) {
+            setCurrentStep(prev => prev + 1);
+        }
+    };
+
+    const handlePreviousStep = () => {
+        setCurrentStep(prev => prev - 1);
+    };
+
+    const validateStep = (step) => {
+        switch (step) {
+            case 1:
+                return formData.firstName && formData.lastName && formData.email && formData.phone && formData.nic && formData.address && formData.identityDocument;
+            case 2:
+                return formData.termsAgreed;
+            default:
+                return false;
+        }
+    };
+
+    const handleSubmitApplication = (e) => {
+        e.preventDefault();
+
+        if (!validateStep(2)) return;
+
+        const newApplication = {
+            id: `OWN-${(submittedApplications.length + 1001).toString().padStart(3, '0')}`,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            nic: formData.nic,
+            status: "Pending",
+            submittedDate: new Date().toISOString().split('T')[0],
+            type: "Owner"
+        };
+
+        setSubmittedApplications(prev => [newApplication, ...prev]);
+        setFormData({ firstName: "", lastName: "", email: "", phone: "", nic: "", address: "", termsAgreed: false, identityDocument: null });
+        setCurrentStep(1);
+        setShowApplicationPopup(false);
+    };
 
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-            {/* Main Content */}
             <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm p-8 text-center">
                 <div className="mx-auto">
                     <div className="size-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
@@ -18,6 +93,7 @@ const OwnerApplication = () => {
 
                     <div className="flex justify-center items-center gap-4">
                         <button
+                            onClick={() => setShowApplicationPopup(true)}
                             className="bg-primary text-white py-3 px-8 rounded-lg font-medium hover:bg-primary/80 transition-colors inline-flex items-center gap-2"
                         >
                             <span className="material-symbols-outlined">car_rental</span>
@@ -25,6 +101,7 @@ const OwnerApplication = () => {
                         </button>
 
                         <button
+                            onClick={() => setShowStatusPopup(true)}
                             className="bg-primary text-white py-3 px-8 rounded-lg font-medium hover:bg-primary/80 transition-colors inline-flex items-center gap-2"
                         >
                             <span className="material-symbols-outlined">pending_actions</span>
@@ -79,6 +156,24 @@ const OwnerApplication = () => {
                     </div>
                 </div>
             </div>
+
+            {showApplicationPopup && (
+                <ApplicationPopup
+                    formData={formData}
+                    currentStep={currentStep}
+                    handleInputChange={handleInputChange}
+                    handleFileUpload={handleFileUpload}
+                    handleNextStep={handleNextStep}
+                    handlePreviousStep={handlePreviousStep}
+                    handleSubmitApplication={handleSubmitApplication}
+                    validateStep={validateStep}
+                    setShowApplicationPopup={setShowApplicationPopup}
+                />
+            )}
+
+            {showStatusPopup && (
+                <StatusPopup submittedApplications={submittedApplications} setShowStatusPopup={setShowStatusPopup} />
+            )}
         </main>
     );
 };
