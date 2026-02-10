@@ -22,11 +22,11 @@ const RevenueOverview = ({ revenueData }) => {
                     return (
                         <div
                             key={month}
-                            className={`flex-1 ${isLast && lastBarHighlight ? "bg-primary/40" : "bg-slate-50 hover:bg-primary/20"} transition-colors relative rounded-t-lg group`}
+                            className={'flex-1 bg-primary/40 hover:bg-primary/20 transition-colors relative rounded-t-lg group'}
                             style={{ height: heights[idx] }}
                         >
                             <div
-                                className={`absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] px-2 py-1 rounded ${isLast && lastBarHighlight ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`}
+                                className={'absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] px-2 py-1 rounded opacity-100 group-hover:opacity-100 transition-opacity'}
                             >
                                 {values[idx]}
                             </div>

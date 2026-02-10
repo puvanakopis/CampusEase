@@ -37,10 +37,6 @@ const OwnerProfilePage = () => {
                                     <span className="material-symbols-outlined text-sm">business</span>
                                     Verified Owner
                                 </span>
-                                <span className="flex items-center gap-1 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold">
-                                    <span className="material-symbols-outlined text-sm">stars</span>
-                                    Premium Member
-                                </span>
                             </div>
                         </div>
                         <p className="text-slate-500 font-medium mb-4">
@@ -209,44 +205,6 @@ const OwnerProfilePage = () => {
                     </button>
                     <button className="px-8 py-3 bg-primary text-white rounded-lg font-bold shadow-lg hover:bg-primary/90 transition-colors">
                         Save Changes
-                    </button>
-                </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <h3 className="text-xl font-bold text-slate-900 mb-6">Quick Actions</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <button className="flex flex-col items-center justify-center p-6 border-2 border-slate-100 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all group">
-                        <div className="bg-primary/10 p-3 rounded-full mb-3 group-hover:bg-primary/20">
-                            <span className="material-symbols-outlined text-primary text-2xl">add_home</span>
-                        </div>
-                        <span className="font-bold text-slate-900">Add Property</span>
-                        <span className="text-sm text-slate-500 mt-1">List new rental</span>
-                    </button>
-
-                    <button className="flex flex-col items-center justify-center p-6 border-2 border-slate-100 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all group">
-                        <div className="bg-primary/10 p-3 rounded-full mb-3 group-hover:bg-primary/20">
-                            <span className="material-symbols-outlined text-primary text-2xl">calendar_month</span>
-                        </div>
-                        <span className="font-bold text-slate-900">View Bookings</span>
-                        <span className="text-sm text-slate-500 mt-1">Manage reservations</span>
-                    </button>
-
-                    <button className="flex flex-col items-center justify-center p-6 border-2 border-slate-100 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all group">
-                        <div className="bg-primary/10 p-3 rounded-full mb-3 group-hover:bg-primary/20">
-                            <span className="material-symbols-outlined text-primary text-2xl">analytics</span>
-                        </div>
-                        <span className="font-bold text-slate-900">Analytics</span>
-                        <span className="text-sm text-slate-500 mt-1">View reports</span>
-                    </button>
-
-                    <button className="flex flex-col items-center justify-center p-6 border-2 border-slate-100 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all group">
-                        <div className="bg-primary/10 p-3 rounded-full mb-3 group-hover:bg-primary/20">
-                            <span className="material-symbols-outlined text-primary text-2xl">receipt_long</span>
-                        </div>
-                        <span className="font-bold text-slate-900">Invoices</span>
-                        <span className="text-sm text-slate-500 mt-1">Manage payments</span>
                     </button>
                 </div>
             </div>

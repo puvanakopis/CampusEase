@@ -8,10 +8,10 @@ const VehicleTable = ({ vehicles, handleViewVehicle, handleEditClick, handleDele
                 <div className="flex items-center gap-3">
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-                        <input 
-                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all" 
-                            placeholder="Search vehicles..." 
-                            type="text" 
+                        <input
+                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                            placeholder="Search vehicles..."
+                            type="text"
                         />
                     </div>
                     <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
@@ -95,24 +95,24 @@ const VehicleTable = ({ vehicles, handleViewVehicle, handleEditClick, handleDele
                                 <div className="flex items-center justify-center gap-2">
                                     <button
                                         onClick={() => handleViewVehicle(vehicle)}
-                                        className="bg-blue-100 text-blue-600 p-2 rounded-lg hover:bg-blue-200 transition-colors"
+                                        className="bg-primary hover:bg-primary/80 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                                         title="View Details"
                                     >
-                                        <span className="material-symbols-outlined text-sm">visibility</span>
+                                        View
                                     </button>
                                     <button
                                         onClick={() => handleEditClick(vehicle)}
-                                        className="bg-green-100 text-green-600 p-2 rounded-lg hover:bg-green-200 transition-colors"
+                                        className="bg-green-600 hover:bg-green-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                                         title="Edit Vehicle"
                                     >
-                                        <span className="material-symbols-outlined text-sm">edit</span>
+                                        Edit
                                     </button>
                                     <button
                                         onClick={() => handleDeleteVehicle(vehicle.id)}
-                                        className="bg-red-100 text-red-600 p-2 rounded-lg hover:bg-red-200 transition-colors"
+                                        className="bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                                         title="Delete Vehicle"
                                     >
-                                        <span className="material-symbols-outlined text-sm">delete</span>
+                                        Delete
                                     </button>
                                 </div>
                             </td>

@@ -92,13 +92,12 @@ const PropertyTable = ({ properties, onView, onEdit, onDelete }) => {
                             </td>
                             <td className="px-6 py-4">
                                 <span
-                                    className={`px-3 py-1 rounded-full text-xs font-bold ${
-                                        property.status === "Active"
-                                            ? "bg-green-100 text-green-800"
-                                            : property.status === "Inactive"
+                                    className={`px-3 py-1 rounded-full text-xs font-bold ${property.status === "Active"
+                                        ? "bg-green-100 text-green-800"
+                                        : property.status === "Inactive"
                                             ? "bg-red-100 text-red-800"
                                             : "bg-yellow-100 text-yellow-800"
-                                    }`}
+                                        }`}
                                 >
                                     {property.status}
                                 </span>
@@ -107,24 +106,24 @@ const PropertyTable = ({ properties, onView, onEdit, onDelete }) => {
                                 <div className="flex items-center justify-center gap-2">
                                     <button
                                         onClick={() => onView(property)}
-                                        className="bg-blue-100 text-blue-600 p-2 rounded-lg hover:bg-blue-200 transition-colors"
+                                        className="bg-primary hover:bg-primary/80 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                                         title="View Details"
                                     >
-                                        <span className="material-symbols-outlined text-sm">visibility</span>
+                                        View
                                     </button>
                                     <button
                                         onClick={() => onEdit(property)}
-                                        className="bg-green-100 text-green-600 p-2 rounded-lg hover:bg-green-200 transition-colors"
+                                        className="bg-green-600 hover:bg-green-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                                         title="Edit Property"
                                     >
-                                        <span className="material-symbols-outlined text-sm">edit</span>
+                                        Edit
                                     </button>
                                     <button
                                         onClick={() => onDelete(property.id)}
-                                        className="bg-red-100 text-red-600 p-2 rounded-lg hover:bg-red-200 transition-colors"
+                                        className="bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                                         title="Delete Property"
                                     >
-                                        <span className="material-symbols-outlined text-sm">delete</span>
+                                        Delete
                                     </button>
                                 </div>
                             </td>

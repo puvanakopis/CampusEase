@@ -486,13 +486,13 @@ const OrderManagement = () => {
                         </button>
                         <button
                             onClick={(e) => { e.stopPropagation(); handleDecline(order); }}
-                            className="border border-slate-200 hover:bg-slate-100 text-slate-600 text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
+                            className="bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                         >
                             Decline
                         </button>
                         <button
                             onClick={(e) => { e.stopPropagation(); handleEditOrder(order); }}
-                            className="border border-slate-200 hover:bg-slate-100 text-slate-600 text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
+                            className="bg-green-600 hover:bg-green-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                         >
                             Edit
                         </button>
