@@ -295,7 +295,24 @@ const AdminVehicles = () => {
                 />
             )}
 
+            {activeTab === "requests" && (
+                <VehicleRequestsTable
+                    vehicleRequests={vehicleRequests}
+                    onViewRequest={handleViewVehicle}
+                    onApproveRequest={handleApproveRequest}
+                    onRejectRequest={handleRejectRequest}
+                />
+            )}
 
+            {activeTab === "inactive" && (
+                <VehicleTable
+                    vehicles={allVehicles.filter(vehicle => vehicle.status === "Inactive")}
+                    onView={handleViewVehicle}
+                    onDelete={handleDeleteVehicle}
+                    onToggleStatus={handleToggleVehicleStatus}
+                    isAdmin={true}
+                />
+            )}
         </main>
     );
 };
