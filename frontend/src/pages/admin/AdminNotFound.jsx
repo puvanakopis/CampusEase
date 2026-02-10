@@ -50,7 +50,7 @@ const AdminNotFound = () => {
                     {/* Back to Dashboard Button */}
                     <div className="flex px-4 py-3 justify-center w-full">
                         <PrimaryButton
-                            onClick={() => navigateTo("/admin/overview")}
+                            onClick={() => navigateTo("/admin/dashboard")}
                             className="flex min-w-[200px] items-center justify-center overflow-hidden rounded-xl h-14 px-8 tracking-wide transition-all"
                         >
                             <span className="material-symbols-outlined mr-2">home</span>

@@ -20,7 +20,7 @@ const OwnerNavbar = () => {
     });
 
     const navItems = [
-        { label: "Overview", path: "/owner/overview", key: "overview" },
+        { label: "Dashboard", path: "/owner/dashboard", key: "dashboard" },
         { label: "Accommodation", path: "/owner/accommodation", key: "accommodation" },
         { label: "Vehicle", path: "/owner/vehicle", key: "vehicle" },
         { label: "Bookings", path: "/owner/bookings", key: "bookings" },
@@ -61,7 +61,7 @@ const OwnerNavbar = () => {
                 {/* Logo */}
                 <div
                     className="flex items-center gap-2 text-primary cursor-pointer"
-                    onClick={() => navigateTo("/owner/")}
+                    onClick={() => navigateTo("/owner/dashboard")}
                 >
                     <span className="material-symbols-outlined text-3xl">school</span>
                     <div className="flex flex-col leading-tight">

@@ -124,7 +124,7 @@ function App() {
         {/* Owner Routes */}
         <Route element={<ProtectedRoute role={role} allowedRoles={["owner"]} />}>
           <Route path="/owner" element={<OwnerApplication />} />
-          <Route path="/owner/overview" element={<OwnerDashboard />} />
+          <Route path="/owner/dashboard" element={<OwnerDashboard />} />
           <Route path="/owner/accommodation" element={<OwnerAccommodation />} />
           <Route path="/owner/vehicle" element={<OwnerVehicle />} />
           <Route path="/owner/bookings" element={<OwnerBooking />} />
@@ -135,7 +135,7 @@ function App() {
 
         {/* Admin Routes */}
         <Route element={<ProtectedRoute role={role} allowedRoles={["admin"]} />}>
-          <Route path="/admin/overview" element={<AdminDashboard />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Route>
 
         {/* 404 */}
