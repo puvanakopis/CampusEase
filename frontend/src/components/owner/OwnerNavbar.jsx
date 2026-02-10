@@ -29,7 +29,7 @@ const OwnerNavbar = () => {
     const profileMenu = [
         { label: "Profile", icon: "person", path: "/owner/profile" },
         { label: "Settings", icon: "settings", path: "/owner/settings" },
-        { label: "Help Center", icon: "help", path: "/owner/help" },
+        { label: "Help Center", icon: "help", path: "/owner/support" },
         { label: "Logout", icon: "logout", isLogout: true },
     ];
 
