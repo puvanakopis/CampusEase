@@ -43,10 +43,10 @@ const Footer = () => {
                     {/* Contact */}
                     <div className="flex flex-col gap-3 hidden sm:flex">
                         <h3 className="font-bold text-slate-900">Contact</h3>
-                        <p className="text-slate-500 text-sm flex items-center gap-2">
+                        <p className="text-slate-500 text-sm flex items-center gap-2 hover:text-primary">
                             <span className="material-symbols-outlined text-base">mail</span> susl@campusease.lk
                         </p>
-                        <p className="text-slate-500 text-sm flex items-center gap-2">
+                        <p className="text-slate-500 text-sm flex items-center gap-2 hover:text-primary">
                             <span className="material-symbols-outlined text-base">location_on</span> Belihuloya, Sri Lanka
                         </p>
                     </div>

@@ -1,11 +1,6 @@
 import React from "react";
 
-const PropertyRequestsTable = ({
-    propertyRequests,
-    onViewRequest,
-    onApproveRequest,
-    onRejectRequest
-}) => {
+const PropertyRequestsTable = ({ propertyRequests, onViewRequest, onApproveRequest, onRejectRequest }) => {
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}

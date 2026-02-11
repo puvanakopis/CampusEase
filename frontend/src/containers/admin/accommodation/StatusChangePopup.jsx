@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 
-const StatusChangePopup = ({
-    property,
-    currentStatus,
-    onClose,
-    onConfirm
-}) => {
+const StatusChangePopup = ({ property, currentStatus, onClose, onConfirm }) => {
     const [reason, setReason] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -137,8 +132,8 @@ const StatusChangePopup = ({
                         onClick={handleSubmit}
                         disabled={loading || (currentStatus === "Active" && !reason.trim())}
                         className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 ${currentStatus === "Active"
-                                ? "bg-red-600 hover:bg-red-700 disabled:bg-red-300"
-                                : "bg-green-600 hover:bg-green-700 disabled:bg-green-300"
+                            ? "bg-red-600 hover:bg-red-700 disabled:bg-red-300"
+                            : "bg-green-600 hover:bg-green-700 disabled:bg-green-300"
                             }`}
                     >
                         {loading ? (

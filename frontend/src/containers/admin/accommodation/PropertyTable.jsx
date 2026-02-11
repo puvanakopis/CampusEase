@@ -1,12 +1,6 @@
 import React from "react";
 
-const PropertyTable = ({
-    properties,
-    onView,
-    onDelete,
-    onToggleStatus,
-    isAdmin = false
-}) => {
+const PropertyTable = ({ properties, onView, onDelete, onToggleStatus, isAdmin = false }) => {
 
     const handleToggleStatusClick = (property, e) => {
         e.stopPropagation();
