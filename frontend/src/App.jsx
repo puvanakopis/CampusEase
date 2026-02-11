@@ -4,13 +4,20 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/user/Navbar";
 import Footer from "./components/user/Footer";
 
-import OwnerNavbar from './components/owner/OwnerNavbar'
-import OwnerFooter from './components/owner/OwnerFooter'
+import OwnerNavbar from './components/owner/OwnerNavbar';
+import OwnerFooter from './components/owner/OwnerFooter';
 
+import AdminNavbar from "./components/admin/AdminNavbar";
+import AdminFooter from "./components/admin/AdminFooter";
+
+import ProtectedRoute from "./route/ProtectedRoute";
+
+// Auth Pages
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 
+// User Pages
 import Home from "./pages/user/Home";
 import Contact from "./pages/user/Contact";
 import About from "./pages/user/About";
@@ -28,6 +35,7 @@ import Settings from "./pages/user/Settings";
 import Support from "./pages/user/Support";
 import NotFound from "./pages/user/NotFound";
 
+// Owner Pages
 import OwnerDashboard from "./pages/owner/OwnerDashboard";
 import OwnerAccommodation from "./pages/owner/OwnerAccommodation";
 import OwnerVehicle from "./pages/owner/OwnerVehicle";
@@ -36,17 +44,59 @@ import OwnerProfile from "./pages/owner/OwnerProfile";
 import OwnerSettings from "./pages/owner/OwnerSettings";
 import OwnerSupport from "./pages/owner/OwnerSupport";
 import OwnerApplication from "./pages/owner/OwnerApplication";
+import OwnerNotFound from "./pages/owner/OwnerNotFound";
+
+// Admin Pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminAccommodation from "./pages/admin/AdminAccommodation";
+import AdminVehicles from "./pages/admin/AdminVehicles";
+import AdminOwner from "./pages/admin/AdminOwner";
+import AdminUser from "./pages/admin/AdminUser";
+import AdminBooking from "./pages/admin/AdminBooking";
+import AdminProfile from "./pages/admin/AdminProfile";
+import AdminSupport from "./pages/admin/Support";
+import AdminNotFound from "./pages/admin/AdminNotFound";
 
 function App() {
-  const role = 'owner'
-
+  const role = "student"; // "student", "staff", "owner", "admin", "guest"
   const location = useLocation();
+
   const authPages = ["/login", "/register", "/forgot-password"];
-  const showNavbar = !authPages.includes(location.pathname);
+  const showNavbarFooter = !authPages.includes(location.pathname);
+
+  const renderNavbar = () => {
+    if (!showNavbarFooter) return null;
+
+    switch (role) {
+      case "owner":
+        return <OwnerNavbar />;
+      case "admin":
+        return <AdminNavbar />;
+      case "student":
+      case "staff":
+      default:
+        return <Navbar />;
+    }
+  };
+
+  const renderFooter = () => {
+    if (!showNavbarFooter) return null;
+
+    switch (role) {
+      case "owner":
+        return <OwnerFooter />;
+      case "admin":
+        return <AdminFooter />;
+      case "student":
+      case "staff":
+      default:
+        return <Footer />;
+    }
+  };
 
   return (
     <>
-      {showNavbar && (role === "owner" ? <OwnerNavbar /> : <Navbar />)}
+      {renderNavbar()}
 
       <Routes>
         {/* Auth Routes */}
@@ -54,37 +104,56 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* User Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/accommodation" element={<Accommodation />} />
-        <Route path="/accommodation/:id" element={<AccommodationDetails />} />
-        <Route path="/vehicle" element={<Vehicle />} />
-        <Route path="/vehicle/:id" element={<VehicleDetails />} />
-        <Route path="/owner/:id" element={<Owner />} />
-        <Route path="/booking" element={<Booking />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/my-bookings" element={<MyBookings />} />
-        <Route path="/saved-items" element={<SavedItems />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/support" element={<Support />} />
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute role={role} />}>
 
-        <Route path="/owner/overview" element={<OwnerDashboard />} />
-        <Route path="/owner/accommodation" element={<OwnerAccommodation />} />
-        <Route path="/owner/vehicle" element={<OwnerVehicle />} />
-        <Route path="/owner/bookings" element={<OwnerBooking />} />
-        <Route path="/owner/profile" element={<OwnerProfile />} />
-        <Route path="/owner/settings" element={<OwnerSettings />} />
-        <Route path="/owner/support" element={<OwnerSupport />} />
-        <Route path="/owner/" element={<OwnerApplication />} />
+          {/* User/Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/accommodation" element={<Accommodation />} />
+          <Route path="/accommodation/:id" element={<AccommodationDetails />} />
+          <Route path="/vehicle" element={<Vehicle />} />
+          <Route path="/vehicle/:id" element={<VehicleDetails />} />
+          <Route path="/owner/:id" element={<Owner />} />
+          <Route path="/booking" element={<Booking />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/my-bookings" element={<MyBookings />} />
+          <Route path="/saved-items" element={<SavedItems />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/support" element={<Support />} />
+
+          {/* Owner Routes */}
+          <Route path="/owner" element={<OwnerApplication />} />
+          <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+          <Route path="/owner/accommodation" element={<OwnerAccommodation />} />
+          <Route path="/owner/vehicle" element={<OwnerVehicle />} />
+          <Route path="/owner/bookings" element={<OwnerBooking />} />
+          <Route path="/owner/profile" element={<OwnerProfile />} />
+          <Route path="/owner/settings" element={<OwnerSettings />} />
+          <Route path="/owner/support" element={<OwnerSupport />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/accommodation" element={<AdminAccommodation />} />
+          <Route path="/admin/vehicles" element={<AdminVehicles />} />
+          <Route path="/admin/owner" element={<AdminOwner />} />
+          <Route path="/admin/users" element={<AdminUser />} />
+          <Route path="/admin/bookings" element={<AdminBooking />} />
+          <Route path="/admin/profile" element={<AdminProfile />} />
+          <Route path="/admin/support" element={<AdminSupport />} />
+        </Route>
 
         {/* 404 */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={
+          role === "owner" ? <OwnerNotFound /> :
+            role === "admin" ? <AdminNotFound /> :
+              <NotFound />
+        } />
       </Routes>
 
-      {showNavbar && (role === "owner" ? <OwnerFooter /> : <Footer />)}
+      {renderFooter()}
     </>
   );
 }

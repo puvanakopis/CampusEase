@@ -1,4 +1,4 @@
-const ViewInvoicePopup = ({ selectedOrder, onClose }) => {
+const ViewInvoicePopup = ({ selectedBooking, onClose }) => {
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl p-6 max-w-3xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
@@ -6,7 +6,7 @@ const ViewInvoicePopup = ({ selectedOrder, onClose }) => {
                     <div>
                         <h3 className="text-2xl font-bold text-slate-900">Invoice Details</h3>
                         <p className="text-slate-500">
-                            Invoice #{selectedOrder?.invoiceNumber || "INV-" + selectedOrder?.id.replace("#", "")}
+                            Invoice #{selectedBooking?.invoiceNumber || "INV-" + selectedBooking?.id.replace("#", "")}
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
@@ -31,22 +31,22 @@ const ViewInvoicePopup = ({ selectedOrder, onClose }) => {
                     </div>
                     <div>
                         <h4 className="font-bold text-slate-900 mb-2">Bill To</h4>
-                        <p className="text-slate-900 font-medium">{selectedOrder?.customer.name}</p>
-                        <p className="text-slate-600">{selectedOrder?.customer.studentId}</p>
-                        <p className="text-slate-600">{selectedOrder?.customer.faculty}</p>
-                        <p className="text-slate-600">{selectedOrder?.customer.email}</p>
+                        <p className="text-slate-900 font-medium">{selectedBooking?.customer.name}</p>
+                        <p className="text-slate-600">{selectedBooking?.customer.studentId}</p>
+                        <p className="text-slate-600">{selectedBooking?.customer.faculty}</p>
+                        <p className="text-slate-600">{selectedBooking?.customer.email}</p>
                     </div>
                     <div className="bg-slate-50 rounded-lg p-4">
                         <div className="flex justify-between mb-2">
                             <span className="text-slate-600">Invoice #:</span>
                             <span className="font-medium">
-                                {selectedOrder?.invoiceNumber || "INV-" + selectedOrder?.id.replace("#", "")}
+                                {selectedBooking?.invoiceNumber || "INV-" + selectedBooking?.id.replace("#", "")}
                             </span>
                         </div>
                         <div className="flex justify-between mb-2">
                             <span className="text-slate-600">Invoice Date:</span>
                             <span className="font-medium">
-                                {selectedOrder?.invoiceDate || new Date().toISOString().split('T')[0]}
+                                {selectedBooking?.invoiceDate || new Date().toISOString().split('T')[0]}
                             </span>
                         </div>
                         <div className="flex justify-between">
@@ -72,14 +72,14 @@ const ViewInvoicePopup = ({ selectedOrder, onClose }) => {
                             <tr className="border-t border-slate-100">
                                 <td className="px-4 py-4">
                                     <div>
-                                        <p className="font-medium text-slate-900">{selectedOrder?.service.title}</p>
-                                        <p className="text-sm text-slate-500">{selectedOrder?.service.details}</p>
+                                        <p className="font-medium text-slate-900">{selectedBooking?.service.title}</p>
+                                        <p className="text-sm text-slate-500">{selectedBooking?.service.details}</p>
                                     </div>
                                 </td>
-                                <td className="px-4 py-4 text-slate-700">{selectedOrder?.period.main}</td>
+                                <td className="px-4 py-4 text-slate-700">{selectedBooking?.period.main}</td>
                                 <td className="px-4 py-4 text-slate-700">1</td>
-                                <td className="px-4 py-4 text-slate-700">{selectedOrder?.amount}</td>
-                                <td className="px-4 py-4 font-medium text-slate-900">{selectedOrder?.amount}</td>
+                                <td className="px-4 py-4 text-slate-700">{selectedBooking?.amount}</td>
+                                <td className="px-4 py-4 font-medium text-slate-900">{selectedBooking?.amount}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -90,7 +90,7 @@ const ViewInvoicePopup = ({ selectedOrder, onClose }) => {
                     <div className="w-64">
                         <div className="flex justify-between mb-2">
                             <span className="text-slate-600">Subtotal:</span>
-                            <span className="font-medium">{selectedOrder?.amount}</span>
+                            <span className="font-medium">{selectedBooking?.amount}</span>
                         </div>
                         <div className="flex justify-between mb-2">
                             <span className="text-slate-600">Tax (0%):</span>
@@ -102,7 +102,7 @@ const ViewInvoicePopup = ({ selectedOrder, onClose }) => {
                         </div>
                         <div className="flex justify-between pt-3 border-t border-slate-200">
                             <span className="text-lg font-bold text-slate-900">Total:</span>
-                            <span className="text-lg font-bold text-primary">{selectedOrder?.amount}</span>
+                            <span className="text-lg font-bold text-primary">{selectedBooking?.amount}</span>
                         </div>
                     </div>
                 </div>
@@ -113,21 +113,21 @@ const ViewInvoicePopup = ({ selectedOrder, onClose }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-slate-600 mb-1">Payment Method</p>
-                            <p className="font-medium">{selectedOrder?.paymentMethod}</p>
+                            <p className="font-medium">{selectedBooking?.paymentMethod}</p>
                         </div>
                         <div>
                             <p className="text-sm text-slate-600 mb-1">Payment Status</p>
-                            <p className={`font-medium ${selectedOrder?.paymentStatus === "Paid" ? "text-green-600" : "text-orange-600"}`}>
-                                {selectedOrder?.paymentStatus}
+                            <p className={`font-medium ${selectedBooking?.paymentStatus === "Paid" ? "text-green-600" : "text-orange-600"}`}>
+                                {selectedBooking?.paymentStatus}
                             </p>
                         </div>
                         <div>
                             <p className="text-sm text-slate-600 mb-1">Transaction ID</p>
-                            <p className="font-medium">TXN-{selectedOrder?.id.replace("#", "")}</p>
+                            <p className="font-medium">TXN-{selectedBooking?.id.replace("#", "")}</p>
                         </div>
                         <div>
                             <p className="text-sm text-slate-600 mb-1">Payment Date</p>
-                            <p className="font-medium">{selectedOrder?.invoiceDate || "2024-06-10"}</p>
+                            <p className="font-medium">{selectedBooking?.invoiceDate || "2024-06-10"}</p>
                         </div>
                     </div>
                 </div>

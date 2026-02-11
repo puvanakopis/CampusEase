@@ -87,7 +87,7 @@ const OwnerAccommodation = () => {
             subtextColor: "text-green-500"
         },
         {
-            label: "Active Vehicles",
+            label: "Active Accommodation",
             icon: "directions_car",
             value: 12,
             subtext: "8 currently rented out"

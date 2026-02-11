@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import useNavigateTo from "../../hooks/useNavigateTo";
 
-const OwnerNavbar = () => {
+const AdminNavbar = () => {
     const navigateTo = useNavigateTo();
     const location = useLocation();
     const activeKey = location.pathname.split("/")[2] || "";
@@ -13,23 +13,24 @@ const OwnerNavbar = () => {
 
     const [user, setUser] = useState({
         isLoggedIn: true,
-        name: "John Doe",
-        email: "john.doe@example.com",
-        avatar: "https://i.pravatar.cc/256?u=john.doe@example.com",
-        role: "Owner",
+        name: "Admin User",
+        email: "admin@example.com",
+        avatar: "https://i.pravatar.cc/256?u=admin@example.com",
+        role: "Admin",
     });
 
     const navItems = [
-        { label: "Dashboard", path: "/owner/dashboard", key: "dashboard" },
-        { label: "Accommodation", path: "/owner/accommodation", key: "accommodation" },
-        { label: "Vehicle", path: "/owner/vehicle", key: "vehicle" },
-        { label: "Bookings", path: "/owner/bookings", key: "bookings" },
+        { label: "Dashboard", path: "/admin/dashboard", key: "dashboard" },
+        { label: "Accommodation", path: "/admin/accommodation", key: "accommodation" },
+        { label: "Vehicles", path: "/admin/vehicles", key: "vehicles" },
+        { label: "Owner", path: "/admin/owner", key: "owner" },
+        { label: "Users", path: "/admin/users", key: "users" },
+        { label: "Bookings", path: "/admin/bookings", key: "bookings" },
     ];
 
     const profileMenu = [
-        { label: "Profile", icon: "person", path: "/owner/profile" },
-        { label: "Settings", icon: "settings", path: "/owner/settings" },
-        { label: "Help Center", icon: "help", path: "/owner/support" },
+        { label: "Profile", icon: "person", path: "/admin/profile" },
+        { label: "Support", icon: "support", path: "/admin/support" },
         { label: "Logout", icon: "logout", isLogout: true },
     ];
 
@@ -61,7 +62,7 @@ const OwnerNavbar = () => {
                 {/* Logo */}
                 <div
                     className="flex items-center gap-2 text-primary cursor-pointer"
-                    onClick={() => navigateTo("/owner/dashboard")}
+                    onClick={() => navigateTo("/admin/dashboard")}
                 >
                     <span className="material-symbols-outlined text-3xl">school</span>
                     <div className="flex flex-col leading-tight">
@@ -69,10 +70,11 @@ const OwnerNavbar = () => {
                             CampusEase
                         </h2>
                         <span className="text-[10px] uppercase tracking-wider font-bold text-primary">
-                            Owner Dashboard
+                            Admin Dashboard
                         </span>
                     </div>
                 </div>
+
 
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex flex-1 justify-center gap-8">
@@ -181,4 +183,4 @@ const OwnerNavbar = () => {
     );
 };
 
-export default OwnerNavbar;
+export default AdminNavbar;
