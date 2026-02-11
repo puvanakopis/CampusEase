@@ -31,6 +31,7 @@ const AdminNavbar = () => {
     const profileMenu = [
         { label: "Profile", icon: "person", path: "/admin/profile" },
         { label: "Settings", icon: "settings", path: "/admin/settings" },
+        { label: "Support", icon: "support", path: "/admin/support" },
         { label: "Logout", icon: "logout", isLogout: true },
     ];
 

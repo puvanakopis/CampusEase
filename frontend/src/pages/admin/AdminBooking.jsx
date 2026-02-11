@@ -457,7 +457,7 @@ const AdminBookingManagement = () => {
             )}
 
             <Heading
-                title="Booking Management"
+                title="Admin Booking Management"
                 subtitle="Manage all bookings, review requests, and handle booking statuses."
             />
 

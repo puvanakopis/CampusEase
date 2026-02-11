@@ -331,7 +331,7 @@ const AdminUser = () => {
             )}
 
             <Heading
-                title="User Management"
+                title="Admin User Management"
                 subtitle="Manage system users, review accounts, and handle user profiles."
             />
 
