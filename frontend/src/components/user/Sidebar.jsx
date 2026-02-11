@@ -22,7 +22,7 @@ const Sidebar = () => {
 
                 <button
                     onClick={() => navigateTo("/my-bookings")}
-                    className={`flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors w-full text-left ${isActive("/bookings") ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"
+                    className={`flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors w-full text-left ${isActive("/my-bookings") ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"
                         }`}
                 >
                     <span className="material-symbols-outlined">calendar_month</span>

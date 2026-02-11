@@ -1,4 +1,6 @@
-const BookingTabs = ({ tabs, activeTab, onTabChange }) => {
+import React from "react";
+
+const Tabs = ({ tabs, activeTab, onTabChange }) => {
     return (
         <div className="flex border-b border-slate-200 mb-6">
             {tabs.map((tab) => (
@@ -22,4 +24,4 @@ const BookingTabs = ({ tabs, activeTab, onTabChange }) => {
     );
 };
 
-export default BookingTabs;
+export default Tabs;

@@ -1,4 +1,6 @@
-const BookingTabs = ({ tabs, activeTab, onTabChange }) => {
+import React from "react";
+
+const Tabs = ({ tabs, activeTab, onTabChange }) => {
     return (
         <div className="flex border-b border-slate-200 mb-6">
             {tabs.map((tab) => (
@@ -6,8 +8,8 @@ const BookingTabs = ({ tabs, activeTab, onTabChange }) => {
                     key={tab.id}
                     onClick={() => onTabChange(tab.id)}
                     className={`px-6 py-3 text-sm font-medium transition-colors ${activeTab === tab.id
-                            ? "border-b-2 border-primary text-primary font-bold"
-                            : "text-slate-500 hover:text-primary"
+                        ? "border-b-2 border-primary text-primary font-bold"
+                        : "text-slate-500 hover:text-primary"
                         }`}
                 >
                     {tab.label}
@@ -22,4 +24,4 @@ const BookingTabs = ({ tabs, activeTab, onTabChange }) => {
     );
 };
 
-export default BookingTabs;
+export default Tabs;

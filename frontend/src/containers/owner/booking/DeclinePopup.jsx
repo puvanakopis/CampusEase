@@ -1,5 +1,5 @@
 const DeclinePopup = ({
-    selectedOrder,
+    selectedBooking,
     declineReason,
     onDeclineReasonChange,
     onClose,
@@ -8,27 +8,30 @@ const DeclinePopup = ({
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+                {/* Header */}
                 <div className="flex items-center gap-3 mb-4">
                     <div className="size-12 rounded-full bg-red-100 flex items-center justify-center">
                         <span className="material-symbols-outlined text-red-600 text-2xl">cancel</span>
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-slate-900">Decline Order</h3>
+                        <h3 className="text-lg font-bold text-slate-900">Decline Booking</h3>
                         <p className="text-sm text-slate-500">Please provide a reason for declining</p>
                     </div>
                 </div>
 
+                {/* Booking Summary */}
                 <div className="bg-slate-50 rounded-lg p-4 mb-6">
-                    <p className="font-medium text-slate-900">{selectedOrder?.id}</p>
-                    <p className="text-sm text-slate-600">{selectedOrder?.customer.name}</p>
-                    <p className="text-sm text-slate-500">{selectedOrder?.service.title}</p>
+                    <p className="font-medium text-slate-900">{selectedBooking?.id}</p>
+                    <p className="text-sm text-slate-600">{selectedBooking?.customer.name}</p>
+                    <p className="text-sm text-slate-500">{selectedBooking?.service.title}</p>
                 </div>
 
+                {/* Decline Form */}
                 <div className="space-y-4 mb-6">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">Reason for Decline *</label>
                         <select
-                            value={declineReason}
+                            value={declineReason !== "other" ? declineReason : ""}
                             onChange={(e) => onDeclineReasonChange(e.target.value)}
                             className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                         >
@@ -63,6 +66,7 @@ const DeclinePopup = ({
                     </div>
                 </div>
 
+                {/* Action Buttons */}
                 <div className="flex gap-3">
                     <button
                         onClick={onClose}
@@ -72,7 +76,7 @@ const DeclinePopup = ({
                     </button>
                     <button
                         onClick={onConfirm}
-                        disabled={!declineReason.trim()}
+                        disabled={!declineReason?.trim()}
                         className="flex-1 bg-red-600 text-white py-2.5 rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
                     >
                         Confirm Decline

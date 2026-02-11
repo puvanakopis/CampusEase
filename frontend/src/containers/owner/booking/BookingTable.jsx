@@ -1,13 +1,13 @@
 import React from "react";
 
-const OrderTable = ({ orders, getStatusBadge, getPriorityBadge, getActionButtons }) => {
+const BookingTable = ({ bookings, getStatusBadge, getPriorityBadge, getActionButtons }) => {
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
 
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
                 <h3 className="text-lg font-bold text-slate-900">
-                    All Orders ({orders.length})
+                    All Bookings ({bookings.length})
                 </h3>
 
                 {/* Search + Filters */}
@@ -20,7 +20,7 @@ const OrderTable = ({ orders, getStatusBadge, getPriorityBadge, getActionButtons
                         </span>
                         <input
                             type="text"
-                            placeholder="Search orders..."
+                            placeholder="Search bookings..."
                             className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm
                                        focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                         />
@@ -52,7 +52,7 @@ const OrderTable = ({ orders, getStatusBadge, getPriorityBadge, getActionButtons
             <table className="w-full text-left border-collapse">
                 <thead className="bg-slate-50">
                     <tr>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Order ID</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Booking ID</th>
                         <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Customer</th>
                         <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Service Details</th>
                         <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Booking Period</th>
@@ -63,17 +63,17 @@ const OrderTable = ({ orders, getStatusBadge, getPriorityBadge, getActionButtons
                 </thead>
 
                 <tbody className="divide-y divide-slate-100">
-                    {orders.map((order) => (
+                    {bookings.map((booking) => (
                         <tr
-                            key={order.id}
+                            key={booking.id}
                             className="hover:bg-slate-50 transition-colors cursor-pointer"
                         >
-                            {/* Order ID */}
+                            {/* Booking ID */}
                             <td className="px-6 py-4">
-                                <p className="text-sm font-semibold text-primary">{order.id}</p>
-                                {order.submitted && (
+                                <p className="text-sm font-semibold text-primary">{booking.id}</p>
+                                {booking.submitted && (
                                     <p className="text-[10px] text-orange-500 mt-1">
-                                        Submitted: {order.submitted}
+                                        Submitted: {booking.submitted}
                                     </p>
                                 )}
                             </td>
@@ -83,11 +83,11 @@ const OrderTable = ({ orders, getStatusBadge, getPriorityBadge, getActionButtons
                                 <div className="flex items-center gap-3">
                                     <div className="size-10 rounded-full bg-slate-100 flex items-center justify-center 
                                                     text-slate-500 font-bold text-xs flex-shrink-0">
-                                        {order.customer.initials}
+                                        {booking.customer.initials}
                                     </div>
                                     <div>
-                                        <p className="text-sm font-medium text-slate-900">{order.customer.name}</p>
-                                        <p className="text-[10px] text-slate-400">Student ID: {order.customer.studentId}</p>
+                                        <p className="text-sm font-medium text-slate-900">{booking.customer.name}</p>
+                                        <p className="text-[10px] text-slate-400">Student ID: {booking.customer.studentId}</p>
                                     </div>
                                 </div>
                             </td>
@@ -96,38 +96,38 @@ const OrderTable = ({ orders, getStatusBadge, getPriorityBadge, getActionButtons
                             <td className="px-6 py-4">
                                 <div className="flex items-center gap-2">
                                     <span className="material-symbols-outlined text-primary text-lg">
-                                        {order.service.icon}
+                                        {booking.service.icon}
                                     </span>
                                     <div>
-                                        <p className="text-sm font-medium text-slate-900">{order.service.title}</p>
-                                        <p className="text-[10px] text-slate-400">{order.service.details}</p>
+                                        <p className="text-sm font-medium text-slate-900">{booking.service.title}</p>
+                                        <p className="text-[10px] text-slate-400">{booking.service.details}</p>
                                     </div>
                                 </div>
                             </td>
 
                             {/* Booking Period */}
                             <td className="px-6 py-4">
-                                <p className="text-sm text-slate-600">{order.period.main}</p>
-                                <p className="text-[10px] text-slate-400">{order.period.sub}</p>
+                                <p className="text-sm text-slate-600">{booking.period.main}</p>
+                                <p className="text-[10px] text-slate-400">{booking.period.sub}</p>
                             </td>
 
                             {/* Amount */}
                             <td className="px-6 py-4">
-                                <p className="text-sm font-bold text-slate-900">{order.amount}</p>
+                                <p className="text-sm font-bold text-slate-900">{booking.amount}</p>
                             </td>
 
                             {/* Status */}
                             <td className="px-6 py-4">
                                 <div className="flex flex-col gap-1">
-                                    {getStatusBadge(order.status)}
-                                    {order.priority && getPriorityBadge(order.priority)}
+                                    {getStatusBadge(booking.status)}
+                                    {booking.priority && getPriorityBadge(booking.priority)}
                                 </div>
                             </td>
 
                             {/* Actions */}
                             <td className="px-6 py-4">
                                 <div className="flex items-center justify-center gap-2">
-                                    {getActionButtons(order)}
+                                    {getActionButtons(booking)}
                                 </div>
                             </td>
                         </tr>
@@ -139,4 +139,4 @@ const OrderTable = ({ orders, getStatusBadge, getPriorityBadge, getActionButtons
     );
 };
 
-export default OrderTable;
+export default BookingTable;
