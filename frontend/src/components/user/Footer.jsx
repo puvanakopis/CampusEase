@@ -36,7 +36,6 @@ const Footer = () => {
                         <h3 className="font-bold text-slate-900">Support</h3>
                         <button onClick={() => navigateTo("/about")} className="text-slate-500 hover:text-primary text-sm text-left">About Us</button>
                         <button onClick={() => navigateTo("/contact")} className="text-slate-500 hover:text-primary text-sm text-left">Contact Us</button>
-                        <button onClick={() => navigateTo("/owner")} className="text-slate-500 hover:text-primary text-sm text-left">Landlord Portal</button>
                         <button onClick={() => navigateTo("/support")} className="text-slate-500 hover:text-primary text-sm text-left">Support Center</button>
                     </div>
 
@@ -49,6 +48,9 @@ const Footer = () => {
                         <p className="text-slate-500 text-sm flex items-center gap-2 hover:text-primary">
                             <span className="material-symbols-outlined text-base">location_on</span> Belihuloya, Sri Lanka
                         </p>
+                        <p className="text-slate-500 text-sm flex items-center gap-2 hover:text-primary">
+                            <span className="material-symbols-outlined text-base">call</span> +94 (45) 123-4567
+                        </p>
                     </div>
                 </div>
 
@@ -58,7 +60,7 @@ const Footer = () => {
                         © {new Date().getFullYear()} CampusEase - Dedicated to SUSL. All rights reserved.
                     </p>
                     <div className="flex gap-4">
-                        <a className="text-slate-400 hover:text-primary" href="https://www.susl.lk" target="_blank" rel="noreferrer">
+                        <a className="text-slate-400 hover:text-primary" href="https://www.CampusEase.lk" target="_blank" rel="noreferrer">
                             <span className="material-symbols-outlined">public</span>
                         </a>
                         <a className="text-slate-400 hover:text-primary" href="https://www.facebook.com/CampusEaseSUSL" target="_blank" rel="noreferrer">
