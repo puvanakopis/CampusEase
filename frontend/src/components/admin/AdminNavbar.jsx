@@ -23,6 +23,7 @@ const AdminNavbar = () => {
         { label: "Dashboard", path: "/admin/dashboard", key: "dashboard" },
         { label: "Accommodation", path: "/admin/accommodation", key: "accommodation" },
         { label: "Vehicles", path: "/admin/vehicles", key: "vehicles" },
+        { label: "Owner", path: "/admin/owner", key: "owner" },
         { label: "Users", path: "/admin/users", key: "users" },
     ];
 
