@@ -60,7 +60,7 @@ const ProtectedRoute = ({ role, allowedRoles }) => {
 };
 
 function App() {
-  const role = "admin"; // "student", "staff", "owner", "admin"
+  const role = "owner"; // "student", "staff", "owner", "admin"
   const location = useLocation();
 
   const authPages = ["/login", "/register", "/forgot-password"];

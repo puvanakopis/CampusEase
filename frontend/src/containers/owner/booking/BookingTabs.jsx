@@ -1,4 +1,4 @@
-const OrderTabs = ({ tabs, activeTab, onTabChange }) => {
+const BookingTabs = ({ tabs, activeTab, onTabChange }) => {
     return (
         <div className="flex border-b border-slate-200 mb-6">
             {tabs.map((tab) => (
@@ -22,4 +22,4 @@ const OrderTabs = ({ tabs, activeTab, onTabChange }) => {
     );
 };
 
-export default OrderTabs;
+export default BookingTabs;

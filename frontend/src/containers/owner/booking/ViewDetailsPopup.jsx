@@ -1,11 +1,11 @@
-const ViewDetailsPopup = ({ selectedOrder, onClose, onEdit }) => {
+const ViewDetailsPopup = ({ selectedBooking, onClose, onEdit }) => {
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl p-6 max-w-3xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-start mb-6">
                     <div>
-                        <h3 className="text-2xl font-bold text-slate-900">Order Details</h3>
-                        <p className="text-slate-500">Complete information about this order</p>
+                        <h3 className="text-2xl font-bold text-slate-900">Booking Details</h3>
+                        <p className="text-slate-500">Complete information about this booking</p>
                     </div>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
                         <span className="material-symbols-outlined">close</span>
@@ -27,27 +27,27 @@ const ViewDetailsPopup = ({ selectedOrder, onClose, onEdit }) => {
                         <div className="space-y-3">
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Name:</span>
-                                <span className="font-medium">{selectedOrder?.customer.name}</span>
+                                <span className="font-medium">{selectedBooking?.customer.name}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Student ID:</span>
-                                <span className="font-medium">{selectedOrder?.customer.studentId}</span>
+                                <span className="font-medium">{selectedBooking?.customer.studentId}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Email:</span>
-                                <span className="font-medium">{selectedOrder?.customer.email}</span>
+                                <span className="font-medium">{selectedBooking?.customer.email}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Phone:</span>
-                                <span className="font-medium">{selectedOrder?.customer.phone}</span>
+                                <span className="font-medium">{selectedBooking?.customer.phone}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Faculty:</span>
-                                <span className="font-medium">{selectedOrder?.customer.faculty}</span>
+                                <span className="font-medium">{selectedBooking?.customer.faculty}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Year:</span>
-                                <span className="font-medium">{selectedOrder?.customer.year}</span>
+                                <span className="font-medium">{selectedBooking?.customer.year}</span>
                             </div>
                         </div>
                     </div>
@@ -57,35 +57,35 @@ const ViewDetailsPopup = ({ selectedOrder, onClose, onEdit }) => {
                         <div className="flex items-center gap-3 mb-4">
                             <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
                                 <span className="material-symbols-outlined text-primary">
-                                    {selectedOrder?.service.icon}
+                                    {selectedBooking?.service.icon}
                                 </span>
                             </div>
                             <div>
                                 <h4 className="font-bold text-slate-900">Service Information</h4>
-                                <p className="text-sm text-slate-500">{selectedOrder?.service.type}</p>
+                                <p className="text-sm text-slate-500">{selectedBooking?.service.type}</p>
                             </div>
                         </div>
                         <div className="space-y-3">
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Service:</span>
-                                <span className="font-medium">{selectedOrder?.service.title}</span>
+                                <span className="font-medium">{selectedBooking?.service.title}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Details:</span>
-                                <span className="font-medium text-right">{selectedOrder?.service.details}</span>
+                                <span className="font-medium text-right">{selectedBooking?.service.details}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Provider:</span>
-                                <span className="font-medium">{selectedOrder?.service.provider}</span>
+                                <span className="font-medium">{selectedBooking?.service.provider}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Contact:</span>
-                                <span className="font-medium">{selectedOrder?.service.providerContact}</span>
+                                <span className="font-medium">{selectedBooking?.service.providerContact}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-600">Amenities:</span>
                                 <div className="flex flex-wrap gap-1">
-                                    {selectedOrder?.service.amenities?.map((amenity, index) => (
+                                    {selectedBooking?.service.amenities?.map((amenity, index) => (
                                         <span key={index} className="bg-white px-2 py-1 rounded text-xs">
                                             {amenity}
                                         </span>
@@ -96,9 +96,9 @@ const ViewDetailsPopup = ({ selectedOrder, onClose, onEdit }) => {
                     </div>
                 </div>
 
-                {/* Order Timeline */}
+                {/* Booking Timeline */}
                 <div className="bg-slate-50 rounded-lg p-5 mb-8">
-                    <h4 className="font-bold text-slate-900 mb-4">Order Timeline</h4>
+                    <h4 className="font-bold text-slate-900 mb-4">Booking Timeline</h4>
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-3">
@@ -106,12 +106,12 @@ const ViewDetailsPopup = ({ selectedOrder, onClose, onEdit }) => {
                                     <span className="material-symbols-outlined text-green-600 text-sm">check</span>
                                 </div>
                                 <div>
-                                    <p className="font-medium">Order Submitted</p>
-                                    <p className="text-sm text-slate-500">{selectedOrder?.submitted || "2 days ago"}</p>
+                                    <p className="font-medium">Booking Submitted</p>
+                                    <p className="text-sm text-slate-500">{selectedBooking?.submitted || "2 days ago"}</p>
                                 </div>
                             </div>
                         </div>
-                        {selectedOrder?.status === "active" && (
+                        {selectedBooking?.status === "active" && (
                             <>
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3">
@@ -122,7 +122,7 @@ const ViewDetailsPopup = ({ selectedOrder, onClose, onEdit }) => {
                                         </div>
                                         <div>
                                             <p className="font-medium">Activated</p>
-                                            <p className="text-sm text-slate-500">{selectedOrder?.activatedDate}</p>
+                                            <p className="text-sm text-slate-500">{selectedBooking?.activatedDate}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -135,13 +135,13 @@ const ViewDetailsPopup = ({ selectedOrder, onClose, onEdit }) => {
                                         </div>
                                         <div>
                                             <p className="font-medium">Next Payment</p>
-                                            <p className="text-sm text-slate-500">{selectedOrder?.nextPayment}</p>
+                                            <p className="text-sm text-slate-500">{selectedBooking?.nextPayment}</p>
                                         </div>
                                     </div>
                                 </div>
                             </>
                         )}
-                        {selectedOrder?.status === "completed" && (
+                        {selectedBooking?.status === "completed" && (
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center gap-3">
                                     <div className="size-8 rounded-full bg-blue-100 flex items-center justify-center">
@@ -151,7 +151,7 @@ const ViewDetailsPopup = ({ selectedOrder, onClose, onEdit }) => {
                                     </div>
                                     <div>
                                         <p className="font-medium">Completed</p>
-                                        <p className="text-sm text-slate-500">{selectedOrder?.completionDate}</p>
+                                        <p className="text-sm text-slate-500">{selectedBooking?.completionDate}</p>
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +171,7 @@ const ViewDetailsPopup = ({ selectedOrder, onClose, onEdit }) => {
                         onClick={onEdit}
                         className="bg-primary text-white py-2.5 px-6 rounded-lg font-medium hover:bg-primary/80 transition-colors"
                     >
-                        Edit Order
+                        Edit Booking
                     </button>
                 </div>
             </div>

@@ -1,26 +1,26 @@
 import React, { useState } from "react";
 import StatsCards from "../../containers/owner/booking/StatsCards";
-import OrderTable from "../../containers/owner/booking/BookingTable";
-import OrderTabs from "../../containers/owner/booking/BookingTabs";
+import BookingTable from "../../containers/owner/booking/BookingTable";
+import BookingTabs from "../../containers/owner/booking/BookingTabs";
 import Pagination from "../../containers/owner/booking/Pagination";
 import AcceptPopup from "../../containers/owner/booking/AcceptPopup";
 import DeclinePopup from "../../containers/owner/booking/DeclinePopup";
 import ViewDetailsPopup from "../../containers/owner/booking/ViewDetailsPopup";
 import ViewInvoicePopup from "../../containers/owner/booking/ViewInvoicePopup";
-import EditOrderPopup from "../../containers/owner/booking/EditOrderPopup";
+import EditBookingPopup from "../../containers/owner/booking/EditBookingPopup";
 
-const OrderManagement = () => {
+const OwnerBooking = () => {
     const [activeTab, setActiveTab] = useState("pending");
-    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [selectedBooking, setSelectedBooking] = useState(null);
     const [showAcceptPopup, setShowAcceptPopup] = useState(false);
     const [showDeclinePopup, setShowDeclinePopup] = useState(false);
     const [showViewDetailsPopup, setShowViewDetailsPopup] = useState(false);
     const [showViewInvoicePopup, setShowViewInvoicePopup] = useState(false);
-    const [showEditOrderPopup, setShowEditOrderPopup] = useState(false);
+    const [showEditBookingPopup, setShowEditBookingPopup] = useState(false);
     const [declineReason, setDeclineReason] = useState("");
-    const [editedOrder, setEditedOrder] = useState(null);
+    const [editedBooking, setEditedBooking] = useState(null);
 
-    const [pendingOrders, setPendingOrders] = useState([
+    const [pendingBookings, setPendingBookings] = useState([
         {
             id: "#ORD-8821",
             customer: {
@@ -159,7 +159,7 @@ const OrderManagement = () => {
         }
     ]);
 
-    const [activeOrders, setActiveOrders] = useState([
+    const [activeBookings, setActiveBookings] = useState([
         {
             id: "#ORD-8805",
             customer: {
@@ -234,7 +234,7 @@ const OrderManagement = () => {
         }
     ]);
 
-    const [completedOrders, setCompletedOrders] = useState([
+    const [completedBookings, setCompletedBookings] = useState([
         {
             id: "#ORD-8789",
             customer: {
@@ -314,122 +314,121 @@ const OrderManagement = () => {
     ]);
 
     const tabs = [
-        { id: "pending", label: "Pending Requests", count: pendingOrders.length },
-        { id: "active", label: "Active Orders", count: activeOrders.length },
-        { id: "completed", label: "Completed Orders", count: completedOrders.length }
+        { id: "pending", label: "Pending Requests", count: pendingBookings.length },
+        { id: "active", label: "Active Bookings", count: activeBookings.length },
+        { id: "completed", label: "Completed Bookings", count: completedBookings.length }
     ];
 
     const stats = [
         {
-            label: "Pending Orders",
+            label: "Pending Bookings",
             icon: "hourglass_bottom",
-            value: pendingOrders.length.toString(),
-            subtext: `${pendingOrders.filter(o => o.submitted.includes('hour')).length} new today`,
+            value: pendingBookings.length.toString(),
+            subtext: `${pendingBookings.filter(b => b.submitted.includes('hour')).length} new today`,
             subtextColor: "text-orange-500",
             trendIcon: "trending_up"
         },
         {
-            label: "Active Orders",
+            label: "Active Bookings",
             icon: "assignment_turned_in",
-            value: activeOrders.length.toString(),
+            value: activeBookings.length.toString(),
             subtext: "Stable this week",
             subtextColor: "text-green-600",
             trendIcon: "trending_flat"
         },
         {
-            label: "Completed Orders",
+            label: "Completed Bookings",
             icon: "check_circle",
-            value: completedOrders.length.toString(),
+            value: completedBookings.length.toString(),
             subtext: "2 completed this week",
             subtextColor: "text-green-600",
             trendIcon: "trending_up"
         }
     ];
 
-
-    const handleAccept = (order) => {
-        setSelectedOrder(order);
+    const handleAccept = (booking) => {
+        setSelectedBooking(booking);
         setShowAcceptPopup(true);
     };
 
-    const handleDecline = (order) => {
-        setSelectedOrder(order);
+    const handleDecline = (booking) => {
+        setSelectedBooking(booking);
         setShowDeclinePopup(true);
     };
 
-    const handleViewDetails = (order) => {
-        setSelectedOrder(order);
+    const handleViewDetails = (booking) => {
+        setSelectedBooking(booking);
         setShowViewDetailsPopup(true);
     };
 
-    const handleViewInvoice = (order) => {
-        setSelectedOrder(order);
+    const handleViewInvoice = (booking) => {
+        setSelectedBooking(booking);
         setShowViewInvoicePopup(true);
     };
 
-    const handleEditOrder = (order) => {
-        setSelectedOrder(order);
-        setEditedOrder({ ...order });
-        setShowEditOrderPopup(true);
+    const handleEditBooking = (booking) => {
+        setSelectedBooking(booking);
+        setEditedBooking({ ...booking });
+        setShowEditBookingPopup(true);
     };
 
     const confirmAccept = () => {
-        if (!selectedOrder) return;
+        if (!selectedBooking) return;
 
-        const updatedPending = pendingOrders.filter(order => order.id !== selectedOrder.id);
-        const acceptedOrder = {
-            ...selectedOrder,
+        const updatedPending = pendingBookings.filter(b => b.id !== selectedBooking.id);
+        const acceptedBooking = {
+            ...selectedBooking,
             status: "active",
             activatedDate: new Date().toISOString().split('T')[0],
             progress: 0,
             manager: "John Doe",
-            nextPayment: calculateNextPayment(selectedOrder.period.startDate)
+            nextPayment: calculateNextPayment(selectedBooking.period.startDate)
         };
 
-        setPendingOrders(updatedPending);
-        setActiveOrders([...activeOrders, acceptedOrder]);
+        setPendingBookings(updatedPending);
+        setActiveBookings([...activeBookings, acceptedBooking]);
         setShowAcceptPopup(false);
-        setSelectedOrder(null);
+        setSelectedBooking(null);
     };
 
     const confirmDecline = () => {
-        if (!selectedOrder || !declineReason.trim()) {
+        if (!selectedBooking || !declineReason.trim()) {
             alert("Please provide a reason for declining");
             return;
         }
 
-        const updatedPending = pendingOrders.filter(order => order.id !== selectedOrder.id);
-        const declinedOrder = {
-            ...selectedOrder,
+        const updatedPending = pendingBookings.filter(b => b.id !== selectedBooking.id);
+        const declinedBooking = {
+            ...selectedBooking,
             status: "declined",
             declineReason: declineReason,
             declinedDate: new Date().toISOString().split('T')[0]
         };
 
-        setPendingOrders(updatedPending);
-        setCompletedOrders([...completedOrders, declinedOrder]);
+        setPendingBookings(updatedPending);
+        setCompletedBookings([...completedBookings, declinedBooking]);
         setShowDeclinePopup(false);
-        setSelectedOrder(null);
+        setSelectedBooking(null);
         setDeclineReason("");
     };
 
     const confirmEdit = () => {
-        if (!editedOrder) return;
+        if (!editedBooking) return;
 
-        const updateOrders = (orders) =>
-            orders.map(order => order.id === editedOrder.id ? editedOrder : order);
+        const updateBookings = (bookings) =>
+            bookings.map(b => b.id === editedBooking.id ? editedBooking : b);
 
-        if (editedOrder.status === "pending") {
-            setPendingOrders(updateOrders(pendingOrders));
-        } else if (editedOrder.status === "active") {
-            setActiveOrders(updateOrders(activeOrders));
+        if (editedBooking.status === "pending") {
+            setPendingBookings(updateBookings(pendingBookings));
+        } else if (editedBooking.status === "active") {
+            setActiveBookings(updateBookings(activeBookings));
         } else {
-            setCompletedOrders(updateOrders(completedOrders));
+            setCompletedBookings(updateBookings(completedBookings));
         }
 
-        setShowEditOrderPopup(false);
-        setSelectedOrder(null);
-        setEditedOrder(null);
+        setShowEditBookingPopup(false);
+        setSelectedBooking(null);
+        setEditedBooking(null);
     };
 
     const calculateNextPayment = (startDate) => {
@@ -438,12 +437,12 @@ const OrderManagement = () => {
         return date.toISOString().split('T')[0];
     };
 
-    const getCurrentOrders = () => {
+    const getCurrentBookings = () => {
         switch (activeTab) {
-            case "pending": return pendingOrders;
-            case "active": return activeOrders;
-            case "completed": return completedOrders;
-            default: return pendingOrders;
+            case "pending": return pendingBookings;
+            case "active": return activeBookings;
+            case "completed": return completedBookings;
+            default: return pendingBookings;
         }
     };
 
@@ -473,25 +472,25 @@ const OrderManagement = () => {
         );
     };
 
-    const getActionButtons = (order) => {
-        switch (order.status) {
+    const getActionButtons = (booking) => {
+        switch (booking.status) {
             case "pending":
                 return (
                     <div className="flex items-center gap-2">
                         <button
-                            onClick={(e) => { e.stopPropagation(); handleAccept(order); }}
+                            onClick={(e) => { e.stopPropagation(); handleAccept(booking); }}
                             className="bg-primary hover:bg-primary/80 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                         >
                             Accept
                         </button>
                         <button
-                            onClick={(e) => { e.stopPropagation(); handleDecline(order); }}
+                            onClick={(e) => { e.stopPropagation(); handleDecline(booking); }}
                             className="bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                         >
                             Decline
                         </button>
                         <button
-                            onClick={(e) => { e.stopPropagation(); handleEditOrder(order); }}
+                            onClick={(e) => { e.stopPropagation(); handleEditBooking(booking); }}
                             className="bg-green-600 hover:bg-green-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                         >
                             Edit
@@ -502,13 +501,13 @@ const OrderManagement = () => {
                 return (
                     <div className="flex items-center gap-2">
                         <button
-                            onClick={(e) => { e.stopPropagation(); handleViewDetails(order); }}
+                            onClick={(e) => { e.stopPropagation(); handleViewDetails(booking); }}
                             className="bg-green-500 hover:bg-green-600 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                         >
                             View Details
                         </button>
                         <button
-                            onClick={(e) => { e.stopPropagation(); handleEditOrder(order); }}
+                            onClick={(e) => { e.stopPropagation(); handleEditBooking(booking); }}
                             className="border border-slate-200 hover:bg-slate-100 text-slate-600 text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                         >
                             Edit
@@ -519,13 +518,13 @@ const OrderManagement = () => {
                 return (
                     <div className="flex items-center gap-2">
                         <button
-                            onClick={(e) => { e.stopPropagation(); handleViewInvoice(order); }}
+                            onClick={(e) => { e.stopPropagation(); handleViewInvoice(booking); }}
                             className="bg-blue-500 hover:bg-blue-600 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                         >
                             View Invoice
                         </button>
                         <button
-                            onClick={(e) => { e.stopPropagation(); handleViewDetails(order); }}
+                            onClick={(e) => { e.stopPropagation(); handleViewDetails(booking); }}
                             className="border border-slate-200 hover:bg-slate-100 text-slate-600 text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                         >
                             Details
@@ -542,7 +541,7 @@ const OrderManagement = () => {
             {/* Popups */}
             {showAcceptPopup && (
                 <AcceptPopup
-                    selectedOrder={selectedOrder}
+                    selectedBooking={selectedBooking}
                     onClose={() => setShowAcceptPopup(false)}
                     onConfirm={confirmAccept}
                     getPriorityBadge={getPriorityBadge}
@@ -551,7 +550,7 @@ const OrderManagement = () => {
 
             {showDeclinePopup && (
                 <DeclinePopup
-                    selectedOrder={selectedOrder}
+                    selectedBooking={selectedBooking}
                     declineReason={declineReason}
                     onDeclineReasonChange={setDeclineReason}
                     onClose={() => { setShowDeclinePopup(false); setDeclineReason(""); }}
@@ -561,24 +560,24 @@ const OrderManagement = () => {
 
             {showViewDetailsPopup && (
                 <ViewDetailsPopup
-                    selectedOrder={selectedOrder}
+                    selectedBooking={selectedBooking}
                     onClose={() => setShowViewDetailsPopup(false)}
-                    onEdit={() => { setShowViewDetailsPopup(false); handleEditOrder(selectedOrder); }}
+                    onEdit={() => { setShowViewDetailsPopup(false); handleEditBooking(selectedBooking); }}
                 />
             )}
 
             {showViewInvoicePopup && (
                 <ViewInvoicePopup
-                    selectedOrder={selectedOrder}
+                    selectedBooking={selectedBooking}
                     onClose={() => setShowViewInvoicePopup(false)}
                 />
             )}
 
-            {showEditOrderPopup && (
-                <EditOrderPopup
-                    editedOrder={editedOrder}
-                    onEditedOrderChange={setEditedOrder}
-                    onClose={() => setShowEditOrderPopup(false)}
+            {showEditBookingPopup && (
+                <EditBookingPopup
+                    editedBooking={editedBooking}
+                    onEditedBookingChange={setEditedBooking}
+                    onClose={() => setShowEditBookingPopup(false)}
                     onConfirm={confirmEdit}
                 />
             )}
@@ -586,7 +585,7 @@ const OrderManagement = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Order Management</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Booking Management</h1>
                     <p className="text-slate-500 mt-1">Review and manage all student service requests.</p>
                 </div>
             </div>
@@ -597,15 +596,15 @@ const OrderManagement = () => {
             {/* Main Content */}
             <div className="flex-1">
                 {/* Tabs */}
-                <OrderTabs
+                <BookingTabs
                     tabs={tabs}
                     activeTab={activeTab}
                     onTabChange={setActiveTab}
                 />
 
                 {/* Table */}
-                <OrderTable
-                    orders={getCurrentOrders()}
+                <BookingTable
+                    bookings={getCurrentBookings()}
                     getStatusBadge={getStatusBadge}
                     getPriorityBadge={getPriorityBadge}
                     getActionButtons={getActionButtons}
@@ -613,12 +612,12 @@ const OrderManagement = () => {
 
                 {/* Pagination */}
                 <Pagination
-                    currentCount={getCurrentOrders().length}
-                    totalCount={getCurrentOrders().length}
+                    currentCount={getCurrentBookings().length}
+                    totalCount={getCurrentBookings().length}
                 />
             </div>
         </main>
     );
 };
 
-export default OrderManagement;
+export default OwnerBooking;
