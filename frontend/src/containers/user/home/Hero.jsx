@@ -68,7 +68,7 @@ const Hero = () => {
                                 />
                             </div>
                             <button
-                                className="h-12 px-8 bg-primary hover:bg-blue-600 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+                                className="h-12 px-8 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
                                 onClick={handleSearch}
                             >
                                 {mode === "vehicle" ? "Search Vehicles" : "Search Accommodations"}

@@ -40,7 +40,7 @@ const ViewUserPopup = ({ user, onClose }) => {
                                     <span className={`px-3 py-1 rounded-full text-xs font-bold ${user.status === "Active" ? "bg-green-100 text-green-800" : user.status === "Suspended" ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800"}`}>
                                         {user.status}
                                     </span>
-                                    <span className={`ml-2 px-3 py-1 rounded-full text-xs font-medium ${user.role === "Student" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"}`}>
+                                    <span className={`ml-2 px-3 py-1 rounded-full text-xs font-medium ${user.role === "Student" ? "bg-blue-100 text-primary" : "bg-purple-100 text-purple-800"}`}>
                                         {user.role}
                                     </span>
                                     {user.rating > 0 && (

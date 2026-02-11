@@ -42,7 +42,7 @@ const EditUserPopup = ({ user, onClose, onUpdate }) => {
                                     type="text"
                                     value={editedUser.name}
                                     onChange={(e) => handleChange("name", e.target.value)}
-                                    className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     required
                                 />
                             </div>
@@ -52,7 +52,7 @@ const EditUserPopup = ({ user, onClose, onUpdate }) => {
                                     type="email"
                                     value={editedUser.email}
                                     onChange={(e) => handleChange("email", e.target.value)}
-                                    className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     required
                                 />
                             </div>
@@ -62,7 +62,7 @@ const EditUserPopup = ({ user, onClose, onUpdate }) => {
                                     type="tel"
                                     value={editedUser.phone}
                                     onChange={(e) => handleChange("phone", e.target.value)}
-                                    className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     required
                                 />
                             </div>
@@ -76,7 +76,7 @@ const EditUserPopup = ({ user, onClose, onUpdate }) => {
                                 <select
                                     value={editedUser.role}
                                     onChange={(e) => handleChange("role", e.target.value)}
-                                    className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 >
                                     <option value="Student">Student</option>
                                     <option value="Professional">Professional</option>
@@ -87,7 +87,7 @@ const EditUserPopup = ({ user, onClose, onUpdate }) => {
                                 <select
                                     value={editedUser.status}
                                     onChange={(e) => handleChange("status", e.target.value)}
-                                    className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 >
                                     <option value="Active">Active</option>
                                     <option value="Suspended">Suspended</option>
@@ -108,7 +108,7 @@ const EditUserPopup = ({ user, onClose, onUpdate }) => {
                                                 type="text"
                                                 value={editedUser.university}
                                                 onChange={(e) => handleChange("university", e.target.value)}
-                                                className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                             />
                                         </div>
                                         <div>
@@ -117,7 +117,7 @@ const EditUserPopup = ({ user, onClose, onUpdate }) => {
                                                 type="text"
                                                 value={editedUser.faculty}
                                                 onChange={(e) => handleChange("faculty", e.target.value)}
-                                                className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                             />
                                         </div>
                                         <div>
@@ -126,7 +126,7 @@ const EditUserPopup = ({ user, onClose, onUpdate }) => {
                                                 type="text"
                                                 value={editedUser.year}
                                                 onChange={(e) => handleChange("year", e.target.value)}
-                                                className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                             />
                                         </div>
                                     </div>
@@ -136,7 +136,7 @@ const EditUserPopup = ({ user, onClose, onUpdate }) => {
                                             type="text"
                                             value={editedUser.studentId}
                                             onChange={(e) => handleChange("studentId", e.target.value)}
-                                            className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         />
                                     </div>
                                 </div>
@@ -153,7 +153,7 @@ const EditUserPopup = ({ user, onClose, onUpdate }) => {
                                             type="text"
                                             value={editedUser.company}
                                             onChange={(e) => handleChange("company", e.target.value)}
-                                            className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         />
                                     </div>
                                     <div>
@@ -162,7 +162,7 @@ const EditUserPopup = ({ user, onClose, onUpdate }) => {
                                             type="text"
                                             value={editedUser.designation}
                                             onChange={(e) => handleChange("designation", e.target.value)}
-                                            className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         />
                                     </div>
                                 </div>

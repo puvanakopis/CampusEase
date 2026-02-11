@@ -42,13 +42,13 @@ const AcceptPopup = ({ selectedBooking, onClose, onConfirm, getPriorityBadge }) 
                         <label className="block text-sm font-medium text-slate-700 mb-1">Start Date *</label>
                         <input
                             type="date"
-                            className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">Notes (Optional)</label>
                         <textarea
-                            className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             rows="3"
                         />
                     </div>

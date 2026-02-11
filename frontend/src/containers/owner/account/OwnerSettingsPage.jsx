@@ -22,8 +22,7 @@ const OwnerSettingsPage = () => {
                         <input
                             type="text"
                             value="Sandaruwan Perera"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 
-                            focus:ring-primary focus:border-primary text-slate-900"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
 
@@ -32,8 +31,7 @@ const OwnerSettingsPage = () => {
                         <input
                             type="email"
                             value="owner@example.com"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 
-                            focus:ring-primary focus:border-primary text-slate-900"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
 
@@ -47,16 +45,16 @@ const OwnerSettingsPage = () => {
                             <input
                                 type="tel"
                                 value="71 234 5678"
-                                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 
-                                focus:ring-primary focus:border-primary text-slate-900"
+                                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             />
                         </div>
                     </div>
 
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Language</label>
-                        <select className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 
-                            focus:ring-primary focus:border-primary text-slate-900">
+                        <select
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        >
                             <option>English</option>
                             <option>Sinhala</option>
                             <option>Tamil</option>
@@ -74,8 +72,7 @@ const OwnerSettingsPage = () => {
                         <label className="text-sm font-bold text-slate-600">Current Password</label>
                         <input
                             type="password"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 
-                            focus:ring-primary focus:border-primary text-slate-900"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             placeholder="Enter current password"
                         />
                     </div>
@@ -84,8 +81,7 @@ const OwnerSettingsPage = () => {
                         <label className="text-sm font-bold text-slate-600">New Password</label>
                         <input
                             type="password"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 
-                            focus:ring-primary focus:border-primary text-slate-900"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             placeholder="Enter new password"
                         />
                     </div>
@@ -94,15 +90,14 @@ const OwnerSettingsPage = () => {
                         <label className="text-sm font-bold text-slate-600">Confirm New Password</label>
                         <input
                             type="password"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 
-                            focus:ring-primary focus:border-primary text-slate-900"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             placeholder="Re-enter new password"
                         />
                     </div>
                 </div>
 
                 <div className="flex justify-end mt-6">
-                    <button className="px-8 py-3 bg-primary text-white rounded-lg font-bold shadow-lg 
+                    <button className="px-8 py-3 bg-primary text-white rounded-lg font-bold shadow-sm 
                         hover:bg-primary/90 transition-colors">
                         Update Password
                     </button>

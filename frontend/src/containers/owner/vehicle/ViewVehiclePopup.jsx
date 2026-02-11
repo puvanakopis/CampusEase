@@ -52,7 +52,7 @@ const ViewVehiclePopup = ({ selectedVehicle, setShowViewPopup, setShowEditPopup,
                         </div>
                         {selectedVehicle.currentlyRented && (
                             <div className="absolute top-4 right-4">
-                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">
+                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-primary">
                                     Currently Rented
                                 </span>
                             </div>

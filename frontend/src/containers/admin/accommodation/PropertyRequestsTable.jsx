@@ -17,7 +17,7 @@ const PropertyRequestsTable = ({ propertyRequests, onViewRequest, onApproveReque
                         <input
                             type="text"
                             placeholder="Search properties..."
-                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
                     {/* Status Filter */}
@@ -111,7 +111,7 @@ const PropertyRequestsTable = ({ propertyRequests, onViewRequest, onApproveReque
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <span className="text-xs text-slate-500">Price:</span>
-                                            <span className="text-xs font-medium text-green-600">
+                                            <span className="text-xs font-medium text--600">
                                                 LKR {request.price.toLocaleString()}
                                             </span>
                                         </div>
@@ -150,10 +150,7 @@ const PropertyRequestsTable = ({ propertyRequests, onViewRequest, onApproveReque
                                         <button
                                             onClick={() => onApproveRequest(request.id)}
                                             disabled={request.currentProperties >= request.maxProperties}
-                                            className={`${request.currentProperties >= request.maxProperties
-                                                ? 'bg-gray-400 cursor-not-allowed'
-                                                : 'bg-green-600 hover:bg-green-500'} 
-                                                text-white text-[10px] font-bold py-2 px-4 rounded-md uppercase tracking-wider transition-colors`}
+                                            className="bg-primary hover:bg-primary/90 text-white text-[10px] font-bold py-2 px-4 rounded-md uppercase tracking-wider transition-colors"
                                         >
                                             {request.currentProperties >= request.maxProperties
                                                 ? 'Limit Reached'

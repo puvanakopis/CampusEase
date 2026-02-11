@@ -22,9 +22,7 @@ const FAQSection = () => {
         }
     ];
 
-    const toggleFAQ = (index) => {
-        setOpenIndex(openIndex === index ? null : index);
-    };
+    const toggleFAQ = (index) => setOpenIndex(openIndex === index ? null : index);
 
     return (
         <div className="bg-white border border-[#e7edf3] rounded-2xl p-8 shadow-sm mb-20">
@@ -42,21 +40,16 @@ const FAQSection = () => {
                                 <span className="material-symbols-outlined text-primary">help</span>
                                 {f.q}
                             </h3>
-
                             <span
-                                className={`material-symbols-outlined transform transition-transform duration-300 ${
-                                    openIndex === i ? "rotate-180" : "rotate-0"
-                                }`}
+                                className={`material-symbols-outlined transform transition-transform duration-300 ${openIndex === i ? "rotate-180" : "rotate-0"
+                                    }`}
                             >
                                 expand_more
                             </span>
                         </div>
 
-                        <div
-                            className={`overflow-hidden transition-all duration-300 ${
-                                openIndex === i ? "max-h-40 mt-2" : "max-h-0"
-                            }`}
-                        >
+                        <div className={`overflow-hidden transition-all duration-300 ${openIndex === i ? "max-h-40 mt-2" : "max-h-0"
+                            }`}>
                             <p className="text-[#4c739a]">{f.a}</p>
                         </div>
                     </div>

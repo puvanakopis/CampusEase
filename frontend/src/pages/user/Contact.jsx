@@ -19,7 +19,7 @@ const Contact = () => (
                 </h1>
 
                 <p className="text-lg md:text-xl leading-relaxed mt-4 text-[#4c739a] max-w-2xl">
-                    We're here to support the Sabaragamuwa University community. 
+                    We're here to support the Sabaragamuwa University community.
                     Reach out to us for inquiries, technical assistance, or feedback.
                 </p>
             </div>

@@ -3,7 +3,6 @@ import React from "react";
 const MapSection = () => (
     <div className="relative w-full h-[500px] rounded-2xl overflow-hidden shadow-sm border border-[#e7edf3] mb-20">
 
-        {/* High-quality Google Map */}
         <iframe
             title="Office Map"
             width="100%"
@@ -16,7 +15,6 @@ const MapSection = () => (
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.392540645362!2d80.79209357581793!3d6.716575921877168!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae46f2d607eb4e1%3A0xe778f8f797e04488!2sFaculty%20of%20Computing%20-%20SUSL!5e0!3m2!1sen!2slk!4v1707749233891!"
         ></iframe>
 
-        {/* Info Card */}
         <div className="absolute bottom-6 left-6 md:left-10 md:bottom-10 max-w-[340px] bg-white/90 backdrop-blur-md p-6 rounded-xl border border-white/20 shadow-sm">
             <h4 className="text-primary font-bold text-lg mb-2">Visit Our Office</h4>
             <p className="text-sm font-medium mb-4 leading-relaxed">
@@ -35,7 +33,6 @@ const MapSection = () => (
             </a>
         </div>
 
-        {/* Animated map pin */}
         <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
             <div className="bg-primary text-white p-2 rounded-full shadow-lg ring-4 ring-primary/20 animate-pulse">
                 <span className="material-symbols-outlined text-2xl">school</span>

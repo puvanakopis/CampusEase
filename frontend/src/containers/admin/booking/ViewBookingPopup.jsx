@@ -40,7 +40,7 @@ const ViewBookingPopup = ({ booking, onClose }) => {
                                     <p className="font-bold text-slate-900">{booking.customer.name}</p>
                                     <p className="text-sm text-slate-500">{booking.customer.studentId}</p>
                                     <div className="flex gap-2 mt-2">
-                                        <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                        <span className="px-2 py-1 bg-blue-100 text-primary text-xs rounded-full">
                                             {booking.customer.faculty}
                                         </span>
                                         <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">

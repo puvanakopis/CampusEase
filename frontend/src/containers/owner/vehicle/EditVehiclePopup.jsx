@@ -90,7 +90,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                     />
                                 </div>
@@ -103,7 +103,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="type"
                                         value={formData.type}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     >
                                         {vehicleTypes.map(type => (
                                             <option key={type} value={type}>{type}</option>
@@ -120,7 +120,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="price"
                                         value={formData.price}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                         min="0"
                                     />
@@ -135,7 +135,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="location"
                                         value={formData.location}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                     />
                                 </div>
@@ -148,7 +148,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="status"
                                         value={formData.status}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     >
                                         {statusOptions.map(status => (
                                             <option key={status.value} value={status.value}>
@@ -171,7 +171,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                                 value: e.target.value === 'true'
                                             }
                                         })}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     >
                                         <option value={false}>No (Available)</option>
                                         <option value={true}>Yes (Rented Out)</option>
@@ -189,7 +189,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                                 name="rentedTo"
                                                 value={formData.rentedTo || ""}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                                 placeholder="Renter's name"
                                             />
                                         </div>
@@ -203,7 +203,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                                 name="rentedUntil"
                                                 value={formData.rentedUntil || ""}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                             />
                                         </div>
                                     </>
@@ -224,7 +224,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="seats"
                                         value={formData.seats}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                         min="1"
                                     />
@@ -238,7 +238,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="transmission"
                                         value={formData.transmission}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     >
                                         {transmissionTypes.map(type => (
                                             <option key={type} value={type}>{type}</option>
@@ -254,7 +254,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="fuelType"
                                         value={formData.fuelType}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     >
                                         {fuelTypes.map(type => (
                                             <option key={type} value={type}>{type}</option>
@@ -271,7 +271,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="year"
                                         value={formData.year}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                         min="2000"
                                         max={new Date().getFullYear()}
@@ -287,7 +287,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="mileage"
                                         value={formData.mileage || ""}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         placeholder="e.g., 45,000 km"
                                     />
                                 </div>
@@ -302,7 +302,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                     type="text"
                                     value={newFeature}
                                     onChange={(e) => setNewFeature(e.target.value)}
-                                    className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     placeholder="Add feature (e.g., AC, Bluetooth)"
                                     onKeyPress={(e) => e.key === 'Enter' && handleAddFeature()}
                                 />
@@ -343,7 +343,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                 name="description"
                                 value={formData.description}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 rows="3"
                                 required
                             />
@@ -362,7 +362,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="owner"
                                         value={formData.owner}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                     />
                                 </div>
@@ -376,7 +376,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                         name="ownerContact"
                                         value={formData.ownerContact}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                     />
                                 </div>
@@ -393,7 +393,7 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                 name="image"
                                 value={formData.image}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 required
                             />
                         </div>

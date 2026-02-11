@@ -10,7 +10,7 @@ const Heading = ({ title, subtitle, buttonText, onButtonClick, buttonDisabled = 
             <button 
                 onClick={onButtonClick}
                 disabled={buttonDisabled}
-                className={`inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all ${buttonDisabled ? 'bg-slate-400 cursor-not-allowed' : 'bg-primary hover:bg-blue-600'}`}
+                className={`inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all ${buttonDisabled ? 'bg-slate-400 cursor-not-allowed' : 'bg-primary hover:bg-primary/90'}`}
             >
                 <span className="material-symbols-outlined text-lg">add_circle</span>
                 {buttonText}

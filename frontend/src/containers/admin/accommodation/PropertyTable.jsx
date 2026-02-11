@@ -25,17 +25,19 @@ const PropertyTable = ({ properties, onView, onDelete, onToggleStatus, isAdmin =
                         <input
                             type="text"
                             placeholder="Search properties..."
-                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
+
                     {/* Status Filter */}
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Status: All</option>
                         <option>Active</option>
                         <option>Inactive</option>
                     </select>
+
                     {/* Type Filter */}
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Type: All</option>
                         <option>Annex</option>
                         <option>House</option>
@@ -125,7 +127,7 @@ const PropertyTable = ({ properties, onView, onDelete, onToggleStatus, isAdmin =
                                             onClick={(e) => handleToggleStatusClick(property, e)}
                                             className={`${property.status === "Active"
                                                 ? "bg-yellow-600 hover:bg-yellow-500"
-                                                : "bg-blue-600 hover:bg-blue-500"
+                                                : "bg-primary hover:bg-primary/90"
                                                 } text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors`}
                                             title={property.status === "Active" ? "Deactivate Property" : "Activate Property"}
                                         >

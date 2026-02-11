@@ -450,7 +450,7 @@ const OwnerBooking = () => {
         const badges = {
             pending: { class: "bg-yellow-100 text-yellow-800", text: "Pending" },
             active: { class: "bg-green-100 text-green-800", text: "Active" },
-            completed: { class: "bg-blue-100 text-blue-800", text: "Completed" },
+            completed: { class: "bg-blue-100 text-primary", text: "Completed" },
             declined: { class: "bg-red-100 text-red-800", text: "Declined" }
         };
         const badge = badges[status] || badges.pending;
@@ -519,7 +519,7 @@ const OwnerBooking = () => {
                     <div className="flex items-center gap-2">
                         <button
                             onClick={(e) => { e.stopPropagation(); handleViewInvoice(booking); }}
-                            className="bg-blue-500 hover:bg-blue-600 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
+                            className="bg-primary hover:bg-primary/90 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                         >
                             View Invoice
                         </button>

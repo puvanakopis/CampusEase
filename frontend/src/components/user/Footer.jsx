@@ -28,7 +28,7 @@ const Footer = () => {
                         <button onClick={() => navigateTo("/")} className="text-slate-500 hover:text-primary text-sm text-left">Home</button>
                         <button onClick={() => navigateTo("/accommodation")} className="text-slate-500 hover:text-primary text-sm text-left">Accommodation</button>
                         <button onClick={() => navigateTo("/vehicle")} className="text-slate-500 hover:text-primary text-sm text-left">Vehicle</button>
-                        <button onClick={() => navigateTo("/bookings")} className="text-slate-500 hover:text-primary text-sm text-left">My Bookings</button>
+                        <button onClick={() => navigateTo("/my-bookings")} className="text-slate-500 hover:text-primary text-sm text-left">My Bookings</button>
                     </div>
 
                     {/* Support */}

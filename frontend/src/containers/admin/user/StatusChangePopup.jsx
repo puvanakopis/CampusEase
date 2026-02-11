@@ -107,7 +107,7 @@ const StatusChangePopup = ({
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}
                                 placeholder="Please explain why this user is being suspended..."
-                                className="w-full h-32 px-4 py-3 border border-slate-300 rounded-lg text-sm resize-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 required
                             />
                             <p className="text-xs text-slate-500 mt-1">
@@ -124,7 +124,7 @@ const StatusChangePopup = ({
                                     info
                                 </span>
                                 <div>
-                                    <p className="text-sm font-medium text-blue-800">Activation Note</p>
+                                    <p className="text-sm font-medium text-primary">Activation Note</p>
                                     <p className="text-xs text-blue-600 mt-1">
                                         This user will regain full access to the system and can make new bookings.
                                         {user?.suspensionReason && (
@@ -153,10 +153,7 @@ const StatusChangePopup = ({
                     <button
                         onClick={handleSubmit}
                         disabled={loading || (currentStatus === "Active" && !reason.trim())}
-                        className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 ${currentStatus === "Active"
-                            ? "bg-red-600 hover:bg-red-700 disabled:bg-red-300"
-                            : "bg-green-600 hover:bg-green-700 disabled:bg-green-300"
-                            }`}
+                        className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 bg-primary hover:bg-primary/90 disabled:primary/90"
                     >
                         {loading ? (
                             <>

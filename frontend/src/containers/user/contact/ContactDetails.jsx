@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const ContactDetails = () => (
     <div className="lg:col-span-2 space-y-8">
@@ -25,4 +25,4 @@ const ContactDetails = () => (
     </div>
 );
 
-export default ContactDetails
+export default ContactDetails;

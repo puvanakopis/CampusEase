@@ -5,14 +5,14 @@ import Tabs from "../../containers/admin/vehicles/Tabs";
 import VehicleTable from "../../containers/admin/vehicles/VehicleTable";
 import ViewVehiclePopup from "../../containers/admin/vehicles/ViewVehiclePopup";
 import VehicleRequestsTable from "../../containers/admin/vehicles/VehicleRequestsTable";
-import StatusChangePopup from "../../containers/admin/vehicles/StatusChangePopup"; // Import the new popup
+import StatusChangePopup from "../../containers/admin/vehicles/StatusChangePopup"; 
 
 const AdminVehicles = () => {
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [activeTab, setActiveTab] = useState("current");
-    const [showStatusPopup, setShowStatusPopup] = useState(false); // New state for status popup
-    const [vehicleToChangeStatus, setVehicleToChangeStatus] = useState(null); // New state for vehicle data
+    const [showStatusPopup, setShowStatusPopup] = useState(false); 
+    const [vehicleToChangeStatus, setVehicleToChangeStatus] = useState(null); 
 
     const [allVehicles, setAllVehicles] = useState([
         {

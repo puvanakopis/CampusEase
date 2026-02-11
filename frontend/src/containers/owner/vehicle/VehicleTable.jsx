@@ -6,20 +6,27 @@ const VehicleTable = ({ vehicles, handleViewVehicle, handleEditClick, handleDele
             <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
                 <h3 className="text-lg font-bold text-slate-900">All Vehicles ({vehicles.length})</h3>
                 <div className="flex items-center gap-3">
+                    {/* Search Input */}
                     <div className="relative">
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+                            search
+                        </span>
                         <input
-                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                            placeholder="Search vehicles..."
                             type="text"
+                            placeholder="Search vehicles..."
+                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+
+                    {/* Status Filter */}
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Status: All</option>
                         <option>Active</option>
                         <option>Inactive</option>
                     </select>
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+
+                    {/* Type Filter */}
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Type: All</option>
                         <option>Car</option>
                         <option>Scooter</option>

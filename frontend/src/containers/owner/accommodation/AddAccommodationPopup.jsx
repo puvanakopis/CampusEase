@@ -89,7 +89,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-4 py-3 border border-slate-200 bg-slate-50 rounded-lg text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., Riverview Annex"
                     />
@@ -104,7 +104,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                         name="location"
                         value={formData.location}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-4 py-3 border border-slate-200 bg-slate-50 rounded-lg text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., Pambahinna Junction"
                     />
@@ -118,7 +118,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                         name="type"
                         value={formData.type}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-4 py-3 border border-slate-200 bg-slate-50 rounded-lg text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     >
                         {accommodationTypes.map(type => (
                             <option key={type} value={type}>{type}</option>
@@ -135,7 +135,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                         name="price"
                         value={formData.price}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., 8000"
                         min="0"
@@ -151,7 +151,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     rows="3"
                     placeholder="Describe the property, facilities, and any special features..."
                     required
@@ -168,8 +168,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                         name="rooms"
                         value={formData.rooms}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                        required
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out" required
                         placeholder="e.g., 7"
                         min="1"
                     />
@@ -191,7 +190,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                         type="text"
                         value={newAmenity}
                         onChange={(e) => setNewAmenity(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="flex-1 px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         placeholder="Add amenity (e.g., WiFi, AC)"
                         onKeyPress={(e) => e.key === 'Enter' && handleAddAmenity()}
                     />
@@ -236,7 +235,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                             type="url"
                             value={url}
                             onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                            className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                            className="flex-1 px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             placeholder="https://example.com/image.jpg"
                         />
                         {imageUrls.length > 1 && (
@@ -260,10 +259,10 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                 </button>
             </div>
 
-            <div className="bg-blue-50 p-3 rounded-lg">
+            <div className="bg-primary/10 p-3 rounded-lg">
                 <div className="flex items-start gap-2">
-                    <span className="material-symbols-outlined text-blue-600 text-sm mt-0.5">info</span>
-                    <p className="text-sm text-blue-700">
+                    <span className="material-symbols-outlined text-primary/70 text-sm mt-0.5">info</span>
+                    <p className="text-sm text-primary/80">
                         Tip: Use Google Drive, Imgur, or other image hosting services. The first image will be used as the main thumbnail.
                     </p>
                 </div>
@@ -285,7 +284,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                         name="owner"
                         value={formData.owner}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., Mr. Perera"
                     />
@@ -300,7 +299,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                         name="ownerContact"
                         value={formData.ownerContact}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., +94 77 123 4567"
                     />
@@ -404,7 +403,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                             ) : (
                                 <button
                                     type="submit"
-                                    className="bg-green-600 text-white py-2.5 px-6 rounded-lg font-medium hover:bg-green-700 transition-colors"
+                                    className="bg-primary text-white py-2.5 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors"
                                 >
                                     <span className="flex items-center gap-2">
                                         <span className="material-symbols-outlined">check</span>
