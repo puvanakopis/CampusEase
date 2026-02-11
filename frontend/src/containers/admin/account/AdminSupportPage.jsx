@@ -145,7 +145,7 @@ const AdminSupportPage = () => {
     };
 
     return (
-        <main className="flex-1 w-full mx-auto flex flex-col gap-8 px-4 ">
+        <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col gap-8">
             {/* Header */}
             <div className="flex flex-col gap-1">
                 <h1 className="text-3xl font-bold text-slate-900">Support Center</h1>
