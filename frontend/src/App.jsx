@@ -52,6 +52,7 @@ import AdminOwner from "./pages/admin/AdminOwner";
 import AdminUser from "./pages/admin/AdminUser";
 import AdminBooking from "./pages/admin/AdminBooking";
 import AdminNotFound from "./pages/admin/AdminNotFound";
+import AdminProfile from "./pages/admin/AdminProfile";
 
 // --- Protected Route Wrapper ---
 const ProtectedRoute = ({ role, allowedRoles }) => {
@@ -146,6 +147,7 @@ function App() {
           <Route path="/admin/owner" element={<AdminOwner />} />
           <Route path="/admin/users" element={<AdminUser />} />
           <Route path="/admin/bookings" element={<AdminBooking />} />
+          <Route path="/admin/profile" element={<AdminProfile />} />
         </Route>
 
         {/* 404 */}
