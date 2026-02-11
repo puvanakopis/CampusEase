@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 import Navbar from "./components/user/Navbar";
 import Footer from "./components/user/Footer";
@@ -9,6 +9,8 @@ import OwnerFooter from './components/owner/OwnerFooter';
 
 import AdminNavbar from "./components/admin/AdminNavbar";
 import AdminFooter from "./components/admin/AdminFooter";
+
+import ProtectedRoute from "./route/ProtectedRoute";
 
 // Auth Pages
 import Register from "./pages/auth/Register";
@@ -55,20 +57,15 @@ import AdminProfile from "./pages/admin/AdminProfile";
 import AdminSupport from "./pages/admin/Support";
 import AdminNotFound from "./pages/admin/AdminNotFound";
 
-// --- Protected Route Wrapper ---
-const ProtectedRoute = ({ role, allowedRoles }) => {
-  return allowedRoles.includes(role) ? <Outlet /> : <Navigate to="*" />;
-};
-
 function App() {
-  const role = "staff"; // "student", "staff", "owner", "admin"
+  const role = "student"; // "student", "staff", "owner", "admin", "guest"
   const location = useLocation();
 
   const authPages = ["/login", "/register", "/forgot-password"];
-  const showNavbar = !authPages.includes(location.pathname);
+  const showNavbarFooter = !authPages.includes(location.pathname);
 
   const renderNavbar = () => {
-    if (!showNavbar) return null;
+    if (!showNavbarFooter) return null;
 
     switch (role) {
       case "owner":
@@ -83,7 +80,7 @@ function App() {
   };
 
   const renderFooter = () => {
-    if (!showNavbar) return null;
+    if (!showNavbarFooter) return null;
 
     switch (role) {
       case "owner":
@@ -107,17 +104,17 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/accommodation" element={<Accommodation />} />
-        <Route path="/accommodation/:id" element={<AccommodationDetails />} />
-        <Route path="/vehicle" element={<Vehicle />} />
-        <Route path="/vehicle/:id" element={<VehicleDetails />} />
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute role={role} />}>
 
-        {/* User Routes (student/staff) */}
-        <Route element={<ProtectedRoute role={role} allowedRoles={["student", "staff"]} />}>
+          {/* User/Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/accommodation" element={<Accommodation />} />
+          <Route path="/accommodation/:id" element={<AccommodationDetails />} />
+          <Route path="/vehicle" element={<Vehicle />} />
+          <Route path="/vehicle/:id" element={<VehicleDetails />} />
           <Route path="/owner/:id" element={<Owner />} />
           <Route path="/booking" element={<Booking />} />
           <Route path="/payment" element={<Payment />} />
@@ -126,10 +123,8 @@ function App() {
           <Route path="/saved-items" element={<SavedItems />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/support" element={<Support />} />
-        </Route>
 
-        {/* Owner Routes */}
-        <Route element={<ProtectedRoute role={role} allowedRoles={["owner"]} />}>
+          {/* Owner Routes */}
           <Route path="/owner" element={<OwnerApplication />} />
           <Route path="/owner/dashboard" element={<OwnerDashboard />} />
           <Route path="/owner/accommodation" element={<OwnerAccommodation />} />
@@ -138,10 +133,8 @@ function App() {
           <Route path="/owner/profile" element={<OwnerProfile />} />
           <Route path="/owner/settings" element={<OwnerSettings />} />
           <Route path="/owner/support" element={<OwnerSupport />} />
-        </Route>
 
-        {/* Admin Routes */}
-        <Route element={<ProtectedRoute role={role} allowedRoles={["admin"]} />}>
+          {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/accommodation" element={<AdminAccommodation />} />
           <Route path="/admin/vehicles" element={<AdminVehicles />} />
