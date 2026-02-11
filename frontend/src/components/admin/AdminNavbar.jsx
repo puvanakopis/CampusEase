@@ -25,6 +25,7 @@ const AdminNavbar = () => {
         { label: "Vehicles", path: "/admin/vehicles", key: "vehicles" },
         { label: "Owner", path: "/admin/owner", key: "owner" },
         { label: "Users", path: "/admin/users", key: "users" },
+        { label: "Bookings", path: "/admin/bookings", key: "bookings" },
     ];
 
     const profileMenu = [

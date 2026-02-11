@@ -82,7 +82,7 @@ const AdminUser = () => {
             name: "Michael Chen",
             email: "michael.chen@example.com",
             phone: "+94 71 345 6789",
-            role: "Professional",
+            role: "staff",
             status: "Inactive",
             profileImage: "https://randomuser.me/api/portraits/men/67.jpg",
             registrationDate: "2023-03-05",
@@ -171,7 +171,7 @@ const AdminUser = () => {
             name: "Lisa Taylor",
             email: "lisa.t@example.com",
             phone: "+94 76 888 9999",
-            role: "Professional",
+            role: "staff",
             status: "Active",
             profileImage: "https://randomuser.me/api/portraits/women/28.jpg",
             registrationDate: "2023-07-12",
@@ -199,7 +199,7 @@ const AdminUser = () => {
     const tabs = [
         { id: "all", label: "All Users", count: allUsers.length },
         { id: "students", label: "Students", count: allUsers.filter(u => u.role === "Student").length },
-        { id: "professionals", label: "Professionals", count: allUsers.filter(u => u.role === "Professional").length },
+        { id: "staffs", label: "Staffs", count: allUsers.filter(u => u.role === "staff").length },
         { id: "inactive", label: "Inactive/Suspended", count: allUsers.filter(u => u.status !== "Active").length }
     ];
 
@@ -285,8 +285,8 @@ const AdminUser = () => {
         switch (activeTab) {
             case "students":
                 return allUsers.filter(user => user.role === "Student");
-            case "professionals":
-                return allUsers.filter(user => user.role === "Professional");
+            case "staff":
+                return allUsers.filter(user => user.role === "staff");
             case "inactive":
                 return allUsers.filter(user => user.status !== "Active");
             default:
