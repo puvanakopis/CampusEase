@@ -49,6 +49,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminAccommodation from "./pages/admin/AdminAccommodation";
 import AdminVehicles from "./pages/admin/AdminVehicles";
 import AdminOwner from "./pages/admin/AdminOwner";
+import AdminUser from "./pages/admin/AdminUser";
 import AdminNotFound from "./pages/admin/AdminNotFound";
 
 // --- Protected Route Wrapper ---
@@ -142,6 +143,7 @@ function App() {
           <Route path="/admin/accommodation" element={<AdminAccommodation />} />
           <Route path="/admin/vehicles" element={<AdminVehicles />} />
           <Route path="/admin/owner" element={<AdminOwner />} />
+          <Route path="/admin/users" element={<AdminUser />} />
         </Route>
 
         {/* 404 */}
