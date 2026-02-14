@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import homeBackgroud from "../../../assets/homeBackgroud.png"
 
 const Hero = () => {
     const [mode, setMode] = useState("accommodation");
@@ -15,7 +16,7 @@ const Hero = () => {
                 <div className="absolute inset-0 z-0 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/40 to-slate-900/80 z-10"></div>
                     <img
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDv124ENMaSKvYXRWTeOgjNkKagk00f6oxSt8XZ2KuXFdxkIch6g8SvNDrcZB55bBkYjSXLWS5_mpC3nOtmHqEA9cxn2EaEdOQTMWESssP4_TS92QC687DEGtr60SKKJiGFLaBBEhrLcixhNxvJtK7POOaviBFzB0Qtx7P09_a2eD9f2bpPvUxeES2LV3wswh1TUjH-FeMbQdqOyRXrr6f9bkDg-uCAuO9yQJTzwaWNeI-baSDq6NM96LWPWZA1CO3_JRdvsJ596o"
+                        src={homeBackgroud}
                         alt="Belihuloya scenic mountain view near Sabaragamuwa University"
                         className="h-full w-full object-cover"
                     />

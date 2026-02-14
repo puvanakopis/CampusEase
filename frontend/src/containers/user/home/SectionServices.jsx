@@ -1,4 +1,6 @@
 import React from "react";
+import home1 from "../../../assets/home1.png"
+import home2 from "../../../assets/home2.png"
 
 const ServicesSection = () => {
     return (
@@ -23,7 +25,7 @@ const ServicesSection = () => {
                     <img
                         alt="Hostel room in Belihuloya area"
                         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_tkLtkH1vaYU_ReMiRCIarNLNs09ZENFSuSARKfD8Rf9z5qnO-Kh6fZlY-9w0G6F7yi_ukFlFTwS0a9Q8bhbSyNBBWXuc8i34Fy4XK7adDr1mlsOK9zL0n2y_PqjpQnC9GS4DVqNPJMu3v0uNtiOuJnkNXesTypBDeitAwq7tF1A_1AcEKK1lzm-hxqB0GunpGjBxEhRyBXOp50rHF741u2hy6dfY4wV15AADfdSxROYMM44XohjyjBuHGMQvXW9dHAbfZa-xUpM"
+                        src={home1}
                     />
 
                     <div className="absolute bottom-0 left-0 p-6 z-20 flex flex-col gap-2">
@@ -51,7 +53,7 @@ const ServicesSection = () => {
                     <img
                         alt="Bus on Pambahinna road"
                         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjkxWHZxl-NSBLXFxHVOHgLzHxOzFkaOMSE4b9j3k_ajtyCXDsfPuTpCQ0p2pzrkBb2P9DRhnE-GB9xrX6cdTMsA323Bran_XWC-NBG4e_yqLiNq0tA6_fdhSKiwbh7dj6_xqcU_VVv6UBBmuxQUtfgzzfFVSqytpQfPhCUiLfazjnWSSx4DYlvleyS99dkEbfJWPATf0QRaRP6qqsjii77Xq8XXZ0tWJRnbt2yfYz0crn7tTLTJfBiwskW860FcR9aUv52BCmh1A"
+                        src={home2}
                     />
 
                     <div className="absolute bottom-0 left-0 p-6 z-20 flex flex-col gap-2">

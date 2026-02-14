@@ -1,4 +1,8 @@
 import React from "react";
+import authBackground from "../../../assets/authBackground.png"
+import loginAvatar1 from "../../../assets/loginAvatar1.png"
+import loginAvatar2 from "../../../assets/loginAvatar2.png"
+import loginAvatar3 from "../../../assets/loginAvatar3.png"
 
 const HeroSection = () => {
     return (
@@ -6,7 +10,7 @@ const HeroSection = () => {
             <img
                 alt="Diverse Sri Lankan university students smiling and collaborating in an outdoor campus setting"
                 className="absolute inset-0 w-full h-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkxSJMFJv32wEwlTR8AW7U3voLUJtPA07PFli36l0UrDe9VQJ2wWElRqeuaUglX8NXHy6YPlrsfuhkBO70bEzfzNxHQUG3kUyYsLMBmNavJWyIP6W_w3eYL9dRNNxER-94oiIWvc263ohrE5JCkJTrNCAADAUYDAu69AAjD1tiwMaVulC4uraDKvBlUZpj_S_XWhTbrqhl258aOXw17K-7EvqmRFI6fEFZWX1EbO1VQb9Cq9oLjpaoNbq6gkOdFLSwUG13U1_zUK8"
+                src={authBackground}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent md:bg-gradient-to-r"></div>
             <div className="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
@@ -31,17 +35,17 @@ const HeroSection = () => {
                         <img
                             alt="Student Profile"
                             className="w-10 h-10 rounded-full border-2 border-white/30 object-cover shadow-lg"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8TBjBp4CgJowxdCkwDwcZrC4AGeMwlzZ-dpDzYA3fqw87gILJc7bMYuSfCCEK02JnHx0xKdK9FRwsPInNZOLa3vAlgLMQv8UtpQCndzvGg8AFsd0il8yESZd9nfWJiNQX5p8WGXmGK36AzS3fXynmxSBkzjWZTKcwKDsW5q2z5XTosN1siqePFejwL4Pq5M4_2IYwZ9tkvhtNksY7V7_J0dgtC_QtsXRLod6u8-AuTSbhuC2mLw1s_rQ6i-zgDHJbbIAvCAMjedk"
+                            src={loginAvatar1}
                         />
                         <img
                             alt="Student Profile"
                             className="w-10 h-10 rounded-full border-2 border-white/30 object-cover shadow-lg"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0St7fASGc2DlHyPdPWN_6bh8aeoapkOaG3nN2-crxMxaz16we-A_4bNqFzWHj0dLATc_CZ8V0gPqTDD6lcpVf3Yx5wErBMS7b4_QyV3Z5YRgZTzi8J8kwt2BoIsDhuW-1jRTifG9vsGTVORAOo5m9j7svlmpe08Uy2HmFp54JGUgheqOx1uk_h888X9c4dEIXaBxhD27USZoLEibrqy5JJK5aqGUW2xFx0BTTSsPEVoxFl0AkxXsPeV0sL9wWoqq9-ZY_Cu6johw"
+                            src={loginAvatar2}
                         />
                         <img
                             alt="Student Profile"
                             className="w-10 h-10 rounded-full border-2 border-white/30 object-cover shadow-lg"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3Jo7_HHFyEPn-EM_2uaeAqNxUdhoPmV4jLsbxwwnES4kBE_H_ZfXGAdxUm5TE8aQ9vp6kuoD75VzSqq1IfBlSagIlDrAZtxHbemAjfj8zipw7J6X9RUZHtwmooVQGjpvNGykW1JwK_JAGHZLxdi3DQicsbrBKl8c3f91azWrSYQR15wKU05FBdSbdN5aiLI8vBp6ts5FcldU4BV4Aw6Q3ij6nG4St5HZh6_-d7vV6B7UIA4u55gqSafUu5hTfbA_oxJnXuWf9uIc"
+                            src={loginAvatar3}
                         />
                         <div className="w-10 h-10 rounded-full border-2 border-white/30 bg-primary flex items-center justify-center text-[10px] font-bold shadow-lg">
                             +2k

@@ -1,4 +1,5 @@
 import React from "react";
+import authBackground from "../../../assets/authBackground.png"
 
 const HeroSection = () => {
     return (
@@ -6,7 +7,7 @@ const HeroSection = () => {
             <img
                 alt="Students on campus"
                 className="absolute inset-0 w-full h-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkxSJMFJv32wEwlTR8AW7U3voLUJtPA07PFli36l0UrDe9VQJ2wWElRqeuaUglX8NXHy6YPlrsfuhkBO70bEzfzNxHQUG3kUyYsLMBmNavJWyIP6W_w3eYL9dRNNxER-94oiIWvc263ohrE5JCkJTrNCAADAUYDAu69AAjD1tiwMaVulC4uraDKvBlUZpj_S_XWhTbrqhl258aOXw17K-7EvqmRFI6fEFZWX1EbO1VQb9Cq9oLjpaoNbq6gkOdFLSwUG13U1_zUK8"
+                src={authBackground}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent md:bg-gradient-to-r"></div>
             <div className="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
