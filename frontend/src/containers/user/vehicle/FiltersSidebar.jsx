@@ -50,13 +50,13 @@ const FiltersSidebar = () => {
                     <input
                         type="number"
                         placeholder="Min"
-                        className="w-full rounded-lg border border-[#cfdbe7] bg-background-light text-sm p-2 text-[#0d141b] focus:border-primary focus:ring-0"
+                        className="w-full rounded-lg border border-slate-200 bg-slate-50 text-sm px-4 py-3 text-slate-900 focus:border-primary focus:ring-primary focus:outline-none transition duration-200 ease-in-out"
                     />
                     <span className="text-gray-400">-</span>
                     <input
                         type="number"
                         placeholder="Max"
-                        className="w-full rounded-lg border border-[#cfdbe7] bg-background-light text-sm p-2 text-[#0d141b] focus:border-primary focus:ring-0"
+                        className="w-full rounded-lg border border-slate-200 bg-slate-50 text-sm px-4 py-3 text-slate-900 focus:border-primary focus:ring-primary focus:outline-none transition duration-200 ease-in-out"
                     />
                 </div>
             </div>

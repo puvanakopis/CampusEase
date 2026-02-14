@@ -13,7 +13,7 @@ const ALLOWED_PATHS = {
     "/admin/support",
   ],
   owner: [
-    "/owner",
+    "/owner/",
     "/owner/dashboard",
     "/owner/accommodation",
     "/owner/vehicle",

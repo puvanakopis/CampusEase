@@ -88,7 +88,7 @@ const SecureCheckout = () => {
                                 Cardholder Name
                             </label>
                             <input
-                                className="w-full h-12 bg-slate-50 border border-slate-200 rounded-lg focus:ring-primary focus:border-primary text-sm p-3"
+                                className="w-full h-12 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 text-sm transition duration-200 ease-in-out"
                                 placeholder="As printed on card"
                                 type="text"
                             />
@@ -101,7 +101,7 @@ const SecureCheckout = () => {
                             </label>
                             <div className="relative">
                                 <input
-                                    className="w-full h-12 bg-slate-50 border border-slate-200 rounded-lg focus:ring-primary focus:border-primary text-sm pr-12 p-3"
+                                    className="w-full h-12 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 pr-12 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     placeholder="0000 0000 0000 0000"
                                     type="text"
                                 />
@@ -120,7 +120,7 @@ const SecureCheckout = () => {
                                     Expiry Date
                                 </label>
                                 <input
-                                    className="w-full h-12 bg-slate-50 border border-slate-200 rounded-lg focus:ring-primary focus:border-primary text-sm p-3"
+                                    className="w-full h-12 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     placeholder="MM / YY"
                                     type="text"
                                 />
@@ -131,7 +131,7 @@ const SecureCheckout = () => {
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="w-full h-12 bg-slate-50 border border-slate-200 rounded-lg focus:ring-primary focus:border-primary text-sm p-3"
+                                        className="w-full h-12 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         placeholder="***"
                                         type="password"
                                     />
@@ -159,7 +159,7 @@ const SecureCheckout = () => {
 
                         {/* Pay Button */}
                         <button
-                            className="w-full h-14 bg-primary hover:bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 mt-4"
+                            className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg flex items-center justify-center gap-2 mt-4"
                             type="submit"
                         >
                             <span className="material-symbols-outlined">verified</span>

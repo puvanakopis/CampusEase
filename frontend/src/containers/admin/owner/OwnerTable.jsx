@@ -38,11 +38,12 @@ const OwnerTable = ({
                         <input
                             type="text"
                             placeholder="Search owners..."
-                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
+
                     {/* Status Filter */}
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Status: All</option>
                         <option>Active</option>
                         <option>Suspended</option>
@@ -144,12 +145,7 @@ const OwnerTable = ({
 
                                     <button
                                         onClick={(e) => handleToggleStatusClick(owner, e)}
-                                        className={`${owner.status === "Active"
-                                            ? "bg-yellow-600 hover:bg-yellow-500"
-                                            : "bg-blue-600 hover:bg-blue-500"
-                                            } text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors`}
-                                        title={owner.status === "Active" ? "Suspend Owner" : "Activate Owner"}
-                                    >
+                                        className="bg-blue-600 hover:bg-primary/90 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"                                    >
                                         {owner.status === "Active" ? "Suspend" : "Activate"}
                                     </button>
 

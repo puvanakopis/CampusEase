@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PrimaryButton from '../../../components/common/PrimaryButton';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const BookingCard = ({ price, currency, period, rating, paymentDetails, hostName }) => {
+    const [startDate, setStartDate] = useState(null);
+
     return (
         <div className="lg:col-span-1">
             <div className="sticky top-28 bg-white border border-slate-200 rounded-xl shadow-sm p-6">
@@ -22,7 +26,13 @@ const BookingCard = ({ price, currency, period, rating, paymentDetails, hostName
                             <label className="block text-[10px] uppercase font-bold text-slate-800 tracking-wider">
                                 Start Semester
                             </label>
-                            <div className="text-sm text-slate-600 mt-0.5">Select date</div>
+                            <DatePicker
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                placeholderText="Select date"
+                                className="mt-0.5 text-sm text-slate-600 w-full border-none p-0 focus:ring-0 focus:outline-none bg-transparent"
+                                calendarClassName="rounded-lg border border-slate-200 shadow-lg"
+                            />
                         </div>
                         <div className="w-1/2 p-3 hover:bg-slate-50 cursor-pointer">
                             <label className="block text-[10px] uppercase font-bold text-slate-800 tracking-wider">
@@ -39,9 +49,7 @@ const BookingCard = ({ price, currency, period, rating, paymentDetails, hostName
                     </div>
                 </div>
 
-                <PrimaryButton
-                 className="w-full py-3.5 text-lg mb-4"
-                 >
+                <PrimaryButton className="w-full py-3.5 text-lg mb-4">
                     Request Booking
                 </PrimaryButton>
 

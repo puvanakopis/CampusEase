@@ -107,7 +107,7 @@ const StatusChangePopup = ({
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}
                                 placeholder="Please explain why this owner is being suspended..."
-                                className="w-full h-32 px-4 py-3 border border-slate-300 rounded-lg text-sm resize-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 resize-none focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 required
                             />
                             <p className="text-xs text-slate-500 mt-1">
@@ -124,7 +124,7 @@ const StatusChangePopup = ({
                                     info
                                 </span>
                                 <div>
-                                    <p className="text-sm font-medium text-blue-800">Activation Note</p>
+                                    <p className="text-sm font-medium text-primary">Activation Note</p>
                                     <p className="text-xs text-blue-600 mt-1">
                                         This owner will regain full access to the system. All their properties will become available.
                                         {owner?.suspensionReason && (

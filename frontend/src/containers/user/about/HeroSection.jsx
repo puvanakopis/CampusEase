@@ -3,6 +3,8 @@ import PrimaryButton from "../../../components/common/PrimaryButton";
 import OutlineButton from "../../../components/common/OutlineButton";
 import useNavigateTo from "../../../hooks/useNavigateTo";
 
+import aboutGroupImage from "../../../assets/aboutGroupImage.png"
+
 function HeroSection() {
     const navigateTo = useNavigateTo();
 
@@ -36,8 +38,8 @@ function HeroSection() {
                     <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
                         <img
                             className="w-full h-full object-cover"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC5QTdDw_7GASXrWZXpnFVAQhp3Urp5ogMm9CwlUZX-4lFfyffiKware0g6RSwnH1fwhBgStxhcAB9xSPXhRhoXhMoAeCO2vFSMFLGfIgzVeL56m-NrqPyH2M_PxAvkyU21HPki9fuJDgy6kXVksUWe3oam-ulDnkcLPqZ3-r_UvzEjGPNHre4zLOMr9SZF0WicVJaxLbURt3sqJ6Sbst1QLsHUPpgqNgAn-kdzI3x44Sc1H00Vht9O_G5QY2UGpcmLqPEnwbIBio"
-                            alt="Sabaragamuwa University Students"
+                            src={aboutGroupImage}
+                             alt="Sabaragamuwa University Students"
                         />
                     </div>
                     <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>

@@ -21,7 +21,7 @@ const EditBookingPopup = ({ editedBooking, onEditedBookingChange, onClose, onCon
                                 type="text"
                                 value={editedBooking?.amount}
                                 onChange={(e) => onEditedBookingChange({ ...editedBooking, amount: e.target.value })}
-                                className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             />
                         </div>
                         <div>
@@ -29,7 +29,7 @@ const EditBookingPopup = ({ editedBooking, onEditedBookingChange, onClose, onCon
                             <select
                                 value={editedBooking?.priority}
                                 onChange={(e) => onEditedBookingChange({ ...editedBooking, priority: e.target.value })}
-                                className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             >
                                 <option value="Low">Low</option>
                                 <option value="Medium">Medium</option>
@@ -45,7 +45,7 @@ const EditBookingPopup = ({ editedBooking, onEditedBookingChange, onClose, onCon
                                     ...editedBooking,
                                     period: { ...editedBooking.period, startDate: e.target.value }
                                 })}
-                                className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             />
                         </div>
                         <div>
@@ -57,7 +57,7 @@ const EditBookingPopup = ({ editedBooking, onEditedBookingChange, onClose, onCon
                                     ...editedBooking,
                                     period: { ...editedBooking.period, endDate: e.target.value }
                                 })}
-                                className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             />
                         </div>
                     </div>
@@ -75,7 +75,7 @@ const EditBookingPopup = ({ editedBooking, onEditedBookingChange, onClose, onCon
                                         ...editedBooking,
                                         customer: { ...editedBooking.customer, name: e.target.value }
                                     })}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 />
                             </div>
                             <div>
@@ -87,7 +87,7 @@ const EditBookingPopup = ({ editedBooking, onEditedBookingChange, onClose, onCon
                                         ...editedBooking,
                                         customer: { ...editedBooking.customer, email: e.target.value }
                                     })}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 />
                             </div>
                             <div>
@@ -99,7 +99,7 @@ const EditBookingPopup = ({ editedBooking, onEditedBookingChange, onClose, onCon
                                         ...editedBooking,
                                         customer: { ...editedBooking.customer, phone: e.target.value }
                                     })}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 />
                             </div>
                             <div>
@@ -111,7 +111,7 @@ const EditBookingPopup = ({ editedBooking, onEditedBookingChange, onClose, onCon
                                         ...editedBooking,
                                         customer: { ...editedBooking.customer, studentId: e.target.value }
                                     })}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 />
                             </div>
                         </div>
@@ -130,7 +130,7 @@ const EditBookingPopup = ({ editedBooking, onEditedBookingChange, onClose, onCon
                                         ...editedBooking,
                                         service: { ...editedBooking.service, title: e.target.value }
                                     })}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 />
                             </div>
                             <div>
@@ -142,7 +142,7 @@ const EditBookingPopup = ({ editedBooking, onEditedBookingChange, onClose, onCon
                                         ...editedBooking,
                                         service: { ...editedBooking.service, details: e.target.value }
                                     })}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 />
                             </div>
                         </div>
@@ -152,7 +152,7 @@ const EditBookingPopup = ({ editedBooking, onEditedBookingChange, onClose, onCon
                     <div className="border-t pt-6">
                         <h4 className="font-bold text-slate-900 mb-4">Admin Notes</h4>
                         <textarea
-                            className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             rows="4"
                             placeholder="Add any admin notes or updates..."
                         />

@@ -22,7 +22,7 @@ const VehicleRequestsTable = ({
                         <input
                             type="text"
                             placeholder="Search vehicles..."
-                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
                     {/* Status Filter */}

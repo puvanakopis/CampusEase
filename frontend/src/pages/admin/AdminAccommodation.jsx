@@ -5,14 +5,14 @@ import Tabs from "../../containers/admin/accommodation/Tabs";
 import PropertyTable from "../../containers/admin/accommodation/PropertyTable";
 import ViewAccommodationPopup from "../../containers/admin/accommodation/ViewAccommodationPopup";
 import PropertyRequestsTable from "../../containers/admin/accommodation/PropertyRequestsTable";
-import StatusChangePopup from "../../containers/admin/accommodation/StatusChangePopup"; // Import the new popup
+import StatusChangePopup from "../../containers/admin/accommodation/StatusChangePopup";
 
 const AdminAccommodation = () => {
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedProperty, setSelectedProperty] = useState(null);
     const [activeTab, setActiveTab] = useState("current");
-    const [showStatusPopup, setShowStatusPopup] = useState(false); // New state for status popup
-    const [propertyToChangeStatus, setPropertyToChangeStatus] = useState(null); // New state for property data
+    const [showStatusPopup, setShowStatusPopup] = useState(false); 
+    const [propertyToChangeStatus, setPropertyToChangeStatus] = useState(null); 
 
     const [allProperties, setAllProperties] = useState([
         {
@@ -197,7 +197,6 @@ const AdminAccommodation = () => {
         const property = allProperties.find(p => p.id === propertyId);
         if (!property) return;
 
-        // Set the property for status change and show popup
         setPropertyToChangeStatus({ ...property, currentStatus });
         setShowStatusPopup(true);
     };
@@ -216,12 +215,9 @@ const AdminAccommodation = () => {
             } : prop
         ));
 
-        // Optional: Send notification to property owner
-        // await sendStatusChangeNotification(propertyToChangeStatus.ownerEmail, newStatus, reason);
 
         alert(`Property "${propertyToChangeStatus.name}" has been ${newStatus.toLowerCase()}.`);
         
-        // Close popup and reset
         setShowStatusPopup(false);
         setPropertyToChangeStatus(null);
     };

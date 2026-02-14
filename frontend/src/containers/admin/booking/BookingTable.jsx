@@ -16,7 +16,7 @@ const BookingTable = ({
 
     const getStatusColor = (status) => {
         switch (status) {
-            case "Confirmed": return "bg-blue-100 text-blue-800";
+            case "Confirmed": return "bg-blue-100 text-primary";
             case "Pending": return "bg-yellow-100 text-yellow-800";
             case "Active": return "bg-green-100 text-green-800";
             case "Completed": return "bg-purple-100 text-purple-800";
@@ -58,11 +58,12 @@ const BookingTable = ({
                         <input
                             type="text"
                             placeholder="Search bookings..."
-                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
+
                     {/* Status Filter */}
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Status: All</option>
                         <option>Pending</option>
                         <option>Confirmed</option>
@@ -70,13 +71,15 @@ const BookingTable = ({
                         <option>Completed</option>
                         <option>Cancelled</option>
                     </select>
+
                     {/* Service Filter */}
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Service: All</option>
                         <option>Accommodation</option>
                         <option>Transport</option>
                     </select>
                 </div>
+
             </div>
 
             {/* Table */}
@@ -197,7 +200,7 @@ const BookingTable = ({
 
                                         <button
                                             onClick={() => onEdit(booking)}
-                                            className="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold py-2 px-3 rounded-md uppercase tracking-wider transition-colors"
+                                            className="bg-blue-600 hover:bg-primary/90 text-white text-[10px] font-bold py-2 px-3 rounded-md uppercase tracking-wider transition-colors"
                                             title="Edit Booking"
                                         >
                                             Edit

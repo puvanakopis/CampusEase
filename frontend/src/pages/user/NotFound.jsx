@@ -57,20 +57,7 @@ const NotFound = () => {
                         </PrimaryButton>
                     </div>
 
-                    {/* Search Bar */}
                     <div className="w-full max-w-md mt-12 px-4">
-                        <div className="relative group">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <span className="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">
-                                    search
-                                </span>
-                            </div>
-                            <input
-                                className="block w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-slate-900 placeholder-slate-400"
-                                placeholder="Search for courses, lecturers, or maps..."
-                                type="text"
-                            />
-                        </div>
                         <p className="mt-4 text-sm text-slate-500">
                             Can't find what you need?{" "}
                             <button className="text-primary hover:underline font-medium" onClick={() => navigateTo("/contact")}>

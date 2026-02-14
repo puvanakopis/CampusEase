@@ -22,10 +22,9 @@ const SupportPage = () => {
                     {/* Issue Type */}
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-900">Issue Category</label>
-                        <select className="form-select w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-primary focus:ring-primary">
-                            <option disabled value="">
-                                Select a category
-                            </option>
+                        <select className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"                        >                            <option disabled value="">
+                            Select a category
+                        </option>
                             <option value="accommodation">Accommodation Issue</option>
                             <option value="vehicle">Vehicle Rental Issue</option>
                             <option value="payment">Payment Dispute</option>
@@ -41,7 +40,7 @@ const SupportPage = () => {
                         <input
                             type="text"
                             placeholder="e.g. ACC-BK-12345 or VEH-RL-67890"
-                            className="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-primary focus:ring-primary"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
 
@@ -51,14 +50,14 @@ const SupportPage = () => {
                         <textarea
                             rows={5}
                             placeholder="Please describe your problem in detail..."
-                            className="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-primary focus:ring-primary resize-none"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out resize-none"
                         ></textarea>
                     </div>
 
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-primary hover:bg-blue-600 text-white font-bold py-3.5 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2"
+                        className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2"
                     >
                         <span className="material-symbols-outlined text-lg">send</span>
                         Submit Ticket
