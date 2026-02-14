@@ -72,7 +72,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., Toyota Axio"
                     />
@@ -86,7 +86,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         name="type"
                         value={formData.type}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     >
                         {vehicleTypes.map(type => (
                             <option key={type} value={type}>{type}</option>
@@ -103,7 +103,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         name="price"
                         value={formData.price}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., 8500"
                         min="0"
@@ -119,7 +119,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         name="location"
                         value={formData.location}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., Belihuloya Town"
                     />
@@ -136,7 +136,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         name="seats"
                         value={formData.seats}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., 5"
                         min="1"
@@ -151,7 +151,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         name="transmission"
                         value={formData.transmission}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     >
                         {transmissionTypes.map(type => (
                             <option key={type} value={type}>{type}</option>
@@ -167,7 +167,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         name="fuelType"
                         value={formData.fuelType}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     >
                         {fuelTypes.map(type => (
                             <option key={type} value={type}>{type}</option>
@@ -192,7 +192,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         name="year"
                         value={formData.year}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         min="2000"
                         max={new Date().getFullYear()}
@@ -208,7 +208,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         name="mileage"
                         value={formData.mileage}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         placeholder="e.g., 45,000 km"
                     />
                 </div>
@@ -223,7 +223,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         type="text"
                         value={newFeature}
                         onChange={(e) => setNewFeature(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         placeholder="Add feature (e.g., AC, Bluetooth)"
                         onKeyPress={(e) => e.key === 'Enter' && handleAddFeature()}
                     />
@@ -266,7 +266,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     rows="3"
                     placeholder="Describe the vehicle condition, special features, and any notes for renters..."
                     required
@@ -282,7 +282,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                     name="image"
                     value={formData.image}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     required
                     placeholder="https://example.com/vehicle-image.jpg"
                 />
@@ -307,7 +307,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         name="owner"
                         value={formData.owner}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., Mr. Perera"
                     />
@@ -322,7 +322,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                         name="ownerContact"
                         value={formData.ownerContact}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., +94 77 123 4567"
                     />
@@ -441,7 +441,7 @@ const AddVehiclePopup = ({ setShowAddPopup, handleAddVehicle }) => {
                             ) : (
                                 <button
                                     type="submit"
-                                    className="bg-green-600 text-white py-2.5 px-6 rounded-lg font-medium hover:bg-green-700 transition-colors"
+                                    className="bg-primary text-white py-2.5 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors"
                                 >
                                     <span className="flex items-center gap-2">
                                         <span className="material-symbols-outlined">check</span>

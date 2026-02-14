@@ -12,24 +12,24 @@ const ContactForm = () => (
                 <label className="flex flex-col gap-2">
                     <span className="text-sm font-semibold">Full Name</span>
                     <input
-                        className="rounded-lg border border-[#cfdbe7] bg-transparent focus:ring-2 focus:ring-primary/90 focus:border-primary/90 p-3 outline-none transition-all"
-                        placeholder="John Doe"
                         type="text"
+                        placeholder="John Doe"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     />
                 </label>
                 <label className="flex flex-col gap-2">
                     <span className="text-sm font-semibold">University Email</span>
                     <input
-                        className="rounded-lg border border-[#cfdbe7] bg-transparent focus:ring-2 focus:ring-primary/90 focus:border-primary/90 p-3 outline-none transition-all"
-                        placeholder="name@std.sab.ac.lk"
                         type="email"
+                        placeholder="name@std.sab.ac.lk"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     />
                 </label>
             </div>
             <label className="flex flex-col gap-2">
                 <span className="text-sm font-semibold">Inquiry Subject</span>
                 <select
-                    className="border border-[#cfdbe7] rounded-lg bg-transparent focus:ring-2 focus:ring-primary/90 focus:border-primary/90 p-3 appearance-none outline-none transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out appearance-none"
                 >
                     <option>Technical Support</option>
                     <option>Account Issues</option>
@@ -42,14 +42,14 @@ const ContactForm = () => (
             <label className="flex flex-col gap-2">
                 <span className="text-sm font-semibold">Your Message</span>
                 <textarea
-                    className="border border-[#cfdbe7] rounded-lg bg-transparent focus:ring-2 focus:ring-primary/90 focus:border-primary/90 p-3 resize-none outline-none transition-all"
+                    rows={5}
                     placeholder="How can we help you?"
-                    rows="5"
-                ></textarea>
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out resize-none"
+                />
             </label>
 
             <PrimaryButton
-                className="w-full py-4flex items-center justify-center gap-2"
+                className="w-full py-4 flex items-center justify-center gap-2"
                 type="submit"
             >
                 <span className="material-symbols-outlined">send</span>

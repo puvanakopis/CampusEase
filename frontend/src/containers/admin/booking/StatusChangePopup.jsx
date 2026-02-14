@@ -12,7 +12,7 @@ const StatusChangePopup = ({
 
     const statusOptions = [
         { value: "Pending", label: "Pending", color: "bg-yellow-100 text-yellow-800", icon: "hourglass_bottom" },
-        { value: "Confirmed", label: "Confirmed", color: "bg-blue-100 text-blue-800", icon: "check_circle" },
+        { value: "Confirmed", label: "Confirmed", color: "bg-blue-100 text-primary", icon: "check_circle" },
         { value: "Active", label: "Active", color: "bg-green-100 text-green-800", icon: "play_arrow" },
         { value: "Completed", label: "Completed", color: "bg-purple-100 text-purple-800", icon: "check_circle" },
         { value: "Cancelled", label: "Cancelled", color: "bg-red-100 text-red-800", icon: "cancel" }
@@ -94,8 +94,8 @@ const StatusChangePopup = ({
                                     key={status.value}
                                     onClick={() => setSelectedStatus(status.value)}
                                     className={`p-3 rounded-lg border transition-all flex flex-col items-center justify-center ${selectedStatus === status.value
-                                            ? 'border-primary bg-primary/5'
-                                            : 'border-slate-200 hover:border-slate-300'
+                                        ? 'border-primary bg-primary/5'
+                                        : 'border-slate-200 hover:border-slate-300'
                                         }`}
                                 >
                                     <span className={`material-symbols-outlined mb-1 ${selectedStatus === status.value ? 'text-primary' : 'text-slate-400'}`}>
@@ -119,7 +119,7 @@ const StatusChangePopup = ({
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}
                                 placeholder="Please explain why this booking is being cancelled..."
-                                className="w-full h-32 px-4 py-3 border border-slate-300 rounded-lg text-sm resize-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 required
                             />
                             <p className="text-xs text-slate-500 mt-1">
@@ -136,9 +136,10 @@ const StatusChangePopup = ({
                             </label>
                             <textarea
                                 value={reason}
+                                rows={5}
                                 onChange={(e) => setReason(e.target.value)}
                                 placeholder="Add any notes about this status change..."
-                                className="w-full h-24 px-4 py-3 border border-slate-300 rounded-lg text-sm resize-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             />
                         </div>
                     )}
@@ -172,8 +173,8 @@ const StatusChangePopup = ({
                         onClick={handleSubmit}
                         disabled={loading || (selectedStatus === "Cancelled" && !reason.trim())}
                         className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 ${selectedStatus === "Cancelled"
-                                ? "bg-red-600 hover:bg-red-700 disabled:bg-red-300"
-                                : "bg-primary hover:bg-primary/80 disabled:bg-primary/50"
+                            ? "bg-red-600 hover:bg-red-700 disabled:bg-red-300"
+                            : "bg-primary hover:bg-primary/80 disabled:bg-primary/50"
                             }`}
                     >
                         {loading ? (

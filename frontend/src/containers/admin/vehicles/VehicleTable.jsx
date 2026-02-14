@@ -25,17 +25,19 @@ const VehicleTable = ({ vehicles, onView, onDelete, onToggleStatus, isAdmin = fa
                         <input
                             type="text"
                             placeholder="Search vehicles..."
-                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
+
                     {/* Status Filter */}
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Status: All</option>
                         <option>Active</option>
                         <option>Inactive</option>
                     </select>
+
                     {/* Type Filter */}
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Type: All</option>
                         <option>Shuttle</option>
                         <option>Van</option>
@@ -138,12 +140,7 @@ const VehicleTable = ({ vehicles, onView, onDelete, onToggleStatus, isAdmin = fa
                                     {isAdmin && onToggleStatus && (
                                         <button
                                             onClick={(e) => handleToggleStatusClick(vehicle, e)}
-                                            className={`${vehicle.status === "Active"
-                                                ? "bg-yellow-600 hover:bg-yellow-500"
-                                                : "bg-blue-600 hover:bg-blue-500"
-                                                } text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors`}
-                                            title={vehicle.status === "Active" ? "Deactivate Vehicle" : "Activate Vehicle"}
-                                        >
+                                            className="bg-primary hover:bg-primary/90 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"                                       >
                                             {vehicle.status === "Active" ? "Deactivate" : "Activate"}
                                         </button>
                                     )}

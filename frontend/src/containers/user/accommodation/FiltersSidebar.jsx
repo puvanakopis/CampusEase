@@ -42,9 +42,17 @@ const FiltersSidebar = () => {
                     Monthly Budget (LKR)
                 </label>
                 <div className="flex items-center gap-2">
-                    <input type="number" placeholder="Min" className="w-full rounded-lg border border-[#cfdbe7] bg-background-light text-sm p-2 text-[#0d141b] focus:border-primary focus:ring-0" />
+                    <input
+                        type="number"
+                        placeholder="Min"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                    />
                     <span className="text-gray-400">-</span>
-                    <input type="number" placeholder="Max" className="w-full rounded-lg border border-[#cfdbe7] bg-background-light text-sm p-2 text-[#0d141b] focus:border-primary focus:ring-0" />
+                    <input
+                        type="number"
+                        placeholder="Max"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                    />
                 </div>
             </div>
 

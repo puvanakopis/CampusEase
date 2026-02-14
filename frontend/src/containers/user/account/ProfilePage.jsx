@@ -94,7 +94,7 @@ const ProfilePage = () => {
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Full Name</label>
                         <input
-                            className="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
                             type="text"
                             value="Sandaruwan Perera"
                         />
@@ -103,7 +103,7 @@ const ProfilePage = () => {
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">University Email</label>
                         <input
-                            className="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
                             type="email"
                             value="sandaruwan.p@mgt.sab.ac.lk"
                         />
@@ -116,7 +116,7 @@ const ProfilePage = () => {
                                 +94
                             </span>
                             <input
-                                className="flex-1 bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900"
+                                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
                                 type="tel"
                                 value="77 123 4567"
                             />
@@ -125,8 +125,7 @@ const ProfilePage = () => {
 
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Faculty</label>
-                        <select className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900">
-                            <option>Computing</option>
+                        <select className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900">                            <option>Computing</option>
                             <option>Technology</option>
                             <option>Applied Sciences</option>
                             <option>Geomatics</option>

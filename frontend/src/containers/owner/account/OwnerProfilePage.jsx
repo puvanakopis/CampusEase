@@ -123,7 +123,7 @@ const OwnerProfilePage = () => {
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Business Name</label>
                         <input
-                            className="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             type="text"
                             value="Perera Rentals"
                         />
@@ -131,7 +131,9 @@ const OwnerProfilePage = () => {
 
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Business Type</label>
-                        <select className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900">
+                        <select
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        >
                             <option>Individual</option>
                             <option>Private Limited</option>
                             <option>Partnership</option>
@@ -142,7 +144,7 @@ const OwnerProfilePage = () => {
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Business Email</label>
                         <input
-                            className="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             type="email"
                             value="contact@pererarentals.com"
                         />
@@ -155,7 +157,7 @@ const OwnerProfilePage = () => {
                                 +94
                             </span>
                             <input
-                                className="flex-1 bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900"
+                                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 type="tel"
                                 value="71 234 5678"
                             />
@@ -165,7 +167,7 @@ const OwnerProfilePage = () => {
                     <div className="md:col-span-2 flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Business Address</label>
                         <textarea
-                            className="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900 h-24"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out h-24"
                             value="No. 123, Galle Road, Colombo 03, Sri Lanka"
                         />
                     </div>
@@ -173,7 +175,7 @@ const OwnerProfilePage = () => {
                     <div className="md:col-span-2 flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Business Description</label>
                         <textarea
-                            className="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900 h-32"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out h-32"
                             value="Providing premium rental accommodations near universities with modern amenities, 24/7 security, and excellent customer service. Specializing in student-friendly housing solutions."
                         />
                     </div>

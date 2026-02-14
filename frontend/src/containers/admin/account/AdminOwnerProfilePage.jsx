@@ -120,7 +120,7 @@ const AdminProfilePage = () => {
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Admin Name</label>
                         <input
-                            className="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900"
+                            className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             type="text"
                             value="Alex Johnson"
                         />
@@ -129,7 +129,7 @@ const AdminProfilePage = () => {
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Admin Email</label>
                         <input
-                            className="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900"
+                            className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             type="email"
                             value="admin@example.com"
                         />
@@ -142,7 +142,7 @@ const AdminProfilePage = () => {
                                 +94
                             </span>
                             <input
-                                className="flex-1 bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900"
+                                className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 type="tel"
                                 value="77 123 4567"
                             />
@@ -152,7 +152,8 @@ const AdminProfilePage = () => {
                     <div className="md:col-span-2 flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Role Description</label>
                         <textarea
-                            className="w-full bg-slate-50 border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary text-slate-900 h-24"
+                            rows={5}
+                            className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             value="Responsible for managing platform-wide settings, monitoring user activity, approving content, and ensuring smooth operation of the system."
                         />
                     </div>

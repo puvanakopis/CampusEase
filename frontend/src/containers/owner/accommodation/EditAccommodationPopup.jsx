@@ -76,7 +76,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                     />
                                 </div>
@@ -90,7 +90,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                         name="location"
                                         value={formData.location}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                     />
                                 </div>
@@ -103,7 +103,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                         name="type"
                                         value={formData.type}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     >
                                         {accommodationTypes.map(type => (
                                             <option key={type} value={type}>{type}</option>
@@ -120,7 +120,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                         name="price"
                                         value={formData.price}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                         min="0"
                                     />
@@ -134,7 +134,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                         name="status"
                                         value={formData.status}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     >
                                         {statusOptions.map(status => (
                                             <option key={status.value} value={status.value}>
@@ -153,7 +153,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                         name="rooms"
                                         value={formData.rooms}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                         min="1"
                                     />
@@ -168,7 +168,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                         name="occupied"
                                         value={formData.occupied}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         min="0"
                                         max={formData.rooms}
                                     />
@@ -183,7 +183,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                     name="description"
                                     value={formData.description}
                                     onChange={handleChange}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
                                     rows="3"
                                     required
                                 />
@@ -198,7 +198,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                     type="text"
                                     value={newAmenity}
                                     onChange={(e) => setNewAmenity(e.target.value)}
-                                    className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                    className="flex-1 w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
                                     placeholder="Add amenity (e.g., WiFi, AC)"
                                     onKeyPress={(e) => e.key === 'Enter' && handleAddAmenity()}
                                 />
@@ -221,7 +221,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                         <button
                                             type="button"
                                             onClick={() => handleRemoveAmenity(amenity)}
-                                            className="text-slate-500 hover:text-slate-700"
+                                            className="flex items-center justify-center w-6 h-6 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-100 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         >
                                             <span className="material-symbols-outlined text-sm">close</span>
                                         </button>
@@ -243,7 +243,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                         name="owner"
                                         value={formData.owner}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                     />
                                 </div>
@@ -257,7 +257,7 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                         name="ownerContact"
                                         value={formData.ownerContact}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                     />
                                 </div>

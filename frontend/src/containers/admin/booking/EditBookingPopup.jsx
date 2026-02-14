@@ -70,7 +70,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                 <select
                                     value={editedBooking.bookingStatus}
                                     onChange={(e) => handleChange("bookingStatus", e.target.value)}
-                                    className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 >
                                     <option value="Pending">Pending</option>
                                     <option value="Confirmed">Confirmed</option>
@@ -84,7 +84,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                 <select
                                     value={editedBooking.paymentStatus}
                                     onChange={(e) => handleChange("paymentStatus", e.target.value)}
-                                    className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 >
                                     <option value="Pending">Pending</option>
                                     <option value="Partial">Partial</option>
@@ -103,7 +103,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                         type="text"
                                         value={editedBooking.customer.name}
                                         onChange={(e) => handleCustomerChange("name", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />
                                 </div>
                                 <div>
@@ -112,7 +112,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                         type="text"
                                         value={editedBooking.customer.studentId}
                                         onChange={(e) => handleCustomerChange("studentId", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />
                                 </div>
                                 <div>
@@ -121,7 +121,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                         type="email"
                                         value={editedBooking.customer.email}
                                         onChange={(e) => handleCustomerChange("email", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />
                                 </div>
                                 <div>
@@ -130,7 +130,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                         type="tel"
                                         value={editedBooking.customer.phone}
                                         onChange={(e) => handleCustomerChange("phone", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />
                                 </div>
                             </div>
@@ -145,7 +145,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                     <select
                                         value={editedBooking.service.type}
                                         onChange={(e) => handleServiceChange("type", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     >
                                         <option value="Accommodation">Accommodation</option>
                                         <option value="Transport">Transport</option>
@@ -157,7 +157,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                         type="text"
                                         value={editedBooking.service.title}
                                         onChange={(e) => handleServiceChange("title", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />
                                 </div>
                                 <div className="md:col-span-2">
@@ -166,7 +166,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                         type="text"
                                         value={editedBooking.service.details}
                                         onChange={(e) => handleServiceChange("details", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />
                                 </div>
                             </div>
@@ -182,7 +182,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                         type="date"
                                         value={editedBooking.period.startDate}
                                         onChange={(e) => handlePeriodChange("startDate", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />
                                 </div>
                                 <div>
@@ -191,7 +191,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                         type="date"
                                         value={editedBooking.period.endDate}
                                         onChange={(e) => handlePeriodChange("endDate", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />
                                 </div>
                                 <div>
@@ -200,7 +200,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                         type="text"
                                         value={editedBooking.period.duration}
                                         onChange={(e) => handlePeriodChange("duration", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />
                                 </div>
                             </div>
@@ -216,7 +216,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                         type="number"
                                         value={editedBooking.amount}
                                         onChange={(e) => handleChange("amount", parseInt(e.target.value))}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />
                                 </div>
                                 <div>
@@ -224,7 +224,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                                     <select
                                         value={editedBooking.paymentMethod}
                                         onChange={(e) => handleChange("paymentMethod", e.target.value)}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     >
                                         <option value="Bank Transfer">Bank Transfer</option>
                                         <option value="Credit Card">Credit Card</option>
@@ -241,7 +241,7 @@ const EditBookingPopup = ({ booking, onClose, onUpdate }) => {
                             <textarea
                                 value={editedBooking.notes || ""}
                                 onChange={(e) => handleChange("notes", e.target.value)}
-                                className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 rows="4"
                                 placeholder="Add any admin notes or updates..."
                             />

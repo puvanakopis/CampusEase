@@ -1,16 +1,6 @@
 import React from 'react';
 
-const ApplicationPopup = ({
-    formData,
-    currentStep,
-    handleInputChange,
-    handleFileUpload,
-    handleNextStep,
-    handlePreviousStep,
-    handleSubmitApplication,
-    validateStep,
-    setShowApplicationPopup
-}) => {
+const ApplicationPopup = ({ formData, currentStep, handleInputChange, handleFileUpload, handleNextStep, handlePreviousStep, handleSubmitApplication, validateStep, setShowApplicationPopup }) => {
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -64,7 +54,7 @@ const ApplicationPopup = ({
                                         name="firstName"
                                         value={formData.firstName}
                                         onChange={handleInputChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                         placeholder="Enter your first name"
                                     />
@@ -79,7 +69,7 @@ const ApplicationPopup = ({
                                         name="lastName"
                                         value={formData.lastName}
                                         onChange={handleInputChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                         placeholder="Enter your last name"
                                     />
@@ -94,7 +84,7 @@ const ApplicationPopup = ({
                                         name="email"
                                         value={formData.email}
                                         onChange={handleInputChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                         placeholder="your.email@example.com"
                                     />
@@ -109,7 +99,7 @@ const ApplicationPopup = ({
                                         name="phone"
                                         value={formData.phone}
                                         onChange={handleInputChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                         placeholder="+94 77 123 4567"
                                     />
@@ -124,7 +114,7 @@ const ApplicationPopup = ({
                                         name="nic"
                                         value={formData.nic}
                                         onChange={handleInputChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                         placeholder="901234567V"
                                         maxLength="12"
@@ -140,7 +130,7 @@ const ApplicationPopup = ({
                                         name="address"
                                         value={formData.address}
                                         onChange={handleInputChange}
-                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         required
                                         placeholder="Street address"
                                     />

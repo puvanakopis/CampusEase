@@ -25,7 +25,7 @@ const UserTable = ({
 
     const getRoleColor = (role) => {
         switch (role) {
-            case "Student": return "bg-blue-100 text-blue-800";
+            case "Student": return "bg-blue-100 text-primary";
             case "Professional": return "bg-purple-100 text-purple-800";
             default: return "bg-gray-100 text-gray-800";
         }
@@ -40,29 +40,34 @@ const UserTable = ({
                 </h3>
                 <div className="flex items-center gap-3">
                     {/* Search */}
-                    <div className="relative">
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
-                            search
-                        </span>
-                        <input
-                            type="text"
-                            placeholder="Search users..."
-                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                        />
+                    <div className="flex items-center gap-3">
+                        {/* Search Input */}
+                        <div className="relative">
+                            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+                                search
+                            </span>
+                            <input
+                                type="text"
+                                placeholder="Search users..."
+                                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            />
+                        </div>
+
+                        {/* Role Filter */}
+                        <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
+                            <option>Role: All</option>
+                            <option>Student</option>
+                            <option>Professional</option>
+                        </select>
+
+                        {/* Status Filter */}
+                        <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
+                            <option>Status: All</option>
+                            <option>Active</option>
+                            <option>Suspended</option>
+                            <option>Inactive</option>
+                        </select>
                     </div>
-                    {/* Role Filter */}
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
-                        <option>Role: All</option>
-                        <option>Student</option>
-                        <option>Professional</option>
-                    </select>
-                    {/* Status Filter */}
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
-                        <option>Status: All</option>
-                        <option>Active</option>
-                        <option>Suspended</option>
-                        <option>Inactive</option>
-                    </select>
                 </div>
             </div>
 
@@ -180,7 +185,7 @@ const UserTable = ({
 
                                         <button
                                             onClick={() => onEdit(user)}
-                                            className="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold py-2 px-3 rounded-md uppercase tracking-wider transition-colors"
+                                            className="bg-primary hover:bg-primary/90 text-white text-[10px] font-bold py-2 px-3 rounded-md uppercase tracking-wider transition-colors"
                                             title="Edit User"
                                         >
                                             Edit

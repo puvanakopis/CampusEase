@@ -133,7 +133,7 @@ const AdminSupportPage = () => {
 
     const getStatusBadge = (status) => {
         const styles = {
-            open: "bg-blue-100 text-blue-800 border border-blue-200",
+            open: "bg-blue-100 text-primary border border-blue-200",
             "in-progress": "bg-purple-100 text-purple-800 border border-purple-200",
             resolved: "bg-emerald-100 text-emerald-800 border border-emerald-200"
         };
@@ -191,7 +191,7 @@ const AdminSupportPage = () => {
                                 <input
                                     type="text"
                                     placeholder="Search by ID, owner name, or category..."
-                                    className="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-primary focus:ring-primary"
+                                    className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
@@ -211,9 +211,10 @@ const AdminSupportPage = () => {
                                     </button>
                                     <button
                                         onClick={() => setFilter("open")}
-                                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === "open"
-                                            ? "bg-blue-100 text-blue-700 border border-blue-200"
-                                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
+        ${filter === "open"
+                                                ? "bg-blue-100 text-blue-700 border border-blue-200"
+                                                : "bg-slate-100 text-slate-700 border border-transparent hover:bg-slate-200"
                                             }`}
                                     >
                                         Open
@@ -360,13 +361,13 @@ const AdminSupportPage = () => {
                                     <textarea
                                         rows={4}
                                         placeholder="Type your response here..."
-                                        className="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-primary focus:ring-primary resize-none mb-3"
+                                        className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         value={newResponse}
                                         onChange={(e) => setNewResponse(e.target.value)}
                                     ></textarea>
                                     <button
                                         onClick={handleSubmitResponse}
-                                        className="bg-primary hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2"
+                                        className="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2"
                                     >
                                         <span className="material-symbols-outlined text-lg">send</span>
                                         Send Response
