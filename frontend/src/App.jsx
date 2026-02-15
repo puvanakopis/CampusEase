@@ -58,7 +58,7 @@ import AdminSupport from "./pages/admin/Support";
 import AdminNotFound from "./pages/admin/AdminNotFound";
 
 function App() {
-  const role = "staff"; // "student", "staff", "owner", "admin", "guest"
+  const role = "student"; // "student", "staff", "owner", "admin", "guest"
   const location = useLocation();
 
   const authPages = ["/login", "/register", "/forgot-password"];

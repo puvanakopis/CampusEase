@@ -1,24 +1,23 @@
-from typing import List, Optional
+from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
 from enum import Enum
 from datetime import datetime
 
-class UserStatus(str, Enum):
+class OwnerStatus(str, Enum):
     pending = "Pending Approval"
     active = "Active"
     inactive = "Inactive"
     declined = "Declined Approval"
 
-class UserRole(str, Enum):
-    student = "student"
-    staff = "staff"
+class OwnerRole(str, Enum):
+    owner = "owner"
 
-class Photo(BaseModel):
+class OwnerPhoto(BaseModel):
     filename: str
     content_type: str
     size: int
 
-class User(BaseModel):
+class Owner(BaseModel):
     id: str = Field(..., alias="_id")
     first_name: str
     last_name: Optional[str] = None
@@ -26,15 +25,13 @@ class User(BaseModel):
     password: str
     address: Optional[str] = ""
     phone: Optional[str] = ""
-    role: UserRole = UserRole.student
-    photo: Optional[Photo] = None
-    status: UserStatus = UserStatus.active
-    student_id_number: Optional[str] = None
-    student_id_photo: Optional[Photo] = None
+    role: OwnerRole = OwnerRole.owner
+    photo: Optional[OwnerPhoto] = None
+    status: OwnerStatus = OwnerStatus.pending
+    nic_number: Optional[str] = None
+    nic_photo: Optional[OwnerPhoto] = None
     verified: bool = False
     decline_reason: Optional[str] = None
-    save_accommodations: List[str] = []
-    save_transports: List[str] = []
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 

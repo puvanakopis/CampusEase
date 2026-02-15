@@ -2,5 +2,9 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from app.core.config import settings
 
 client = AsyncIOMotorClient(settings.MONGODB_URI)
-db = client["fastapi"]
+db = client["CampusEase"]
+
 users_collection = db["users"]
+admins_collection = db["admins"]
+owners_collection = db["owners"]
+otps_collection = db["otps"]
