@@ -15,17 +15,24 @@ from app.models.owner_model import Owner
 
 # -------------------- COMMON --------------------
 
-async def send_otp_email(email: str, first_name: str, otp_code: str):
-    with open("app/templates/signup_otp.html", "r") as f:
+async def send_otp_email(email: str, first_name: str, otp_code: str, template: str = "signup_otp.html"):
+    """
+    Sends an OTP email using the specified template.
+    Can be used for signup or password reset.
+    """
+    with open(f"app/templates/{template}", "r") as f:
         html = f.read()
     html = html.replace("{{ first_name }}", first_name).replace("{{ otp_code }}", otp_code)
     send_email(email, "Your OTP Code", html)
 
+
 async def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode()
 
+
 async def verify_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode("utf-8"), hashed.encode())
+
 
 def create_jwt_token(data: dict):
     return jwt.encode(data, settings.JWT_SECRET, algorithm="HS256")
@@ -36,6 +43,7 @@ def create_jwt_token(data: dict):
 async def request_otp(collection, first_name: str, last_name: str, email: str, password: str):
     email_lower = email.lower()
 
+    # Check if email exists
     if (
         await users_collection.find_one({"email": email_lower}) or
         await admins_collection.find_one({"email": email_lower}) or
@@ -52,11 +60,17 @@ async def request_otp(collection, first_name: str, last_name: str, email: str, p
         "temp_password": hashed_password,
         "first_name": first_name,
         "last_name": last_name,
-        "expires_at": get_expiry()
+        "expires_at": get_expiry(),
+        "type": "signup"
     }
 
-    await otps_collection.update_one({"email": email_lower}, {"$set": otp_data}, upsert=True)
-    await send_otp_email(email, first_name, otp_code)
+    await otps_collection.update_one(
+        {"email": email_lower, "type": "signup"},
+        {"$set": otp_data},
+        upsert=True
+    )
+
+    await send_otp_email(email, first_name, otp_code, template="signup_otp.html")
 
     return {"message": "OTP sent", "email": email_lower}
 
@@ -65,13 +79,13 @@ async def request_otp(collection, first_name: str, last_name: str, email: str, p
 
 async def verify_otp_and_signup(collection, email: str, otp: str):
     email_lower = email.lower()
-    otp_record = await otps_collection.find_one({"email": email_lower})
+    otp_record = await otps_collection.find_one({"email": email_lower, "type": "signup"})
 
     if not otp_record:
         return {"error": "OTP not found"}
 
     if otp_record["expires_at"] < datetime.utcnow():
-        await otps_collection.delete_one({"email": email_lower})
+        await otps_collection.delete_one({"email": email_lower, "type": "signup"})
         return {"error": "OTP expired"}
 
     if otp_record["otp"] != otp:
@@ -95,7 +109,7 @@ async def verify_otp_and_signup(collection, email: str, otp: str):
     }
 
     await collection.insert_one(user_data)
-    await otps_collection.delete_one({"email": email_lower})
+    await otps_collection.delete_one({"email": email_lower, "type": "signup"})
 
     if collection == users_collection:
         user_obj = User(**user_data)
@@ -128,3 +142,31 @@ async def login(collection, email: str, password: str):
     token = create_jwt_token({"id": user["_id"], "email": email_lower})
 
     return {"message": "Login successful", "token": token, "user": user_obj.dict(by_alias=True)}
+
+
+# -------------------- FORGOT PASSWORD --------------------
+
+async def request_password_reset_otp(collection, email: str):
+    email_lower = email.lower()
+    user = await collection.find_one({"email": email_lower})
+
+    if not user:
+        return {"error": "Email not found"}
+
+    otp_code = generate_otp()
+    otp_data = {
+        "email": email_lower,
+        "otp": otp_code,
+        "expires_at": get_expiry(),
+        "type": "password_reset"
+    }
+
+    await otps_collection.update_one(
+        {"email": email_lower, "type": "password_reset"},
+        {"$set": otp_data},
+        upsert=True
+    )
+
+    await send_otp_email(email_lower, user["first_name"], otp_code, template="password_reset_otp.html")
+
+    return {"message": "Password reset OTP sent", "email": email_lower}
