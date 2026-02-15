@@ -1,11 +1,16 @@
 from datetime import datetime
-import bcrypt
-import jwt
-
 from app.db.mongodb import users_collection, admins_collection, owners_collection, otps_collection
 from app.utils.otp_utils import generate_otp, get_expiry
 from app.utils.email_utils import send_email
 from app.core.config import settings
+from app.services.counter_service import get_next_sequence
+
+import bcrypt
+import jwt
+
+from app.models.user_model import User
+from app.models.admin_model import Admin
+from app.models.owner_model import Owner
 
 
 # -------------------- COMMON --------------------
@@ -54,3 +59,52 @@ async def request_otp(collection, first_name: str, last_name: str, email: str, p
     await send_otp_email(email, first_name, otp_code)
 
     return {"message": "OTP sent", "email": email_lower}
+
+
+
+# -------------------- VERIFY OTP & SIGNUP --------------------
+
+async def verify_otp_and_signup(collection, email: str, otp: str):
+    email_lower = email.lower()
+    otp_record = await otps_collection.find_one({"email": email_lower})
+
+    if not otp_record:
+        return {"error": "OTP not found"}
+
+    if otp_record["expires_at"] < datetime.utcnow():
+        await otps_collection.delete_one({"email": email_lower})
+        return {"error": "OTP expired"}
+
+    if otp_record["otp"] != otp:
+        return {"error": "Invalid OTP"}
+
+    if collection == users_collection:
+        new_id = await get_next_sequence("user")
+    elif collection == admins_collection:
+        new_id = await get_next_sequence("admin")
+    else:
+        new_id = await get_next_sequence("owner")
+
+    user_data = {
+        "_id": new_id,
+        "first_name": otp_record["first_name"],
+        "last_name": otp_record.get("last_name"),
+        "email": otp_record["email"],
+        "password": otp_record["temp_password"],
+        "created_at": datetime.utcnow(),
+        "last_updated": datetime.utcnow(),
+    }
+
+    await collection.insert_one(user_data)
+    await otps_collection.delete_one({"email": email_lower})
+
+    if collection == users_collection:
+        user_obj = User(**user_data)
+    elif collection == admins_collection:
+        user_obj = Admin(**user_data)
+    else:
+        user_obj = Owner(**user_data)
+
+    token = create_jwt_token({"id": new_id, "email": email_lower})
+
+    return {"message": "Signup successful", "token": token, "user": user_obj.dict(by_alias=True)}
