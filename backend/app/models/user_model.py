@@ -29,8 +29,8 @@ class User(BaseModel):
     role: UserRole = UserRole.student
     photo: Optional[Photo] = None
     status: UserStatus = UserStatus.active
-    student_id_number: Optional[str] = None
-    student_id_photo: Optional[Photo] = None
+    id_number: Optional[str] = None
+    id_photo: Optional[Photo] = None
     verified: bool = False
     decline_reason: Optional[str] = None
     save_accommodations: List[str] = []

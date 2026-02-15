@@ -28,8 +28,8 @@ class Owner(BaseModel):
     role: OwnerRole = OwnerRole.owner
     photo: Optional[OwnerPhoto] = None
     status: OwnerStatus = OwnerStatus.pending
-    nic_number: Optional[str] = None
-    nic_photo: Optional[OwnerPhoto] = None
+    id_number: Optional[str] = None
+    id_photo: Optional[OwnerPhoto] = None
     verified: bool = False
     decline_reason: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
