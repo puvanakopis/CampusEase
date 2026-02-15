@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.routers import auth_router
+
 app = FastAPI(
     title="CampusEase API",
     description="Base FastAPI project",
@@ -15,6 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_router.router)
 
 @app.get("/")
 async def root():
