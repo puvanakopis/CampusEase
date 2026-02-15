@@ -5,7 +5,7 @@ from app.routers import auth_router
 
 app = FastAPI(
     title="CampusEase API",
-    description="Base FastAPI project",
+    description="CampusEase FastAPI project",
     version="1.0.0"
 )
 

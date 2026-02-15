@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, Depends
 from app.services.auth_service import (
     request_signup_otp, verify_signup_otp, login_with_role,
     request_password_reset, verify_password_reset
 )
+
+from app.dependencies.auth_dependencies import get_current_user
+
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -58,3 +61,9 @@ async def reset_password_endpoint(
     new_password: str = Body(...)
 ):
     return await verify_password_reset(role, email, otp, new_password)
+
+
+# ------------------- CURRENT USER -------------------
+@router.get("/me")
+async def get_current_user_endpoint(current_user=Depends(get_current_user)):
+    return {"user": current_user.dict(by_alias=True)}
