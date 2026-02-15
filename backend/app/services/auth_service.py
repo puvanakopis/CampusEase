@@ -170,3 +170,24 @@ async def request_password_reset_otp(collection, email: str):
     await send_otp_email(email_lower, user["first_name"], otp_code, template="password_reset_otp.html")
 
     return {"message": "Password reset OTP sent", "email": email_lower}
+
+
+async def verify_password_reset_otp(collection, email: str, otp: str, new_password: str):
+    email_lower = email.lower()
+    otp_record = await otps_collection.find_one({"email": email_lower, "type": "password_reset"})
+
+    if not otp_record:
+        return {"error": "OTP not found"}
+
+    if otp_record["expires_at"] < datetime.utcnow():
+        await otps_collection.delete_one({"email": email_lower, "type": "password_reset"})
+        return {"error": "OTP expired"}
+
+    if otp_record["otp"] != otp:
+        return {"error": "Invalid OTP"}
+
+    hashed_password = await hash_password(new_password)
+    await collection.update_one({"email": email_lower}, {"$set": {"password": hashed_password}})
+    await otps_collection.delete_one({"email": email_lower, "type": "password_reset"})
+
+    return {"message": "Password reset successful"}

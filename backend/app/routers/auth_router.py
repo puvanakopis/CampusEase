@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body
 from app.services.auth_service import (
     request_otp, verify_otp_and_signup, login,
-    request_password_reset_otp
+    request_password_reset_otp, verify_password_reset_otp
 )
 from app.db.mongodb import users_collection, admins_collection, owners_collection
 
@@ -25,6 +25,9 @@ async def user_login(email: str = Body(...), password: str = Body(...)):
 async def user_forgot_password(email: str = Body(...)):
     return await request_password_reset_otp(users_collection, email)
 
+@router.post("/user/reset-password")
+async def user_reset_password(email: str = Body(...), otp: str = Body(...), new_password: str = Body(...)):
+    return await verify_password_reset_otp(users_collection, email, otp, new_password)
 
 
 # ------------------- OWNER -------------------
@@ -45,6 +48,10 @@ async def owner_login(email: str = Body(...), password: str = Body(...)):
 async def owner_forgot_password(email: str = Body(...)):
     return await request_password_reset_otp(owners_collection, email)
 
+@router.post("/owner/reset-password")
+async def owner_reset_password(email: str = Body(...), otp: str = Body(...), new_password: str = Body(...)):
+    return await verify_password_reset_otp(owners_collection, email, otp, new_password)
+
 
 # ------------------- ADMIN -------------------
 @router.post("/admin/login")
@@ -54,3 +61,7 @@ async def admin_login(email: str = Body(...), password: str = Body(...)):
 @router.post("/admin/forgot-password")
 async def admin_forgot_password(email: str = Body(...)):
     return await request_password_reset_otp(admins_collection, email)
+
+@router.post("/admin/reset-password")
+async def admin_reset_password(email: str = Body(...), otp: str = Body(...), new_password: str = Body(...)):
+    return await verify_password_reset_otp(admins_collection, email, otp, new_password)
