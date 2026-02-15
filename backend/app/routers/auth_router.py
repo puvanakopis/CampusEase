@@ -1,67 +1,60 @@
 from fastapi import APIRouter, Body
 from app.services.auth_service import (
-    request_otp, verify_otp_and_signup, login,
-    request_password_reset_otp, verify_password_reset_otp
+    request_signup_otp, verify_signup_otp, login_with_role,
+    request_password_reset, verify_password_reset
 )
-from app.db.mongodb import users_collection, admins_collection, owners_collection
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
-# ------------------- USER -------------------
-@router.post("/user/request-otp")
-async def user_request_otp(first_name: str = Body(...), last_name: str = Body(...),
-                           email: str = Body(...), password: str = Body(...)):
-    return await request_otp(users_collection, first_name, last_name, email, password)
 
-@router.post("/user/verify-otp")
-async def user_verify_otp(email: str = Body(...), otp: str = Body(...)):
-    return await verify_otp_and_signup(users_collection, email, otp)
+# ------------------- SIGNUP / OTP -------------------
 
-@router.post("/user/login")
-async def user_login(email: str = Body(...), password: str = Body(...)):
-    return await login(users_collection, email, password)
-
-@router.post("/user/forgot-password")
-async def user_forgot_password(email: str = Body(...)):
-    return await request_password_reset_otp(users_collection, email)
-
-@router.post("/user/reset-password")
-async def user_reset_password(email: str = Body(...), otp: str = Body(...), new_password: str = Body(...)):
-    return await verify_password_reset_otp(users_collection, email, otp, new_password)
+@router.post("/request-otp")
+async def request_otp_endpoint(
+    role: str = Body(..., description="Role: user or owner"),
+    first_name: str = Body(...),
+    last_name: str = Body(...),
+    email: str = Body(...),
+    password: str = Body(...)
+):
+    return await request_signup_otp(role, first_name, last_name, email, password)
 
 
-# ------------------- OWNER -------------------
-@router.post("/owner/request-otp")
-async def owner_request_otp(first_name: str = Body(...), last_name: str = Body(...),
-                            email: str = Body(...), password: str = Body(...)):
-    return await request_otp(owners_collection, first_name, last_name, email, password)
-
-@router.post("/owner/verify-otp")
-async def owner_verify_otp(email: str = Body(...), otp: str = Body(...)):
-    return await verify_otp_and_signup(owners_collection, email, otp)
-
-@router.post("/owner/login")
-async def owner_login(email: str = Body(...), password: str = Body(...)):
-    return await login(owners_collection, email, password)
-
-@router.post("/owner/forgot-password")
-async def owner_forgot_password(email: str = Body(...)):
-    return await request_password_reset_otp(owners_collection, email)
-
-@router.post("/owner/reset-password")
-async def owner_reset_password(email: str = Body(...), otp: str = Body(...), new_password: str = Body(...)):
-    return await verify_password_reset_otp(owners_collection, email, otp, new_password)
+@router.post("/verify-otp")
+async def verify_otp_endpoint(
+    role: str = Body(..., description="Role: user or owner"),
+    email: str = Body(...),
+    otp: str = Body(...)
+):
+    return await verify_signup_otp(role, email, otp)
 
 
-# ------------------- ADMIN -------------------
-@router.post("/admin/login")
-async def admin_login(email: str = Body(...), password: str = Body(...)):
-    return await login(admins_collection, email, password)
+# ------------------- LOGIN -------------------
 
-@router.post("/admin/forgot-password")
-async def admin_forgot_password(email: str = Body(...)):
-    return await request_password_reset_otp(admins_collection, email)
+@router.post("/login")
+async def login_endpoint(
+    role: str = Body(..., description="Role: admin, owner, or user"),
+    email: str = Body(...),
+    password: str = Body(...)
+):
+    return await login_with_role(role, email, password)
 
-@router.post("/admin/reset-password")
-async def admin_reset_password(email: str = Body(...), otp: str = Body(...), new_password: str = Body(...)):
-    return await verify_password_reset_otp(admins_collection, email, otp, new_password)
+
+# ------------------- PASSWORD RESET -------------------
+
+@router.post("/forgot-password")
+async def forgot_password_endpoint(
+    role: str = Body(..., description="Role: admin, owner, or user"),
+    email: str = Body(...)
+):
+    return await request_password_reset(role, email)
+
+
+@router.post("/reset-password")
+async def reset_password_endpoint(
+    role: str = Body(..., description="Role: admin, owner, or user"),
+    email: str = Body(...),
+    otp: str = Body(...),
+    new_password: str = Body(...)
+):
+    return await verify_password_reset(role, email, otp, new_password)

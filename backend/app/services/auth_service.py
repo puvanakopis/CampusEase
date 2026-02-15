@@ -1,4 +1,5 @@
 from datetime import datetime
+from fastapi import HTTPException
 from app.db.mongodb import users_collection, admins_collection, owners_collection, otps_collection
 from app.utils.otp_utils import generate_otp, get_expiry
 from app.utils.email_utils import send_email
@@ -12,14 +13,17 @@ from app.models.user_model import User
 from app.models.admin_model import Admin
 from app.models.owner_model import Owner
 
+# -------------------- COLLECTION MAP --------------------
+collections_map = {
+    "user": users_collection,
+    "owner": owners_collection,
+    "admin": admins_collection
+}
 
-# -------------------- COMMON --------------------
+
+# -------------------- COMMON UTILITIES --------------------
 
 async def send_otp_email(email: str, first_name: str, otp_code: str, template: str = "signup_otp.html"):
-    """
-    Sends an OTP email using the specified template.
-    Can be used for signup or password reset.
-    """
     with open(f"app/templates/{template}", "r") as f:
         html = f.read()
     html = html.replace("{{ first_name }}", first_name).replace("{{ otp_code }}", otp_code)
@@ -38,18 +42,27 @@ def create_jwt_token(data: dict):
     return jwt.encode(data, settings.JWT_SECRET, algorithm="HS256")
 
 
+# -------------------- ROLE RESOLVER --------------------
+
+def resolve_collection(role: str):
+    if role not in collections_map:
+        raise HTTPException(status_code=400, detail="Invalid role")
+    return collections_map[role]
+
+
 # -------------------- REQUEST OTP --------------------
 
-async def request_otp(collection, first_name: str, last_name: str, email: str, password: str):
+async def request_signup_otp(role: str, first_name: str, last_name: str, email: str, password: str):
+    collection = resolve_collection(role)
+    if role == "admin":
+        raise HTTPException(status_code=400, detail="Admin cannot request signup OTP")
+
     email_lower = email.lower()
 
-    # Check if email exists
-    if (
-        await users_collection.find_one({"email": email_lower}) or
-        await admins_collection.find_one({"email": email_lower}) or
-        await owners_collection.find_one({"email": email_lower})
-    ):
-        return {"error": "Email already in use."}
+    # Check if email exists in any collection
+    for col in collections_map.values():
+        if await col.find_one({"email": email_lower}):
+            return {"error": "Email already in use."}
 
     otp_code = generate_otp()
     hashed_password = await hash_password(password)
@@ -70,31 +83,29 @@ async def request_otp(collection, first_name: str, last_name: str, email: str, p
         upsert=True
     )
 
-    await send_otp_email(email, first_name, otp_code, template="signup_otp.html")
-
+    await send_otp_email(email_lower, first_name, otp_code, template="signup_otp.html")
     return {"message": "OTP sent", "email": email_lower}
 
 
-# -------------------- VERIFY OTP & SIGNUP --------------------
+async def verify_signup_otp(role: str, email: str, otp: str):
+    collection = resolve_collection(role)
+    if role == "admin":
+        raise HTTPException(status_code=400, detail="Admin cannot verify signup OTP")
 
-async def verify_otp_and_signup(collection, email: str, otp: str):
     email_lower = email.lower()
     otp_record = await otps_collection.find_one({"email": email_lower, "type": "signup"})
 
     if not otp_record:
         return {"error": "OTP not found"}
-
     if otp_record["expires_at"] < datetime.utcnow():
         await otps_collection.delete_one({"email": email_lower, "type": "signup"})
         return {"error": "OTP expired"}
-
     if otp_record["otp"] != otp:
         return {"error": "Invalid OTP"}
 
+    # Generate ID
     if collection == users_collection:
         new_id = await get_next_sequence("user")
-    elif collection == admins_collection:
-        new_id = await get_next_sequence("admin")
     else:
         new_id = await get_next_sequence("owner")
 
@@ -111,13 +122,8 @@ async def verify_otp_and_signup(collection, email: str, otp: str):
     await collection.insert_one(user_data)
     await otps_collection.delete_one({"email": email_lower, "type": "signup"})
 
-    if collection == users_collection:
-        user_obj = User(**user_data)
-    elif collection == admins_collection:
-        user_obj = Admin(**user_data)
-    else:
-        user_obj = Owner(**user_data)
-
+    # Convert to Pydantic model
+    user_obj = User(**user_data) if role == "user" else Owner(**user_data)
     token = create_jwt_token({"id": new_id, "email": email_lower})
 
     return {"message": "Signup successful", "token": token, "user": user_obj.dict(by_alias=True)}
@@ -125,31 +131,32 @@ async def verify_otp_and_signup(collection, email: str, otp: str):
 
 # -------------------- LOGIN --------------------
 
-async def login(collection, email: str, password: str):
+async def login_with_role(role: str, email: str, password: str):
+    collection = resolve_collection(role)
     email_lower = email.lower()
     user = await collection.find_one({"email": email_lower})
 
     if not user or not await verify_password(password, user["password"]):
         return {"error": "Invalid email or password"}
 
-    if collection == users_collection:
+    # Convert to Pydantic model
+    if role == "user":
         user_obj = User(**user)
-    elif collection == admins_collection:
+    elif role == "admin":
         user_obj = Admin(**user)
     else:
         user_obj = Owner(**user)
 
     token = create_jwt_token({"id": user["_id"], "email": email_lower})
-
     return {"message": "Login successful", "token": token, "user": user_obj.dict(by_alias=True)}
 
 
-# -------------------- FORGOT PASSWORD --------------------
+# -------------------- PASSWORD RESET --------------------
 
-async def request_password_reset_otp(collection, email: str):
+async def request_password_reset(role: str, email: str):
+    collection = resolve_collection(role)
     email_lower = email.lower()
     user = await collection.find_one({"email": email_lower})
-
     if not user:
         return {"error": "Email not found"}
 
@@ -168,21 +175,19 @@ async def request_password_reset_otp(collection, email: str):
     )
 
     await send_otp_email(email_lower, user["first_name"], otp_code, template="password_reset_otp.html")
-
     return {"message": "Password reset OTP sent", "email": email_lower}
 
 
-async def verify_password_reset_otp(collection, email: str, otp: str, new_password: str):
+async def verify_password_reset(role: str, email: str, otp: str, new_password: str):
+    collection = resolve_collection(role)
     email_lower = email.lower()
     otp_record = await otps_collection.find_one({"email": email_lower, "type": "password_reset"})
 
     if not otp_record:
         return {"error": "OTP not found"}
-
     if otp_record["expires_at"] < datetime.utcnow():
         await otps_collection.delete_one({"email": email_lower, "type": "password_reset"})
         return {"error": "OTP expired"}
-
     if otp_record["otp"] != otp:
         return {"error": "Invalid OTP"}
 
