@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Body
 from app.services.auth_service import request_otp, verify_otp_and_signup, login
-from app.db.mongodb import users_collection , owners_collection
+from app.db.mongodb import users_collection, admins_collection, owners_collection
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -32,3 +32,9 @@ async def owner_verify_otp(email: str = Body(...), otp: str = Body(...)):
 @router.post("/owner/login")
 async def owner_login(email: str = Body(...), password: str = Body(...)):
     return await login(owners_collection, email, password)
+
+
+# ------------------- ADMIN -------------------
+@router.post("/admin/login")
+async def admin_login(email: str = Body(...), password: str = Body(...)):
+    return await login(admins_collection, email, password)

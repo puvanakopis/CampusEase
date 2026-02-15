@@ -36,7 +36,6 @@ def create_jwt_token(data: dict):
 async def request_otp(collection, first_name: str, last_name: str, email: str, password: str):
     email_lower = email.lower()
 
-    # Unique email check across all accounts
     if (
         await users_collection.find_one({"email": email_lower}) or
         await admins_collection.find_one({"email": email_lower}) or
@@ -78,7 +77,6 @@ async def verify_otp_and_signup(collection, email: str, otp: str):
     if otp_record["otp"] != otp:
         return {"error": "Invalid OTP"}
 
-    # Generate custom ID
     if collection == users_collection:
         new_id = await get_next_sequence("user")
     elif collection == admins_collection:
@@ -99,7 +97,6 @@ async def verify_otp_and_signup(collection, email: str, otp: str):
     await collection.insert_one(user_data)
     await otps_collection.delete_one({"email": email_lower})
 
-    # Build Pydantic object
     if collection == users_collection:
         user_obj = User(**user_data)
     elif collection == admins_collection:
