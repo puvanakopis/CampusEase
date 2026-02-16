@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Body, Depends , File, Form, UploadFile
+from typing import Optional
 from app.services.auth_service import (
     request_signup_otp, verify_signup_otp, login_user,
-    request_password_reset, reset_password
+    request_password_reset, reset_password , update_current_user
 )
 from app.dependencies.auth_dependencies import get_current_user
+
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -57,3 +59,32 @@ async def reset_password_endpoint(
 @router.get("/me")
 async def get_current_user_endpoint(current_user=Depends(get_current_user)):
     return {"user": current_user.dict(by_alias=True)}
+
+
+@router.patch("/update-profile")
+async def update_profile_endpoint(
+    first_name: Optional[str] = Form(None),
+    last_name: Optional[str] = Form(None),
+    address: Optional[str] = Form(None),
+    phone: Optional[str] = Form(None),
+    id_number: Optional[str] = Form(None),
+
+    photo: Optional[UploadFile] = File(None),
+    id_photo: Optional[UploadFile] = File(None),
+
+    current_user=Depends(get_current_user)
+):
+    update_data = {
+        "first_name": first_name,
+        "last_name": last_name,
+        "address": address,
+        "phone": phone,
+        "id_number": id_number,
+    }
+
+    return await update_current_user(
+        current_user=current_user,
+        update_data=update_data,
+        photo=photo,
+        id_photo=id_photo
+    )

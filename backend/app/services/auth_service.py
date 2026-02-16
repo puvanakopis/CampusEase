@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from app.db.mongodb import users_collection, admins_collection, owners_collection, otps_collection
 from app.utils.otp_utils import generate_otp, get_expiry
 from app.utils.email_utils import send_email
@@ -10,6 +10,10 @@ from app.models.owner_model import Owner
 from app.models.admin_model import Admin
 import bcrypt
 import jwt
+import os
+
+UPLOAD_DIR = "uploads/user_photos"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # -------------------- COLLECTION MAP --------------------
 
@@ -47,6 +51,8 @@ async def find_user_by_email(email: str):
             return user, collection, model_cls
     return None, None, None
 
+
+
 # -------------------- SIGNUP / OTP --------------------
 
 async def request_signup_otp(role: str, first_name: str, last_name: str, email: str, password: str):
@@ -54,12 +60,11 @@ async def request_signup_otp(role: str, first_name: str, last_name: str, email: 
         raise HTTPException(status_code=400, detail="Admin cannot request signup OTP")
 
     collection, _ = collections_map.get(role, (None, None))
-    if not collection:
+    if collection is None:
         raise HTTPException(status_code=400, detail="Invalid role")
 
     email_lower = email.lower()
 
-    # Check if email exists in any collection
     for col, _ in collections_map.values():
         if await col.find_one({"email": email_lower}):
             return {"error": "Email already in use."}
@@ -86,12 +91,13 @@ async def request_signup_otp(role: str, first_name: str, last_name: str, email: 
     await send_otp_email(email_lower, first_name, otp_code, template="signup_otp.html")
     return {"message": "OTP sent", "email": email_lower}
 
+
 async def verify_signup_otp(role: str, email: str, otp: str):
     if role == "admin":
         raise HTTPException(status_code=400, detail="Admin cannot verify signup OTP")
 
     collection, model_cls = collections_map.get(role, (None, None))
-    if not collection:
+    if collection is None:
         raise HTTPException(status_code=400, detail="Invalid role")
 
     email_lower = email.lower()
@@ -104,7 +110,6 @@ async def verify_signup_otp(role: str, email: str, otp: str):
     if otp_record["otp"] != otp:
         return {"error": "Invalid OTP"}
 
-    # Generate new ID
     if role in ["student", "staff"]:
         new_id = await get_next_sequence("user")
     else:
@@ -126,6 +131,8 @@ async def verify_signup_otp(role: str, email: str, otp: str):
     user_obj = model_cls(**user_data)
     token = create_jwt_token({"id": new_id, "email": email_lower})
     return {"message": "Signup successful", "token": token, "user": user_obj.dict(by_alias=True)}
+
+
 
 # -------------------- LOGIN --------------------
 
@@ -162,6 +169,7 @@ async def request_password_reset(email: str):
     await send_otp_email(email.lower(), user["first_name"], otp_code, template="password_reset_otp.html")
     return {"message": "Password reset OTP sent", "email": email.lower()}
 
+
 async def reset_password(email: str, otp: str, new_password: str):
     user, collection, model_cls = await find_user_by_email(email)
     if not user:
@@ -181,3 +189,71 @@ async def reset_password(email: str, otp: str, new_password: str):
     await otps_collection.delete_one({"email": email.lower(), "type": "password_reset"})
 
     return {"message": "Password reset successful"}
+
+
+
+
+
+async def save_file(file: UploadFile, filename: str, folder: str):
+    ext = file.filename.split(".")[-1]
+    file_path = os.path.join(folder, f"{filename}.{ext}")
+
+    with open(file_path, "wb") as f:
+        f.write(await file.read())
+
+    return {
+        "filename": f"{filename}.{ext}",
+        "content_type": file.content_type,
+        "size": file.spool_max_size if hasattr(file, "spool_max_size") else 0,
+        "path": file_path
+    }
+
+
+async def update_current_user(
+    current_user, 
+    update_data: dict = None,
+    photo: UploadFile = None,
+    id_photo: UploadFile = None
+):
+    role = current_user.role
+    user_id = current_user.id  
+
+    if role not in ["student", "staff", "owner"]:
+        raise HTTPException(status_code=403, detail="Only student, staff, and owner can update profile")
+
+    collection, model_cls = collections_map.get(role, (None, None))
+    if collection is None:
+        raise HTTPException(status_code=400, detail="Role not supported")
+
+
+    update_payload = {}
+
+    if update_data:
+        for key, val in update_data.items():
+            if val is not None: 
+                update_payload[key] = val
+
+    if photo:
+        filename = f"{user_id}_photo"
+        photo_meta = await save_file(photo, filename, UPLOAD_DIR)
+        update_payload["photo"] = photo_meta
+
+    if id_photo:
+        filename = f"{user_id}_id_photo"
+        id_photo_meta = await save_file(id_photo, filename, UPLOAD_DIR)
+        update_payload["id_photo"] = id_photo_meta
+
+    if not update_payload:
+        raise HTTPException(status_code=400, detail="No fields provided for update")
+
+    update_payload["last_updated"] = datetime.utcnow()
+
+    await collection.update_one({"_id": user_id}, {"$set": update_payload})
+
+    updated_user = await collection.find_one({"_id": user_id})
+    user_obj = model_cls(**updated_user)
+
+    return {
+        "message": "Profile updated successfully",
+        "user": user_obj.dict(by_alias=True)
+    }
