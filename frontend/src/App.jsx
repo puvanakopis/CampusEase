@@ -1,4 +1,5 @@
 import "./App.css";
+import { Toaster } from "react-hot-toast";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
@@ -61,8 +62,7 @@ import AdminNotFound from "./pages/admin/AdminNotFound";
 
 function App() {
   const { user } = useContext(AuthContext);
-  console.log("App - ", user)
-  const role = user?.role || "guest"; 
+  const role = user?.role || "guest";
   const location = useLocation();
 
   const authPages = ["/login", "/register", "/forgot-password"];
@@ -101,6 +101,40 @@ function App() {
   return (
     <>
       {renderNavbar()}
+
+      {/* Toaster for notifications */}
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            padding: "14px 18px",
+            borderRadius: "12px",
+            fontSize: "14px",
+            border: "1px solid #E2E8F0",
+          },
+          success: {
+            iconTheme: {
+              primary: "#16A34A",
+              secondary: "#FFFFFF",
+            },
+            className:
+              "!bg-white !text-slate-900 shadow-lg border border-slate-200 rounded-xl",
+          },
+          error: {
+            iconTheme: {
+              primary: "#DC2626",
+              secondary: "#FFFFFF",
+            },
+            className:
+              "!bg-white !text-red-700 shadow-lg border border-red-200 rounded-xl",
+          },
+          loading: {
+            className:
+              "!bg-white !text-slate-700 shadow-lg border border-slate-200 rounded-xl",
+          },
+        }}
+      />
 
       <Routes>
         {/* Auth Routes */}

@@ -5,35 +5,31 @@ import LoginForm from "../../containers/auth/login/LoginForm";
 
 const Login = () => {
     const { login } = useContext(AuthContext);
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState(false);
 
-    const handleLogin = async () => {
-        try {
-            setLoading(true);
-            setError("");
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
 
+        try {
             await login(email, password);
-            
         } catch (err) {
-            console.log(err);
-            setError(err.response?.data?.message || "Login failed");
+            setError(err.message || "Login failed");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        handleLogin();
-    };
-
     return (
         <main className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-screen">
             <HeroSection />
+
             <LoginForm
                 email={email}
                 password={password}

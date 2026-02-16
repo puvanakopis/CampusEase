@@ -1,24 +1,27 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-const getToken = () => localStorage.getItem("token");
-
-const axiosAuth = axios.create({
+export const axiosAuth = axios.create({
   baseURL: API_BASE,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
-axiosAuth.interceptors.request.use(config => {
-  const token = getToken();
+axiosAuth.interceptors.request.use((config) => {
+  const token = Cookies.get("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
 export const authApi = {
   login: async (email, password) => {
-    return axios.post(`${API_BASE}/auth/login`, { email, password });
+    const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
+    return res.data; 
+  },
+
+  getCurrentUser: async () => {
+    const res = await axiosAuth.get("/auth/me");
+    return res.data;
   },
 };
