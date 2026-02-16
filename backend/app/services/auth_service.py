@@ -2,19 +2,14 @@ from datetime import datetime
 from fastapi import HTTPException, UploadFile
 from app.db.mongodb import users_collection, admins_collection, owners_collection, otps_collection
 from app.utils.otp_utils import generate_otp, get_expiry
-from app.utils.email_utils import send_email
-from app.core.config import settings
+from app.utils.email_utils import send_otp_email
+from app.utils.auth_utils import hash_password, verify_password, create_jwt_token
+from app.utils.file_utils import save_file
 from app.services.counter_service import get_next_sequence
 from app.models.user_model import User
 from app.models.owner_model import Owner
 from app.models.admin_model import Admin
-import bcrypt
-import jwt
-import os
 
-
-UPLOAD_DIR = "uploads/user_photos"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # -------------------- COLLECTION MAP --------------------
 
@@ -24,24 +19,6 @@ collections_map = {
     "student": (users_collection, User),
     "staff": (users_collection, User)
 }
-
-# -------------------- UTILITIES --------------------
-
-async def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode()
-
-async def verify_password(password: str, hashed: str) -> bool:
-    return bcrypt.checkpw(password.encode("utf-8"), hashed.encode())
-
-def create_jwt_token(data: dict):
-    return jwt.encode(data, settings.JWT_SECRET, algorithm="HS256")
-
-async def send_otp_email(email: str, first_name: str, otp_code: str, template: str = "signup_otp.html"):
-    with open(f"app/templates/{template}", "r") as f:
-        html = f.read()
-    html = html.replace("{{ first_name }}", first_name).replace("{{ otp_code }}", otp_code)
-    send_email(email, "Your OTP Code", html)
-
 
 # -------------------- FIND USER UTILITY --------------------
 
@@ -197,20 +174,6 @@ async def reset_password(email: str, otp: str, new_password: str):
 
 # -------------------- Update Current User --------------------
 
-async def save_file(file: UploadFile, filename: str, folder: str):
-    ext = file.filename.split(".")[-1]
-    file_path = os.path.join(folder, f"{filename}.{ext}")
-
-    with open(file_path, "wb") as f:
-        f.write(await file.read())
-
-    return {
-        "filename": f"{filename}.{ext}",
-        "content_type": file.content_type,
-        "size": file.spool_max_size if hasattr(file, "spool_max_size") else 0,
-        "path": file_path
-    }
-
 async def update_current_user(
     current_user, 
     update_data: dict = None,
@@ -237,11 +200,13 @@ async def update_current_user(
 
     if photo:
         filename = f"{user_id}_photo"
+        UPLOAD_DIR = "uploads/user_photo"
         photo_meta = await save_file(photo, filename, UPLOAD_DIR)
         update_payload["photo"] = photo_meta
 
     if id_photo:
         filename = f"{user_id}_id_photo"
+        UPLOAD_DIR = "uploads/user_id"
         id_photo_meta = await save_file(id_photo, filename, UPLOAD_DIR)
         update_payload["id_photo"] = id_photo_meta
 
