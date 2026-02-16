@@ -1,15 +1,17 @@
 import "./App.css";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
 
+// Navbars and Footers
 import Navbar from "./components/user/Navbar";
 import Footer from "./components/user/Footer";
-
 import OwnerNavbar from './components/owner/OwnerNavbar';
-import OwnerFooter from './components/owner/OwnerFooter';
-
+import OwnerFooter from "./components/owner/OwnerFooter";
 import AdminNavbar from "./components/admin/AdminNavbar";
 import AdminFooter from "./components/admin/AdminFooter";
 
+// Protected Route
 import ProtectedRoute from "./route/ProtectedRoute";
 
 // Auth Pages
@@ -58,7 +60,9 @@ import AdminSupport from "./pages/admin/Support";
 import AdminNotFound from "./pages/admin/AdminNotFound";
 
 function App() {
-  const role = "student"; // "student", "staff", "owner", "admin", "guest"
+  const { user } = useContext(AuthContext);
+  console.log("App - ", user)
+  const role = user?.role || "guest"; 
   const location = useLocation();
 
   const authPages = ["/login", "/register", "/forgot-password"];
@@ -146,11 +150,14 @@ function App() {
         </Route>
 
         {/* 404 */}
-        <Route path="*" element={
-          role === "owner" ? <OwnerNotFound /> :
-            role === "admin" ? <AdminNotFound /> :
-              <NotFound />
-        } />
+        <Route
+          path="*"
+          element={
+            role === "owner" ? <OwnerNotFound /> :
+              role === "admin" ? <AdminNotFound /> :
+                <NotFound />
+          }
+        />
       </Routes>
 
       {renderFooter()}

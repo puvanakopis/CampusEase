@@ -4,8 +4,7 @@ from enum import Enum
 from datetime import datetime
 
 class AdminRole(str, Enum):
-    super_admin = "super_admin"
-    moderator = "moderator"
+    admin = "admin"
 
 class Admin(BaseModel):
     id: str = Field(..., alias="_id")
@@ -13,7 +12,7 @@ class Admin(BaseModel):
     last_name: Optional[str] = None
     email: EmailStr
     password: str
-    role: AdminRole = AdminRole.super_admin
+    role: AdminRole = AdminRole.admin
     phone: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_updated: datetime = Field(default_factory=datetime.utcnow)
