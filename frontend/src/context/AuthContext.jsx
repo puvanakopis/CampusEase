@@ -8,13 +8,12 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [authLoading, setAuthLoading] = useState(true);
     const navigate = useNavigate();
 
     // ------------------ LOGIN ------------------
     const login = async (email, password) => {
         const toastId = toast.loading("Authenticating...");
-
         try {
             const res = await authApi.login(email, password);
 
@@ -27,7 +26,6 @@ export const AuthProvider = ({ children }) => {
             const usr = res.data.user;
 
             Cookies.set("token", token, { expires: 7 });
-
             setUser(usr);
 
             toast.success("Login successful!", { id: toastId });
@@ -51,30 +49,33 @@ export const AuthProvider = ({ children }) => {
         navigate("/login");
     };
 
-    // ------------------ LOAD USER ON REFRESH ------------------
-    useEffect(() => {
+    // ------------------ FETCH CURRENT USER ------------------
+    const fetchCurrentUser = async () => {
         const token = Cookies.get("token");
         if (!token) {
-            setLoading(false);
+            setAuthLoading(false);
             return;
         }
 
-        authApi
-            .getCurrentUser()
-            .then((res) => {
-                if (res.success) {
-                    setUser(res.user || res.data?.user);
-                }
-            })
-            .catch(() => {
-                Cookies.remove("token");
-                setUser(null);
-            })
-            .finally(() => setLoading(false));
+        try {
+            const res = await authApi.getCurrentUser();
+            setUser(res.user);
+            console.log(res.user);
+        } catch (err) {
+            console.error("Failed to fetch current user:", err);
+            Cookies.remove("token");
+            setUser(null);
+        } finally {
+            setAuthLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchCurrentUser();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, logout }}>
+        <AuthContext.Provider value={{ user, authLoading, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

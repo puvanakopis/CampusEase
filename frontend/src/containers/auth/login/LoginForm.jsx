@@ -9,7 +9,6 @@ const LoginForm = ({
     setRemember,
     handleSubmit,
     loading,
-    error
 }) => {
     return (
         <section className="w-full md:w-1/2 bg-white flex items-center justify-center p-6 md:p-12 lg:p-16 overflow-y-auto">
@@ -22,10 +21,6 @@ const LoginForm = ({
                         Log in to your SUSL account to access housing and transport services.
                     </p>
                 </div>
-
-                {error && (
-                    <div className="mb-4 text-red-500 text-sm font-medium">{error}</div>
-                )}
 
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     {/* University Email */}

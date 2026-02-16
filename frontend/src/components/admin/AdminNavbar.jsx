@@ -1,23 +1,24 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import useNavigateTo from "../../hooks/useNavigateTo";
+import { AuthContext } from "../../context/AuthContext";
+import { getPhotoUrl } from "../../utils/photo"; 
 
 const AdminNavbar = () => {
     const navigateTo = useNavigateTo();
     const location = useLocation();
+    const { user, logout } = useContext(AuthContext);
+
     const activeKey = location.pathname.split("/")[2] || "";
 
     const [isOpen, setIsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
 
-    const [user, setUser] = useState({
-        isLoggedIn: true,
-        name: "Admin User",
-        email: "admin@example.com",
-        avatar: "https://i.pravatar.cc/256?u=admin@example.com",
-        role: "Admin",
-    });
+    const first_name = user ? `${user.first_name} `.trim() : "Admin";
+    const avatar = getPhotoUrl(user?.photo) || "https://i.pravatar.cc/256?u=admin@example.com";
+    const role = user?.role || "admin";
+    const email = user?.email || "";
 
     const navItems = [
         { label: "Dashboard", path: "/admin/dashboard", key: "dashboard" },
@@ -46,11 +47,10 @@ const AdminNavbar = () => {
 
     const handleProfileAction = (item) => {
         if (item.isLogout) {
-            setUser({ ...user, isLoggedIn: false });
-            navigateTo("/");
-        } else {
-            navigateTo(item.path);
+            logout();
+            return;
         }
+        navigateTo(item.path);
         setIsProfileOpen(false);
         setIsOpen(false);
     };
@@ -75,7 +75,6 @@ const AdminNavbar = () => {
                     </div>
                 </div>
 
-
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex flex-1 justify-center gap-8">
                     {navItems.map((item) => {
@@ -92,21 +91,21 @@ const AdminNavbar = () => {
                     })}
                 </nav>
 
-                {/* Profile / User Section */}
+                {/* Profile Section */}
                 <div className="flex items-center gap-3">
-                    {user.isLoggedIn && (
+                    {user && (
                         <div className="relative" ref={profileRef}>
                             <button
                                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                                 className="flex items-center gap-2 p-2 rounded-lg transition-colors"
                             >
                                 <div className="flex flex-col items-end">
-                                    <span className="text-sm font-medium text-slate-900">{user.name}</span>
-                                    <span className="text-xs text-slate-500">{user.role}</span>
+                                    <span className="text-sm font-medium text-slate-900">{first_name}</span>
+                                    <span className="text-xs text-slate-500">{role}</span>
                                 </div>
                                 <img
-                                    src={user.avatar}
-                                    alt={user.name}
+                                    src={avatar}
+                                    alt={first_name}
                                     className="w-10 h-10 rounded-full border-2 border-white shadow"
                                 />
                             </button>
@@ -128,7 +127,7 @@ const AdminNavbar = () => {
                         </div>
                     )}
 
-                    {/* Hamburger Menu for Mobile */}
+                    {/* Mobile Menu Button */}
                     <button
                         className="md:hidden flex items-center justify-center p-2 text-slate-700 hover:text-primary"
                         onClick={() => setIsOpen(!isOpen)}
@@ -140,7 +139,7 @@ const AdminNavbar = () => {
                 </div>
             </div>
 
-            {/* Mobile Navigation */}
+            {/* Mobile Drawer */}
             {isOpen && (
                 <div className="md:hidden bg-white border-t border-slate-200">
                     <div className="flex flex-col items-center px-4 py-4 gap-4">
@@ -154,13 +153,13 @@ const AdminNavbar = () => {
                             </button>
                         ))}
 
-                        {user.isLoggedIn && (
+                        {user && (
                             <div className="w-full border-t border-slate-200 pt-4">
                                 <div className="flex items-center gap-3 mb-4 px-4">
-                                    <img src={user.avatar} alt={user.name} className="w-12 h-12 rounded-full" />
+                                    <img src={avatar} alt={first_name} className="w-12 h-12 rounded-full" />
                                     <div>
-                                        <p className="font-semibold text-slate-900">{user.name}</p>
-                                        <p className="text-sm text-slate-500">{user.email}</p>
+                                        <p className="font-semibold text-slate-900">{first_name}</p>
+                                        <p className="text-sm text-slate-500">{email}</p>
                                     </div>
                                 </div>
 

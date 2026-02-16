@@ -24,4 +24,5 @@ export const authApi = {
     const res = await axiosAuth.get("/auth/me");
     return res.data;
   },
+
 };

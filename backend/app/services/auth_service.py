@@ -10,7 +10,6 @@ from app.models.user_model import User
 from app.models.owner_model import Owner
 from app.models.admin_model import Admin
 
-# -------------------- COLLECTION MAP --------------------
 
 collections_map = {
     "admin": (admins_collection, Admin),
@@ -19,7 +18,6 @@ collections_map = {
     "staff": (users_collection, User)
 }
 
-# -------------------- STANDARD RESPONSE WRAPPER --------------------
 
 def response(success: bool, status_code: int, message: str, data=None):
     return {
@@ -29,7 +27,6 @@ def response(success: bool, status_code: int, message: str, data=None):
         "data": data
     }
 
-# -------------------- FIND USER UTILITY --------------------
 
 async def find_user_by_email(email: str):
     email_lower = email.lower()
@@ -40,8 +37,8 @@ async def find_user_by_email(email: str):
     return None, None, None
 
 
-# -------------------- Signup OTP Request --------------------
 
+# -------------------- Signup OTP Request --------------------
 async def request_signup_otp(role: str, first_name: str, last_name: str, email: str, password: str):
 
     if role == "admin":
@@ -215,9 +212,6 @@ async def update_current_user(current_user, update_data=None, photo: UploadFile 
 
     role = current_user.role
     user_id = current_user.id
-
-    if role not in ["student", "staff", "owner"]:
-        raise HTTPException(403, "Only student, staff, and owner can update profile")
 
     collection, model_cls = collections_map.get(role, (None, None))
     if not collection:

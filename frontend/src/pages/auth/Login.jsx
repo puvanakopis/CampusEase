@@ -21,6 +21,7 @@ const Login = () => {
             await login(email, password);
         } catch (err) {
             setError(err.message || "Login failed");
+            console.log(error)
         } finally {
             setLoading(false);
         }
@@ -39,7 +40,6 @@ const Login = () => {
                 setRemember={setRemember}
                 handleSubmit={handleSubmit}
                 loading={loading}
-                error={error}
             />
         </main>
     );

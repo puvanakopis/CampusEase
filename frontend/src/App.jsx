@@ -60,11 +60,19 @@ import AdminProfile from "./pages/admin/AdminProfile";
 import AdminSupport from "./pages/admin/Support";
 import AdminNotFound from "./pages/admin/AdminNotFound";
 
+import Loading from "./components/user/Loading";
+
 function App() {
-  const { user } = useContext(AuthContext);
-  const role = user?.role || "guest";
+  const { user, authLoading } = useContext(AuthContext);
   const location = useLocation();
 
+  if (authLoading) {
+    return <Loading mainText="Checking authentication..." subText="Please wait" progress={50} />;
+  }
+
+  const role = user?.role || "guest";
+
+  console.log(role)
   const authPages = ["/login", "/register", "/forgot-password"];
   const showNavbarFooter = !authPages.includes(location.pathname);
 
@@ -114,24 +122,15 @@ function App() {
             border: "1px solid #E2E8F0",
           },
           success: {
-            iconTheme: {
-              primary: "#16A34A",
-              secondary: "#FFFFFF",
-            },
-            className:
-              "!bg-white !text-slate-900 shadow-lg border border-slate-200 rounded-xl",
+            iconTheme: { primary: "#16A34A", secondary: "#FFFFFF" },
+            className: "!bg-white !text-slate-900 shadow-lg border border-slate-200 rounded-xl",
           },
           error: {
-            iconTheme: {
-              primary: "#DC2626",
-              secondary: "#FFFFFF",
-            },
-            className:
-              "!bg-white !text-red-700 shadow-lg border border-red-200 rounded-xl",
+            iconTheme: { primary: "#DC2626", secondary: "#FFFFFF" },
+            className: "!bg-white !text-red-700 shadow-lg border border-red-200 rounded-xl",
           },
           loading: {
-            className:
-              "!bg-white !text-slate-700 shadow-lg border border-slate-200 rounded-xl",
+            className: "!bg-white !text-slate-700 shadow-lg border border-slate-200 rounded-xl",
           },
         }}
       />
@@ -144,7 +143,6 @@ function App() {
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute role={role} />}>
-
           {/* User/Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
