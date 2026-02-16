@@ -2,16 +2,15 @@ from fastapi import APIRouter, Body, Depends , File, Form, UploadFile
 from typing import Optional
 from app.services.auth_service import (
     request_signup_otp, verify_signup_otp, login_user,
-    request_password_reset, reset_password , update_current_user
+    request_password_reset, reset_password , update_current_user, update_password
 )
 from app.dependencies.auth_dependencies import get_current_user
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
-# ------------------- SIGNUP / OTP -------------------
 
-@router.post("/request-otp")
+@router.post("/signup-request-otp")
 async def request_otp_endpoint(
     role: str = Body(..., description="Role: student, staff, or owner"),
     first_name: str = Body(...),
@@ -21,7 +20,8 @@ async def request_otp_endpoint(
 ):
     return await request_signup_otp(role, first_name, last_name, email, password)
 
-@router.post("/verify-otp")
+
+@router.post("/signup-verify-otp")
 async def verify_otp_endpoint(
     role: str = Body(..., description="Role: student, staff, or owner"),
     email: str = Body(...),
@@ -29,7 +29,6 @@ async def verify_otp_endpoint(
 ):
     return await verify_signup_otp(role, email, otp)
 
-# ------------------- LOGIN -------------------
 
 @router.post("/login")
 async def login_endpoint(
@@ -38,13 +37,13 @@ async def login_endpoint(
 ):
     return await login_user(email, password)
 
-# ------------------- PASSWORD RESET -------------------
 
 @router.post("/forgot-password")
 async def forgot_password_endpoint(
     email: str = Body(...)
 ):
     return await request_password_reset(email)
+
 
 @router.post("/reset-password")
 async def reset_password_endpoint(
@@ -54,7 +53,6 @@ async def reset_password_endpoint(
 ):
     return await reset_password(email, otp, new_password)
 
-# ------------------- CURRENT USER -------------------
 
 @router.get("/me")
 async def get_current_user_endpoint(current_user=Depends(get_current_user)):
@@ -88,3 +86,12 @@ async def update_profile_endpoint(
         photo=photo,
         id_photo=id_photo
     )
+
+
+@router.patch("/update-password")
+async def update_password_endpoint(
+    current_password: str = Body(..., description="Your current password"),
+    new_password: str = Body(..., description="New password to update"),
+    current_user=Depends(get_current_user)
+):
+    return await update_password(current_user, current_password, new_password)

@@ -12,6 +12,7 @@ import bcrypt
 import jwt
 import os
 
+
 UPLOAD_DIR = "uploads/user_photos"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -41,6 +42,7 @@ async def send_otp_email(email: str, first_name: str, otp_code: str, template: s
     html = html.replace("{{ first_name }}", first_name).replace("{{ otp_code }}", otp_code)
     send_email(email, "Your OTP Code", html)
 
+
 # -------------------- FIND USER UTILITY --------------------
 
 async def find_user_by_email(email: str):
@@ -53,7 +55,7 @@ async def find_user_by_email(email: str):
 
 
 
-# -------------------- SIGNUP / OTP --------------------
+# -------------------- Signup --------------------
 
 async def request_signup_otp(role: str, first_name: str, last_name: str, email: str, password: str):
     if role == "admin":
@@ -134,7 +136,7 @@ async def verify_signup_otp(role: str, email: str, otp: str):
 
 
 
-# -------------------- LOGIN --------------------
+# -------------------- Login --------------------
 
 async def login_user(email: str, password: str):
     user, collection, model_cls = await find_user_by_email(email)
@@ -145,7 +147,9 @@ async def login_user(email: str, password: str):
     token = create_jwt_token({"id": user["_id"], "email": email.lower()})
     return {"message": "Login successful", "token": token, "user": user_obj.dict(by_alias=True)}
 
-# -------------------- PASSWORD RESET --------------------
+
+
+# -------------------- Password Reset --------------------
 
 async def request_password_reset(email: str):
     user, collection, model_cls = await find_user_by_email(email)
@@ -191,8 +195,7 @@ async def reset_password(email: str, otp: str, new_password: str):
     return {"message": "Password reset successful"}
 
 
-
-
+# -------------------- Update Current User --------------------
 
 async def save_file(file: UploadFile, filename: str, folder: str):
     ext = file.filename.split(".")[-1]
@@ -207,7 +210,6 @@ async def save_file(file: UploadFile, filename: str, folder: str):
         "size": file.spool_max_size if hasattr(file, "spool_max_size") else 0,
         "path": file_path
     }
-
 
 async def update_current_user(
     current_user, 
@@ -257,3 +259,30 @@ async def update_current_user(
         "message": "Profile updated successfully",
         "user": user_obj.dict(by_alias=True)
     }
+
+
+# -------------------- Update Password --------------------
+
+async def update_password(current_user, current_password: str, new_password: str):
+    role = current_user.role
+    user_id = current_user.id
+
+    collection, model_cls = collections_map.get(role, (None, None))
+    if collection is None:
+        raise HTTPException(status_code=400, detail="Role not supported")
+
+    user = await collection.find_one({"_id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not await verify_password(current_password, user["password"]):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+
+    hashed_new_password = await hash_password(new_password)
+
+    await collection.update_one(
+        {"_id": user_id},
+        {"$set": {"password": hashed_new_password, "last_updated": datetime.utcnow()}}
+    )
+
+    return {"message": "Password updated successfully"}
