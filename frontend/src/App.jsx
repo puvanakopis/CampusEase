@@ -72,7 +72,6 @@ function App() {
 
   const role = user?.role || "guest";
 
-  console.log(role)
   const authPages = ["/login", "/register", "/forgot-password"];
   const showNavbarFooter = !authPages.includes(location.pathname);
 

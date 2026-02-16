@@ -16,7 +16,7 @@ const Navbar = () => {
     const isActive = (path) => location.pathname === path;
 
     const first_name = user ? `${user.first_name}`.trim() : "";
-    const avatar = getPhotoUrl(user?.photo);
+    const avatar = getPhotoUrl(user?.photo, "user_photo");
     const email = user?.email || "";
     const role = user?.role || "Student";
 
@@ -78,9 +78,8 @@ const Navbar = () => {
                         <button
                             key={item.path}
                             onClick={() => navigateTo(item.path)}
-                            className={`text-sm font-medium transition-colors ${
-                                isActive(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
-                            }`}
+                            className={`text-sm font-medium transition-colors ${isActive(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
+                                }`}
                         >
                             {item.name}
                         </button>
@@ -186,9 +185,8 @@ const Navbar = () => {
                             <button
                                 key={item.path}
                                 onClick={() => { navigateTo(item.path); setIsOpen(false); }}
-                                className={`w-full text-center text-sm font-medium transition-colors ${
-                                    isActive(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
-                                }`}
+                                className={`w-full text-center text-sm font-medium transition-colors ${isActive(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
+                                    }`}
                             >
                                 {item.name}
                             </button>
@@ -209,9 +207,8 @@ const Navbar = () => {
                                     <button
                                         key={item.name}
                                         onClick={() => handleProfileAction(item)}
-                                        className={`flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors ${
-                                            item.isLogout ? "text-red-600" : "text-slate-700"
-                                        }`}
+                                        className={`flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors ${item.isLogout ? "text-red-600" : "text-slate-700"
+                                            }`}
                                     >
                                         <span className="material-symbols-outlined">{item.icon}</span>
                                         <span className="text-sm font-medium">{item.name}</span>

@@ -60,7 +60,6 @@ export const AuthProvider = ({ children }) => {
         try {
             const res = await authApi.getCurrentUser();
             setUser(res.user);
-            console.log(res.user);
         } catch (err) {
             console.error("Failed to fetch current user:", err);
             Cookies.remove("token");

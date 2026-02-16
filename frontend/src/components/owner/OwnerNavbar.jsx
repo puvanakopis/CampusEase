@@ -16,7 +16,7 @@ const OwnerNavbar = () => {
     const profileRef = useRef(null);
 
     const first_name = user ? `${user.first_name} `.trim() : "";
-    const avatar = getPhotoUrl(user?.photo);
+    const avatar = getPhotoUrl(user?.photo, "user_photo");
     const role = user?.role || "Owner";
     const email = user?.email || "";
 

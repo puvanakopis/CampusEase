@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import useNavigateTo from "../../hooks/useNavigateTo";
 import { AuthContext } from "../../context/AuthContext";
-import { getPhotoUrl } from "../../utils/photo"; 
+import { getPhotoUrl } from "../../utils/photo";
 
 const AdminNavbar = () => {
     const navigateTo = useNavigateTo();
@@ -16,7 +16,7 @@ const AdminNavbar = () => {
     const profileRef = useRef(null);
 
     const first_name = user ? `${user.first_name} `.trim() : "Admin";
-    const avatar = getPhotoUrl(user?.photo) || "https://i.pravatar.cc/256?u=admin@example.com";
+    const avatar = getPhotoUrl(user?.photo, "user_photo");
     const role = user?.role || "admin";
     const email = user?.email || "";
 
