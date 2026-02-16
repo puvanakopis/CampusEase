@@ -69,53 +69,12 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ FORGOT PASSWORD ------------------
-    const requestPasswordReset = async (email) => {
-        const toastId = toast.loading("Sending OTP...");
-        try {
-            const res = await authApi.requestPasswordReset(email);
-            if (!res.success) {
-                toast.error(res.message, { id: toastId });
-                throw new Error(res.message);
-            }
-            toast.success("OTP sent to your email!", { id: toastId });
-            return res.data;
-        } catch (err) {
-            toast.error(err.message || "Failed to send OTP", { id: toastId });
-            throw err;
-        }
-    };
-
-    // ------------------ RESET PASSWORD ------------------
-    const resetPassword = async (email, otp, newPassword) => {
-        const toastId = toast.loading("Resetting password...");
-        try {
-            const res = await authApi.resetPassword(email, otp, newPassword);
-            if (!res.success) {
-                toast.error(res.message, { id: toastId });
-                throw new Error(res.message);
-            }
-            toast.success("Password reset successful!", { id: toastId });
-            return res.data;
-        } catch (err) {
-            toast.error(err.message || "Failed to reset password", { id: toastId });
-            throw err;
-        }
-    };
-
     useEffect(() => {
         fetchCurrentUser();
     }, []);
 
     return (
-        <AuthContext.Provider value={{
-            user,
-            authLoading,
-            login,
-            logout,
-            requestPasswordReset,
-            resetPassword
-        }}>
+        <AuthContext.Provider value={{ user, authLoading, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
