@@ -40,7 +40,7 @@ async def login_endpoint(
 
 @router.post("/forgot-password")
 async def forgot_password_endpoint(
-    email: str = Body(...)
+    email: str = Body(..., embed=True)
 ):
     return await request_password_reset(email)
 

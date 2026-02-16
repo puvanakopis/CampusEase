@@ -1,30 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 
-const ForgotPasswordForm = () => {
-    const [step, setStep] = useState(1); 
-    const [email, setEmail] = useState("");
-    const [otp, setOtp] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-
-    const handleSendLink = (e) => {
-        e.preventDefault();
-        // call API to send reset link / OTP
-        setStep(2);
-    };
-
-    const handleVerifyOtp = (e) => {
-        e.preventDefault();
-        // call API to verify OTP
-        setStep(3);
-    };
-
-    const handleSetNewPassword = (e) => {
-        e.preventDefault();
-        // call API to update password
-        alert("Password reset successfully!");
-        setStep(1); 
-    };
-
+const ForgotPasswordForm = ({
+    step,
+    email,
+    setEmail,
+    otp,
+    setOtp,
+    newPassword,
+    setNewPassword,
+    handleSendLink,
+    handleVerifyOtp,
+    handleSetNewPassword,
+}) => {
     return (
         <section className="w-full md:w-1/2 bg-white flex items-center justify-center p-6 md:p-12 lg:p-16 overflow-y-auto">
             <div className="w-full max-w-[420px]">
@@ -113,7 +100,6 @@ const ForgotPasswordForm = () => {
                     </form>
                 )}
 
-                {/* Back to login */}
                 <div className="mt-8 pt-6 border-t border-slate-100 text-center">
                     <p className="text-slate-600 text-sm">
                         Remembered your password?

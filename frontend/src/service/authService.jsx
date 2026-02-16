@@ -17,11 +17,25 @@ axiosAuth.interceptors.request.use((config) => {
 export const authApi = {
   login: async (email, password) => {
     const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
-    return res.data; 
+    return res.data;
   },
 
   getCurrentUser: async () => {
     const res = await axiosAuth.get("/auth/me");
+    return res.data;
+  },
+
+  requestPasswordReset: async (email) => {
+    const res = await axios.post(`${API_BASE}/auth/forgot-password`, { email });
+    return res.data;
+  },
+
+  resetPassword: async (email, otp, newPassword) => {
+    const res = await axios.post(`${API_BASE}/auth/reset-password`, {
+      email,
+      otp,
+      new_password: newPassword,
+    });
     return res.data;
   },
 
