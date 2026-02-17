@@ -114,16 +114,17 @@ async def verify_signup_otp(role: str, email: str, otp: str):
         "last_name": otp_record.get("last_name"),
         "email": otp_record["email"],
         "password": otp_record["temp_password"],
+        "role": role,
         "created_at": datetime.utcnow(),
         "last_updated": datetime.utcnow(),
-    }
+}
 
     await collection.insert_one(user_data)
     await otps_collection.delete_one({"email": email_lower, "type": "signup"})
-
+    
     user_obj = model_cls(**user_data)
-    token = create_jwt_token({"id": new_id, "email": email_lower})
-
+    token = create_jwt_token({"id": new_id, "email": email_lower, "role": role})
+    
     return response(
         True,
         201,

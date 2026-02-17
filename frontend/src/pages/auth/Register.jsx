@@ -13,12 +13,18 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [otp, setOtp] = useState("");
+    const [agree, setAgree] = useState(false);
 
     const { requestSignupOtp, verifySignupOtp } = useContext(AuthContext);
 
-    // ------------------ Step 1: Send OTP ------------------
+    // ===== Step 1 =====
     const handleSendOtp = async (e) => {
         e.preventDefault();
+        if (!agree) {
+            toast.error("You must agree to the Terms & Conditions before continuing.");
+            return;
+        }
+
         const toastId = toast.loading("Sending OTP...");
 
         try {
@@ -27,11 +33,10 @@ const Register = () => {
             setStep(2);
         } catch (err) {
             toast.error(err?.response?.data?.detail || "Failed to send OTP", { id: toastId });
-            console.error("Failed to send OTP:", err);
         }
     };
 
-    // ------------------ Step 2: Verify OTP ------------------
+    // ===== Step 2 =====
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
         const toastId = toast.loading("Verifying OTP...");
@@ -42,11 +47,10 @@ const Register = () => {
             setStep(3);
         } catch (err) {
             toast.error(err?.response?.data?.detail || "Invalid OTP", { id: toastId });
-            console.error("Failed to verify OTP:", err);
         }
     };
 
-    // ------------------ Step 3: Complete Registration ------------------
+    // ===== Step 3 =====
     const handleCompleteRegistration = (e) => {
         e.preventDefault();
 
@@ -71,6 +75,7 @@ const Register = () => {
                 password={password}
                 confirmPassword={confirmPassword}
                 otp={otp}
+                agree={agree}
                 setFirstName={setFirstName}
                 setLastName={setLastName}
                 setEmail={setEmail}
@@ -78,6 +83,7 @@ const Register = () => {
                 setPassword={setPassword}
                 setConfirmPassword={setConfirmPassword}
                 setOtp={setOtp}
+                setAgree={setAgree}
                 handleSendOtp={handleSendOtp}
                 handleVerifyOtp={handleVerifyOtp}
                 handleCompleteRegistration={handleCompleteRegistration}

@@ -9,6 +9,7 @@ const RegisterForm = ({
     password,
     confirmPassword,
     otp,
+    agree,
     setFirstName,
     setLastName,
     setEmail,
@@ -16,6 +17,7 @@ const RegisterForm = ({
     setPassword,
     setConfirmPassword,
     setOtp,
+    setAgree,
     handleSendOtp,
     handleVerifyOtp,
     handleCompleteRegistration,
@@ -23,6 +25,7 @@ const RegisterForm = ({
     return (
         <section className="w-full md:w-1/2 bg-white flex items-center justify-center p-6 md:p-12 lg:p-16 overflow-y-auto">
             <div className="w-full max-w-[420px]">
+                {/* HEADER */}
                 <div className="mb-8">
                     <h2 className="text-slate-900 text-3xl font-bold tracking-tight">
                         {step === 1 ? "Get Started" : step === 2 ? "Verify OTP" : "Complete Registration"}
@@ -38,70 +41,126 @@ const RegisterForm = ({
                 {/* STEP 1 */}
                 {step === 1 && (
                     <form onSubmit={handleSendOtp} className="space-y-4">
-                        <div className="space-y-1.5">
-                            <label className="text-slate-700 text-sm font-semibold">First Name</label>
-                            <input
-                                type="text"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                placeholder="Enter your first name"
-                                className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-4"
-                                required
-                            />
+
+                        {/* NAME ROW */}
+                        <div className="flex gap-4">
+                            {/* FIRST NAME */}
+                            <div className="flex-1 space-y-1.5">
+                                <label className="text-slate-700 text-sm font-semibold">First Name</label>
+                                <div className="relative">
+                                    <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
+                                        person
+                                    </span>
+                                    <input
+                                        type="text"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        placeholder="Enter your first name"
+                                        className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4 placeholder:text-slate-400
+                                        focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            {/* LAST NAME */}
+                            <div className="flex-1 space-y-1.5">
+                                <label className="text-slate-700 text-sm font-semibold">Last Name</label>
+                                <div className="relative">
+                                    <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
+                                        person
+                                    </span>
+                                    <input
+                                        type="text"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        placeholder="Enter your last name"
+                                        className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4 placeholder:text-slate-400
+                                        focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                        required
+                                    />
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="space-y-1.5">
-                            <label className="text-slate-700 text-sm font-semibold">Last Name</label>
-                            <input
-                                type="text"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                placeholder="Enter your last name"
-                                className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-4"
-                                required
-                            />
-                        </div>
-
+                        {/* EMAIL */}
                         <div className="space-y-1.5">
                             <label className="text-slate-700 text-sm font-semibold">University Email</label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="e.g. name@std.sab.ac.lk"
-                                className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-4"
-                                required
-                            />
+                            <div className="relative">
+                                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
+                                    alternate_email
+                                </span>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="e.g. name@std.sab.ac.lk"
+                                    className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4 placeholder:text-slate-400
+                                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                    required
+                                />
+                            </div>
                         </div>
 
+                        {/* ROLE */}
                         <div className="space-y-1.5">
                             <label className="text-slate-700 text-sm font-semibold">User Type</label>
-                            <select
-                                value={role}
-                                onChange={(e) => setRole(e.target.value)}
-                                className="form-select w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-4"
-                            >
-                                <option value="student">University Student</option>
-                                <option value="staff">University Staff</option>
-                                <option value="owner">Owner</option>
-                            </select>
+                            <div className="relative">
+                                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
+                                    badge
+                                </span>
+                                <select
+                                    value={role}
+                                    onChange={(e) => setRole(e.target.value)}
+                                    className="form-select w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4
+                                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                >
+                                    <option value="student">University Student</option>
+                                    <option value="staff">University Staff</option>
+                                    <option value="owner">Owner</option>
+                                </select>
+                            </div>
                         </div>
 
+                        {/* PASSWORD */}
                         <div className="space-y-1.5">
                             <label className="text-slate-700 text-sm font-semibold">Password</label>
+                            <div className="relative">
+                                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
+                                    lock
+                                </span>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Create a password"
+                                    className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4 placeholder:text-slate-400
+                                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        {/* TERMS & CONDITIONS */}
+                        <div className="flex items-center gap-2">
                             <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter password"
-                                className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-4"
+                                type="checkbox"
+                                className="w-5 h-5 rounded-lg text-primary focus:ring-primary/30 border-slate-300 cursor-pointer"
+                                checked={agree}
+                                onChange={() => setAgree(!agree)}
                                 required
                             />
+                            <span className="text-sm text-slate-600 font-medium">
+                                I agree to the{" "}
+                                <a href="/terms" className="text-primary underline">
+                                    Terms & Conditions
+                                </a>
+                            </span>
                         </div>
 
                         <button
                             type="submit"
-                            className="w-full rounded-xl h-12 bg-primary text-white font-bold hover:bg-primary/90 mt-4"
+                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 active:scale-[0.98]"
                         >
                             Send OTP
                         </button>
@@ -113,19 +172,25 @@ const RegisterForm = ({
                     <form onSubmit={handleVerifyOtp} className="space-y-4">
                         <div className="space-y-1.5">
                             <label className="text-slate-700 text-sm font-semibold">OTP</label>
-                            <input
-                                type="text"
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
-                                placeholder="Enter OTP"
-                                className="form-input w-full rounded-xl border-slate-200 bg-slate-50 h-12 pl-4"
-                                required
-                            />
+                            <div className="relative">
+                                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
+                                    password
+                                </span>
+                                <input
+                                    type="text"
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
+                                    placeholder="Enter OTP"
+                                    className="form-input w-full rounded-xl border-slate-200 bg-slate-50 h-12 pl-11 pr-4 placeholder:text-slate-400
+                                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                    required
+                                />
+                            </div>
                         </div>
 
                         <button
                             type="submit"
-                            className="w-full rounded-xl h-12 bg-primary text-white font-bold hover:bg-primary/90 mt-4"
+                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 active:scale-[0.98]"
                         >
                             Verify OTP
                         </button>
@@ -135,29 +200,38 @@ const RegisterForm = ({
                 {/* STEP 3 */}
                 {step === 3 && (
                     <form onSubmit={handleCompleteRegistration} className="space-y-4">
+
+                        {/* CONFIRM PASSWORD */}
                         <div className="space-y-1.5">
                             <label className="text-slate-700 text-sm font-semibold">Confirm Password</label>
-                            <input
-                                type="password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                placeholder="Confirm password"
-                                className="form-input w-full rounded-xl border-slate-200 bg-slate-50 h-12 pl-4"
-                                required
-                            />
+                            <div className="relative">
+                                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
+                                    lock_reset
+                                </span>
+                                <input
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="Confirm password"
+                                    className="form-input w-full rounded-xl border-slate-200 bg-slate-50 h-12 pl-11 pr-4 placeholder:text-slate-400
+                                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                    required
+                                />
+                            </div>
                         </div>
 
                         <button
                             type="submit"
-                            className="w-full rounded-xl h-12 bg-primary text-white font-bold hover:bg-primary/90 mt-4"
+                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 active:scale-[0.98]"
                         >
                             Complete Registration
                         </button>
                     </form>
                 )}
 
-                <div className="mt-8 pt-6 border-t border-slate-100 text-center">
-                    <p className="text-slate-600 text-sm">
+                {/* FOOTER */}
+                <div className="mt-8 text-center">
+                    <p className="text-slate-500 text-sm font-medium">
                         Already have an account?
                         <a className="text-primary font-bold hover:underline ml-1" href="/login">
                             Log in
