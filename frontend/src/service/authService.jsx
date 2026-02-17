@@ -59,4 +59,33 @@ export const authApi = {
     return res.data;
   },
 
+  updateProfile: async (updateData) => {
+    const formData = new FormData();
+
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] !== undefined && updateData[key] !== null) {
+        formData.append(key, updateData[key]);
+      }
+    });
+
+    if (updateData.photo) formData.append("photo", updateData.photo);
+    if (updateData.id_photo) formData.append("id_photo", updateData.id_photo);
+
+    const res = await axiosAuth.patch("/auth/update-profile", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return res.data;
+  },
+
+  updatePassword: async (currentPassword, newPassword) => {
+    const res = await axiosAuth.patch("/auth/update-password", {
+      current_password: currentPassword,
+      new_password: newPassword,
+    });
+    return res.data;
+  },
+
 };

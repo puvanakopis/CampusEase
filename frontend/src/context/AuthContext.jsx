@@ -151,6 +151,43 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+
+    // ------------------ UPDATE PROFILE ------------------
+    const updateCurrentUser = async (updateData) => {
+        const toastId = toast.loading("Updating profile...");
+        try {
+            const res = await authApi.updateProfile(updateData);
+            if (!res.success) {
+                toast.error(res.message, { id: toastId });
+                throw new Error(res.message);
+            }
+
+            setUser(res.data);
+            toast.success("Profile updated successfully!", { id: toastId });
+            return res.data;
+        } catch (err) {
+            toast.error(err.message || "Failed to update profile", { id: toastId });
+            throw err;
+        }
+    };
+
+    // ------------------ UPDATE PASSWORD ------------------
+    const updatePassword = async (currentPassword, newPassword) => {
+        const toastId = toast.loading("Updating password...");
+        try {
+            const res = await authApi.updatePassword(currentPassword, newPassword);
+            if (!res.success) {
+                toast.error(res.message, { id: toastId });
+                throw new Error(res.message);
+            }
+            toast.success("Password updated successfully!", { id: toastId });
+            return res.data;
+        } catch (err) {
+            toast.error(err.message || "Failed to update password", { id: toastId });
+            throw err;
+        }
+    };
+
     useEffect(() => {
         fetchCurrentUser();
     }, []);
@@ -164,7 +201,9 @@ export const AuthProvider = ({ children }) => {
             requestPasswordReset,
             resetPassword,
             requestSignupOtp,
-            verifySignupOtp
+            verifySignupOtp,
+            updateCurrentUser,
+            updatePassword
 
         }}>
             {children}

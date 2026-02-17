@@ -9,7 +9,6 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [remember, setRemember] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,10 +30,8 @@ const Login = () => {
             <LoginForm
                 email={email}
                 password={password}
-                remember={remember}
                 setEmail={setEmail}
                 setPassword={setPassword}
-                setRemember={setRemember}
                 handleSubmit={handleSubmit}
                 loading={loading}
             />

@@ -3,10 +3,8 @@ import React from "react";
 const LoginForm = ({
     email,
     password,
-    remember,
     setEmail,
     setPassword,
-    setRemember,
     handleSubmit,
     loading,
 }) => {
