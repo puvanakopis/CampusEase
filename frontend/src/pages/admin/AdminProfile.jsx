@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import AdminProfilePage from "../../containers/admin/account/AdminOwnerProfilePage";
-import { AuthContext } from "../../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 function AdminProfile() {
     const { user, updateCurrentUser, authLoading } = useContext(AuthContext);
