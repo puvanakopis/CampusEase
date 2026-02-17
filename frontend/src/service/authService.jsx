@@ -39,4 +39,24 @@ export const authApi = {
     return res.data;
   },
 
+  requestSignupOtp: async (role, firstName, lastName, email, password) => {
+    const res = await axios.post(`${API_BASE}/auth/signup-request-otp`, {
+      role,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      password
+    });
+    return res.data;
+  },
+
+  verifySignupOtp: async (role, email, otp) => {
+    const res = await axios.post(`${API_BASE}/auth/signup-verify-otp`, {
+      role,
+      email,
+      otp
+    });
+    return res.data;
+  },
+
 };

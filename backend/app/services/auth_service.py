@@ -45,7 +45,7 @@ async def request_signup_otp(role: str, first_name: str, last_name: str, email: 
         raise HTTPException(400, "Admin cannot request signup OTP")
 
     collection, _ = collections_map.get(role, (None, None))
-    if not collection:
+    if collection is None:
         raise HTTPException(400, "Invalid role")
 
     email_lower = email.lower()
@@ -87,7 +87,7 @@ async def verify_signup_otp(role: str, email: str, otp: str):
         raise HTTPException(400, "Admin cannot verify signup OTP")
 
     collection, model_cls = collections_map.get(role, (None, None))
-    if not collection:
+    if collection is None:
         raise HTTPException(400, "Invalid role")
 
     email_lower = email.lower()
@@ -214,7 +214,7 @@ async def update_current_user(current_user, update_data=None, photo: UploadFile 
     user_id = current_user.id
 
     collection, model_cls = collections_map.get(role, (None, None))
-    if not collection:
+    if collection is None:
         raise HTTPException(400, "Role not supported")
 
     update_payload = {}
@@ -255,7 +255,7 @@ async def update_password(current_user, current_password: str, new_password: str
     user_id = current_user.id
 
     collection, model_cls = collections_map.get(role, (None, None))
-    if not collection:
+    if collection is None:
         raise HTTPException(400, "Role not supported")
 
     user = await collection.find_one({"_id": user_id})

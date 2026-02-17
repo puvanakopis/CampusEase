@@ -69,12 +69,105 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // ------------------ FORGOT PASSWORD ------------------
+    const requestPasswordReset = async (email) => {
+        const toastId = toast.loading("Sending OTP...");
+        try {
+            const res = await authApi.requestPasswordReset(email);
+            if (!res.success) {
+                toast.error(res.message, { id: toastId });
+                throw new Error(res.message);
+            }
+            toast.success("OTP sent to your email!", { id: toastId });
+            return res.data;
+        } catch (err) {
+            toast.error(err.message || "Failed to send OTP", { id: toastId });
+            throw err;
+        }
+    };
+
+    // ------------------ RESET PASSWORD ------------------
+    const resetPassword = async (email, otp, newPassword) => {
+        const toastId = toast.loading("Resetting password...");
+        try {
+            const res = await authApi.resetPassword(email, otp, newPassword);
+            if (!res.success) {
+                toast.error(res.message, { id: toastId });
+                throw new Error(res.message);
+            }
+            toast.success("Password reset successful!", { id: toastId });
+            return res.data;
+        } catch (err) {
+            toast.error(err.message || "Failed to reset password", { id: toastId });
+            throw err;
+        }
+    };
+
+
+    // ------------------ SIGNUP REQUEST OTP ------------------
+    const requestSignupOtp = async (role, firstName, lastName, email, password) => {
+        const toastId = toast.loading("Sending OTP...");
+        try {
+            const res = await authApi.requestSignupOtp(role, firstName, lastName, email, password);
+            if (!res.success) {
+                toast.error(res.message, { id: toastId });
+                throw new Error(res.message);
+            }
+            toast.success("OTP sent to your email!", { id: toastId });
+            return res.data;
+        } catch (err) {
+            toast.error(err.message || "Failed to send OTP", { id: toastId });
+            throw err;
+        }
+    };
+
+    // ------------------ SIGNUP VERIFY OTP ------------------
+    const verifySignupOtp = async (role, email, otp) => {
+        const toastId = toast.loading("Verifying OTP...");
+        try {
+            const res = await authApi.verifySignupOtp(role, email, otp);
+            if (!res.success) {
+                toast.error(res.message, { id: toastId });
+                throw new Error(res.message);
+            }
+
+            const token = res.data.token;
+            const usr = res.data.user;
+
+            Cookies.set("token", token, { expires: 7 });
+            setUser(usr);
+
+            toast.success("Signup successful!", { id: toastId });
+
+            const userRole = usr.role;
+
+            if (userRole === "admin") navigate("/admin/dashboard");
+            else if (userRole === "owner") navigate("/owner");
+            else navigate("/");
+
+            return usr;
+        } catch (err) {
+            toast.error(err.message || "Failed to verify OTP", { id: toastId });
+            throw err;
+        }
+    };
+
     useEffect(() => {
         fetchCurrentUser();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, authLoading, login, logout }}>
+        <AuthContext.Provider value={{
+            user,
+            authLoading,
+            login,
+            logout,
+            requestPasswordReset,
+            resetPassword,
+            requestSignupOtp,
+            verifySignupOtp
+
+        }}>
             {children}
         </AuthContext.Provider>
     );
