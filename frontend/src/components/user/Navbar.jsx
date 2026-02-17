@@ -13,6 +13,9 @@ const Navbar = () => {
 
     const { user, logout } = useContext(AuthContext);
 
+    const authPages = ["/login", "/register", "/forgot-password"];
+    if (authPages.includes(location.pathname)) return null;
+
     const isActive = (path) => location.pathname === path;
 
     const first_name = user ? `${user.first_name}`.trim() : "";
@@ -31,7 +34,7 @@ const Navbar = () => {
     const profileMenuItems = [
         { name: "Profile", path: "/profile", icon: "person" },
         { name: "My Bookings", path: "/my-bookings", icon: "bookmarks" },
-        { name: "Logout", icon: "logout", isLogout: true }
+        { name: "Logout", icon: "logout", isLogout: true },
     ];
 
     useEffect(() => {
@@ -57,7 +60,6 @@ const Navbar = () => {
     return (
         <header className="bg-white/80 backdrop-blur-xl sticky top-0 z-50 w-full border-b border-slate-200">
             <div className="flex h-16 items-center justify-between px-4 md:px-24 max-w-8xl mx-auto">
-
                 {/* Logo */}
                 <div
                     onClick={() => navigateTo("/")}
@@ -107,10 +109,8 @@ const Navbar = () => {
                                     />
                                 </button>
 
-                                {/* Profile Dropdown */}
                                 {isProfileOpen && (
                                     <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50">
-                                        {/* User Info */}
                                         <div className="px-4 py-3 border-b border-slate-100">
                                             <div className="flex items-center gap-3">
                                                 <img src={avatar} alt={first_name} className="w-12 h-12 rounded-full" />
@@ -121,7 +121,6 @@ const Navbar = () => {
                                             </div>
                                         </div>
 
-                                        {/* Menu Items */}
                                         {profileMenuItems.map((item, index) => (
                                             <button
                                                 key={index}
@@ -149,14 +148,14 @@ const Navbar = () => {
                     ) : (
                         <>
                             <button
-                                onClick={() => navigateTo("/signin")}
+                                onClick={() => navigateTo("/login")}
                                 className="hidden sm:flex items-center rounded-lg h-9 px-4 font-bold text-sm text-slate-700 hover:bg-slate-200"
                             >
                                 Sign In
                             </button>
 
                             <button
-                                onClick={() => navigateTo("/signup")}
+                                onClick={() => navigateTo("/register")}
                                 className="flex items-center rounded-lg h-9 px-4 bg-primary text-white font-bold text-sm shadow-md hover:bg-primary/90"
                             >
                                 Sign Up
@@ -180,11 +179,13 @@ const Navbar = () => {
             {isOpen && (
                 <div className="md:hidden bg-white border-t border-slate-200">
                     <div className="flex flex-col items-center px-4 py-4 gap-4">
-
                         {navItems.map((item) => (
                             <button
                                 key={item.path}
-                                onClick={() => { navigateTo(item.path); setIsOpen(false); }}
+                                onClick={() => {
+                                    navigateTo(item.path);
+                                    setIsOpen(false);
+                                }}
                                 className={`w-full text-center text-sm font-medium transition-colors ${isActive(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
                                     }`}
                             >
@@ -192,7 +193,6 @@ const Navbar = () => {
                             </button>
                         ))}
 
-                        {/* If logged in: show profile area */}
                         {user && (
                             <div className="w-full border-t border-slate-200 pt-4">
                                 <div className="flex items-center gap-3 mb-4 px-4">

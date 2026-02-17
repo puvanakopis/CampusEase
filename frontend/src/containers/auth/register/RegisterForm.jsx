@@ -21,16 +21,20 @@ const RegisterForm = ({
     handleSendOtp,
     handleVerifyOtp,
     handleCompleteRegistration,
+    loading,
 }) => {
     return (
         <section className="w-full md:w-1/2 bg-white flex items-center justify-center p-6 md:p-12 lg:p-16 overflow-y-auto">
             <div className="w-full max-w-[420px]">
                 {/* HEADER */}
-                <div className="mb-8">
-                    <h2 className="text-slate-900 text-3xl font-bold tracking-tight">
-                        {step === 1 ? "Get Started" : step === 2 ? "Verify OTP" : "Complete Registration"}
+                <div className="mb-8 text-center lg:text-left">
+                    <h2 className="text-[#0d141b] text-3xl font-bold tracking-tight">
+                        {step === 1
+                            ? "Get Started"
+                            : step === 2
+                                ? "Verify OTP"
+                                : "Complete Registration"}
                     </h2>
-
                     <p className="text-slate-500 mt-2 text-base">
                         {step === 1 && "Create your account to access campus services."}
                         {step === 2 && `Enter the OTP sent to ${email}.`}
@@ -38,15 +42,15 @@ const RegisterForm = ({
                     </p>
                 </div>
 
-                {/* STEP 1 */}
+                {/* STEP 1: User Info */}
                 {step === 1 && (
                     <form onSubmit={handleSendOtp} className="space-y-4">
-
-                        {/* NAME ROW */}
                         <div className="flex gap-4">
                             {/* FIRST NAME */}
                             <div className="flex-1 space-y-1.5">
-                                <label className="text-slate-700 text-sm font-semibold">First Name</label>
+                                <label className="text-slate-700 text-sm font-semibold">
+                                    First Name
+                                </label>
                                 <div className="relative">
                                     <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
                                         person
@@ -57,7 +61,7 @@ const RegisterForm = ({
                                         onChange={(e) => setFirstName(e.target.value)}
                                         placeholder="Enter your first name"
                                         className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4 placeholder:text-slate-400
-                                        focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                      focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
                                         required
                                     />
                                 </div>
@@ -65,7 +69,9 @@ const RegisterForm = ({
 
                             {/* LAST NAME */}
                             <div className="flex-1 space-y-1.5">
-                                <label className="text-slate-700 text-sm font-semibold">Last Name</label>
+                                <label className="text-slate-700 text-sm font-semibold">
+                                    Last Name
+                                </label>
                                 <div className="relative">
                                     <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
                                         person
@@ -76,7 +82,7 @@ const RegisterForm = ({
                                         onChange={(e) => setLastName(e.target.value)}
                                         placeholder="Enter your last name"
                                         className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4 placeholder:text-slate-400
-                                        focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                      focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
                                         required
                                     />
                                 </div>
@@ -85,7 +91,9 @@ const RegisterForm = ({
 
                         {/* EMAIL */}
                         <div className="space-y-1.5">
-                            <label className="text-slate-700 text-sm font-semibold">University Email</label>
+                            <label className="text-slate-700 text-sm font-semibold">
+                                University Email
+                            </label>
                             <div className="relative">
                                 <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
                                     alternate_email
@@ -94,9 +102,9 @@ const RegisterForm = ({
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="e.g. name@std.sab.ac.lk"
+                                    placeholder="yourname@susl.lk"
                                     className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4 placeholder:text-slate-400
-                                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
                                     required
                                 />
                             </div>
@@ -104,7 +112,9 @@ const RegisterForm = ({
 
                         {/* ROLE */}
                         <div className="space-y-1.5">
-                            <label className="text-slate-700 text-sm font-semibold">User Type</label>
+                            <label className="text-slate-700 text-sm font-semibold">
+                                User Type
+                            </label>
                             <div className="relative">
                                 <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
                                     badge
@@ -113,7 +123,7 @@ const RegisterForm = ({
                                     value={role}
                                     onChange={(e) => setRole(e.target.value)}
                                     className="form-select w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4
-                                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
                                 >
                                     <option value="student">University Student</option>
                                     <option value="staff">University Staff</option>
@@ -135,7 +145,7 @@ const RegisterForm = ({
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Create a password"
                                     className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4 placeholder:text-slate-400
-                                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
                                     required
                                 />
                             </div>
@@ -160,14 +170,16 @@ const RegisterForm = ({
 
                         <button
                             type="submit"
-                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 active:scale-[0.98]"
+                            disabled={loading}
+                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            Send OTP
+                            {loading ? "Sending OTP..." : "Send OTP"}
+                            <span className="material-symbols-outlined text-xl">send</span>
                         </button>
                     </form>
                 )}
 
-                {/* STEP 2 */}
+                {/* STEP 2: Verify OTP */}
                 {step === 2 && (
                     <form onSubmit={handleVerifyOtp} className="space-y-4">
                         <div className="space-y-1.5">
@@ -182,7 +194,7 @@ const RegisterForm = ({
                                     onChange={(e) => setOtp(e.target.value)}
                                     placeholder="Enter OTP"
                                     className="form-input w-full rounded-xl border-slate-200 bg-slate-50 h-12 pl-11 pr-4 placeholder:text-slate-400
-                                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
                                     required
                                 />
                             </div>
@@ -190,20 +202,22 @@ const RegisterForm = ({
 
                         <button
                             type="submit"
-                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 active:scale-[0.98]"
+                            disabled={loading}
+                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            Verify OTP
+                            {loading ? "Verifying..." : "Verify OTP"}
+                            <span className="material-symbols-outlined text-xl">verified</span>
                         </button>
                     </form>
                 )}
 
-                {/* STEP 3 */}
+                {/* STEP 3: Complete Registration */}
                 {step === 3 && (
                     <form onSubmit={handleCompleteRegistration} className="space-y-4">
-
-                        {/* CONFIRM PASSWORD */}
                         <div className="space-y-1.5">
-                            <label className="text-slate-700 text-sm font-semibold">Confirm Password</label>
+                            <label className="text-slate-700 text-sm font-semibold">
+                                Confirm Password
+                            </label>
                             <div className="relative">
                                 <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
                                     lock_reset
@@ -214,7 +228,7 @@ const RegisterForm = ({
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     placeholder="Confirm password"
                                     className="form-input w-full rounded-xl border-slate-200 bg-slate-50 h-12 pl-11 pr-4 placeholder:text-slate-400
-                                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                    focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
                                     required
                                 />
                             </div>
@@ -222,9 +236,11 @@ const RegisterForm = ({
 
                         <button
                             type="submit"
-                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 active:scale-[0.98]"
+                            disabled={loading}
+                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            Complete Registration
+                            {loading ? "Completing..." : "Complete Registration"}
+                            <span className="material-symbols-outlined text-xl">check_circle</span>
                         </button>
                     </form>
                 )}

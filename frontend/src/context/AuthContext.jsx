@@ -46,7 +46,6 @@ export const AuthProvider = ({ children }) => {
         Cookies.remove("token");
         setUser(null);
         toast.success("Logged out successfully");
-        navigate("/login");
     };
 
     // ------------------ FETCH CURRENT USER ------------------

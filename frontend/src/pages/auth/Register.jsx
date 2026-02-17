@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import HeroSection from "../../containers/auth/register/HeroSection";
 import RegisterForm from "../../containers/auth/register/RegisterForm";
 import { AuthContext } from "../../context/AuthContext";
-import toast from "react-hot-toast";
 
 const Register = () => {
     const [step, setStep] = useState(1);
@@ -20,33 +19,27 @@ const Register = () => {
     // ===== Step 1 =====
     const handleSendOtp = async (e) => {
         e.preventDefault();
-        if (!agree) {
-            toast.error("You must agree to the Terms & Conditions before continuing.");
-            return;
-        }
 
-        const toastId = toast.loading("Sending OTP...");
+        if (!agree) {
+            return alert("You must agree to the Terms & Conditions before continuing.");
+        }
 
         try {
             await requestSignupOtp(role, firstName, lastName, email, password);
-            toast.success("OTP sent successfully!", { id: toastId });
             setStep(2);
         } catch (err) {
-            toast.error(err?.response?.data?.detail || "Failed to send OTP", { id: toastId });
+            console.error("Send OTP error:", err);
         }
     };
 
     // ===== Step 2 =====
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
-        const toastId = toast.loading("Verifying OTP...");
-
         try {
             await verifySignupOtp(role, email, otp);
-            toast.success("OTP verified!", { id: toastId });
             setStep(3);
         } catch (err) {
-            toast.error(err?.response?.data?.detail || "Invalid OTP", { id: toastId });
+            console.error("Verify OTP error:", err);
         }
     };
 
@@ -55,11 +48,10 @@ const Register = () => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
-            toast.error("Passwords do not match!");
-            return;
+            return alert("Passwords do not match!");
         }
 
-        toast.success("Registration completed!");
+        alert("Registration completed! You can now log in.");
     };
 
     return (

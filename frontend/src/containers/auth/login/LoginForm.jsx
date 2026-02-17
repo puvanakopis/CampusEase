@@ -71,19 +71,6 @@ const LoginForm = ({
                         </div>
                     </div>
 
-                    {/* Remember me */}
-                    <div className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            className="w-5 h-5 rounded-lg text-primary focus:ring-primary/30 border-slate-300 cursor-pointer"
-                            checked={remember}
-                            onChange={() => setRemember(!remember)}
-                        />
-                        <span className="text-sm text-slate-600 font-medium">
-                            Remember this device
-                        </span>
-                    </div>
-
                     <button
                         type="submit"
                         disabled={loading}

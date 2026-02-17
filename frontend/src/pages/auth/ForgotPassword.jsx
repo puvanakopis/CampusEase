@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import HeroSection from "../../containers/auth/forgot/HeroSection";
 import ForgotPasswordForm from "../../containers/auth/forgot/ForgotPasswordForm";
 import { AuthContext } from "../../context/AuthContext";
-import toast from "react-hot-toast";
 
 const ForgotPassword = () => {
     const [step, setStep] = useState(1);
@@ -19,17 +18,15 @@ const ForgotPassword = () => {
             await requestPasswordReset(email);
             setStep(2);
         } catch (err) {
-            console.error(err);
-            toast.error("Failed to send reset link");
+            console.error("Send OTP error:", err);
         }
     };
 
     // ------------------ Step 2: Verify OTP ------------------
-    const handleVerifyOtp = async (e) => {
+    const handleVerifyOtp = (e) => {
         e.preventDefault();
         if (!otp) {
-            toast.error("Please enter the OTP");
-            return;
+            return alert("Please enter the OTP");
         }
         setStep(3);
     };
@@ -39,14 +36,12 @@ const ForgotPassword = () => {
         e.preventDefault();
         try {
             await resetPassword(email, otp, newPassword);
-            toast.success("Password reset successfully!");
             setStep(1);
             setEmail("");
             setOtp("");
             setNewPassword("");
         } catch (err) {
-            console.error(err);
-            toast.error("Failed to reset password");
+            console.error("Reset password error:", err);
         }
     };
 

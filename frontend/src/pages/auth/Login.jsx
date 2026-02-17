@@ -7,7 +7,6 @@ const Login = () => {
     const { login } = useContext(AuthContext);
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState(false);
@@ -15,13 +14,11 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError("");
 
         try {
             await login(email, password);
         } catch (err) {
-            setError(err.message || "Login failed");
-            console.log(error)
+            console.error("Login error:", err); 
         } finally {
             setLoading(false);
         }
