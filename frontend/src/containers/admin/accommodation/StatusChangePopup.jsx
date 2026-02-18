@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-const StatusChangePopup = ({ property, currentStatus, onClose, onConfirm }) => {
+const StatusChangePopup = ({ accommodation, currentStatus, onClose, onConfirm }) => {
     const [reason, setReason] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const action = currentStatus === "Active" ? "deactivate" : "activate";
-    const title = currentStatus === "Active" ? "Deactivate Property" : "Activate Property";
+    const action = currentStatus === "Available" ? "deactivate" : "activate";
+    const title = currentStatus === "Available" ? "Deactivate Accommodation" : "Activate Accommodation";
 
     const handleSubmit = async () => {
         if (action === "deactivate" && !reason.trim()) {
@@ -22,6 +22,17 @@ const StatusChangePopup = ({ property, currentStatus, onClose, onConfirm }) => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const getStatusDisplay = (status) => {
+        const statusMap = {
+            'pending': 'Pending',
+            'Available': 'Available',
+            'Rejected': 'Rejected',
+            'booked': 'Booked',
+            'unavailable': 'Unavailable'
+        };
+        return statusMap[status] || status;
     };
 
     return (
@@ -41,42 +52,42 @@ const StatusChangePopup = ({ property, currentStatus, onClose, onConfirm }) => {
                         </button>
                     </div>
                     <p className="text-sm text-slate-600 mt-1">
-                        Property: <span className="font-medium">{property?.name}</span>
+                        Accommodation: <span className="font-medium">{accommodation?.name}</span>
                     </p>
                 </div>
 
                 {/* Content */}
                 <div className="px-6 py-4">
-                    {/* Property Info */}
+                    {/* Accommodation Info */}
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={property?.image}
-                                alt={property?.name}
+                                src={accommodation?.images[0]?.filename ? `/images/${accommodation.images[0].filename}` : "https://via.placeholder.com/100x100?text=Accommodation"}
+                                alt={accommodation?.name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
-                                    e.target.src = "https://via.placeholder.com/100x100?text=Property";
+                                    e.target.src = "https://via.placeholder.com/100x100?text=Accommodation";
                                 }}
                             />
                         </div>
                         <div>
-                            <p className="text-sm font-semibold text-slate-900">{property?.name}</p>
-                            <p className="text-xs text-slate-500">ID: {property?.id}</p>
-                            <p className="text-xs text-slate-600 mt-1">{property?.location}</p>
+                            <p className="text-sm font-semibold text-slate-900">{accommodation?.name}</p>
+                            <p className="text-xs text-slate-500">ID: {accommodation?._id}</p>
+                            <p className="text-xs text-slate-600 mt-1">{accommodation?.address?.street}</p>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-                                    Current: {currentStatus}
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Available" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                                    Current: {getStatusDisplay(currentStatus)}
                                 </span>
                                 <span className="text-xs text-slate-400">→</span>
-                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Active" ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}>
-                                    New: {currentStatus === "Active" ? "Inactive" : "Active"}
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Available" ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}>
+                                    New: {currentStatus === "Available" ? "Unavailable" : "Available"}
                                 </span>
                             </div>
                         </div>
                     </div>
 
                     {/* Reason Input (for deactivation only) */}
-                    {currentStatus === "Active" && (
+                    {currentStatus === "Available" && (
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-slate-700 mb-2">
                                 Reason for Deactivation *
@@ -84,18 +95,18 @@ const StatusChangePopup = ({ property, currentStatus, onClose, onConfirm }) => {
                             <textarea
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}
-                                placeholder="Please explain why this property is being deactivated..."
+                                placeholder="Please explain why this accommodation is being deactivated..."
                                 className="w-full h-32 px-4 py-3 border border-slate-200 rounded-lg text-sm resize-none focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 required
                             />
                             <p className="text-xs text-slate-500 mt-1">
-                                This reason will be visible to the property owner and administrators.
+                                This reason will be visible to the accommodation owner and administrators.
                             </p>
                         </div>
                     )}
 
                     {/* Activation Note */}
-                    {currentStatus === "Inactive" && (
+                    {currentStatus !== "Available" && (
                         <div className="mb-4 p-3 bg-blue-50 rounded-lg">
                             <div className="flex items-start gap-2">
                                 <span className="material-symbols-outlined text-blue-500 text-sm mt-0.5">
@@ -104,12 +115,12 @@ const StatusChangePopup = ({ property, currentStatus, onClose, onConfirm }) => {
                                 <div>
                                     <p className="text-sm font-medium text-primary">Activation Note</p>
                                     <p className="text-xs text-blue-600 mt-1">
-                                        This property will become available for student bookings immediately.
-                                        {property?.inactiveReason && (
+                                        This accommodation will become available for student bookings immediately.
+                                        {accommodation?.reject_reason && (
                                             <>
                                                 <br />
                                                 <span className="font-medium mt-1 block">Previous reason: </span>
-                                                "{property.inactiveReason}"
+                                                "{accommodation.reject_reason}"
                                             </>
                                         )}
                                     </p>
@@ -130,7 +141,7 @@ const StatusChangePopup = ({ property, currentStatus, onClose, onConfirm }) => {
                     </button>
                     <button
                         onClick={handleSubmit}
-                        disabled={loading || (currentStatus === "Active" && !reason.trim())}
+                        disabled={loading || (currentStatus === "Available" && !reason.trim())}
                         className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 bg-primary hover:bg-primary/90 disabled:bg-primary"
                     >
                         {loading ? (

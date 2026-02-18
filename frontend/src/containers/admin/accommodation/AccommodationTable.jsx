@@ -1,11 +1,38 @@
 import React from "react";
 
-const PropertyTable = ({ properties, onView, onDelete, onToggleStatus, isAdmin = false }) => {
+const AccommodationTable = ({ accommodations, onView, onDelete, onToggleStatus, isAdmin = false }) => {
 
-    const handleToggleStatusClick = (property, e) => {
+    const handleToggleStatusClick = (accommodation, e) => {
         e.stopPropagation();
         if (onToggleStatus) {
-            onToggleStatus(property.id, property.status);
+            onToggleStatus(accommodation._id, accommodation.status);
+        }
+    };
+
+    const getStatusDisplay = (status) => {
+        const statusMap = {
+            'pending': 'Pending',
+            'Available': 'Available',
+            'Rejected': 'Rejected',
+            'booked': 'Booked',
+            'unavailable': 'Unavailable'
+        };
+        return statusMap[status] || status;
+    };
+
+    const getStatusColor = (status) => {
+        switch(status) {
+            case 'Available':
+                return 'bg-green-100 text-green-800';
+            case 'pending':
+                return 'bg-yellow-100 text-yellow-800';
+            case 'Rejected':
+            case 'unavailable':
+                return 'bg-red-100 text-red-800';
+            case 'booked':
+                return 'bg-blue-100 text-blue-800';
+            default:
+                return 'bg-gray-100 text-gray-800';
         }
     };
 
@@ -14,7 +41,7 @@ const PropertyTable = ({ properties, onView, onDelete, onToggleStatus, isAdmin =
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
                 <h3 className="text-lg font-bold text-slate-900">
-                    All Properties ({properties.length})
+                    All Accommodations ({accommodations.length})
                 </h3>
                 <div className="flex items-center gap-3">
                     {/* Search */}
@@ -24,7 +51,7 @@ const PropertyTable = ({ properties, onView, onDelete, onToggleStatus, isAdmin =
                         </span>
                         <input
                             type="text"
-                            placeholder="Search properties..."
+                            placeholder="Search accommodations..."
                             className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
@@ -32,16 +59,21 @@ const PropertyTable = ({ properties, onView, onDelete, onToggleStatus, isAdmin =
                     {/* Status Filter */}
                     <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Status: All</option>
-                        <option>Active</option>
-                        <option>Inactive</option>
+                        <option>Available</option>
+                        <option>Pending</option>
+                        <option>Rejected</option>
+                        <option>Booked</option>
+                        <option>Unavailable</option>
                     </select>
 
                     {/* Type Filter */}
                     <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Type: All</option>
-                        <option>Annex</option>
-                        <option>House</option>
                         <option>Apartment</option>
+                        <option>House</option>
+                        <option>Villa</option>
+                        <option>Hostel</option>
+                        <option>Other</option>
                     </select>
                 </div>
             </div>
@@ -51,7 +83,7 @@ const PropertyTable = ({ properties, onView, onDelete, onToggleStatus, isAdmin =
                 <thead className="bg-slate-50">
                     <tr>
                         <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                            Property
+                            Accommodation
                         </th>
                         <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
                             Location & Type
@@ -69,53 +101,48 @@ const PropertyTable = ({ properties, onView, onDelete, onToggleStatus, isAdmin =
                 </thead>
 
                 <tbody className="divide-y divide-slate-100">
-                    {properties.map((property) => (
-                        <tr key={property.id} className="hover:bg-slate-50 transition-colors">
+                    {accommodations.map((accommodation) => (
+                        <tr key={accommodation._id} className="hover:bg-slate-50 transition-colors">
                             <td className="px-6 py-4">
                                 <div className="flex items-center gap-3">
                                     <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                         <img
-                                            src={property.image}
-                                            alt={property.name}
+                                            src={accommodation.images[0]?.filename ? `/images/${accommodation.images[0].filename}` : "https://via.placeholder.com/100x100?text=Accommodation"}
+                                            alt={accommodation.name}
                                             className="w-full h-full object-cover"
                                             onError={(e) => {
                                                 e.target.src =
-                                                    "https://via.placeholder.com/100x100?text=Property";
+                                                    "https://via.placeholder.com/100x100?text=Accommodation";
                                             }}
                                         />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-semibold text-slate-900">{property.name}</p>
-                                        <p className="text-[10px] text-slate-400">ID: {property.id}</p>
+                                        <p className="text-sm font-semibold text-slate-900">{accommodation.name}</p>
+                                        <p className="text-[10px] text-slate-400">ID: {accommodation._id}</p>
                                     </div>
                                 </div>
                             </td>
                             <td className="px-6 py-4">
-                                <p className="text-sm text-slate-600">{property.location}</p>
-                                <p className="text-[10px] text-slate-400">{property.type}</p>
+                                <p className="text-sm text-slate-600">{accommodation.address?.street || 'N/A'}</p>
+                                <p className="text-[10px] text-slate-400">{accommodation.accommodation_type}</p>
                             </td>
                             <td className="px-6 py-4">
                                 <p className="text-sm font-bold text-green-600">
-                                    LKR {property.price.toLocaleString()}
+                                    LKR {accommodation.month_rent.toLocaleString()}
                                 </p>
                                 <p className="text-[10px] text-slate-400">per month</p>
                             </td>
                             <td className="px-6 py-4">
                                 <span
-                                    className={`px-3 py-1 rounded-full text-xs font-bold ${property.status === "Active"
-                                        ? "bg-green-100 text-green-800"
-                                        : property.status === "Inactive"
-                                            ? "bg-red-100 text-red-800"
-                                            : "bg-yellow-100 text-yellow-800"
-                                        }`}
+                                    className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(accommodation.status)}`}
                                 >
-                                    {property.status}
+                                    {getStatusDisplay(accommodation.status)}
                                 </span>
                             </td>
                             <td className="px-6 py-4">
                                 <div className="flex items-center justify-center gap-2">
                                     <button
-                                        onClick={() => onView(property)}
+                                        onClick={() => onView(accommodation)}
                                         className="bg-primary hover:bg-primary/80 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                                         title="View Details"
                                     >
@@ -124,21 +151,21 @@ const PropertyTable = ({ properties, onView, onDelete, onToggleStatus, isAdmin =
 
                                     {isAdmin && onToggleStatus && (
                                         <button
-                                            onClick={(e) => handleToggleStatusClick(property, e)}
-                                            className={`${property.status === "Active"
+                                            onClick={(e) => handleToggleStatusClick(accommodation, e)}
+                                            className={`${accommodation.status === "Available"
                                                 ? "bg-yellow-600 hover:bg-yellow-500"
                                                 : "bg-primary hover:bg-primary/90"
                                                 } text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors`}
-                                            title={property.status === "Active" ? "Deactivate Property" : "Activate Property"}
+                                            title={accommodation.status === "Available" ? "Deactivate Accommodation" : "Activate Accommodation"}
                                         >
-                                            {property.status === "Active" ? "Deactivate" : "Activate"}
+                                            {accommodation.status === "Available" ? "Deactivate" : "Activate"}
                                         </button>
                                     )}
 
                                     <button
-                                        onClick={() => onDelete(property.id)}
+                                        onClick={() => onDelete(accommodation._id)}
                                         className="bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
-                                        title="Delete Property"
+                                        title="Delete Accommodation"
                                     >
                                         Delete
                                     </button>
@@ -152,4 +179,4 @@ const PropertyTable = ({ properties, onView, onDelete, onToggleStatus, isAdmin =
     );
 };
 
-export default PropertyTable;
+export default AccommodationTable;
