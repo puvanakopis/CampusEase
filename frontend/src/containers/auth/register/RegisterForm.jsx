@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const RegisterForm = ({
     step,
@@ -23,6 +23,9 @@ const RegisterForm = ({
     handleCompleteRegistration,
     loading,
 }) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     return (
         <section className="w-full md:w-1/2 bg-white flex items-center justify-center p-6 md:p-12 lg:p-16 overflow-y-auto">
             <div className="w-full max-w-[420px]">
@@ -140,14 +143,20 @@ const RegisterForm = ({
                                     lock
                                 </span>
                                 <input
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Create a password"
-                                    className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4 placeholder:text-slate-400
+                                    className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-10 placeholder:text-slate-400
                     focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
                                     required
                                 />
+                                <span
+                                    className="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl cursor-pointer"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? "visibility_off" : "visibility"}
+                                </span>
                             </div>
                         </div>
 
@@ -155,11 +164,12 @@ const RegisterForm = ({
                         <div className="flex items-center gap-2">
                             <input
                                 type="checkbox"
-                                className="w-5 h-5 rounded-lg text-primary focus:ring-primary/30 border-slate-300 cursor-pointer"
+                                className="w-3 h-3 rounded-lg text-primary focus:ring-primary/30 border-slate-300 cursor-pointer"
                                 checked={agree}
                                 onChange={() => setAgree(!agree)}
                                 required
                             />
+
                             <span className="text-sm text-slate-600 font-medium">
                                 I agree to the{" "}
                                 <a href="/terms" className="text-primary underline">
@@ -223,14 +233,20 @@ const RegisterForm = ({
                                     lock_reset
                                 </span>
                                 <input
-                                    type="password"
+                                    type={showConfirmPassword ? "text" : "password"}
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     placeholder="Confirm password"
-                                    className="form-input w-full rounded-xl border-slate-200 bg-slate-50 h-12 pl-11 pr-4 placeholder:text-slate-400
+                                    className="form-input w-full rounded-xl border-slate-200 bg-slate-50 h-12 pl-11 pr-10 placeholder:text-slate-400
                     focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
                                     required
                                 />
+                                <span
+                                    className="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl cursor-pointer"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    {showConfirmPassword ? "visibility_off" : "visibility"}
+                                </span>
                             </div>
                         </div>
 

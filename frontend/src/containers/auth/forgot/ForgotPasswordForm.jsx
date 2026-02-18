@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const ForgotPasswordForm = ({
     step,
@@ -12,6 +12,8 @@ const ForgotPasswordForm = ({
     handleVerifyOtp,
     handleSetNewPassword,
 }) => {
+    const [showNewPassword, setShowNewPassword] = useState(false);
+
     return (
         <section className="w-full md:w-1/2 bg-white flex items-center justify-center p-6 md:p-12 lg:p-16 overflow-y-auto">
             <div className="w-full max-w-[420px]">
@@ -26,6 +28,7 @@ const ForgotPasswordForm = ({
                     </p>
                 </div>
 
+                {/* STEP 1: Enter Email */}
                 {step === 1 && (
                     <form onSubmit={handleSendLink} className="space-y-4">
                         <div className="space-y-1.5">
@@ -54,6 +57,7 @@ const ForgotPasswordForm = ({
                     </form>
                 )}
 
+                {/* STEP 2: Verify OTP */}
                 {step === 2 && (
                     <form onSubmit={handleVerifyOtp} className="space-y-4">
                         <div className="space-y-1.5">
@@ -77,18 +81,27 @@ const ForgotPasswordForm = ({
                     </form>
                 )}
 
+                {/* STEP 3: Set New Password */}
                 {step === 3 && (
                     <form onSubmit={handleSetNewPassword} className="space-y-4">
                         <div className="space-y-1.5">
                             <label className="text-slate-700 text-sm font-semibold">New Password</label>
-                            <input
-                                type="password"
-                                placeholder="Enter new password"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
-                                required
-                                className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-4 pr-4 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all outline-none"
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showNewPassword ? "text" : "password"} 
+                                    placeholder="Enter new password"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    required
+                                    className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-4 pr-10 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all outline-none"
+                                />
+                                <span
+                                    className="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl cursor-pointer"
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                >
+                                    {showNewPassword ? "visibility_off" : "visibility"}
+                                </span>
+                            </div>
                         </div>
 
                         <button
