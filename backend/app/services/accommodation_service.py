@@ -33,3 +33,20 @@ async def create_accommodation(accom_request: AccommodationCreateRequest) -> dic
     accom_obj = Accommodation(**accom_data)
 
     return response(True, 201, "Accommodation created successfully", accom_obj.dict(by_alias=True))
+
+
+async def get_all_accommodations() -> dict:
+    accom_list = []
+    cursor = accommodations_collection.find()
+    async for doc in cursor:
+        accom_list.append(Accommodation(**doc).dict(by_alias=True))
+    return response(True, 200, "Accommodations fetched successfully", accom_list)
+
+
+async def get_accommodation_by_id(accommodation_id: str) -> dict:
+    accom_doc = await accommodations_collection.find_one({"_id": accommodation_id})
+    if not accom_doc:
+        raise HTTPException(status_code=404, detail="Accommodation not found")
+
+    accom_obj = Accommodation(**accom_doc)
+    return response(True, 200, "Accommodation fetched successfully", accom_obj.dict(by_alias=True))
