@@ -102,7 +102,7 @@ const OwnerApplication = () => {
 
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm p-8 text-center">
+            <div className="bg-white min-h-[80vh] flex flex-col justify-center items-center rounded-xl border border-slate-200 shadow-sm p-8 text-center">
                 <div className="mx-auto">
                     <div className="size-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
                         <span className="material-symbols-outlined text-primary text-3xl">directions_car</span>
