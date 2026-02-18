@@ -7,19 +7,16 @@ const Heading = ({ title, subtitle, buttonText, onButtonClick, buttonDisabled = 
                 <h1 className="text-2xl md:text-3xl font-bold text-slate-900">{title}</h1>
                 <p className="text-slate-500 mt-1">{subtitle}</p>
             </div>
-            <button 
-                onClick={onButtonClick}
-                disabled={buttonDisabled}
-                className={`inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all ${buttonDisabled ? 'bg-slate-400 cursor-not-allowed' : 'bg-primary hover:bg-primary/90'}`}
-            >
-                <span className="material-symbols-outlined text-lg">add_circle</span>
-                {buttonText}
-                {buttonDisabled && (
-                    <span className="material-symbols-outlined text-sm ml-1" title="Property limit reached">
-                        warning
-                    </span>
-                )}
-            </button>
+            {buttonText && (
+                <button
+                    onClick={onButtonClick}
+                    disabled={buttonDisabled}
+                    className={`bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors ${buttonDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                    <span className="material-symbols-outlined text-sm">add</span>
+                    {buttonText}
+                </button>
+            )}
         </div>
     );
 };

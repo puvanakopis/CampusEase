@@ -22,4 +22,4 @@ app.include_router(accommodation_router.router)
 
 @app.get("/")
 async def root():
-    return {"message": "API is running"}
+    return {"message": "CampusEase API is running"}

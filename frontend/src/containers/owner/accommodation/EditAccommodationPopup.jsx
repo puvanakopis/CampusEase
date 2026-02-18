@@ -1,18 +1,12 @@
-import React, { useState, } from "react";
+import React, { useState } from "react";
 
-const EditAccommodationPopup = ({ property, onClose, onSave }) => {
+const EditAccommodationPopup = ({ property, onClose, onSave, activeTab }) => {
     const [formData, setFormData] = useState({ ...property });
     const [newAmenity, setNewAmenity] = useState("");
 
     const accommodationTypes = [
         "Hostel", "Annex", "Single Room", "Double Room",
         "Triple Room", "Apartment", "Studio", "House"
-    ];
-
-    const statusOptions = [
-        { value: "Active", label: "Active", color: "bg-green-100 text-green-800" },
-        { value: "Inactive", label: "Inactive", color: "bg-red-100 text-red-800" },
-        { value: "Under Maintenance", label: "Under Maintenance", color: "bg-yellow-100 text-yellow-800" }
     ];
 
     const handleChange = (e) => {
@@ -52,6 +46,11 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                     <div>
                         <h3 className="text-2xl font-bold text-slate-900">Edit Property</h3>
                         <p className="text-slate-500">Update property details for {property.name}</p>
+                        {activeTab === "pending" && (
+                            <p className="text-xs text-yellow-600 mt-2">
+                                Note: Editing a pending property will keep it in the pending queue for review.
+                            </p>
+                        )}
                     </div>
                     <button
                         onClick={onClose}
@@ -128,24 +127,6 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
 
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">
-                                        Status *
-                                    </label>
-                                    <select
-                                        name="status"
-                                        value={formData.status}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                                    >
-                                        {statusOptions.map(status => (
-                                            <option key={status.value} value={status.value}>
-                                                {status.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">
                                         Total Rooms *
                                     </label>
                                     <input
@@ -159,20 +140,22 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                     />
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                                        Currently Occupied
-                                    </label>
-                                    <input
-                                        type="number"
-                                        name="occupied"
-                                        value={formData.occupied}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                                        min="0"
-                                        max={formData.rooms}
-                                    />
-                                </div>
+                                {activeTab === "active" && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                                            Currently Occupied
+                                        </label>
+                                        <input
+                                            type="number"
+                                            name="occupied"
+                                            value={formData.occupied}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                            min="0"
+                                            max={formData.rooms}
+                                        />
+                                    </div>
+                                )}
                             </div>
 
                             <div className="mt-4">
@@ -263,23 +246,6 @@ const EditAccommodationPopup = ({ property, onClose, onSave }) => {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Inactive Reason (if applicable) */}
-                        {formData.status === "Inactive" && (
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">
-                                    Reason for Inactive Status
-                                </label>
-                                <input
-                                    type="text"
-                                    name="inactiveReason"
-                                    value={formData.inactiveReason || ""}
-                                    onChange={handleChange}
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                                    placeholder="e.g., Under renovation, Seasonal closure"
-                                />
-                            </div>
-                        )}
                     </div>
 
                     <div className="flex gap-3 mt-8">

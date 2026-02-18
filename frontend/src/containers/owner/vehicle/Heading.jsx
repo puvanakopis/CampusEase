@@ -10,7 +10,8 @@ const Heading = ({ handleAddVehicleClick, userPermissions }) => {
             <button
                 onClick={handleAddVehicleClick}
                 disabled={!userPermissions.canAdd}
-                className={`inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all ${!userPermissions.canAdd ? 'bg-slate-400 cursor-not-allowed' : 'bg-primary hover:bg-primary/90'}`}
+                className={`inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all ${!userPermissions.canAdd ? 'bg-slate-400 cursor-not-allowed' : 'bg-primary hover:bg-primary/90'
+                    }`}
             >
                 <span className="material-symbols-outlined text-lg">add_circle</span>
                 Add New Vehicle

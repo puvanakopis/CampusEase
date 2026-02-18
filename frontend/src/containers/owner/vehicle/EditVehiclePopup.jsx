@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicle, handleEditVehicle }) => {
+const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicle, handleEditVehicle, activeTab }) => {
     const [formData, setFormData] = useState(selectedVehicle ? { ...selectedVehicle } : {});
     const [newFeature, setNewFeature] = useState("");
 
@@ -11,12 +11,6 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
 
     const transmissionTypes = ["Automatic", "Manual", "Semi-Automatic"];
     const fuelTypes = ["Petrol", "Diesel", "Electric", "Hybrid"];
-
-    const statusOptions = [
-        { value: "Active", label: "Active", color: "bg-green-100 text-green-800" },
-        { value: "Inactive", label: "Inactive", color: "bg-red-100 text-red-800" },
-        { value: "Under Maintenance", label: "Under Maintenance", color: "bg-yellow-100 text-yellow-800" }
-    ];
 
     useEffect(() => {
         if (selectedVehicle) {
@@ -63,6 +57,11 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                     <div>
                         <h3 className="text-2xl font-bold text-slate-900">Edit Vehicle</h3>
                         <p className="text-slate-500">Update vehicle details for {formData.name}</p>
+                        {activeTab === "pending" && (
+                            <p className="text-xs text-yellow-600 mt-2">
+                                Note: Editing a pending vehicle will keep it in the pending queue for review.
+                            </p>
+                        )}
                     </div>
                     <button
                         onClick={() => {
@@ -140,72 +139,74 @@ const EditVehiclePopup = ({ selectedVehicle, setShowEditPopup, setSelectedVehicl
                                     />
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                                        Status *
-                                    </label>
-                                    <select
-                                        name="status"
-                                        value={formData.status}
-                                        onChange={handleChange}
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                                    >
-                                        {statusOptions.map(status => (
-                                            <option key={status.value} value={status.value}>
-                                                {status.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                                        Currently Rented
-                                    </label>
-                                    <select
-                                        name="currentlyRented"
-                                        value={formData.currentlyRented}
-                                        onChange={(e) => handleChange({
-                                            target: {
-                                                name: 'currentlyRented',
-                                                value: e.target.value === 'true'
-                                            }
-                                        })}
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                                    >
-                                        <option value={false}>No (Available)</option>
-                                        <option value={true}>Yes (Rented Out)</option>
-                                    </select>
-                                </div>
-
-                                {formData.currentlyRented && (
+                                {activeTab === "active" && (
                                     <>
                                         <div>
                                             <label className="block text-sm font-medium text-slate-700 mb-1">
-                                                Rented To
+                                                Status *
                                             </label>
-                                            <input
-                                                type="text"
-                                                name="rentedTo"
-                                                value={formData.rentedTo || ""}
+                                            <select
+                                                name="status"
+                                                value={formData.status}
                                                 onChange={handleChange}
                                                 className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                                                placeholder="Renter's name"
-                                            />
+                                            >
+                                                <option value="Active">Active</option>
+                                                <option value="Inactive">Inactive</option>
+                                                <option value="Under Maintenance">Under Maintenance</option>
+                                            </select>
                                         </div>
 
                                         <div>
                                             <label className="block text-sm font-medium text-slate-700 mb-1">
-                                                Rented Until
+                                                Currently Rented
                                             </label>
-                                            <input
-                                                type="date"
-                                                name="rentedUntil"
-                                                value={formData.rentedUntil || ""}
-                                                onChange={handleChange}
+                                            <select
+                                                name="currentlyRented"
+                                                value={formData.currentlyRented}
+                                                onChange={(e) => handleChange({
+                                                    target: {
+                                                        name: 'currentlyRented',
+                                                        value: e.target.value === 'true'
+                                                    }
+                                                })}
                                                 className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                                            />
+                                            >
+                                                <option value={false}>No (Available)</option>
+                                                <option value={true}>Yes (Rented Out)</option>
+                                            </select>
                                         </div>
+
+                                        {formData.currentlyRented && (
+                                            <>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                                        Rented To
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        name="rentedTo"
+                                                        value={formData.rentedTo || ""}
+                                                        onChange={handleChange}
+                                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                                        placeholder="Renter's name"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                                        Rented Until
+                                                    </label>
+                                                    <input
+                                                        type="date"
+                                                        name="rentedUntil"
+                                                        value={formData.rentedUntil || ""}
+                                                        onChange={handleChange}
+                                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
                                     </>
                                 )}
                             </div>

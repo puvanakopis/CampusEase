@@ -168,7 +168,8 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                         name="rooms"
                         value={formData.rooms}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out" required
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        required
                         placeholder="e.g., 7"
                         min="1"
                     />
