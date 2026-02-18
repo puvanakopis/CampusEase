@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ApplicationPopup from "../../containers/owner/application/ApplicationPopup";
-import StatusPopup from "../../containers/owner/application/StatusPopup";
+import { AuthContext } from "../../context/AuthContext";
 
 const OwnerApplication = () => {
+    const { user, updateCurrentUser } = useContext(AuthContext);
+
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -15,9 +17,17 @@ const OwnerApplication = () => {
     });
 
     const [currentStep, setCurrentStep] = useState(1);
-    const [submittedApplications, setSubmittedApplications] = useState([]);
     const [showApplicationPopup, setShowApplicationPopup] = useState(false);
-    const [showStatusPopup, setShowStatusPopup] = useState(false);
+    const [currentStatus, setCurrentStatus] = useState(null);
+    const [declineReason, setDeclineReason] = useState(null);
+
+    // Fetch current user status
+    useEffect(() => {
+        if (user && user.role === "owner") {
+            setCurrentStatus(user.status);
+            setDeclineReason(user.decline_reason || null);
+        }
+    }, [user]);
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -35,9 +45,7 @@ const OwnerApplication = () => {
     };
 
     const handleNextStep = () => {
-        if (validateStep(currentStep)) {
-            setCurrentStep(prev => prev + 1);
-        }
+        if (validateStep(currentStep)) setCurrentStep(prev => prev + 1);
     };
 
     const handlePreviousStep = () => {
@@ -55,25 +63,39 @@ const OwnerApplication = () => {
         }
     };
 
-    const handleSubmitApplication = (e) => {
+    const handleSubmitApplication = async (e) => {
         e.preventDefault();
-
         if (!validateStep(2)) return;
 
-        const newApplication = {
-            id: `OWN-${(submittedApplications.length + 1001).toString().padStart(3, '0')}`,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
+        // Prepare payload to update current user
+        const updateData = {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
             email: formData.email,
             phone: formData.phone,
-            nic: formData.nic,
-            status: "Pending",
-            submittedDate: new Date().toISOString().split('T')[0],
-            type: "Owner"
+            id_number: formData.nic,
+            address: formData.address,
+            id_photo: formData.identityDocument
         };
 
-        setSubmittedApplications(prev => [newApplication, ...prev]);
-        setFormData({ firstName: "", lastName: "", email: "", phone: "", nic: "", address: "", termsAgreed: false, identityDocument: null });
+        const res = await updateCurrentUser(updateData);
+
+        // Update local status after submitting
+        if (res.success && res.data) {
+            setCurrentStatus(res.data.status);
+            setDeclineReason(res.data.decline_reason || null);
+        }
+
+        setFormData({
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: "",
+            nic: "",
+            address: "",
+            termsAgreed: false,
+            identityDocument: null
+        });
         setCurrentStep(1);
         setShowApplicationPopup(false);
     };
@@ -99,61 +121,27 @@ const OwnerApplication = () => {
                             <span className="material-symbols-outlined">car_rental</span>
                             Apply as Owner
                         </button>
-
-                        <button
-                            onClick={() => setShowStatusPopup(true)}
-                            className="bg-primary text-white py-3 px-8 rounded-lg font-medium hover:bg-primary/80 transition-colors inline-flex items-center gap-2"
-                        >
-                            <span className="material-symbols-outlined">pending_actions</span>
-                            View Application Status
-                        </button>
                     </div>
 
-                    <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="p-4 bg-slate-50 rounded-lg">
-                            <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center mb-3 mx-auto">
-                                <span className="material-symbols-outlined text-primary">attach_money</span>
-                            </div>
-                            <h4 className="font-medium text-slate-900 mb-1">Earn Income</h4>
-                            <p className="text-sm text-slate-600">Generate revenue from your idle vehicles</p>
+                    {currentStatus && (
+                        <div className="mt-6 text-center">
+                            <p className="text-sm text-slate-700">
+                                <strong>Status:</strong>{" "}
+                                <span className={
+                                    currentStatus === "Active" ? "text-green-600" :
+                                        currentStatus === "Declined Approval" ? "text-red-600" :
+                                            "text-yellow-600"
+                                }>
+                                    {currentStatus}
+                                </span>
+                            </p>
+                            {currentStatus === "Declined Approval" && declineReason && (
+                                <p className="text-sm text-red-600 mt-1">
+                                    <strong>Reason:</strong> {declineReason}
+                                </p>
+                            )}
                         </div>
-                        <div className="p-4 bg-slate-50 rounded-lg">
-                            <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center mb-3 mx-auto">
-                                <span className="material-symbols-outlined text-primary">verified_user</span>
-                            </div>
-                            <h4 className="font-medium text-slate-900 mb-1">Verified Renters</h4>
-                            <p className="text-sm text-slate-600">Rent to trusted university members only</p>
-                        </div>
-                        <div className="p-4 bg-slate-50 rounded-lg">
-                            <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center mb-3 mx-auto">
-                                <span className="material-symbols-outlined text-primary">support_agent</span>
-                            </div>
-                            <h4 className="font-medium text-slate-900 mb-1">Full Support</h4>
-                            <p className="text-sm text-slate-600">Platform handles bookings, payments, and disputes</p>
-                        </div>
-                    </div>
-
-                    <div className="mt-8 bg-gradient-to-r from-primary/10 to-blue-50 rounded-xl p-6 max-w-2xl mx-auto">
-                        <h3 className="font-bold text-slate-900 mb-3">Owner Benefits</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                            <div className="flex items-start gap-2">
-                                <span className="material-symbols-outlined text-green-600 text-sm mt-0.5">check_circle</span>
-                                <span className="text-sm text-slate-700">85% of rental earnings paid to you</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                                <span className="material-symbols-outlined text-green-600 text-sm mt-0.5">check_circle</span>
-                                <span className="text-sm text-slate-700">Flexible availability management</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                                <span className="material-symbols-outlined text-green-600 text-sm mt-0.5">check_circle</span>
-                                <span className="text-sm text-slate-700">Insurance guidance and support</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                                <span className="material-symbols-outlined text-green-600 text-sm mt-0.5">check_circle</span>
-                                <span className="text-sm text-slate-700">Monthly payment processing</span>
-                            </div>
-                        </div>
-                    </div>
+                    )}
                 </div>
             </div>
 
@@ -169,10 +157,6 @@ const OwnerApplication = () => {
                     validateStep={validateStep}
                     setShowApplicationPopup={setShowApplicationPopup}
                 />
-            )}
-
-            {showStatusPopup && (
-                <StatusPopup submittedApplications={submittedApplications} setShowStatusPopup={setShowStatusPopup} />
             )}
         </main>
     );

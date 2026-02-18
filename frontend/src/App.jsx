@@ -1,15 +1,18 @@
 import "./App.css";
+import { Toaster } from "react-hot-toast";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
 
+// Navbars and Footers
 import Navbar from "./components/user/Navbar";
 import Footer from "./components/user/Footer";
-
 import OwnerNavbar from './components/owner/OwnerNavbar';
-import OwnerFooter from './components/owner/OwnerFooter';
-
+import OwnerFooter from "./components/owner/OwnerFooter";
 import AdminNavbar from "./components/admin/AdminNavbar";
 import AdminFooter from "./components/admin/AdminFooter";
 
+// Protected Route
 import ProtectedRoute from "./route/ProtectedRoute";
 
 // Auth Pages
@@ -33,6 +36,7 @@ import MyBookings from "./pages/user/MyBookings";
 import SavedItems from "./pages/user/SavedItems";
 import Settings from "./pages/user/Settings";
 import Support from "./pages/user/Support";
+import UserApplication from "./pages/user/UserApplication";
 import NotFound from "./pages/user/NotFound";
 
 // Owner Pages
@@ -57,9 +61,17 @@ import AdminProfile from "./pages/admin/AdminProfile";
 import AdminSupport from "./pages/admin/Support";
 import AdminNotFound from "./pages/admin/AdminNotFound";
 
+import Loading from "./components/user/Loading";
+
 function App() {
-  const role = "student"; // "student", "staff", "owner", "admin", "guest"
+  const { user, authLoading } = useContext(AuthContext);
   const location = useLocation();
+
+  if (authLoading) {
+    return <Loading mainText="Checking authentication..." subText="Please wait" progress={50} />;
+  }
+
+  const role = user?.role || "guest";
 
   const authPages = ["/login", "/register", "/forgot-password"];
   const showNavbarFooter = !authPages.includes(location.pathname);
@@ -98,6 +110,31 @@ function App() {
     <>
       {renderNavbar()}
 
+      {/* Toaster for notifications */}
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            padding: "14px 18px",
+            borderRadius: "12px",
+            fontSize: "14px",
+            border: "1px solid #E2E8F0",
+          },
+          success: {
+            iconTheme: { primary: "#16A34A", secondary: "#FFFFFF" },
+            className: "!bg-white !text-slate-900 shadow-lg border border-slate-200 rounded-xl",
+          },
+          error: {
+            iconTheme: { primary: "#DC2626", secondary: "#FFFFFF" },
+            className: "!bg-white !text-red-700 shadow-lg border border-red-200 rounded-xl",
+          },
+          loading: {
+            className: "!bg-white !text-slate-700 shadow-lg border border-slate-200 rounded-xl",
+          },
+        }}
+      />
+
       <Routes>
         {/* Auth Routes */}
         <Route path="/register" element={<Register />} />
@@ -105,10 +142,10 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Protected Routes */}
-        <Route element={<ProtectedRoute role={role} />}>
-
+        <Route element={<ProtectedRoute role={role} user={user} />}>
           {/* User/Public Routes */}
           <Route path="/" element={<Home />} />
+          <Route path="/application" element={<UserApplication />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
           <Route path="/accommodation" element={<Accommodation />} />
@@ -146,11 +183,14 @@ function App() {
         </Route>
 
         {/* 404 */}
-        <Route path="*" element={
-          role === "owner" ? <OwnerNotFound /> :
-            role === "admin" ? <AdminNotFound /> :
-              <NotFound />
-        } />
+        <Route
+          path="*"
+          element={
+            role === "owner" ? <OwnerNotFound /> :
+              role === "admin" ? <AdminNotFound /> :
+                <NotFound />
+          }
+        />
       </Routes>
 
       {renderFooter()}

@@ -1,11 +1,31 @@
 import React from "react";
 
-const AdminProfilePage = () => {
+const AdminProfilePage = ({
+    firstName,
+    lastName,
+    email,
+    phone,
+    roleDescription,
+    setFirstName,
+    setLastName,
+    setEmail,
+    setPhone,
+    setRoleDescription,
+    handleSaveChanges,
+    user,
+    authLoading,
+}) => {
+    if (authLoading) {
+        return <div className="text-center mt-10">Loading profile...</div>;
+    }
+
     return (
         <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col gap-8">
             {/* Header */}
             <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-bold text-slate-900">Welcome, Admin!</h1>
+                <h1 className="text-3xl font-bold text-slate-900">
+                    Welcome, {firstName}!
+                </h1>
                 <p className="text-slate-500">
                     Manage users, view platform stats, and update your admin settings.
                 </p>
@@ -19,91 +39,41 @@ const AdminProfilePage = () => {
                             <img
                                 alt="Admin Avatar"
                                 className="h-full w-full rounded-full object-cover"
-                                src="https://i.pravatar.cc/300?img=12"
+                                src={
+                                    user?.photo?.filename
+                                        ? `${import.meta.env.VITE_API_BASE}/uploads/${user.photo.filename}`
+                                        : "https://i.pravatar.cc/300?img=12"
+                                }
                             />
                         </div>
                         <button className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg border-2 border-white">
-                            <span className="material-symbols-outlined text-sm">edit</span>
+                            <span className="material-symbols-outlined text-sm">
+                                edit
+                            </span>
                         </button>
                     </div>
 
                     <div className="text-center md:text-left flex-1">
                         <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
-                            <h1 className="text-2xl font-black text-slate-900">Alex Johnson</h1>
+                            <h1 className="text-2xl font-black text-slate-900">
+                                {firstName} {lastName}
+                            </h1>
                             <div className="flex items-center gap-2">
                                 <span className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
-                                    <span className="material-symbols-outlined text-sm">verified</span>
+                                    <span className="material-symbols-outlined text-sm">
+                                        verified
+                                    </span>
                                     Super Admin
                                 </span>
                             </div>
                         </div>
                         <p className="text-slate-500 font-medium mb-4">
-                            Admin ID: ADM-1023 • Joined: January 2020
+                            Admin ID: {user?._id || "N/A"} • Joined:{" "}
+                            {user?.created_at
+                                ? new Date(user.created_at).toLocaleDateString()
+                                : "N/A"}
                         </p>
-                        <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                            <button className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors">
-                                Edit Profile
-                            </button>
-                            <button className="px-6 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors">
-                                Manage Platform
-                            </button>
-                        </div>
                     </div>
-                </div>
-            </div>
-
-            {/* Admin Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1">
-                    <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">
-                        Total Users
-                    </span>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-slate-900">1,245</span>
-                        <span className="text-green-500 text-xs font-bold flex items-center">
-                            <span className="material-symbols-outlined text-sm">trending_up</span> 3%
-                        </span>
-                    </div>
-                    <span className="text-slate-400 text-xs font-medium mt-1">Active: 1,120</span>
-                </div>
-
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1">
-                    <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">
-                        Total Properties
-                    </span>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-slate-900">420</span>
-                        <span className="text-green-500 text-xs font-bold flex items-center">
-                            <span className="material-symbols-outlined text-sm">trending_up</span> 7%
-                        </span>
-                    </div>
-                    <span className="text-slate-400 text-xs font-medium mt-1">Published: 380</span>
-                </div>
-
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1">
-                    <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">
-                        Total Bookings
-                    </span>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-slate-900">5,860</span>
-                        <span className="text-green-500 text-xs font-bold flex items-center">
-                            <span className="material-symbols-outlined text-sm">trending_up</span> 12%
-                        </span>
-                    </div>
-                    <span className="text-slate-400 text-xs font-medium mt-1">This Month: 420</span>
-                </div>
-
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1">
-                    <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">
-                        Revenue
-                    </span>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-slate-900">Rs 32M</span>
-                        <span className="text-green-500 text-xs font-bold flex items-center">
-                            <span className="material-symbols-outlined text-sm">trending_up</span> 18%
-                        </span>
-                    </div>
-                    <span className="text-slate-400 text-xs font-medium mt-1">Lifetime</span>
                 </div>
             </div>
 
@@ -122,7 +92,18 @@ const AdminProfilePage = () => {
                         <input
                             className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             type="text"
-                            value="Alex Johnson"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className="text-sm font-bold text-slate-600">Last Name</label>
+                        <input
+                            className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
                         />
                     </div>
 
@@ -131,20 +112,19 @@ const AdminProfilePage = () => {
                         <input
                             className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             type="email"
-                            value="admin@example.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
 
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-600">Phone Number</label>
                         <div className="flex gap-2">
-                            <span className="flex items-center justify-center bg-slate-100 border border-slate-200 rounded-lg px-3 text-sm text-slate-500 font-medium">
-                                +94
-                            </span>
                             <input
                                 className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 type="tel"
-                                value="77 123 4567"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
                             />
                         </div>
                     </div>
@@ -154,7 +134,8 @@ const AdminProfilePage = () => {
                         <textarea
                             rows={5}
                             className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            value="Responsible for managing platform-wide settings, monitoring user activity, approving content, and ensuring smooth operation of the system."
+                            value={roleDescription}
+                            onChange={(e) => setRoleDescription(e.target.value)}
                         />
                     </div>
                 </div>
@@ -163,7 +144,10 @@ const AdminProfilePage = () => {
                     <button className="px-8 py-3 border border-slate-300 text-slate-700 rounded-lg font-bold hover:bg-slate-50 transition-colors">
                         Cancel
                     </button>
-                    <button className="px-8 py-3 bg-primary text-white rounded-lg font-bold shadow-lg hover:bg-primary/90 transition-colors">
+                    <button
+                        className="px-8 py-3 bg-primary text-white rounded-lg font-bold shadow-lg hover:bg-primary/90 transition-colors"
+                        onClick={handleSaveChanges}
+                    >
                         Save Changes
                     </button>
                 </div>

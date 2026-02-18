@@ -1,6 +1,12 @@
 import React from "react";
 
-const Loading = () => {
+const Loading = ({
+    title = "CampusEase 🌐",
+    subtitle = "Your Sabaragamuwa University Companion",
+    mainText = "Finding the best boarding places near Pambahinna...",
+    subText = "Please wait a moment",
+    progress = 40,
+}) => {
     return (
         <div className="bg-white font-display flex items-center justify-center h-[80vh] overflow-hidden">
             <div className="flex flex-col items-center justify-center max-w-md w-full px-6">
@@ -14,11 +20,9 @@ const Loading = () => {
                         </div>
                     </div>
                     <h1 className="text-[#0d141b] text-4xl font-bold tracking-tight flex items-center gap-2">
-                        CampusEase <span className="text-3xl">🌐</span>
+                        {title}
                     </h1>
-                    <p className="text-[#4c739a] text-sm mt-2 font-medium">
-                        Your Sabaragamuwa University Companion
-                    </p>
+                    <p className="text-[#4c739a] text-sm mt-2 font-medium">{subtitle}</p>
                 </div>
 
                 {/* Progress Bar */}
@@ -26,18 +30,16 @@ const Loading = () => {
                     <div className="relative h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
                         <div
                             className="absolute top-0 left-0 h-full bg-primary rounded-full animate-loading"
-                            style={{ width: "40%" }}
+                            style={{ width: `${progress}%` }}
                         ></div>
                     </div>
                 </div>
 
                 {/* Loading Text */}
                 <div className="text-center h-16">
-                    <p className="text-[#0d141b] text-lg font-medium animate-fade">
-                        Finding the best boarding places near Pambahinna...
-                    </p>
+                    <p className="text-[#0d141b] text-lg font-medium animate-fade">{mainText}</p>
                     <p className="text-[#4c739a] text-xs mt-3 uppercase tracking-widest font-bold">
-                        Please wait a moment
+                        {subText}
                     </p>
                 </div>
             </div>

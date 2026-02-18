@@ -1,11 +1,21 @@
 import React from "react";
 
-const OwnerProfilePage = () => {
+const OwnerProfilePage = ({
+    user,
+    authLoading,
+    formData,
+    handleChange,
+    handleSave,
+}) => {
+    if (authLoading) return <p>Loading...</p>;
+
     return (
         <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col gap-8 px-4 md:px-10">
             {/* Header */}
             <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-bold text-slate-900">Welcome, Sandaruwan!</h1>
+                <h1 className="text-3xl font-bold text-slate-900">
+                    Welcome, {user?.first_name}!
+                </h1>
                 <p className="text-slate-500">
                     Manage your properties, view bookings, and update your business details.
                 </p>
@@ -19,7 +29,7 @@ const OwnerProfilePage = () => {
                             <img
                                 alt="Business Owner Avatar"
                                 className="h-full w-full rounded-full object-cover"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO0pY_TIbdqswbDRWdsjt1PVbKcTxLIwKXzjEOCCxg7yW6VxAR71l3fqRcCtwSfh8IduHPHfvLpTDNBUV5q-U_XTvu0IQXvSDmz1YiNC6Ad-ONdS4zfyFFquqlZPl86S7BrvOpQ9JeTxJX4kj1WjVrHk9US9gVSEypQxoEDIwtvVLmMKMZQSZIjnR0KXhqKGDCXLDi4B743Qrw2_Xni1dVSgoZZxL1qiKg3lCyTbyLvVb0ncuyTL56k0KE7vfKiMpea2NtdJkDKeA"
+                                src={user?.photo?.filename || "https://via.placeholder.com/150"}
                             />
                         </div>
                         <button className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg border-2 border-white">
@@ -30,32 +40,25 @@ const OwnerProfilePage = () => {
                     <div className="text-center md:text-left flex-1">
                         <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
                             <h1 className="text-2xl font-black text-slate-900">
-                                Sandaruwan Perera
+                                {user?.first_name} {user?.last_name}
                             </h1>
                             <div className="flex items-center gap-2">
                                 <span className="flex items-center gap-1 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">
                                     <span className="material-symbols-outlined text-sm">business</span>
-                                    Verified Owner
+                                    {user?.verified ? "Verified Owner" : "Unverified"}
                                 </span>
                             </div>
                         </div>
                         <p className="text-slate-500 font-medium mb-4">
-                            Owner ID: OWN-5421 • Joined: September 2021
+                            Owner ID: {user?._id || "N/A"} • Status : {user?.status || "N/A"}
                         </p>
-                        <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                            <button className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors">
-                                Edit Profile
-                            </button>
-                            <button className="px-6 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors">
-                                View Business Profile
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Owner Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Total Properties */}
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1">
                     <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">
                         Total Properties
@@ -69,6 +72,7 @@ const OwnerProfilePage = () => {
                     <span className="text-slate-400 text-xs font-medium mt-1">3 Active • 2 Draft</span>
                 </div>
 
+                {/* Total Bookings */}
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1">
                     <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">
                         Total Bookings
@@ -82,6 +86,7 @@ const OwnerProfilePage = () => {
                     <span className="text-slate-400 text-xs font-medium mt-1">This Month: 12</span>
                 </div>
 
+                {/* Revenue */}
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1">
                     <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">
                         Revenue
@@ -95,6 +100,7 @@ const OwnerProfilePage = () => {
                     <span className="text-slate-400 text-xs font-medium mt-1">Lifetime</span>
                 </div>
 
+                {/* Rating */}
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1">
                     <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">
                         Rating
@@ -112,92 +118,87 @@ const OwnerProfilePage = () => {
 
             {/* Business Details Form */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-bold text-slate-900">Business Details</h3>
-                    <span className="text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                        VERIFIED BUSINESS
-                    </span>
-                </div>
-
+                <h3 className="text-xl font-bold text-slate-900 mb-6">Business Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/** First Name */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Business Name</label>
+                        <label className="text-sm font-bold text-slate-600">First Name</label>
                         <input
+                            name="first_name"
+                            value={formData.first_name}
+                            onChange={handleChange}
                             className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            type="text"
-                            value="Perera Rentals"
                         />
                     </div>
 
+                    {/** Last Name */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Business Type</label>
-                        <select
+                        <label className="text-sm font-bold text-slate-600">Last Name</label>
+                        <input
+                            name="last_name"
+                            value={formData.last_name}
+                            onChange={handleChange}
                             className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        >
-                            <option>Individual</option>
-                            <option>Private Limited</option>
-                            <option>Partnership</option>
-                            <option>Registered Business</option>
-                        </select>
+                        />
                     </div>
 
+                    {/** Email (read-only) */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Business Email</label>
+                        <label className="text-sm font-bold text-slate-600">Email</label>
                         <input
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             type="email"
-                            value="contact@pererarentals.com"
+                            name="email"
+                            value={formData.email}
+                            readOnly
+                            className="w-full bg-slate-100 border border-slate-200 rounded-lg px-4 py-3 text-slate-500 cursor-not-allowed focus:outline-none"
                         />
                     </div>
 
+                    {/** NIC */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Business Phone</label>
-                        <div className="flex gap-2">
-                            <span className="flex items-center justify-center bg-slate-100 border border-slate-200 rounded-lg px-3 text-sm text-slate-500 font-medium">
-                                +94
-                            </span>
-                            <input
-                                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                                type="tel"
-                                value="71 234 5678"
-                            />
-                        </div>
+                        <label className="text-sm font-bold text-slate-600">NIC number</label>
+                        <input
+                            type="text"
+                            name="id_number"
+                            value={formData.id_number}
+                            onChange={handleChange}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
+                        />
                     </div>
 
+                    {/** Role (read-only) */}
+                    <div className="flex flex-col gap-2">
+                        <label className="text-sm font-bold text-slate-600">Role</label>
+                        <input
+                            type="text"
+                            name="role"
+                            value={formData.role}
+                            readOnly
+                            className="w-full bg-slate-100 border border-slate-200 rounded-lg px-4 py-3 text-slate-500 cursor-not-allowed focus:outline-none"
+                        />
+                    </div>
+
+                    {/** Phone */}
+                    <div className="flex flex-col gap-2">
+                        <label className="text-sm font-bold text-slate-600">Phone</label>
+                        <input
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            type="tel"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        />
+                    </div>
+
+                    {/** Address */}
                     <div className="md:col-span-2 flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Business Address</label>
+                        <label className="text-sm font-bold text-slate-600">Address</label>
                         <textarea
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
                             className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out h-24"
-                            value="No. 123, Galle Road, Colombo 03, Sri Lanka"
                         />
-                    </div>
-
-                    <div className="md:col-span-2 flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Business Description</label>
-                        <textarea
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out h-32"
-                            value="Providing premium rental accommodations near universities with modern amenities, 24/7 security, and excellent customer service. Specializing in student-friendly housing solutions."
-                        />
-                    </div>
-
-                    <div className="md:col-span-2 flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Payment Details</label>
-                        <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-blue-100 p-2 rounded-lg">
-                                        <span className="material-symbols-outlined text-blue-600">credit_card</span>
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-slate-900">Bank Transfer</p>
-                                        <p className="text-sm text-slate-500">Commercial Bank • Account No: 123456789</p>
-                                    </div>
-                                </div>
-                                <button className="text-primary text-sm font-bold hover:text-primary/80">
-                                    Edit
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -205,7 +206,10 @@ const OwnerProfilePage = () => {
                     <button className="px-8 py-3 border border-slate-300 text-slate-700 rounded-lg font-bold hover:bg-slate-50 transition-colors">
                         Cancel
                     </button>
-                    <button className="px-8 py-3 bg-primary text-white rounded-lg font-bold shadow-lg hover:bg-primary/90 transition-colors">
+                    <button
+                        onClick={handleSave}
+                        className="px-8 py-3 bg-primary text-white rounded-lg font-bold shadow-lg hover:bg-primary/90 transition-colors"
+                    >
                         Save Changes
                     </button>
                 </div>

@@ -1,13 +1,21 @@
 import React from "react";
 
-const ProfilePage = () => {
+const ProfilePage = ({
+    user,
+    formData,
+    handleChange,
+    handleFileChange,
+    handleSave,
+}) => {
     return (
         <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col gap-8 px-4 md:px-10">
             {/* Header */}
             <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-bold text-slate-900">Welcome, Sandaruwan!</h1>
+                <h1 className="text-3xl font-bold text-slate-900">
+                    Welcome, {user?.first_name}!
+                </h1>
                 <p className="text-slate-500">
-                    Here’s an overview of your bookings, saved items, and personal details.
+                    Here’s an overview of your account, bookings, and personal details.
                 </p>
             </div>
 
@@ -15,39 +23,45 @@ const ProfilePage = () => {
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
                 <div className="flex flex-col md:flex-row items-center gap-8">
                     <div className="relative">
-                        <div className="h-32 w-32 rounded-full border-4 border-primary/20 p-1">
+                        <div className="h-32 w-32 rounded-full border-4 border-primary/20 p-1 overflow-hidden">
                             <img
-                                alt="Professional Avatar"
+                                alt="User Avatar"
                                 className="h-full w-full rounded-full object-cover"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO0pY_TIbdqswbDRWdsjt1PVbKcTxLIwKXzjEOCCxg7yW6VxAR71l3fqRcCtwSfh8IduHPHfvLpTDNBUV5q-U_XTvu0IQXvSDmz1YiNC6Ad-ONdS4zfyFFquqlZPl86S7BrvOpQ9JeTxJX4kj1WjVrHk9US9gVSEypQxoEDIwtvVLmMKMZQSZIjnR0KXhqKGDCXLDi4B743Qrw2_Xni1dVSgoZZxL1qiKg3lCyTbyLvVb0ncuyTL56k0KE7vfKiMpea2NtdJkDKeA"
+                                src={formData.photo?.filename || "https://via.placeholder.com/150"}
                             />
                         </div>
-                        <button className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg border-2 border-white">
+
+                        {/* Styled File Input */}
+                        <label className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg border-2 border-white cursor-pointer">
+                            <input
+                                type="file"
+                                name="photo"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleFileChange}
+                            />
                             <span className="material-symbols-outlined text-sm">edit</span>
-                        </button>
+                        </label>
                     </div>
 
                     <div className="text-center md:text-left flex-1">
                         <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
                             <h1 className="text-2xl font-black text-slate-900">
-                                Sandaruwan Perera
+                                {user?.first_name} {user?.last_name}
                             </h1>
-                            <span className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
-                                <span className="material-symbols-outlined text-sm">verified</span>
-                                SUSL Verified Student
+                            <span
+                                className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${user?.verified ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                                    }`}
+                            >
+                                <span className="material-symbols-outlined text-sm">
+                                    {user?.verified ? "verified" : "error"}
+                                </span>
+                                {user?.verified ? "Verified Student" : "Unverified"}
                             </span>
                         </div>
                         <p className="text-slate-500 font-medium mb-4">
-                            University ID: SUSL/AP/20/042
+                            ID: {user?._id || "N/A"} • Role: {user?.role || "N/A"} • Status: {user?.status || "N/A"}
                         </p>
-                        <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                            <button className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors">
-                                Edit Profile
-                            </button>
-                            <button className="px-6 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors">
-                                Public View
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -59,20 +73,7 @@ const ProfilePage = () => {
                         Total Bookings
                     </span>
                     <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-slate-900">12</span>
-                        <span className="text-green-500 text-xs font-bold flex items-center">
-                            <span className="material-symbols-outlined text-sm">trending_up</span> +2
-                        </span>
-                    </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1">
-                    <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">
-                        Saved Items
-                    </span>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-slate-900">08</span>
-                        <span className="text-slate-400 text-xs font-medium">Favorites</span>
+                        <span className="text-2xl font-black text-slate-900">{user?.totalBookings || 0}</span>
                     </div>
                 </div>
 
@@ -81,8 +82,20 @@ const ProfilePage = () => {
                         Member Since
                     </span>
                     <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-slate-900">2021</span>
-                        <span className="text-slate-400 text-xs font-medium">September</span>
+                        <span className="text-2xl font-black text-slate-900">
+                            {new Date(user?.created_at).getFullYear() || "-"}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1">
+                    <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">
+                        Last Updated
+                    </span>
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-2xl font-black text-slate-900">
+                            {new Date(user?.last_updated).toLocaleDateString() || "-"}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -91,54 +104,125 @@ const ProfilePage = () => {
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
                 <h3 className="text-xl font-bold text-slate-900 mb-6">Personal Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* First Name */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Full Name</label>
+                        <label className="text-sm font-bold text-slate-600">First Name</label>
                         <input
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
                             type="text"
-                            value="Sandaruwan Perera"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">University Email</label>
-                        <input
+                            name="first_name"
+                            value={formData.first_name}
+                            onChange={handleChange}
                             className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
-                            type="email"
-                            value="sandaruwan.p@mgt.sab.ac.lk"
                         />
                     </div>
 
+                    {/* Last Name */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Phone Number</label>
-                        <div className="flex gap-2">
-                            <span className="flex items-center justify-center bg-slate-100 border border-slate-200 rounded-lg px-3 text-sm text-slate-500 font-medium">
-                                +94
-                            </span>
-                            <input
-                                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
-                                type="tel"
-                                value="77 123 4567"
-                            />
-                        </div>
+                        <label className="text-sm font-bold text-slate-600">Last Name</label>
+                        <input
+                            type="text"
+                            name="last_name"
+                            value={formData.last_name}
+                            onChange={handleChange}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
+                        />
                     </div>
 
+                    {/* Email */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Faculty</label>
-                        <select className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900">                            <option>Computing</option>
-                            <option>Technology</option>
-                            <option>Applied Sciences</option>
-                            <option>Geomatics</option>
-                            <option>Medicine</option>
-                            <option>Agricultural Sciences</option>
-                            <option>Management Studies</option>
-                            <option>Social Sciences & Languages</option>
-                        </select>
+                        <label className="text-sm font-bold text-slate-600">Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            readOnly
+                            className="w-full bg-slate-100 border border-slate-200 rounded-lg px-4 py-3 text-slate-500 cursor-not-allowed focus:outline-none"
+                        />
+                    </div>
+
+                    {/* Phone */}
+                    <div className="flex flex-col gap-2">
+                        <label className="text-sm font-bold text-slate-600">Phone</label>
+                        <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
+                        />
+                    </div>
+
+                    {/* Address */}
+                    <div className="flex flex-col gap-2 md:col-span-2">
+                        <label className="text-sm font-bold text-slate-600">Address</label>
+                        <textarea
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out h-24"
+                        />
+                    </div>
+
+                    {/* University ID */}
+                    <div className="flex flex-col gap-2">
+                        <label className="text-sm font-bold text-slate-600">University ID</label>
+                        <input
+                            type="text"
+                            name="id_number"
+                            value={formData.id_number}
+                            onChange={handleChange}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out"
+                        />
+                    </div>
+
+                    {/* Role (read-only) */}
+                    <div className="flex flex-col gap-2">
+                        <label className="text-sm font-bold text-slate-600">Role</label>
+                        <input
+                            type="text"
+                            name="role"
+                            value={formData.role}
+                            readOnly
+                            className="w-full bg-slate-100 border border-slate-200 rounded-lg px-4 py-3 text-slate-500 cursor-not-allowed focus:outline-none"
+                        />
+                    </div>
+
+                    {/* ID Photo */}
+                    <div className="flex flex-col gap-2 ">
+                        <label className="text-sm font-bold text-slate-600">Upload ID Photo</label>
+                        {formData.id_photo?.filename && (
+                            <img
+                                src={formData.id_photo.filename}
+                                alt="ID Photo"
+                                className="w-48 h-48 object-cover rounded-lg mb-2 border"
+                            />
+                        )}
+                        <div className="relative">
+                            <input
+                                type="file"
+                                name="id_photo"
+                                accept="image/*"
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                onChange={handleFileChange}
+                            />
+                            <div className="flex items-center justify-between px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
+                                <span>
+                                    {formData.id_photo?.filename ? "Change File" : "Drag & Drop or Select File"}
+                                </span>
+                                <span className="material-symbols-outlined text-slate-500">upload</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div className="mt-8 flex justify-end">
-                    <button className="px-8 py-3 bg-primary text-white rounded-lg font-bold shadow-lg hover:bg-primary/90 transition-colors">
+                <div className="mt-8 flex justify-end gap-4">
+                    <button className="px-8 py-3 border border-slate-300 text-slate-700 rounded-lg font-bold hover:bg-slate-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button
+                        className="px-8 py-3 bg-primary text-white rounded-lg font-bold shadow-lg hover:bg-primary/90 transition-colors"
+                        onClick={handleSave}
+                    >
                         Save Changes
                     </button>
                 </div>
