@@ -1,12 +1,33 @@
 import React from "react";
 
-const PropertyTable = ({ properties, onView, onEdit, onDelete, showEditDelete = true }) => {
+const AccommodationTable = ({ accommodations, onView, onEdit, onDelete, showEditDelete = true }) => {
+    const getImageUrl = (images) => {
+        if (images && images.length > 0) {
+            return `https://via.placeholder.com/100x100?text=${images[0].filename}`;
+        }
+        return "https://via.placeholder.com/100x100?text=Accommodation";
+    };
+
+    const formatAddress = (address) => {
+        if (!address) return "Location not specified";
+        return address.street || "Location not specified";
+    };
+
+    const getOccupiedCount = (total, available) => {
+        return total - available;
+    };
+
+    const getOccupancyPercentage = (total, available) => {
+        if (total === 0) return 0;
+        return ((total - available) / total) * 100;
+    };
+
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Active Properties ({properties.length})
+                    Active Accommodations ({accommodations.length})
                 </h3>
                 <div className="flex items-center gap-3">
                     {/* Search */}
@@ -16,17 +37,18 @@ const PropertyTable = ({ properties, onView, onEdit, onDelete, showEditDelete = 
                         </span>
                         <input
                             type="text"
-                            placeholder="Search properties..."
+                            placeholder="Search accommodations..."
                             className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
                     {/* Type Filter */}
                     <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
                         <option>Type: All</option>
-                        <option>Annex</option>
-                        <option>Hostel</option>
                         <option>Apartment</option>
-                        <option>Single Room</option>
+                        <option>House</option>
+                        <option>Villa</option>
+                        <option>Hostel</option>
+                        <option>Other</option>
                     </select>
                 </div>
             </div>
@@ -37,7 +59,7 @@ const PropertyTable = ({ properties, onView, onEdit, onDelete, showEditDelete = 
                     <thead className="bg-slate-50">
                         <tr>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Property
+                                Accommodation
                             </th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
                                 Location & Type
@@ -61,65 +83,65 @@ const PropertyTable = ({ properties, onView, onEdit, onDelete, showEditDelete = 
                     </thead>
 
                     <tbody className="divide-y divide-slate-100">
-                        {properties.map((property) => (
-                            <tr key={property.id} className="hover:bg-slate-50 transition-colors">
+                        {accommodations.map((accommodation) => (
+                            <tr key={accommodation._id} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={property.image}
-                                                alt={property.name}
+                                                src={getImageUrl(accommodation.images)}
+                                                alt={accommodation.name}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {
                                                     e.target.src =
-                                                        "https://via.placeholder.com/100x100?text=Property";
+                                                        "https://via.placeholder.com/100x100?text=Accommodation";
                                                 }}
                                             />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-semibold text-slate-900">{property.name}</p>
-                                            <p className="text-[10px] text-slate-400">ID: {property.id}</p>
+                                            <p className="text-sm font-semibold text-slate-900">{accommodation.name}</p>
+                                            <p className="text-[10px] text-slate-400">ID: {accommodation._id}</p>
                                         </div>
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <p className="text-sm text-slate-600">{property.location}</p>
-                                    <p className="text-[10px] text-slate-400">{property.type}</p>
+                                    <p className="text-sm text-slate-600">{formatAddress(accommodation.address)}</p>
+                                    <p className="text-[10px] text-slate-400 capitalize">{accommodation.accommodation_type}</p>
                                 </td>
                                 <td className="px-6 py-4">
                                     <p className="text-sm font-bold text-green-600">
-                                        LKR {property.price.toLocaleString()}
+                                        LKR {accommodation.month_rent.toLocaleString()}
                                     </p>
                                     <p className="text-[10px] text-slate-400">per month</p>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <p className="text-sm font-medium text-slate-900">{property.rooms}</p>
+                                    <p className="text-sm font-medium text-slate-900">{accommodation.no_of_rooms}</p>
                                 </td>
                                 <td className="px-6 py-4">
                                     <div>
                                         <p className="text-sm font-medium text-slate-900">
-                                            {property.occupied}/{property.rooms}
+                                            {getOccupiedCount(accommodation.total_users, accommodation.available_users)}/{accommodation.total_users}
                                         </p>
                                         <div className="w-20 bg-slate-200 rounded-full h-1.5 mt-1">
                                             <div
                                                 className="bg-primary h-1.5 rounded-full"
-                                                style={{ width: `${(property.occupied / property.rooms) * 100}%` }}
+                                                style={{ width: `${getOccupancyPercentage(accommodation.total_users, accommodation.available_users)}%` }}
                                             ></div>
                                         </div>
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${property.status === "Active"
+                                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${accommodation.status === "Available"
                                             ? "bg-green-100 text-green-800"
                                             : "bg-yellow-100 text-yellow-800"
                                         }`}>
-                                        {property.status}
+                                        {accommodation.status}
                                     </span>
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex items-center justify-center gap-2">
                                         <button
-                                            onClick={() => onView(property)}
+                                            onClick={() => onView(accommodation)}
                                             className="bg-primary hover:bg-primary/80 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                                             title="View Details"
                                         >
@@ -129,17 +151,17 @@ const PropertyTable = ({ properties, onView, onEdit, onDelete, showEditDelete = 
                                         {showEditDelete && (
                                             <>
                                                 <button
-                                                    onClick={() => onEdit(property)}
+                                                    onClick={() => onEdit(accommodation)}
                                                     className="bg-yellow-600 hover:bg-yellow-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
-                                                    title="Edit Property"
+                                                    title="Edit Accommodation"
                                                 >
                                                     Edit
                                                 </button>
 
                                                 <button
-                                                    onClick={() => onDelete(property.id)}
+                                                    onClick={() => onDelete(accommodation._id)}
                                                     className="bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
-                                                    title="Delete Property"
+                                                    title="Delete Accommodation"
                                                 >
                                                     Delete
                                                 </button>
@@ -150,16 +172,16 @@ const PropertyTable = ({ properties, onView, onEdit, onDelete, showEditDelete = 
                             </tr>
                         ))}
 
-                        {properties.length === 0 && (
+                        {accommodations.length === 0 && (
                             <tr>
                                 <td colSpan="7" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
                                         <span className="material-symbols-outlined text-4xl mb-2">
                                             apartment
                                         </span>
-                                        <p className="text-sm">No active properties found</p>
+                                        <p className="text-sm">No active accommodations found</p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            Add a new property to get started
+                                            Add a new accommodation to get started
                                         </p>
                                     </div>
                                 </td>
@@ -172,4 +194,4 @@ const PropertyTable = ({ properties, onView, onEdit, onDelete, showEditDelete = 
     );
 };
 
-export default PropertyTable;
+export default AccommodationTable;

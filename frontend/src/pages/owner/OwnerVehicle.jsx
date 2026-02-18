@@ -1,21 +1,19 @@
-import React, { useState, useEffect } from "react";
-import Heading from "../../containers/owner/vehicle/Heading";
-import StatsCards from "../../containers/owner/vehicle/StatsCards";
-import Tabs from "../../containers/owner/vehicle/Tabs";
+import React, { useState } from "react";
+import Heading from "../../containers/owner/common/Heading";
+import StatsCards from "../../containers/owner/common/StatsCards";
+import Tabs from "../../containers/owner/common/Tabs";
 import ActiveVehicleTable from "../../containers/owner/vehicle/ActiveVehicleTable";
-import PendingVehicleTable from "../../containers/owner/vehicle/PendingVehicleTable";
-import RejectedVehicleTable from "../../containers/owner/vehicle/RejectedVehicleTable";
 import AddVehiclePopup from "../../containers/owner/vehicle/AddVehiclePopup";
 import EditVehiclePopup from "../../containers/owner/vehicle/EditVehiclePopup";
+import PendingVehicleTable from "../../containers/owner/vehicle/PendingVehicleTable";
+import RejectedVehicleTable from "../../containers/owner/vehicle/RejectedVehicleTable";
 import ViewVehiclePopup from "../../containers/owner/vehicle/ViewVehiclePopup";
-import PermissionPopup from "../../containers/owner/vehicle/PermissionPopup";
 
 const OwnerVehicle = () => {
     const [activeTab, setActiveTab] = useState("active");
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
-    const [showPermissionPopup, setShowPermissionPopup] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [resubmitMode, setResubmitMode] = useState(false);
 
@@ -165,15 +163,6 @@ const OwnerVehicle = () => {
         ]
     });
 
-    const [userPermissions, setUserPermissions] = useState({
-        canAdd: true,
-        canEdit: true,
-        canDelete: true,
-        canViewDetails: true,
-        maxVehicles: 8,
-        currentVehicles: 2
-    });
-
     const tabs = [
         { id: "active", label: "Active Vehicles", count: vehicles.active.length },
         { id: "pending", label: "Pending Vehicles", count: vehicles.pending.length },
@@ -205,24 +194,7 @@ const OwnerVehicle = () => {
         }
     ];
 
-    useEffect(() => {
-        checkUserPermissions();
-    }, [vehicles.active]);
-
-    const checkUserPermissions = () => {
-        const hasPermission = vehicles.active.length < userPermissions.maxVehicles;
-        setUserPermissions(prev => ({
-            ...prev,
-            canAdd: hasPermission,
-            currentVehicles: vehicles.active.length
-        }));
-    };
-
     const handleAddVehicleClick = () => {
-        if (!userPermissions.canAdd) {
-            setShowPermissionPopup(true);
-            return;
-        }
         setShowAddPopup(true);
     };
 
@@ -257,8 +229,6 @@ const OwnerVehicle = () => {
     };
 
     const handleEditVehicle = (updatedVehicle) => {
-
-        // === RESUBMIT MODE ===
         if (resubmitMode) {
             const resubmitted = {
                 ...updatedVehicle,
@@ -266,9 +236,7 @@ const OwnerVehicle = () => {
                 status: "Pending",
                 submittedDate: new Date().toISOString().split("T")[0],
                 adminNotes: "Resubmitted for review",
-                expectedResponseDate: new Date(Date.now() + 3 * 86400000)
-                    .toISOString()
-                    .split("T")[0],
+                expectedResponseDate: new Date(Date.now() + 3 * 86400000).toISOString().split("T")[0],
                 rejectionReason: null,
                 adminRemarks: null,
                 rejectedDate: null,
@@ -292,7 +260,6 @@ const OwnerVehicle = () => {
             return;
         }
 
-        // === NORMAL EDIT LOGIC ===
         if (activeTab === "active") {
             setVehicles(prev => ({
                 ...prev,
@@ -329,7 +296,6 @@ const OwnerVehicle = () => {
         setSelectedVehicle(null);
     };
 
-
     const handleViewVehicle = (vehicle) => {
         setSelectedVehicle(vehicle);
         setShowViewPopup(true);
@@ -361,33 +327,6 @@ const OwnerVehicle = () => {
         }
     };
 
-    const handleResubmitVehicle = (vehicle) => {
-        const updatedVehicle = {
-            ...vehicle,
-            id: `PEND-V${Math.floor(1000 + Math.random() * 9000)}`,
-            status: "Pending",
-            submittedDate: new Date().toISOString().split('T')[0],
-            adminNotes: "Resubmitted for review",
-            expectedResponseDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            rejectionReason: null,
-            adminRemarks: null,
-            rejectedDate: null,
-            lastUpdated: new Date().toISOString().split('T')[0]
-        };
-
-        setVehicles(prev => ({
-            ...prev,
-            pending: [...prev.pending, updatedVehicle],
-            rejected: prev.rejected.filter(v => v.id !== vehicle.id)
-        }));
-
-        alert("Vehicle resubmitted for review. You will be notified once approved.");
-    };
-
-    const handleRequestMoreVehicles = () => {
-        alert("Request sent to admin for more vehicle slots. You will be notified when approved.");
-        setShowPermissionPopup(false);
-    };
 
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
@@ -419,18 +358,12 @@ const OwnerVehicle = () => {
                 />
             )}
 
-            {showPermissionPopup && (
-                <PermissionPopup
-                    setShowPermissionPopup={setShowPermissionPopup}
-                    userPermissions={userPermissions}
-                    handleRequestMoreVehicles={handleRequestMoreVehicles}
-                />
-            )}
-
             {/* Main Content */}
             <Heading
-                handleAddVehicleClick={handleAddVehicleClick}
-                userPermissions={userPermissions}
+                title="Vehicle Management"
+                subtitle="Manage your transportation rentals around Sabaragamuwa University."
+                buttonText="Add New Vehicle"
+                onButtonClick={handleAddVehicleClick}
             />
 
             <StatsCards stats={stats} />

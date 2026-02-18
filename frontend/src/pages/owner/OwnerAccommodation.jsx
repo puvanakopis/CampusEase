@@ -1,357 +1,471 @@
-import React, { useState, useEffect } from "react";
-import Heading from "../../containers/owner/accommodation/Heading";
-import PropertyTable from "../../containers/owner/accommodation/PropertyTable";
-import PendingPropertyTable from "../../containers/owner/accommodation/PendingPropertyTable";
-import RejectedPropertyTable from "../../containers/owner/accommodation/RejectedPropertyTable";
-import StatsCards from "../../containers/owner/accommodation/StatsCards";
-import Tabs from "../../containers/owner/accommodation/Tabs";
+import React, { useState } from "react";
+import Heading from "../../containers/owner/common/Heading";
+import StatsCards from "../../containers/owner/common/StatsCards";
+import Tabs from "../../containers/owner/common/Tabs";
+import AccommodationTable from "../../containers/owner/accommodation/AccommodationTable";
 import AddAccommodationPopup from "../../containers/owner/accommodation/AddAccommodationPopup";
-import ViewAccommodationPopup from "../../containers/owner/accommodation/ViewAccommodationPopup";
 import EditAccommodationPopup from "../../containers/owner/accommodation/EditAccommodationPopup";
-import PermissionPopup from "../../containers/owner/accommodation/PermissionPopup";
+import PendingAccommodationTable from "../../containers/owner/accommodation/PendingAccommodationTable";
+import RejectedAccommodationTable from "../../containers/owner/accommodation/RejectedAccommodationTable";
+import ViewAccommodationPopup from "../../containers/owner/accommodation/ViewAccommodationPopup";
 
 const OwnerAccommodation = () => {
     const [activeTab, setActiveTab] = useState("active");
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
-    const [showPermissionPopup, setShowPermissionPopup] = useState(false);
-    const [selectedProperty, setSelectedProperty] = useState(null);
+    const [selectedAccommodation, setSelectedAccommodation] = useState(null);
     const [resubmitMode, setResubmitMode] = useState(false);
 
-    const [properties, setProperties] = useState({
+    const [accommodations, setAccommodations] = useState({
         active: [
             {
-                id: "SUSL-2938",
+                _id: "SUSL-2938",
                 name: "Riverview Annex",
-                location: "Pambahinna Junction",
-                type: "Annex",
-                price: 8000,
-                status: "Active",
-                image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCI5BnAKspEOg_BzW-S6Bd0vthfJXCjNSmdAVzbeMnGiInqD4TBHKDoOIHCmS6Wl_-j8cyilhjlemCGKvQ-n1wgYe3NuA5MtA0thgik4PnK2zwWjlnCbBZ78oO7XVGNhOz1W-LTZM9dUrEmHJdqLrWTK0vkuLsWIRRToS00v0JSqQOamGhp7nchxCb_OwNQdbrecjCejjwZb_mCzQrFoeONrze74vZ6eI97C-ewlMUlmKffkx1wty73DzxgB2LgNXqzWmGTURPZbsw",
+                accommodation_type: "house",
+                no_of_rooms: 7,
+                no_of_beds: 14,
+                no_of_bathrooms: 3,
+                verified: true,
+                highly_rated: true,
                 description: "Modern annex with river view, perfect for students seeking quiet environment near university.",
-                amenities: ["WiFi", "24/7 Security", "Laundry", "Study Room", "Parking"],
-                rooms: 7,
-                occupied: 6,
-                owner: "Mr. Perera",
-                ownerContact: "+94 77 123 4567",
-                createdAt: "2024-01-15",
-                lastUpdated: "2024-10-20"
+                owner_id: "owner123",
+                month_rent: 8000,
+                status: "Available",
+                reject_reason: null,
+                images: [
+                    {
+                        filename: "riverview-annex.jpg",
+                        content_type: "image/jpeg",
+                        size: 2048576
+                    }
+                ],
+                reviews: [],
+                amenities: [
+                    { name: "WiFi" },
+                    { name: "24/7 Security" },
+                    { name: "Laundry" },
+                    { name: "Study Room" },
+                    { name: "Parking" }
+                ],
+                available_users: 1,
+                total_users: 7,
+                address: {
+                    street: "Pambahinna Junction",
+                    city: "Belihuloya",
+                    postal_code: "70140",
+                    country: "Sri Lanka"
+                },
+                location: {
+                    latitude: 6.8333,
+                    longitude: 80.8667
+                },
+                time_from_uni: {
+                    walking: "15 mins",
+                    driving: "5 mins"
+                },
+                created_at: "2024-01-15T00:00:00Z",
+                last_updated: "2024-10-20T00:00:00Z"
             },
             {
-                id: "SUSL-1102",
+                _id: "SUSL-1102",
                 name: "Hilltop Girls' Hostel",
-                location: "Belihuloya Town",
-                type: "Hostel",
-                price: 6500,
-                status: "Active",
-                image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBwOUPIKoOHaAM_E-TBru2zCVRI3Ssm_LYBqy9OohQOx9fZ7bJFKvFZeXYP-TL5_hnUPQRzHpFmqXIkmL594Z2YVtMNyZ6adghT3SaAi0Q29G-yRY1dWnDXX4DuymdYSw76W9egefXCZ7WnVcqqgYIreJXZ9-WdrrDNT-ZVxNJlTNElTURfj5tpQpeMRuNJtM2fGiyxD9VRg_Si88XLJUgR7cYjdntOdqJg3Yo4z7js1y1HXXZkV1FJXr76YpQn-c4zmKy77-uQ4bI",
+                accommodation_type: "hostel",
+                no_of_rooms: 12,
+                no_of_beds: 24,
+                no_of_bathrooms: 6,
+                verified: true,
+                highly_rated: true,
                 description: "Exclusive girls' hostel with 24/7 security and study facilities.",
-                amenities: ["WiFi", "Security", "Common Room", "CCTV", "Mess"],
-                rooms: 12,
-                occupied: 10,
-                owner: "Ms. Fernando",
-                ownerContact: "+94 76 234 5678",
-                createdAt: "2024-02-10",
-                lastUpdated: "2024-10-18"
+                owner_id: "owner123",
+                month_rent: 6500,
+                status: "Available",
+                reject_reason: null,
+                images: [
+                    {
+                        filename: "hilltop-hostel.jpg",
+                        content_type: "image/jpeg",
+                        size: 1948576
+                    }
+                ],
+                reviews: [],
+                amenities: [
+                    { name: "WiFi" },
+                    { name: "Security" },
+                    { name: "Common Room" },
+                    { name: "CCTV" },
+                    { name: "Mess" }
+                ],
+                available_users: 2,
+                total_users: 12,
+                address: {
+                    street: "Belihuloya Town",
+                    city: "Belihuloya",
+                    postal_code: "70140",
+                    country: "Sri Lanka"
+                },
+                location: {
+                    latitude: 6.8335,
+                    longitude: 80.8670
+                },
+                time_from_uni: {
+                    walking: "20 mins",
+                    driving: "8 mins"
+                },
+                created_at: "2024-02-10T00:00:00Z",
+                last_updated: "2024-10-18T00:00:00Z"
             }
         ],
         pending: [
             {
-                id: "PEND-001",
+                _id: "PEND-001",
                 name: "Green Valley Hostel",
-                location: "Pambahinna Road",
-                type: "Hostel",
-                price: 6000,
-                status: "Pending",
-                image: "https://via.placeholder.com/400x300?text=Pending+Property",
+                accommodation_type: "hostel",
+                no_of_rooms: 8,
+                no_of_beds: 16,
+                no_of_bathrooms: 4,
+                verified: false,
+                highly_rated: false,
                 description: "Eco-friendly hostel with garden and study areas.",
-                amenities: ["WiFi", "Garden", "Common Kitchen", "Laundry"],
-                rooms: 8,
-                owner: "Ms. Jayasinghe",
-                ownerContact: "+94 76 456 7890",
-                submittedDate: "2024-10-21",
-                adminNotes: "Under review by admin",
-                expectedResponseDate: "2024-10-25"
+                owner_id: "owner123",
+                month_rent: 6000,
+                status: "pending",
+                reject_reason: null,
+                images: [
+                    {
+                        filename: "green-valley.jpg",
+                        content_type: "image/jpeg",
+                        size: 1848576
+                    }
+                ],
+                reviews: [],
+                amenities: [
+                    { name: "WiFi" },
+                    { name: "Garden" },
+                    { name: "Common Kitchen" },
+                    { name: "Laundry" }
+                ],
+                available_users: 8,
+                total_users: 8,
+                address: {
+                    street: "Pambahinna Road",
+                    city: "Belihuloya",
+                    postal_code: "70140",
+                    country: "Sri Lanka"
+                },
+                location: {
+                    latitude: 6.8340,
+                    longitude: 80.8680
+                },
+                time_from_uni: {
+                    walking: "10 mins",
+                    driving: "3 mins"
+                },
+                created_at: "2024-10-21T00:00:00Z",
+                last_updated: "2024-10-21T00:00:00Z"
             },
             {
-                id: "PEND-002",
+                _id: "PEND-002",
                 name: "Campus Edge Apartments",
-                location: "SUSL Main Gate Road",
-                type: "Apartment",
-                price: 7500,
-                status: "Pending",
-                image: "https://via.placeholder.com/400x300?text=Pending+Property",
+                accommodation_type: "apartment",
+                no_of_rooms: 15,
+                no_of_beds: 30,
+                no_of_bathrooms: 8,
+                verified: false,
+                highly_rated: false,
                 description: "New apartment building with modern facilities.",
-                amenities: ["WiFi", "AC", "Parking", "Security"],
-                rooms: 15,
-                owner: "Mr. Silva",
-                ownerContact: "+94 71 345 6789",
-                submittedDate: "2024-10-22",
-                adminNotes: "Awaiting verification",
-                expectedResponseDate: "2024-10-26"
+                owner_id: "owner123",
+                month_rent: 7500,
+                status: "pending",
+                reject_reason: null,
+                images: [
+                    {
+                        filename: "campus-edge.jpg",
+                        content_type: "image/jpeg",
+                        size: 2148576
+                    }
+                ],
+                reviews: [],
+                amenities: [
+                    { name: "WiFi" },
+                    { name: "AC" },
+                    { name: "Parking" },
+                    { name: "Security" }
+                ],
+                available_users: 15,
+                total_users: 15,
+                address: {
+                    street: "SUSL Main Gate Road",
+                    city: "Belihuloya",
+                    postal_code: "70140",
+                    country: "Sri Lanka"
+                },
+                location: {
+                    latitude: 6.8325,
+                    longitude: 80.8660
+                },
+                time_from_uni: {
+                    walking: "5 mins",
+                    driving: "2 mins"
+                },
+                created_at: "2024-10-22T00:00:00Z",
+                last_updated: "2024-10-22T00:00:00Z"
             }
         ],
         rejected: [
             {
-                id: "REJ-001",
+                _id: "REJ-001",
                 name: "Old Town Hostel",
-                location: "Belihuloya Town",
-                type: "Hostel",
-                price: 4500,
-                status: "Rejected",
-                image: "https://via.placeholder.com/400x300?text=Rejected+Property",
+                accommodation_type: "hostel",
+                no_of_rooms: 10,
+                no_of_beds: 20,
+                no_of_bathrooms: 3,
+                verified: false,
+                highly_rated: false,
                 description: "Basic hostel with shared facilities.",
-                amenities: ["Basic Furniture", "Shared Bathroom"],
-                rooms: 10,
-                owner: "Mr. Fernando",
-                ownerContact: "+94 77 987 6543",
-                submittedDate: "2024-10-15",
-                rejectedDate: "2024-10-18",
-                rejectionReason: "Incomplete documentation. Please provide property ownership proof.",
-                adminRemarks: "Missing ownership certificate and utility bills"
+                owner_id: "owner123",
+                month_rent: 4500,
+                status: "rejected",
+                reject_reason: "Incomplete documentation. Please provide accommodation ownership proof.",
+                images: [
+                    {
+                        filename: "old-town.jpg",
+                        content_type: "image/jpeg",
+                        size: 1648576
+                    }
+                ],
+                reviews: [],
+                amenities: [
+                    { name: "Basic Furniture" },
+                    { name: "Shared Bathroom" }
+                ],
+                available_users: 10,
+                total_users: 10,
+                address: {
+                    street: "Belihuloya Town",
+                    city: "Belihuloya",
+                    postal_code: "70140",
+                    country: "Sri Lanka"
+                },
+                location: {
+                    latitude: 6.8345,
+                    longitude: 80.8675
+                },
+                time_from_uni: {
+                    walking: "25 mins",
+                    driving: "10 mins"
+                },
+                created_at: "2024-10-15T00:00:00Z",
+                last_updated: "2024-10-18T00:00:00Z"
             },
             {
-                id: "REJ-002",
+                _id: "REJ-002",
                 name: "City View Rooms",
-                location: "Pambahinna Junction",
-                type: "Single Room",
-                price: 5500,
-                status: "Rejected",
-                image: "https://via.placeholder.com/400x300?text=Rejected+Property",
+                accommodation_type: "house",
+                no_of_rooms: 5,
+                no_of_beds: 10,
+                no_of_bathrooms: 2,
+                verified: false,
+                highly_rated: false,
                 description: "Single rooms with attached bathrooms.",
-                amenities: ["WiFi", "Attached Bathroom"],
-                rooms: 5,
-                owner: "Ms. Perera",
-                ownerContact: "+94 76 123 4567",
-                submittedDate: "2024-10-10",
-                rejectedDate: "2024-10-14",
-                rejectionReason: "Property does not meet minimum safety standards.",
-                adminRemarks: "Fire safety equipment missing, inadequate emergency exits"
+                owner_id: "owner123",
+                month_rent: 5500,
+                status: "rejected",
+                reject_reason: "Accommodation does not meet minimum safety standards.",
+                images: [
+                    {
+                        filename: "city-view.jpg",
+                        content_type: "image/jpeg",
+                        size: 1748576
+                    }
+                ],
+                reviews: [],
+                amenities: [
+                    { name: "WiFi" },
+                    { name: "Attached Bathroom" }
+                ],
+                available_users: 5,
+                total_users: 5,
+                address: {
+                    street: "Pambahinna Junction",
+                    city: "Belihuloya",
+                    postal_code: "70140",
+                    country: "Sri Lanka"
+                },
+                location: {
+                    latitude: 6.8338,
+                    longitude: 80.8665
+                },
+                time_from_uni: {
+                    walking: "15 mins",
+                    driving: "5 mins"
+                },
+                created_at: "2024-10-10T00:00:00Z",
+                last_updated: "2024-10-14T00:00:00Z"
             }
         ]
     });
 
-    const [userPermissions, setUserPermissions] = useState({
-        canAdd: true,
-        canEdit: true,
-        canDelete: true,
-        canViewDetails: true,
-        maxProperties: 5,
-        currentProperties: 2
-    });
-
     const tabs = [
-        { id: "active", label: "Active Properties", count: properties.active.length },
-        { id: "pending", label: "Property Pending", count: properties.pending.length },
-        { id: "rejected", label: "Property Rejected", count: properties.rejected.length }
+        { id: "active", label: "Active Accommodations", count: accommodations.active.length },
+        { id: "pending", label: "Accommodation Pending", count: accommodations.pending.length },
+        { id: "rejected", label: "Accommodation Rejected", count: accommodations.rejected.length }
     ];
 
     const stats = [
         {
-            label: "Total Properties",
+            label: "Total Accommodations",
             icon: "apartment",
-            value: properties.active.length + properties.pending.length + properties.rejected.length,
-            subtext: `${properties.active.length} active, ${properties.pending.length} pending`,
+            value: accommodations.active.length + accommodations.pending.length + accommodations.rejected.length,
+            subtext: `${accommodations.active.length} active, ${accommodations.pending.length} pending`,
             trendIcon: "trending_up",
             subtextColor: "text-green-500"
         },
         {
             label: "Total Occupancy",
             icon: "group",
-            value: `${((properties.active.reduce((sum, prop) => sum + prop.occupied, 0) / properties.active.reduce((sum, prop) => sum + prop.rooms, 0)) * 100).toFixed(1)}%`,
-            subtext: `${properties.active.reduce((sum, prop) => sum + prop.occupied, 0)} of ${properties.active.reduce((sum, prop) => sum + prop.rooms, 0)} rooms occupied`
+            value: `${((accommodations.active.reduce((sum, prop) => sum + (prop.total_users - prop.available_users), 0) / accommodations.active.reduce((sum, prop) => sum + prop.total_users, 0)) * 100).toFixed(1)}%`,
+            subtext: `${accommodations.active.reduce((sum, prop) => sum + (prop.total_users - prop.available_users), 0)} of ${accommodations.active.reduce((sum, prop) => sum + prop.total_users, 0)} rooms occupied`
         },
         {
             label: "Monthly Revenue",
             icon: "payments",
-            value: `LKR ${(properties.active.reduce((sum, prop) => sum + (prop.price * prop.occupied), 0)).toLocaleString()}`,
-            subtext: "From active properties"
+            value: `LKR ${(accommodations.active.reduce((sum, prop) => sum + (prop.month_rent * (prop.total_users - prop.available_users)), 0)).toLocaleString()}`,
+            subtext: "From active accommodations"
         }
     ];
 
-    useEffect(() => {
-        checkUserPermissions();
-    }, [properties.active]);
-
-    const checkUserPermissions = () => {
-        const hasPermission = properties.active.length < userPermissions.maxProperties;
-        setUserPermissions(prev => ({
-            ...prev,
-            canAdd: hasPermission
-        }));
-    };
-
-    const handleAddPropertyClick = () => {
-        if (!userPermissions.canAdd) {
-            setShowPermissionPopup(true);
-            return;
-        }
+    const handleAddAccommodationClick = () => {
         setShowAddPopup(true);
     };
 
-    const handleAddProperty = (newProperty) => {
-        const propertyWithId = {
-            ...newProperty,
-            id: `PEND-${Math.floor(1000 + Math.random() * 9000)}`,
-            status: "Pending",
-            submittedDate: new Date().toISOString().split('T')[0],
-            adminNotes: "Awaiting admin review",
-            expectedResponseDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    const handleAddAccommodation = (newAccommodation) => {
+        const accommodationWithId = {
+            ...newAccommodation,
+            _id: `PEND-${Math.floor(1000 + Math.random() * 9000)}`,
+            status: "pending",
+            verified: false,
+            highly_rated: false,
+            owner_id: "owner123",
+            reject_reason: null,
+            reviews: [],
+            available_users: newAccommodation.no_of_rooms,
+            total_users: newAccommodation.no_of_rooms,
+            created_at: new Date().toISOString(),
+            last_updated: new Date().toISOString()
         };
 
-        setProperties(prev => ({
+        setAccommodations(prev => ({
             ...prev,
-            pending: [...prev.pending, propertyWithId]
+            pending: [...prev.pending, accommodationWithId]
         }));
         setShowAddPopup(false);
-        alert("Property submitted for review. You will be notified once approved.");
     };
-    const handleEditProperty = (updatedProperty) => {
 
+    const handleEditAccommodation = (updatedAccommodation) => {
         if (resubmitMode) {
-            // Resubmit flow
             const resubmitted = {
-                ...updatedProperty,
-                id: `PEND-${Math.floor(1000 + Math.random() * 9000)}`,
-                status: "Pending",
-                submittedDate: new Date().toISOString().split('T')[0],
-                adminNotes: "Resubmitted for review",
-                expectedResponseDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-                    .toISOString()
-                    .split('T')[0],
-                rejectionReason: null,
-                adminRemarks: null,
-                rejectedDate: null
+                ...updatedAccommodation,
+                _id: `PEND-${Math.floor(1000 + Math.random() * 9000)}`,
+                status: "pending",
+                verified: false,
+                highly_rated: false,
+                reject_reason: null,
+                available_users: updatedAccommodation.no_of_rooms,
+                created_at: new Date().toISOString(),
+                last_updated: new Date().toISOString()
             };
 
-            setProperties(prev => ({
+            setAccommodations(prev => ({
                 ...prev,
                 pending: [...prev.pending, resubmitted],
-                rejected: prev.rejected.filter(prop => prop.id !== updatedProperty.id)
+                rejected: prev.rejected.filter(prop => prop._id !== updatedAccommodation._id)
             }));
 
             setResubmitMode(false);
             setShowEditPopup(false);
-            setSelectedProperty(null);
-            alert("Property updated and resubmitted for admin review.");
+            setSelectedAccommodation(null);
             return;
         }
 
-        // Existing edit logic unchanged...
         if (activeTab === "active") {
-            setProperties(prev => ({
+            setAccommodations(prev => ({
                 ...prev,
                 active: prev.active.map(prop =>
-                    prop.id === updatedProperty.id ? {
-                        ...updatedProperty,
-                        lastUpdated: new Date().toISOString().split('T')[0]
+                    prop._id === updatedAccommodation._id ? {
+                        ...updatedAccommodation,
+                        last_updated: new Date().toISOString()
                     } : prop
                 )
             }));
         } else if (activeTab === "pending") {
-            setProperties(prev => ({
+            setAccommodations(prev => ({
                 ...prev,
                 pending: prev.pending.map(prop =>
-                    prop.id === updatedProperty.id ? {
-                        ...updatedProperty,
-                        lastUpdated: new Date().toISOString().split('T')[0]
+                    prop._id === updatedAccommodation._id ? {
+                        ...updatedAccommodation,
+                        last_updated: new Date().toISOString()
                     } : prop
                 )
             }));
         }
 
         setShowEditPopup(false);
-        setSelectedProperty(null);
+        setSelectedAccommodation(null);
     };
 
-    const handleViewProperty = (property) => {
-        setSelectedProperty(property);
+    const handleViewAccommodation = (accommodation) => {
+        setSelectedAccommodation(accommodation);
         setShowViewPopup(true);
     };
 
-    const handleEditClick = (property) => {
-        setSelectedProperty(property);
+    const handleEditClick = (accommodation) => {
+        setSelectedAccommodation(accommodation);
         setShowEditPopup(true);
     };
 
-    const handleDeleteProperty = (propertyId) => {
-        if (window.confirm("Are you sure you want to delete this property?")) {
+    const handleDeleteAccommodation = (accommodationId) => {
+        if (window.confirm("Are you sure you want to delete this accommodation?")) {
             if (activeTab === "active") {
-                setProperties(prev => ({
+                setAccommodations(prev => ({
                     ...prev,
-                    active: prev.active.filter(prop => prop.id !== propertyId)
-                }));
-                setUserPermissions(prev => ({
-                    ...prev,
-                    currentProperties: prev.currentProperties - 1,
-                    canAdd: prev.currentProperties - 1 < prev.maxProperties
+                    active: prev.active.filter(prop => prop._id !== accommodationId)
                 }));
             } else if (activeTab === "pending") {
-                setProperties(prev => ({
+                setAccommodations(prev => ({
                     ...prev,
-                    pending: prev.pending.filter(prop => prop.id !== propertyId)
+                    pending: prev.pending.filter(prop => prop._id !== accommodationId)
                 }));
             } else if (activeTab === "rejected") {
-                setProperties(prev => ({
+                setAccommodations(prev => ({
                     ...prev,
-                    rejected: prev.rejected.filter(prop => prop.id !== propertyId)
+                    rejected: prev.rejected.filter(prop => prop._id !== accommodationId)
                 }));
             }
         }
     };
 
-    const handleEditBeforeResubmit = (property) => {
-        setSelectedProperty(property);
+    const handleEditBeforeResubmit = (accommodation) => {
+        setSelectedAccommodation(accommodation);
         setShowEditPopup(true);
-        // Mark this operation as a "resubmit" workflow
         setResubmitMode(true);
-    };
-
-
-    const handleResubmitProperty = (property) => {
-        const updatedProperty = {
-            ...property,
-            id: `PEND-${Math.floor(1000 + Math.random() * 9000)}`,
-            status: "Pending",
-            submittedDate: new Date().toISOString().split('T')[0],
-            adminNotes: "Resubmitted for review",
-            expectedResponseDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            rejectionReason: null,
-            adminRemarks: null,
-            rejectedDate: null
-        };
-
-        setProperties(prev => ({
-            ...prev,
-            pending: [...prev.pending, updatedProperty],
-            rejected: prev.rejected.filter(prop => prop.id !== property.id)
-        }));
-
-        alert("Property resubmitted for review. You will be notified once approved.");
-    };
-
-    const handleRequestMoreProperties = () => {
-        alert("Request sent to admin for more property slots. You will be notified when approved.");
-        setShowPermissionPopup(false);
     };
 
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-            {/* Popups */}
             {showAddPopup && (
                 <AddAccommodationPopup
                     onClose={() => setShowAddPopup(false)}
-                    onSave={handleAddProperty}
+                    onSave={handleAddAccommodation}
                 />
             )}
 
-            {showViewPopup && selectedProperty && (
+            {showViewPopup && selectedAccommodation && (
                 <ViewAccommodationPopup
-                    property={selectedProperty}
+                    accommodation={selectedAccommodation}
                     onClose={() => {
                         setShowViewPopup(false);
-                        setSelectedProperty(null);
+                        setSelectedAccommodation(null);
                     }}
                     onEdit={() => {
                         setShowViewPopup(false);
@@ -361,33 +475,23 @@ const OwnerAccommodation = () => {
                 />
             )}
 
-            {showEditPopup && selectedProperty && (
+            {showEditPopup && selectedAccommodation && (
                 <EditAccommodationPopup
-                    property={selectedProperty}
+                    accommodation={selectedAccommodation}
                     onClose={() => {
                         setShowEditPopup(false);
-                        setSelectedProperty(null);
+                        setSelectedAccommodation(null);
                     }}
-                    onSave={handleEditProperty}
+                    onSave={handleEditAccommodation}
                     activeTab={activeTab}
-                />
-            )}
-
-            {showPermissionPopup && (
-                <PermissionPopup
-                    currentCount={properties.active.length}
-                    maxLimit={userPermissions.maxProperties}
-                    onClose={() => setShowPermissionPopup(false)}
-                    onRequestMore={handleRequestMoreProperties}
                 />
             )}
 
             <Heading
                 title="Accommodation Management"
                 subtitle="Manage your Sabaragamuwa University area listings."
-                buttonText="Add New Property"
-                onButtonClick={handleAddPropertyClick}
-                buttonDisabled={!userPermissions.canAdd}
+                buttonText="Add New Accommodation"
+                onButtonClick={handleAddAccommodationClick}
             />
 
             <StatsCards stats={stats} />
@@ -399,30 +503,30 @@ const OwnerAccommodation = () => {
             />
 
             {activeTab === "active" && (
-                <PropertyTable
-                    properties={properties.active}
-                    onView={handleViewProperty}
+                <AccommodationTable
+                    accommodations={accommodations.active}
+                    onView={handleViewAccommodation}
                     onEdit={handleEditClick}
-                    onDelete={handleDeleteProperty}
+                    onDelete={handleDeleteAccommodation}
                     showEditDelete={true}
                 />
             )}
 
             {activeTab === "pending" && (
-                <PendingPropertyTable
-                    properties={properties.pending}
-                    onView={handleViewProperty}
+                <PendingAccommodationTable
+                    accommodations={accommodations.pending}
+                    onView={handleViewAccommodation}
                     onEdit={handleEditClick}
-                    onDelete={handleDeleteProperty}
+                    onDelete={handleDeleteAccommodation}
                 />
             )}
 
             {activeTab === "rejected" && (
-                <RejectedPropertyTable
-                    properties={properties.rejected}
-                    onView={handleViewProperty}
+                <RejectedAccommodationTable
+                    accommodations={accommodations.rejected}
+                    onView={handleViewAccommodation}
                     onEditBeforeResubmit={handleEditBeforeResubmit}
-                    onDelete={handleDeleteProperty}
+                    onDelete={handleDeleteAccommodation}
                 />
             )}
         </main>
