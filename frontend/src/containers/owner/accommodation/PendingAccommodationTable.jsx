@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import Pagination from "../common/Pagination"; 
 
 const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete }) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
     const getImageUrl = (images) => {
         if (images && images.length > 0) {
             return `https://via.placeholder.com/100x100?text=${images[0].filename}`;
@@ -18,6 +22,17 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
         return new Date(dateString).toLocaleDateString();
     };
 
+    // Pagination logic
+    const totalPages = Math.ceil(accommodations.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedAccommodations = accommodations.slice(startIndex, endIndex);
+
+    const handlePageChange = (page) => {
+        if (page < 1 || page > totalPages) return;
+        setCurrentPage(page);
+    };
+
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
@@ -26,7 +41,6 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                     Pending Accommodations ({accommodations.length})
                 </h3>
                 <div className="flex items-center gap-3">
-                    {/* Search */}
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
                             search
@@ -64,7 +78,7 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                     </thead>
 
                     <tbody className="divide-y divide-slate-100">
-                        {accommodations.map((accommodation) => (
+                        {paginatedAccommodations.map((accommodation) => (
                             <tr key={accommodation._id} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
@@ -158,6 +172,17 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination */}
+            {accommodations.length > itemsPerPage && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    currentCount={paginatedAccommodations.length}
+                    totalCount={accommodations.length}
+                />
+            )}
         </div>
     );
 };
