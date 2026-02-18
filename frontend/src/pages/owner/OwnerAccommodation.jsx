@@ -10,6 +10,7 @@ import RejectedAccommodationTable from "../../containers/owner/accommodation/Rej
 import ViewAccommodationPopup from "../../containers/owner/accommodation/ViewAccommodationPopup";
 
 import { AccommodationContext } from "../../context/AccommodationContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const OwnerAccommodation = () => {
     const {
@@ -18,6 +19,8 @@ const OwnerAccommodation = () => {
         updateAccommodation,
         deleteAccommodation,
     } = useContext(AccommodationContext);
+
+    const { currentUser } = useContext(AuthContext);
 
     const [activeTab, setActiveTab] = useState("active");
     const [showAddPopup, setShowAddPopup] = useState(false);
@@ -94,6 +97,7 @@ const OwnerAccommodation = () => {
 
     // ADD
     const handleAddAccommodation = async (newAccommodation) => {
+        console.log(newAccommodation)
         await createAccommodation(newAccommodation);
         setShowAddPopup(false);
     };
@@ -146,6 +150,7 @@ const OwnerAccommodation = () => {
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
             {showAddPopup && (
                 <AddAccommodationPopup
+                    currentUser={currentUser}
                     onClose={() => setShowAddPopup(false)}
                     onSave={handleAddAccommodation}
                 />

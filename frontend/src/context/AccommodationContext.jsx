@@ -32,7 +32,7 @@ export const AccommodationProvider = ({ children }) => {
 
   // ------------------ CREATE ------------------
   const createAccommodation = async (payload) => {
-    const toastId = toast.accoLoading("Creating accommodation...");
+    const toastId = toast.loading("Creating accommodation...");
     try {
       const res = await accommodationApi.createAccommodation(payload);
 
@@ -53,7 +53,7 @@ export const AccommodationProvider = ({ children }) => {
 
   // ------------------ GET BY ID ------------------
   const getAccommodationById = async (id) => {
-    const toastId = toast.accoLoading("Loading accommodation...");
+    const toastId = toast.loading("Loading accommodation...");
     try {
       const res = await accommodationApi.getById(id);
 
@@ -73,7 +73,7 @@ export const AccommodationProvider = ({ children }) => {
 
   // ------------------ UPDATE ------------------
   const updateAccommodation = async (id, updateData) => {
-    const toastId = toast.accoLoading("Updating accommodation...");
+    const toastId = toast.loading("Updating accommodation...");
     try {
       const res = await accommodationApi.updateAccommodation(id, updateData);
 
@@ -94,7 +94,7 @@ export const AccommodationProvider = ({ children }) => {
 
   // ------------------ DELETE ------------------
   const deleteAccommodation = async (id) => {
-    const toastId = toast.accoLoading("Deleting accommodation...");
+    const toastId = toast.loading("Deleting accommodation...");
     try {
       const res = await accommodationApi.deleteAccommodation(id);
 

@@ -5,16 +5,16 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
     const [newAmenity, setNewAmenity] = useState("");
 
     const accommodationTypes = [
-        { value: "apartment", label: "Apartment" },
-        { value: "house", label: "House" },
-        { value: "villa", label: "Villa" },
-        { value: "hostel", label: "Hostel" },
-        { value: "other", label: "Other" }
+        { value: "Apartment", label: "Apartment" },
+        { value: "House", label: "House" },
+        { value: "Villa", label: "Villa" },
+        { value: "Hostel", label: "Hostel" },
+        { value: "Other", label: "Other" }
     ];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        
+
         if (name.includes('.')) {
             const [parent, child] = name.split('.');
             setFormData(prev => ({

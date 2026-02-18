@@ -4,18 +4,18 @@ import Sidebar from "../../components/user/Sidebar";
 import { AuthContext } from "../../context/AuthContext";
 
 function Profile() {
-    const { user, updateCurrentUser } = useContext(AuthContext);
+    const { currentUser, updateCurrentUser } = useContext(AuthContext);
 
     const [formData, setFormData] = useState({
-        first_name: user?.first_name || "",
-        last_name: user?.last_name || "",
-        email: user?.email || "",
-        phone: user?.phone || "",
-        address: user?.address || "",
-        role: user?.role || "",
-        id_number: user?.id_number || "",
-        photo: user?.photo || null,
-        id_photo: user?.id_photo || null,
+        first_name: currentUser?.first_name || "",
+        last_name: currentUser?.last_name || "",
+        email: currentUser?.email || "",
+        phone: currentUser?.phone || "",
+        address: currentUser?.address || "",
+        role: currentUser?.role || "",
+        id_number: currentUser?.id_number || "",
+        photo: currentUser?.photo || null,
+        id_photo: currentUser?.id_photo || null,
     });
 
     const handleChange = (e) => {
@@ -46,7 +46,7 @@ function Profile() {
             <div className="px-4 py-10 md:px-24 max-w-8xl mx-auto gap-6 min-h-screen flex">
                 <Sidebar />
                 <ProfilePage
-                    user={user}
+                    currentUser={currentUser}
                     formData={formData}
                     handleChange={handleChange}
                     handleFileChange={handleFileChange}

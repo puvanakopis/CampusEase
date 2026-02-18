@@ -11,17 +11,17 @@ const Navbar = () => {
     const location = useLocation();
     const profileRef = useRef(null);
 
-    const { user, logout } = useContext(AuthContext);
+    const { currentUser, logout } = useContext(AuthContext);
 
     const authPages = ["/login", "/register", "/forgot-password"];
     if (authPages.includes(location.pathname)) return null;
 
     const isActive = (path) => location.pathname === path;
 
-    const first_name = user ? `${user.first_name}`.trim() : "";
-    const avatar = getPhotoUrl(user?.photo, "user_photo");
-    const email = user?.email || "";
-    const role = user?.role || "Student";
+    const first_name = currentUser ? `${currentUser.first_name}`.trim() : "";
+    const avatar = getPhotoUrl(currentUser?.photo, "user_photo");
+    const email = currentUser?.email || "";
+    const role = currentUser?.role || "Student";
 
     const navItems = [
         { name: "Home", path: "/" },
@@ -90,7 +90,7 @@ const Navbar = () => {
 
                 {/* User Area */}
                 <div className="flex items-center gap-3">
-                    {user ? (
+                    {currentUser ? (
                         <>
                             {/* Desktop Profile */}
                             <div className="hidden md:block relative" ref={profileRef}>
@@ -193,7 +193,7 @@ const Navbar = () => {
                             </button>
                         ))}
 
-                        {user && (
+                        {currentUser && (
                             <div className="w-full border-t border-slate-200 pt-4">
                                 <div className="flex items-center gap-3 mb-4 px-4">
                                     <img src={avatar} alt={first_name} className="w-12 h-12 rounded-full" />

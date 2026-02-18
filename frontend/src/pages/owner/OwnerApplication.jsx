@@ -3,7 +3,7 @@ import ApplicationPopup from "../../containers/owner/application/ApplicationPopu
 import { AuthContext } from "../../context/AuthContext";
 
 const OwnerApplication = () => {
-    const { user, updateCurrentUser } = useContext(AuthContext);
+    const { currentUser, updateCurrentUser } = useContext(AuthContext);
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -21,13 +21,13 @@ const OwnerApplication = () => {
     const [currentStatus, setCurrentStatus] = useState(null);
     const [declineReason, setDeclineReason] = useState(null);
 
-    // Fetch current user status
+    // Fetch currentUser status
     useEffect(() => {
-        if (user && user.role === "owner") {
-            setCurrentStatus(user.status);
-            setDeclineReason(user.decline_reason || null);
+        if (currentUser && currentUser.role === "owner") {
+            setCurrentStatus(currentUser.status);
+            setDeclineReason(currentUser.decline_reason || null);
         }
-    }, [user]);
+    }, [currentUser]);
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -67,7 +67,7 @@ const OwnerApplication = () => {
         e.preventDefault();
         if (!validateStep(2)) return;
 
-        // Prepare payload to update current user
+        // Prepare payload to update currentUser
         const updateData = {
             first_name: formData.firstName,
             last_name: formData.lastName,

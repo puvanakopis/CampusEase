@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
-const AddAccommodationPopup = ({ onClose, onSave }) => {
+const AddAccommodationPopup = ({ currentUser, onClose, onSave }) => {
     const [formData, setFormData] = useState({
         name: "",
-        accommodation_type: "hostel",
+        accommodation_type: "Hostel",
         no_of_rooms: "",
         no_of_beds: "",
         no_of_bathrooms: "",
@@ -17,6 +17,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
             postal_code: "",
             country: "Sri Lanka"
         },
+        owner_id: currentUser._id,
         location: {
             latitude: "",
             longitude: ""
@@ -32,16 +33,16 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
     const [imageFiles, setImageFiles] = useState([]);
 
     const accommodationTypes = [
-        { value: "apartment", label: "Apartment" },
-        { value: "house", label: "House" },
-        { value: "villa", label: "Villa" },
-        { value: "hostel", label: "Hostel" },
-        { value: "other", label: "Other" }
+        { value: "Apartment", label: "Apartment" },
+        { value: "House", label: "House" },
+        { value: "Villa", label: "Villa" },
+        { value: "Hostel", label: "Hostel" },
+        { value: "Other", label: "Other" }
     ];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        
+
         if (name.includes('.')) {
             const [parent, child] = name.split('.');
             setFormData(prev => ({
@@ -93,7 +94,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
         if (imageFiles.length === 0) {
             return;
         }
-        
+
         const accommodationImages = imageFiles.map(file => ({
             filename: file.name,
             content_type: file.type,
@@ -192,7 +193,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                     />
                 </div>
             </div>
-            
+
             <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Description *</label>
                 <textarea
@@ -205,7 +206,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                     required
                 />
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">Number of Rooms *</label>

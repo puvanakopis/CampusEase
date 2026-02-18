@@ -3,7 +3,7 @@ import UserApplicationPopup from "../../containers/user/application/UserApplicat
 import { AuthContext } from "../../context/AuthContext";
 
 const UserApplication = () => {
-    const { user, updateCurrentUser } = useContext(AuthContext);
+    const { currentUser, updateCurrentUser } = useContext(AuthContext);
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -22,20 +22,20 @@ const UserApplication = () => {
     const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
-        if (user) {
-            setCurrentStatus(user.status);
-            setDeclineReason(user.decline_reason || null);
+        if (currentUser) {
+            setCurrentStatus(currentUser.status);
+            setDeclineReason(currentUser.decline_reason || null);
 
             setFormData(prev => ({
                 ...prev,
-                firstName: user.first_name || "",
-                lastName: user.last_name || "",
-                phone: user.phone || "",
-                idNumber: user.id_number || "",
-                address: user.address || "",
+                firstName: currentUser.first_name || "",
+                lastName: currentUser.last_name || "",
+                phone: currentUser.phone || "",
+                idNumber: currentUser.id_number || "",
+                address: currentUser.address || "",
             }));
         }
-    }, [user]);
+    }, [currentUser]);
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;

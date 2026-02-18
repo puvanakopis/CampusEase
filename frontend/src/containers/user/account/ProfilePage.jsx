@@ -1,7 +1,7 @@
 import React from "react";
 
 const ProfilePage = ({
-    user,
+    currentUser,
     formData,
     handleChange,
     handleFileChange,
@@ -12,7 +12,7 @@ const ProfilePage = ({
             {/* Header */}
             <div className="flex flex-col gap-1">
                 <h1 className="text-3xl font-bold text-slate-900">
-                    Welcome, {user?.first_name}!
+                    Welcome, {currentUser?.first_name}!
                 </h1>
                 <p className="text-slate-500">
                     Here’s an overview of your account, bookings, and personal details.
@@ -47,20 +47,20 @@ const ProfilePage = ({
                     <div className="text-center md:text-left flex-1">
                         <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
                             <h1 className="text-2xl font-black text-slate-900">
-                                {user?.first_name} {user?.last_name}
+                                {currentUser?.first_name} {currentUser?.last_name}
                             </h1>
                             <span
-                                className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${user?.verified ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                                className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${currentUser?.verified ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
                                     }`}
                             >
                                 <span className="material-symbols-outlined text-sm">
-                                    {user?.verified ? "verified" : "error"}
+                                    {currentUser?.verified ? "verified" : "error"}
                                 </span>
-                                {user?.verified ? "Verified Student" : "Unverified"}
+                                {currentUser?.verified ? "Verified Student" : "Unverified"}
                             </span>
                         </div>
                         <p className="text-slate-500 font-medium mb-4">
-                            ID: {user?._id || "N/A"} • Role: {user?.role || "N/A"} • Status: {user?.status || "N/A"}
+                            ID: {currentUser?._id || "N/A"} • Role: {currentUser?.role || "N/A"} • Status: {currentUser?.status || "N/A"}
                         </p>
                     </div>
                 </div>
@@ -73,7 +73,7 @@ const ProfilePage = ({
                         Total Bookings
                     </span>
                     <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-slate-900">{user?.totalBookings || 0}</span>
+                        <span className="text-2xl font-black text-slate-900">{currentUser?.totalBookings || 0}</span>
                     </div>
                 </div>
 
@@ -83,7 +83,7 @@ const ProfilePage = ({
                     </span>
                     <div className="flex items-baseline gap-2">
                         <span className="text-2xl font-black text-slate-900">
-                            {new Date(user?.created_at).getFullYear() || "-"}
+                            {new Date(currentUser?.created_at).getFullYear() || "-"}
                         </span>
                     </div>
                 </div>
@@ -94,7 +94,7 @@ const ProfilePage = ({
                     </span>
                     <div className="flex items-baseline gap-2">
                         <span className="text-2xl font-black text-slate-900">
-                            {new Date(user?.last_updated).toLocaleDateString() || "-"}
+                            {new Date(currentUser?.last_updated).toLocaleDateString() || "-"}
                         </span>
                     </div>
                 </div>

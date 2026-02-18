@@ -64,14 +64,14 @@ import AdminNotFound from "./pages/admin/AdminNotFound";
 import Loading from "./components/user/Loading";
 
 function App() {
-  const { user, authLoading } = useContext(AuthContext);
+  const { currentUser, authLoading } = useContext(AuthContext);
   const location = useLocation();
 
   if (authLoading) {
     return <Loading mainText="Checking authentication..." subText="Please wait" progress={50} />;
   }
 
-  const role = user?.role || "guest";
+  const role = currentUser?.role || "guest";
 
   const authPages = ["/login", "/register", "/forgot-password"];
   const showNavbarFooter = !authPages.includes(location.pathname);
@@ -142,7 +142,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Protected Routes */}
-        <Route element={<ProtectedRoute role={role} user={user} />}>
+        <Route element={<ProtectedRoute role={role} user={currentUser} />}>
           {/* User/Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/application" element={<UserApplication />} />

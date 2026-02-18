@@ -1,7 +1,7 @@
 import React from "react";
 
 const OwnerProfilePage = ({
-    user,
+    currentUser,
     authLoading,
     formData,
     handleChange,
@@ -14,7 +14,7 @@ const OwnerProfilePage = ({
             {/* Header */}
             <div className="flex flex-col gap-1">
                 <h1 className="text-3xl font-bold text-slate-900">
-                    Welcome, {user?.first_name}!
+                    Welcome, {currentUser?.first_name}!
                 </h1>
                 <p className="text-slate-500">
                     Manage your properties, view bookings, and update your business details.
@@ -29,7 +29,7 @@ const OwnerProfilePage = ({
                             <img
                                 alt="Business Owner Avatar"
                                 className="h-full w-full rounded-full object-cover"
-                                src={user?.photo?.filename || "https://via.placeholder.com/150"}
+                                src={currentUser?.photo?.filename || "https://via.placeholder.com/150"}
                             />
                         </div>
                         <button className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg border-2 border-white">
@@ -40,17 +40,17 @@ const OwnerProfilePage = ({
                     <div className="text-center md:text-left flex-1">
                         <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
                             <h1 className="text-2xl font-black text-slate-900">
-                                {user?.first_name} {user?.last_name}
+                                {currentUser?.first_name} {currentUser?.last_name}
                             </h1>
                             <div className="flex items-center gap-2">
                                 <span className="flex items-center gap-1 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">
                                     <span className="material-symbols-outlined text-sm">business</span>
-                                    {user?.verified ? "Verified Owner" : "Unverified"}
+                                    {currentUser?.verified ? "Verified Owner" : "Unverified"}
                                 </span>
                             </div>
                         </div>
                         <p className="text-slate-500 font-medium mb-4">
-                            Owner ID: {user?._id || "N/A"} • Status : {user?.status || "N/A"}
+                            Owner ID: {currentUser?._id || "N/A"} • Status : {currentUser?.status || "N/A"}
                         </p>
                     </div>
                 </div>
