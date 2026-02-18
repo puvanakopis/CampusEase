@@ -13,7 +13,7 @@ const ALLOWED_PATHS = {
     "/admin/support",
   ],
   owner: [
-    "/owner/",
+    "/owner",
     "/owner/dashboard",
     "/owner/accommodation",
     "/owner/vehicle",
@@ -38,6 +38,7 @@ const ALLOWED_PATHS = {
     "/saved-items",
     "/settings",
     "/support",
+    "/application",
   ],
   staff: [
     "/",
@@ -55,6 +56,7 @@ const ALLOWED_PATHS = {
     "/saved-items",
     "/settings",
     "/support",
+    "/application",
   ],
   guest: [
     "/login",
@@ -70,12 +72,24 @@ const ALLOWED_PATHS = {
   ],
 };
 
-const ProtectedRoute = ({ role }) => {
+const ProtectedRoute = ({ role, user }) => {
   const location = useLocation();
+
+  if (role === "owner") {
+    const pendingOrDeclined = !user?.status || user.status === "Pending Approval" || user.status === "Declined Approval";
+
+    if (pendingOrDeclined) {
+      if (location.pathname !== "/owner") {
+        return <Navigate to="/owner" replace />;
+      }
+      return <Outlet />;
+    }
+  }
+
 
   const allowedPaths = ALLOWED_PATHS[role] || [];
 
-  const isAllowed = allowedPaths.some(path => {
+  const isAllowed = allowedPaths.some((path) => {
     const regexPath = new RegExp("^" + path.replace(/:\w+/g, "\\w+") + "$");
     return regexPath.test(location.pathname);
   });

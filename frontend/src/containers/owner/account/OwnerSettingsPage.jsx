@@ -1,9 +1,44 @@
 import React from "react";
 
-const OwnerSettingsPage = () => {
+const OwnerSettingsPage = ({
+    currentPassword,
+    setCurrentPassword,
+    newPassword,
+    setNewPassword,
+    confirmPassword,
+    setConfirmPassword,
+    showCurrentPassword,
+    showNewPassword,
+    showConfirmPassword,
+    toggleCurrentPassword,
+    toggleNewPassword,
+    toggleConfirmPassword,
+    handlePasswordUpdate
+}) => {
+
+    const notifications = [
+        {
+            title: "Booking Updates",
+            description: "Get notified when a hostel booking is confirmed.",
+            email: true,
+            sms: false,
+        },
+        {
+            title: "Transport Alerts",
+            description: "Alerts for bus schedule changes or new routes.",
+            email: true,
+            sms: true,
+        },
+        {
+            title: "Promotions",
+            description: "New discounts for students near Belihuloya.",
+            email: false,
+            sms: false,
+        },
+    ];
+
     return (
         <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col gap-8 px-4 md:px-10">
-
             {/* Header */}
             <div className="flex flex-col gap-1">
                 <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
@@ -12,117 +47,134 @@ const OwnerSettingsPage = () => {
                 </p>
             </div>
 
-            {/* Account Settings */}
+            {/* Change Password Section */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <h3 className="text-xl font-bold text-slate-900 mb-6">Account Settings</h3>
+                <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary">lock</span>
+                    Change Password
+                </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Full Name</label>
-                        <input
-                            type="text"
-                            value="Sandaruwan Perera"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        />
-                    </div>
+                <form
+                    className="p-6 flex flex-col gap-4 w-full"
+                    onSubmit={handlePasswordUpdate}
+                >
+                    <div className="flex flex-wrap gap-4">
+                        {/* Current Password */}
+                        <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
+                            <label className="text-sm font-medium text-slate-700">Current Password</label>
+                            <div className="relative">
+                                <input
+                                    type={showCurrentPassword ? "text" : "password"}
+                                    value={currentPassword}
+                                    onChange={(e) => setCurrentPassword(e.target.value)}
+                                    className="w-full px-3 py-2 border rounded-md border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary pr-10"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={toggleCurrentPassword}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-700"
+                                >
+                                    <span className="material-symbols-outlined text-base">
+                                        {showCurrentPassword ? "visibility_off" : "visibility"}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Email Address</label>
-                        <input
-                            type="email"
-                            value="owner@example.com"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        />
-                    </div>
+                        {/* New Password */}
+                        <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
+                            <label className="text-sm font-medium text-slate-700">New Password</label>
+                            <div className="relative">
+                                <input
+                                    type={showNewPassword ? "text" : "password"}
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    className="w-full px-3 py-2 border rounded-md border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary pr-10"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={toggleNewPassword}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-700"
+                                >
+                                    <span className="material-symbols-outlined text-base">
+                                        {showNewPassword ? "visibility_off" : "visibility"}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Phone Number</label>
-                        <div className="flex gap-2">
-                            <span className="flex items-center justify-center bg-slate-100 border border-slate-200 
-                                rounded-lg px-3 text-sm text-slate-500 font-medium">
-                                +94
-                            </span>
-                            <input
-                                type="tel"
-                                value="71 234 5678"
-                                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            />
+                        {/* Confirm Password */}
+                        <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
+                            <label className="text-sm font-medium text-slate-700">Confirm Password</label>
+                            <div className="relative">
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className="w-full px-3 py-2 border rounded-md border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary pr-10"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={toggleConfirmPassword}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-700"
+                                >
+                                    <span className="material-symbols-outlined text-base">
+                                        {showConfirmPassword ? "visibility_off" : "visibility"}
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Language</label>
-                        <select
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        >
-                            <option>English</option>
-                            <option>Sinhala</option>
-                            <option>Tamil</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            {/* Security */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <h3 className="text-xl font-bold text-slate-900 mb-6">Security</h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Current Password</label>
-                        <input
-                            type="password"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            placeholder="Enter current password"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">New Password</label>
-                        <input
-                            type="password"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            placeholder="Enter new password"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2 md:col-span-2">
-                        <label className="text-sm font-bold text-slate-600">Confirm New Password</label>
-                        <input
-                            type="password"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            placeholder="Re-enter new password"
-                        />
-                    </div>
-                </div>
-
-                <div className="flex justify-end mt-6">
-                    <button className="px-8 py-3 bg-primary text-white rounded-lg font-bold shadow-sm 
-                        hover:bg-primary/90 transition-colors">
+                    <button
+                        type="submit"
+                        className="mt-4 px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 w-1/3"
+                    >
                         Update Password
                     </button>
-                </div>
+                </form>
             </div>
 
-            {/* Notifications */}
+            {/* Notification Preferences */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <h3 className="text-xl font-bold text-slate-900 mb-6">Notifications</h3>
+                <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary">notifications_active</span>
+                    Notification Preferences
+                </h2>
 
-                <div className="flex flex-col gap-4">
-                    {[
-                        { label: "New Booking Alerts", defaultChecked: true },
-                        { label: "Payment Received", defaultChecked: true },
-                        { label: "Property Status Updates", defaultChecked: false },
-                        { label: "Monthly Business Summary", defaultChecked: true },
-                    ].map((item, index) => (
-                        <label key={index} className="flex items-center gap-3">
-                            <input
-                                type="checkbox"
-                                defaultChecked={item.defaultChecked}
-                                className="h-5 w-5 rounded border-slate-300"
-                            />
-                            <span className="text-slate-700 font-medium">{item.label}</span>
-                        </label>
+                <div className="overflow-hidden">
+                    {notifications.map((notif, idx) => (
+                        <div
+                            key={idx}
+                            className={`p-4 flex items-center justify-between border-b border-slate-100 ${idx === notifications.length - 1 ? "border-b-0" : ""
+                                }`}
+                        >
+                            <div className="flex flex-col">
+                                <span className="text-sm font-bold">{notif.title}</span>
+                                <span className="text-xs text-slate-500">{notif.description}</span>
+                            </div>
+                            <div className="flex gap-6">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        className="w-4 h-4 rounded text-primary focus:ring-primary"
+                                        defaultChecked={notif.email}
+                                    />
+                                    <span className="text-xs font-medium">Email</span>
+                                </label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        className="w-4 h-4 rounded text-primary focus:ring-primary"
+                                        defaultChecked={notif.sms}
+                                    />
+                                    <span className="text-xs font-medium">SMS</span>
+                                </label>
+                            </div>
+                        </div>
                     ))}
                 </div>
             </div>
@@ -130,7 +182,6 @@ const OwnerSettingsPage = () => {
             {/* Payment Settings */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
                 <h3 className="text-xl font-bold text-slate-900 mb-6">Payment Settings</h3>
-
                 <div className="bg-slate-50 border border-slate-200 rounded-lg p-5 flex justify-between items-center">
                     <div className="flex items-center gap-4">
                         <div className="bg-blue-100 p-3 rounded-lg">
@@ -141,28 +192,23 @@ const OwnerSettingsPage = () => {
                             <p className="text-sm text-slate-500">Account No: 123456789</p>
                         </div>
                     </div>
-                    <button className="text-primary text-sm font-bold hover:text-primary/80">
-                        Edit
-                    </button>
+                    <button className="text-primary text-sm font-bold hover:text-primary/80">Edit</button>
                 </div>
             </div>
 
             {/* Danger Zone */}
             <div className="bg-white rounded-2xl shadow-sm border border-red-300 p-8">
                 <h3 className="text-xl font-bold text-red-600 mb-6">Danger Zone</h3>
-
                 <div className="flex flex-col gap-3">
                     <p className="text-slate-600 text-sm">
                         Deleting your owner account will remove all properties, bookings, and payment data.
                         This action cannot be undone.
                     </p>
-
                     <button className="px-8 py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors w-fit">
                         Delete Account
                     </button>
                 </div>
             </div>
-
         </main>
     );
 };

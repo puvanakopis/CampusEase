@@ -1,6 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import useNavigateTo from "../../hooks/useNavigateTo";
+import { AuthContext } from "../../context/AuthContext";
+import { getPhotoUrl } from "../../utils/photo";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -9,13 +11,18 @@ const Navbar = () => {
     const location = useLocation();
     const profileRef = useRef(null);
 
-    const [user, setUser] = useState({
-        isLoggedIn: true,
-        name: "John Doe",
-        email: "john.doe@example.com",
-        avatar: "https://i.pravatar.cc/256?u=john.doe@example.com",
-        role: "Student"
-    });
+    const { user, logout } = useContext(AuthContext);
+
+    const authPages = ["/login", "/register", "/forgot-password"];
+    if (authPages.includes(location.pathname)) return null;
+
+    const isActive = (path) => location.pathname === path;
+
+    const first_name = user ? `${user.first_name}`.trim() : "";
+    const avatar = getPhotoUrl(user?.photo, "user_photo");
+    const email = user?.email || "";
+    const role = user?.role || "Student";
+
     const navItems = [
         { name: "Home", path: "/" },
         { name: "Accommodation", path: "/accommodation" },
@@ -27,10 +34,8 @@ const Navbar = () => {
     const profileMenuItems = [
         { name: "Profile", path: "/profile", icon: "person" },
         { name: "My Bookings", path: "/my-bookings", icon: "bookmarks" },
-        { name: "Logout", path: "/logout", icon: "logout", isLogout: true }
+        { name: "Logout", icon: "logout", isLogout: true },
     ];
-
-    const isActive = (path) => location.pathname === path;
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -38,18 +43,16 @@ const Navbar = () => {
                 setIsProfileOpen(false);
             }
         };
-
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     const handleProfileAction = (item) => {
         if (item.isLogout) {
-            setUser({ ...user, isLoggedIn: false });
-            navigateTo("/");
-        } else {
-            navigateTo(item.path);
+            logout();
+            return;
         }
+        navigateTo(item.path);
         setIsProfileOpen(false);
         setIsOpen(false);
     };
@@ -57,7 +60,6 @@ const Navbar = () => {
     return (
         <header className="bg-white/80 backdrop-blur-xl sticky top-0 z-50 w-full border-b border-slate-200">
             <div className="flex h-16 items-center justify-between px-4 md:px-24 max-w-8xl mx-auto">
-
                 {/* Logo */}
                 <div
                     onClick={() => navigateTo("/")}
@@ -66,7 +68,9 @@ const Navbar = () => {
                     <span className="material-symbols-outlined text-3xl">school</span>
                     <div className="flex flex-col leading-tight">
                         <h2 className="text-slate-900 text-xl font-bold tracking-tight">CampusEase</h2>
-                        <span className="text-[10px] uppercase tracking-wider font-bold text-primary">Sabaragamuwa</span>
+                        <span className="text-[10px] uppercase tracking-wider font-bold text-primary">
+                            Sabaragamuwa
+                        </span>
                     </div>
                 </div>
 
@@ -86,7 +90,7 @@ const Navbar = () => {
 
                 {/* User Area */}
                 <div className="flex items-center gap-3">
-                    {user.isLoggedIn ? (
+                    {user ? (
                         <>
                             {/* Desktop Profile */}
                             <div className="hidden md:block relative" ref={profileRef}>
@@ -95,61 +99,39 @@ const Navbar = () => {
                                     className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100 transition-colors"
                                 >
                                     <div className="flex flex-col items-end">
-                                        <span className="text-sm font-medium text-slate-900">{user.name}</span>
-                                        <span className="text-xs text-slate-500">{user.role}</span>
+                                        <span className="text-sm font-medium text-slate-900">{first_name}</span>
+                                        <span className="text-xs text-slate-500">{role}</span>
                                     </div>
-                                    <div className="relative">
-                                        <img
-                                            src={user.avatar}
-                                            alt={user.name}
-                                            className="w-10 h-10 rounded-full border-2 border-white shadow"
-                                        />
-                                    </div>
+                                    <img
+                                        src={avatar}
+                                        alt={first_name}
+                                        className="w-10 h-10 rounded-full border-2 border-white shadow"
+                                    />
                                 </button>
 
-                                {/* Profile Dropdown */}
                                 {isProfileOpen && (
                                     <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50">
-                                        {/* User Info */}
                                         <div className="px-4 py-3 border-b border-slate-100">
                                             <div className="flex items-center gap-3">
-                                                <img
-                                                    src={user.avatar}
-                                                    alt={user.name}
-                                                    className="w-12 h-12 rounded-full"
-                                                />
+                                                <img src={avatar} alt={first_name} className="w-12 h-12 rounded-full" />
                                                 <div>
-                                                    <p className="font-semibold text-slate-900">{user.name}</p>
-                                                    <p className="text-sm text-slate-500">{user.email}</p>
+                                                    <p className="font-semibold text-slate-900">{first_name}</p>
+                                                    <p className="text-sm text-slate-500">{email}</p>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        {/* Menu Items */}
                                         {profileMenuItems.map((item, index) => (
-                                            item.type === "divider" ? (
-                                                <div key={index} className="border-t border-slate-100 my-2"></div>
-                                            ) : (
-                                                <button
-                                                    key={item.path}
-                                                    onClick={() => handleProfileAction(item)}
-                                                    className="flex items-center justify-between w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors"
-                                                >
-                                                    <div className="flex items-center gap-3">
-                                                        <span className="material-symbols-outlined text-slate-600 text-lg">
-                                                            {item.icon}
-                                                        </span>
-                                                        <span className={`text-sm font-medium ${item.isLogout ? "text-red-600" : "text-slate-700"}`}>
-                                                            {item.name}
-                                                        </span>
-                                                    </div>
-                                                    {item.badge && (
-                                                        <span className="bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
-                                                            {item.badge}
-                                                        </span>
-                                                    )}
-                                                </button>
-                                            )
+                                            <button
+                                                key={index}
+                                                onClick={() => handleProfileAction(item)}
+                                                className="flex items-center w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors"
+                                            >
+                                                <span className="material-symbols-outlined text-slate-600">{item.icon}</span>
+                                                <span className={`text-sm font-medium ${item.isLogout ? "text-red-600" : ""}`}>
+                                                    {item.name}
+                                                </span>
+                                            </button>
                                         ))}
                                     </div>
                                 )}
@@ -160,32 +142,28 @@ const Navbar = () => {
                                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                                 className="md:hidden flex items-center p-2"
                             >
-                                <img
-                                    src={user.avatar}
-                                    alt={user.name}
-                                    className="w-9 h-9 rounded-full border-2 border-white"
-                                />
+                                <img src={avatar} alt={first_name} className="w-9 h-9 rounded-full" />
                             </button>
                         </>
                     ) : (
                         <>
-                            {/* Login/Signup Buttons */}
                             <button
-                                onClick={() => navigateTo("/signin")}
-                                className="hidden sm:flex items-center justify-center rounded-lg h-9 px-4 text-sm font-bold bg-transparent text-slate-700 hover:bg-slate-200 transition-colors"
+                                onClick={() => navigateTo("/login")}
+                                className="hidden sm:flex items-center rounded-lg h-9 px-4 font-bold text-sm text-slate-700 hover:bg-slate-200"
                             >
                                 Sign In
                             </button>
+
                             <button
-                                onClick={() => navigateTo("/signup")}
-                                className="flex items-center justify-center rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold shadow-md hover:bg-primary/90 transition-colors"
+                                onClick={() => navigateTo("/register")}
+                                className="flex items-center rounded-lg h-9 px-4 bg-primary text-white font-bold text-sm shadow-md hover:bg-primary/90"
                             >
                                 Sign Up
                             </button>
                         </>
                     )}
 
-                    {/* Hamburger Icon */}
+                    {/* Hamburger */}
                     <button
                         className="md:hidden flex items-center justify-center p-2 text-slate-700 hover:text-primary"
                         onClick={() => setIsOpen(!isOpen)}
@@ -199,7 +177,7 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             {isOpen && (
-                <div className="md:hidden bg-background-light border-t border-slate-200">
+                <div className="md:hidden bg-white border-t border-slate-200">
                     <div className="flex flex-col items-center px-4 py-4 gap-4">
                         {navItems.map((item) => (
                             <button
@@ -215,62 +193,28 @@ const Navbar = () => {
                             </button>
                         ))}
 
-                        {user.isLoggedIn ? (
+                        {user && (
                             <div className="w-full border-t border-slate-200 pt-4">
                                 <div className="flex items-center gap-3 mb-4 px-4">
-                                    <img
-                                        src={user.avatar}
-                                        alt={user.name}
-                                        className="w-12 h-12 rounded-full"
-                                    />
+                                    <img src={avatar} alt={first_name} className="w-12 h-12 rounded-full" />
                                     <div>
-                                        <p className="font-semibold text-slate-900">{user.name}</p>
-                                        <p className="text-sm text-slate-500">{user.email}</p>
+                                        <p className="font-semibold text-slate-900">{first_name}</p>
+                                        <p className="text-sm text-slate-500">{email}</p>
                                     </div>
                                 </div>
-                                {profileMenuItems.slice(0, 4).map((item) => (
-                                    item.type !== "divider" && (
-                                        <button
-                                            key={item.path}
-                                            onClick={() => handleProfileAction(item)}
-                                            className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors"
-                                        >
-                                            <span className="material-symbols-outlined text-slate-600">
-                                                {item.icon}
-                                            </span>
-                                            <span className={`text-sm font-medium ${item.isLogout ? "text-red-600" : "text-slate-700"}`}>
-                                                {item.name}
-                                            </span>
-                                            {item.badge && (
-                                                <span className="ml-auto bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
-                                                    {item.badge}
-                                                </span>
-                                            )}
-                                        </button>
-                                    )
+
+                                {profileMenuItems.map((item) => (
+                                    <button
+                                        key={item.name}
+                                        onClick={() => handleProfileAction(item)}
+                                        className={`flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors ${item.isLogout ? "text-red-600" : "text-slate-700"
+                                            }`}
+                                    >
+                                        <span className="material-symbols-outlined">{item.icon}</span>
+                                        <span className="text-sm font-medium">{item.name}</span>
+                                    </button>
                                 ))}
-                                <button
-                                    onClick={() => handleProfileAction(profileMenuItems.find(item => item.isLogout))}
-                                    className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-red-50 transition-colors"
-                                >
-                                    <span className="material-symbols-outlined text-red-600">
-                                        logout
-                                    </span>
-                                    <span className="text-sm font-medium text-red-600">
-                                        Logout
-                                    </span>
-                                </button>
                             </div>
-                        ) : (
-                            <button
-                                onClick={() => {
-                                    navigateTo("/signin");
-                                    setIsOpen(false);
-                                }}
-                                className="w-full sm:w-auto text-center px-6 py-2 rounded-lg text-sm font-bold bg-transparent text-slate-700 hover:bg-slate-200 transition-colors"
-                            >
-                                Sign In
-                            </button>
                         )}
                     </div>
                 </div>

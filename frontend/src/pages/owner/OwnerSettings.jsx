@@ -1,13 +1,60 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import OwnerSidebar from "../../components/owner/OwnerSidebar";
-import OwnerSettingsPage from '../../containers/owner/account/OwnerSettingsPage'
+import OwnerSettingsPage from '../../containers/owner/account/OwnerSettingsPage';
+import { AuthContext } from "../../context/AuthContext";
 
 function OwnerSettings() {
+    const { updatePassword } = useContext(AuthContext);
+
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const handlePasswordUpdate = async (e) => {
+        e.preventDefault();
+
+        if (newPassword !== confirmPassword) {
+            alert("New password and confirm password do not match!");
+            return;
+        }
+
+        try {
+            await updatePassword(currentPassword, newPassword);
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+        } catch (err) {
+            console.error("Password update failed:", err);
+        }
+    };
+
+    const toggleCurrentPassword = () => setShowCurrentPassword(!showCurrentPassword);
+    const toggleNewPassword = () => setShowNewPassword(!showNewPassword);
+    const toggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+
     return (
         <div className="bg-[#f6f7f8]">
             <div className="px-4 py-10 md:px-24 max-w-8xl mx-auto gap-6 min-h-screen flex">
                 <OwnerSidebar />
-                <OwnerSettingsPage />
+                <OwnerSettingsPage
+                    currentPassword={currentPassword}
+                    setCurrentPassword={setCurrentPassword}
+                    newPassword={newPassword}
+                    setNewPassword={setNewPassword}
+                    confirmPassword={confirmPassword}
+                    setConfirmPassword={setConfirmPassword}
+                    showCurrentPassword={showCurrentPassword}
+                    showNewPassword={showNewPassword}
+                    showConfirmPassword={showConfirmPassword}
+                    toggleCurrentPassword={toggleCurrentPassword}
+                    toggleNewPassword={toggleNewPassword}
+                    toggleConfirmPassword={toggleConfirmPassword}
+                    handlePasswordUpdate={handlePasswordUpdate}
+                />
             </div>
         </div>
     );

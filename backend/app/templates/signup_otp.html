@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>CampusEase OTP</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8fafc;
+      color: #334155;
+      margin: 0;
+      padding: 0;
+    }
+
+    .email-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .header {
+      background-color: #0ea5e9;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .body {
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .otp {
+      display: inline-block;
+      margin: 20px 0;
+      font-size: 32px;
+      font-weight: bold;
+      color: #0ea5e9;
+      letter-spacing: 4px;
+    }
+
+    .footer {
+      padding: 20px;
+      font-size: 12px;
+      color: #94a3b8;
+      text-align: center;
+      border-top: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="email-container">
+    <div class="header">
+      CampusEase SUSL
+    </div>
+    <div class="body">
+      <h2>Hello {{ first_name }},</h2>
+      <p>Welcome to CampusEase! Please use the OTP below to complete your signup:</p>
+      <div class="otp">{{ otp_code }}</div>
+      <p>This OTP is valid for 5 minutes.</p>
+    </div>
+    <div class="footer">
+      CampusEase - Dedicated to SUSL. All rights reserved.
+    </div>
+  </div>
+</body>
+
+</html>
