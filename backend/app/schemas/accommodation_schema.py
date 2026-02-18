@@ -74,3 +74,18 @@ class AccommodationResponse(BaseModel):
     class Config:
         orm_mode = True
         allow_population_by_field_name = True
+
+
+class AccommodationUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    accommodation_type: Optional[AccommodationType] = None
+    no_of_rooms: Optional[int] = None
+    no_of_beds: Optional[int] = None
+    no_of_bathrooms: Optional[int] = None
+    description: Optional[str] = None
+    month_rent: Optional[float] = None
+    amenities: Optional[List[AccommodationAmenitySchema]] = None
+    images: Optional[List[AccommodationImageSchema]] = None
+    address: Optional[AccommodationAddressSchema] = None
+    location: Optional[AccommodationLocationSchema] = None
+    time_from_uni: Optional[Dict[str, str]] = None

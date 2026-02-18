@@ -17,6 +17,7 @@ const OwnerAccommodation = () => {
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [showPermissionPopup, setShowPermissionPopup] = useState(false);
     const [selectedProperty, setSelectedProperty] = useState(null);
+    const [resubmitMode, setResubmitMode] = useState(false);
 
     const [properties, setProperties] = useState({
         active: [
@@ -206,8 +207,38 @@ const OwnerAccommodation = () => {
         setShowAddPopup(false);
         alert("Property submitted for review. You will be notified once approved.");
     };
-
     const handleEditProperty = (updatedProperty) => {
+
+        if (resubmitMode) {
+            // Resubmit flow
+            const resubmitted = {
+                ...updatedProperty,
+                id: `PEND-${Math.floor(1000 + Math.random() * 9000)}`,
+                status: "Pending",
+                submittedDate: new Date().toISOString().split('T')[0],
+                adminNotes: "Resubmitted for review",
+                expectedResponseDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+                    .toISOString()
+                    .split('T')[0],
+                rejectionReason: null,
+                adminRemarks: null,
+                rejectedDate: null
+            };
+
+            setProperties(prev => ({
+                ...prev,
+                pending: [...prev.pending, resubmitted],
+                rejected: prev.rejected.filter(prop => prop.id !== updatedProperty.id)
+            }));
+
+            setResubmitMode(false);
+            setShowEditPopup(false);
+            setSelectedProperty(null);
+            alert("Property updated and resubmitted for admin review.");
+            return;
+        }
+
+        // Existing edit logic unchanged...
         if (activeTab === "active") {
             setProperties(prev => ({
                 ...prev,
@@ -229,6 +260,7 @@ const OwnerAccommodation = () => {
                 )
             }));
         }
+
         setShowEditPopup(false);
         setSelectedProperty(null);
     };
@@ -268,6 +300,14 @@ const OwnerAccommodation = () => {
             }
         }
     };
+
+    const handleEditBeforeResubmit = (property) => {
+        setSelectedProperty(property);
+        setShowEditPopup(true);
+        // Mark this operation as a "resubmit" workflow
+        setResubmitMode(true);
+    };
+
 
     const handleResubmitProperty = (property) => {
         const updatedProperty = {
@@ -381,7 +421,7 @@ const OwnerAccommodation = () => {
                 <RejectedPropertyTable
                     properties={properties.rejected}
                     onView={handleViewProperty}
-                    onResubmit={handleResubmitProperty}
+                    onEditBeforeResubmit={handleEditBeforeResubmit}
                     onDelete={handleDeleteProperty}
                 />
             )}

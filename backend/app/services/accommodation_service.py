@@ -50,3 +50,47 @@ async def get_accommodation_by_id(accommodation_id: str) -> dict:
 
     accom_obj = Accommodation(**accom_doc)
     return response(True, 200, "Accommodation fetched successfully", accom_obj.dict(by_alias=True))
+
+
+async def update_accommodation(accommodation_id: str, update_data: dict) -> dict:
+    update_data["last_updated"] = datetime.utcnow()
+
+    update_data = {k: v for k, v in update_data.items() if v is not None}
+
+    result = await accommodations_collection.update_one(
+        {"_id": accommodation_id},
+        {"$set": update_data}
+    )
+
+    if result.matched_count == 0:
+        return {
+            "success": False,
+            "status": 404,
+            "message": "Accommodation not found"
+        }
+
+    updated = await accommodations_collection.find_one({"_id": accommodation_id})
+
+    return {
+        "success": True,
+        "status": 200,
+        "message": "Accommodation updated successfully",
+        "data": updated
+    }
+
+
+async def delete_accommodation(accommodation_id: str) -> dict:
+    result = await accommodations_collection.delete_one({"_id": accommodation_id})
+
+    if result.deleted_count == 0:
+        return {
+            "success": False,
+            "status": 404,
+            "message": "Accommodation not found"
+        }
+
+    return {
+        "success": True,
+        "status": 200,
+        "message": "Accommodation deleted successfully"
+    }

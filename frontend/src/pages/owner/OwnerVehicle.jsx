@@ -17,6 +17,7 @@ const OwnerVehicle = () => {
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [showPermissionPopup, setShowPermissionPopup] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
+    const [resubmitMode, setResubmitMode] = useState(false);
 
     const [vehicles, setVehicles] = useState({
         active: [
@@ -249,37 +250,85 @@ const OwnerVehicle = () => {
         alert("Vehicle submitted for review. You will be notified once approved.");
     };
 
+    const handleEditBeforeResubmit = (vehicle) => {
+        setSelectedVehicle(vehicle);
+        setResubmitMode(true);
+        setShowEditPopup(true);
+    };
+
     const handleEditVehicle = (updatedVehicle) => {
+
+        // === RESUBMIT MODE ===
+        if (resubmitMode) {
+            const resubmitted = {
+                ...updatedVehicle,
+                id: `PEND-V${Math.floor(1000 + Math.random() * 9000)}`,
+                status: "Pending",
+                submittedDate: new Date().toISOString().split("T")[0],
+                adminNotes: "Resubmitted for review",
+                expectedResponseDate: new Date(Date.now() + 3 * 86400000)
+                    .toISOString()
+                    .split("T")[0],
+                rejectionReason: null,
+                adminRemarks: null,
+                rejectedDate: null,
+                lastUpdated: new Date().toISOString().split("T")[0],
+                price: parseInt(updatedVehicle.price),
+                seats: parseInt(updatedVehicle.seats),
+                year: parseInt(updatedVehicle.year)
+            };
+
+            setVehicles(prev => ({
+                ...prev,
+                pending: [...prev.pending, resubmitted],
+                rejected: prev.rejected.filter(v => v.id !== updatedVehicle.id)
+            }));
+
+            setResubmitMode(false);
+            setShowEditPopup(false);
+            setSelectedVehicle(null);
+
+            alert("Vehicle updated and resubmitted for admin review.");
+            return;
+        }
+
+        // === NORMAL EDIT LOGIC ===
         if (activeTab === "active") {
             setVehicles(prev => ({
                 ...prev,
                 active: prev.active.map(vehicle =>
-                    vehicle.id === updatedVehicle.id ? {
-                        ...updatedVehicle,
-                        lastUpdated: new Date().toISOString().split('T')[0],
-                        price: parseInt(updatedVehicle.price),
-                        seats: parseInt(updatedVehicle.seats),
-                        year: parseInt(updatedVehicle.year)
-                    } : vehicle
+                    vehicle.id === updatedVehicle.id
+                        ? {
+                            ...updatedVehicle,
+                            lastUpdated: new Date().toISOString().split("T")[0],
+                            price: parseInt(updatedVehicle.price),
+                            seats: parseInt(updatedVehicle.seats),
+                            year: parseInt(updatedVehicle.year)
+                        }
+                        : vehicle
                 )
             }));
         } else if (activeTab === "pending") {
             setVehicles(prev => ({
                 ...prev,
                 pending: prev.pending.map(vehicle =>
-                    vehicle.id === updatedVehicle.id ? {
-                        ...updatedVehicle,
-                        lastUpdated: new Date().toISOString().split('T')[0],
-                        price: parseInt(updatedVehicle.price),
-                        seats: parseInt(updatedVehicle.seats),
-                        year: parseInt(updatedVehicle.year)
-                    } : vehicle
+                    vehicle.id === updatedVehicle.id
+                        ? {
+                            ...updatedVehicle,
+                            lastUpdated: new Date().toISOString().split("T")[0],
+                            price: parseInt(updatedVehicle.price),
+                            seats: parseInt(updatedVehicle.seats),
+                            year: parseInt(updatedVehicle.year)
+                        }
+                        : vehicle
                 )
             }));
         }
+
         setShowEditPopup(false);
         setSelectedVehicle(null);
     };
+
 
     const handleViewVehicle = (vehicle) => {
         setSelectedVehicle(vehicle);
@@ -414,7 +463,7 @@ const OwnerVehicle = () => {
                 <RejectedVehicleTable
                     vehicles={vehicles.rejected}
                     handleViewVehicle={handleViewVehicle}
-                    handleResubmitVehicle={handleResubmitVehicle}
+                    handleEditBeforeResubmit={handleEditBeforeResubmit}
                     handleDeleteVehicle={handleDeleteVehicle}
                 />
             )}

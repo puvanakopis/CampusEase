@@ -59,9 +59,10 @@ class Accommodation(BaseModel):
     reviews: List[AccommodationReview] = []
     amenities: List[AccommodationAmenity] = []
     available_users: int = 0
+    total_users: int = 0
     address: Optional[AccommodationAddress] = None
     location: Optional[AccommodationLocation] = None
-    time_from_uni: Optional[Dict[str, str]] = None  # e.g., {"SUSL Main Gate": "10 mins", "Pambahinna Junction": "15 mins"}
+    time_from_uni: Optional[Dict[str, str]] = None  
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-const RejectedPropertyTable = ({ properties, onView, onResubmit, onDelete }) => {
+const RejectedPropertyTable = ({ properties, onView, onEditBeforeResubmit, onDelete }) => {
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
@@ -116,7 +116,7 @@ const RejectedPropertyTable = ({ properties, onView, onResubmit, onDelete }) => 
                                         </button>
                                         <div className="flex gap-2 w-full">
                                             <button
-                                                onClick={() => onResubmit(property)}
+                                                onClick={() => onEditBeforeResubmit(property)}
                                                 className="flex-1 bg-green-600 hover:bg-green-500 text-white text-[10px] font-bold py-2 px-2 rounded-md uppercase tracking-wider transition-colors"
                                             >
                                                 Resubmit
