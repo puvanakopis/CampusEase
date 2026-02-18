@@ -36,6 +36,7 @@ import MyBookings from "./pages/user/MyBookings";
 import SavedItems from "./pages/user/SavedItems";
 import Settings from "./pages/user/Settings";
 import Support from "./pages/user/Support";
+import UserApplication from "./pages/user/UserApplication";
 import NotFound from "./pages/user/NotFound";
 
 // Owner Pages
@@ -141,9 +142,10 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Protected Routes */}
-        <Route element={<ProtectedRoute role={role} />}>
+        <Route element={<ProtectedRoute role={role} user={user} />}>
           {/* User/Public Routes */}
           <Route path="/" element={<Home />} />
+          <Route path="/application" element={<UserApplication />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
           <Route path="/accommodation" element={<Accommodation />} />
