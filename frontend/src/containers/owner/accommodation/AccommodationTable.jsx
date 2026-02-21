@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 
-const AccommodationTable = ({ accommodations, onView, onEdit, onDelete, showEditDelete = true }) => {
+const AccommodationTable = ({ accommodations, onView, onEdit, onDelete, onToggleAvailability, showEditDelete = true }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [filterType, setFilterType] = useState("All");
     const [filterStatus, setFilterStatus] = useState("All");
@@ -115,6 +115,7 @@ const AccommodationTable = ({ accommodations, onView, onEdit, onDelete, showEdit
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Rooms</th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Occupancy</th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Availability</th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Actions</th>
                         </tr>
                     </thead>
@@ -173,16 +174,28 @@ const AccommodationTable = ({ accommodations, onView, onEdit, onDelete, showEdit
 
                                 <td className="px-6 py-4">
                                     <span
-                                        className={`px-3 py-1 rounded-full text-xs font-bold ${
-                                            accommodation.status === "Available"
-                                                ? "bg-green-100 text-green-800"
-                                                : accommodation.status === "Rejected"
+                                        className={`px-3 py-1 rounded-full text-xs font-bold ${accommodation.status === "Available"
+                                            ? "bg-green-100 text-green-800"
+                                            : accommodation.status === "Rejected"
                                                 ? "bg-red-100 text-red-800"
                                                 : "bg-yellow-100 text-yellow-800"
-                                        }`}
+                                            }`}
                                     >
                                         {accommodation.status}
                                     </span>
+                                </td>
+                                <td>
+                                    {(accommodation.status === "Available" || accommodation.status === "Unavailable") && (
+                                        <button
+                                            onClick={() => onToggleAvailability(accommodation)}
+                                            className={`${accommodation.status === "Available"
+                                                ? "bg-gray-600 hover:bg-gray-500"
+                                                : "bg-green-600 hover:bg-green-500"
+                                                } text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors`}
+                                        >
+                                            {accommodation.status === "Available" ? "Mark Unavailable" : "Mark Available"}
+                                        </button>
+                                    )}
                                 </td>
 
                                 <td className="px-6 py-4">

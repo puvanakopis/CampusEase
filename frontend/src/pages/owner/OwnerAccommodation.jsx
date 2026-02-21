@@ -143,6 +143,15 @@ const OwnerAccommodation = () => {
         setResubmitMode(true);
     };
 
+    const handleToggleAvailability = async (acc) => {
+        const newStatus = acc.status === "Available" ? "Unavailable" : "Available";
+
+        await updateAccommodation(acc._id, {
+            status: newStatus,
+            reject_reason: null,
+        });
+    };
+
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
             {showAddPopup && (
@@ -197,6 +206,7 @@ const OwnerAccommodation = () => {
                     onView={handleViewAccommodation}
                     onEdit={handleEditClick}
                     onDelete={handleDeleteAccommodation}
+                    onToggleAvailability={handleToggleAvailability}
                     showEditDelete={true}
                 />
             )}
