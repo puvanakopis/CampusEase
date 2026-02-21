@@ -44,7 +44,8 @@ async def get_all_accommodations() -> dict:
 
 
 async def get_accommodation_by_id(accommodation_id: str) -> dict:
-    accom_doc = await accommodations_collection.find_one({"_id": accommodation_id})
+
+    accom_doc = await accommodations_collection.find_one({"_id": str(accommodation_id)})
     if not accom_doc:
         raise HTTPException(status_code=404, detail="Accommodation not found")
 
@@ -58,7 +59,7 @@ async def update_accommodation(accommodation_id: str, update_data: dict) -> dict
     update_data = {k: v for k, v in update_data.items() if v is not None}
 
     result = await accommodations_collection.update_one(
-        {"_id": accommodation_id},
+        {"_id": str(accommodation_id)},
         {"$set": update_data}
     )
 
@@ -69,18 +70,19 @@ async def update_accommodation(accommodation_id: str, update_data: dict) -> dict
             "message": "Accommodation not found"
         }
 
-    updated = await accommodations_collection.find_one({"_id": accommodation_id})
+    updated = await accommodations_collection.find_one({"_id": str(accommodation_id)})
 
+    updated_obj = Accommodation(**updated)
     return {
         "success": True,
         "status": 200,
         "message": "Accommodation updated successfully",
-        "data": updated
+        "data": updated_obj.dict(by_alias=True)
     }
 
 
 async def delete_accommodation(accommodation_id: str) -> dict:
-    result = await accommodations_collection.delete_one({"_id": accommodation_id})
+    result = await accommodations_collection.delete_one({"_id": str(accommodation_id)})
 
     if result.deleted_count == 0:
         return {

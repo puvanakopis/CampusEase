@@ -31,10 +31,7 @@ const OwnerAccommodation = () => {
 
 
     // ------------ Tabs ------------
-    const activeList = useMemo(
-        () => accommodations.filter((a) => a.status === "Available"),
-        [accommodations]
-    );
+
     const pendingList = useMemo(
         () => accommodations.filter((a) => a.status === "Pending"),
         [accommodations]
@@ -45,7 +42,7 @@ const OwnerAccommodation = () => {
     );
 
     const tabs = [
-        { id: "active", label: "Active Accommodations", count: activeList.length },
+        { id: "active", label: "All Accommodations", count: accommodations.length },
         { id: "pending", label: "Accommodation Pending", count: pendingList.length },
         { id: "rejected", label: "Accommodation Rejected", count: rejectedList.length },
     ];
@@ -57,7 +54,7 @@ const OwnerAccommodation = () => {
             label: "Total Accommodations",
             icon: "apartment",
             value: accommodations.length,
-            subtext: `${activeList.length} active, ${pendingList.length} pending`,
+            subtext: `${accommodations.length} active, ${pendingList.length} pending`,
             trendIcon: "trending_up",
             subtextColor: "text-green-500",
         },
@@ -65,32 +62,32 @@ const OwnerAccommodation = () => {
             label: "Total Occupancy",
             icon: "group",
             value:
-                activeList.length > 0
+                accommodations.length > 0
                     ? `${(
-                        (activeList.reduce(
+                        (accommodations.reduce(
                             (sum, prop) => sum + (prop.total_users - prop.available_users),
                             0
                         ) /
-                            activeList.reduce((sum, prop) => sum + prop.total_users, 0)) *
+                            accommodations.reduce((sum, prop) => sum + prop.total_users, 0)) *
                         100
                     ).toFixed(1)}%`
                     : "0%",
-            subtext: `${activeList.reduce(
+            subtext: `${accommodations.reduce(
                 (sum, prop) => sum + (prop.total_users - prop.available_users),
                 0
-            )} of ${activeList.reduce((sum, prop) => sum + prop.total_users, 0)} rooms occupied`,
+            )} of ${accommodations.reduce((sum, prop) => sum + prop.total_users, 0)} rooms occupied`,
         },
         {
             label: "Monthly Revenue",
             icon: "payments",
-            value: `LKR ${activeList
+            value: `LKR ${accommodations
                 .reduce(
                     (sum, prop) =>
                         sum + prop.month_rent * (prop.total_users - prop.available_users),
                     0
                 )
                 .toLocaleString()}`,
-            subtext: "From active accommodations",
+            subtext: "From All Accommodations",
         },
     ];
 
@@ -196,7 +193,7 @@ const OwnerAccommodation = () => {
 
             {activeTab === "active" && (
                 <AccommodationTable
-                    accommodations={activeList}
+                    accommodations={accommodations}
                     onView={handleViewAccommodation}
                     onEdit={handleEditClick}
                     onDelete={handleDeleteAccommodation}

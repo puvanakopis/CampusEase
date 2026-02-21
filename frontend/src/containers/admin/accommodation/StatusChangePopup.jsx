@@ -62,7 +62,7 @@ const StatusChangePopup = ({ accommodation, currentStatus, onClose, onConfirm })
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={accommodation?.images[0]?.filename ? `/images/${accommodation.images[0].filename}` : "https://via.placeholder.com/100x100?text=Accommodation"}
+                                src="https://via.placeholder.com/100x100?text=Accommodation"
                                 alt={accommodation?.name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {

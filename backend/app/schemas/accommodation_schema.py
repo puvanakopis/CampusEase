@@ -82,6 +82,7 @@ class AccommodationUpdateRequest(BaseModel):
     no_of_rooms: Optional[int] = None
     no_of_beds: Optional[int] = None
     no_of_bathrooms: Optional[int] = None
+    status: AccommodationStatus
     description: Optional[str] = None
     month_rent: Optional[float] = None
     amenities: Optional[List[AccommodationAmenitySchema]] = None
