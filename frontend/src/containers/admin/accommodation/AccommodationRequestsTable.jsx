@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 
 const AccommodationRequestsTable = ({ accommodationRequests, onViewRequest, onApproveRequest, onRejectRequest }) => {
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const filteredRequests = useMemo(() => {
+        if (!searchQuery) return accommodationRequests;
+        return accommodationRequests.filter((request) => {
+            const nameMatch = request.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const ownerMatch = request.owner_id.toLowerCase().includes(searchQuery.toLowerCase());
+            const locationMatch = (request.address?.street || '').toLowerCase().includes(searchQuery.toLowerCase());
+            return nameMatch || ownerMatch || locationMatch;
+        });
+    }, [searchQuery, accommodationRequests]);
+
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Accommodation Requests ({accommodationRequests.length})
+                    Accommodation Requests ({filteredRequests.length})
                 </h3>
                 <div className="flex items-center gap-3">
                     {/* Search */}
@@ -16,26 +28,12 @@ const AccommodationRequestsTable = ({ accommodationRequests, onViewRequest, onAp
                         </span>
                         <input
                             type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search accommodations..."
                             className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
-                    {/* Status Filter */}
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
-                        <option>Status: All</option>
-                        <option>Pending</option>
-                        <option>Approved</option>
-                        <option>Rejected</option>
-                    </select>
-                    {/* Type Filter */}
-                    <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all">
-                        <option>Type: All</option>
-                        <option>Apartment</option>
-                        <option>House</option>
-                        <option>Villa</option>
-                        <option>Hostel</option>
-                        <option>Other</option>
-                    </select>
                 </div>
             </div>
 
@@ -43,20 +41,13 @@ const AccommodationRequestsTable = ({ accommodationRequests, onViewRequest, onAp
                 <table className="w-full text-left border-collapse">
                     <thead className="bg-slate-50">
                         <tr>
-                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Request Details
-                            </th>
-                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Owner Information
-                            </th>
-                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Accommodation Details
-                            </th>
-                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
-                                Actions
-                            </th>
+                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Request Details</th>
+                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Owner Information</th>
+                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Accommodation Details</th>
+                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody className="divide-y divide-slate-100">
                         {accommodationRequests.map((request) => (
                             <tr key={request._id} className="hover:bg-slate-50 transition-colors">

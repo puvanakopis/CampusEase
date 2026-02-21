@@ -18,7 +18,6 @@ const AdminAccommodation = () => {
         accommodations,
         fetchAccommodations,
         updateAccommodation,
-        deleteAccommodation,
     } = useContext(AccommodationContext);
 
     const [activeTab, setActiveTab] = useState("current");
@@ -50,7 +49,7 @@ const AdminAccommodation = () => {
     const tabs = [
         {
             id: "current",
-            label: "Active Accommodations",
+            label: "All  Accommodations",
             count: activeAccommodations.length,
         },
         {
@@ -113,19 +112,6 @@ const AdminAccommodation = () => {
         setShowViewPopup(true);
     };
 
-    const handleDeleteAccommodation = async (accommodationId) => {
-        if (!window.confirm("Are you sure you want to delete this accommodation?"))
-            return;
-
-        try {
-            await deleteAccommodation(accommodationId);
-            toast.success("Accommodation deleted");
-        } catch (error) {
-            console.log(error)
-            toast.error("Delete failed");
-        }
-    };
-
     const handleApproveRequest = async (request) => {
         try {
             await updateAccommodation(request._id, {
@@ -172,38 +158,31 @@ const AdminAccommodation = () => {
     const handleConfirmStatusChange = async (reason) => {
         if (!accommodationToChangeStatus) return;
 
-        const newStatus =
-            accommodationToChangeStatus.status === "Available"
-                ? "Unavailable"
-                : "Available";
+        const newStatus = accommodationToChangeStatus.status === "Available"
+            ? "Unavailable"
+            : "Available";
 
         try {
             await updateAccommodation(accommodationToChangeStatus._id, {
                 status: newStatus,
                 reject_reason: newStatus === "Unavailable" ? reason : null,
             });
-
-            toast.success(
-                `Accommodation ${newStatus === "Available" ? "activated" : "deactivated"
-                }`
-            );
-
+            toast.success(`Accommodation ${newStatus === "Available" ? "activated" : "deactivated"}`);
+        } catch (error) {
+            console.error(error);
+            toast.error("Status update failed");
+        } finally {
             setShowStatusPopup(false);
             setAccommodationToChangeStatus(null);
-        } catch (error) {
-            console.log(error)
-            toast.error("Update failed");
         }
     };
 
-    // ------------------- INITIAL LOAD -------------------
     useEffect(() => {
         fetchAccommodations();
     }, []);
 
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-            {/* View Popup */}
             {showViewPopup && selectedAccommodation && (
                 <ViewAccommodationPopup
                     accommodation={selectedAccommodation}
@@ -215,7 +194,6 @@ const AdminAccommodation = () => {
                 />
             )}
 
-            {/* Status Change */}
             {showStatusPopup && accommodationToChangeStatus && (
                 <StatusChangePopup
                     accommodation={accommodationToChangeStatus}
@@ -228,7 +206,6 @@ const AdminAccommodation = () => {
                 />
             )}
 
-            {/* Reject Popup */}
             {showRejectPopup && requestToReject && (
                 <RejectPopup
                     request={requestToReject}
@@ -250,18 +227,17 @@ const AdminAccommodation = () => {
 
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
-            {/* CURRENT ACCOMMODATIONS */}
             {activeTab === "current" && (
                 <AccommodationTable
+                    title='All Accommodations'
                     accommodations={activeAccommodations}
                     onView={handleViewAccommodation}
-                    onDelete={handleDeleteAccommodation}
                     onToggleStatus={handleToggleAccommodationStatus}
                     isAdmin={true}
+                    a
                 />
             )}
 
-            {/* REQUESTS */}
             {activeTab === "requests" && (
                 <AccommodationRequestsTable
                     accommodationRequests={accommodationRequests}
@@ -275,12 +251,11 @@ const AdminAccommodation = () => {
                 />
             )}
 
-            {/* INACTIVE */}
             {activeTab === "inactive" && (
                 <AccommodationTable
+                    title='Inactive Accommodations'
                     accommodations={inactiveAccommodations}
                     onView={handleViewAccommodation}
-                    onDelete={handleDeleteAccommodation}
                     onToggleStatus={handleToggleAccommodationStatus}
                     isAdmin={true}
                 />
