@@ -20,7 +20,7 @@ async def create_accommodation_endpoint(accom_request: AccommodationCreateReques
     return await create_accommodation(accom_request)
 
 
-@router.get("/", dependencies=[Depends(get_current_user)])
+@router.get("/")
 async def get_all_accommodations_endpoint():
     return await get_all_accommodations()
 
