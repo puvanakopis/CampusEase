@@ -1,13 +1,13 @@
 import React from 'react';
-import Breadcrumbs from '../../containers/user/itemDetails/Breadcrumbs';
-import HeaderInfo from '../../containers/user/itemDetails/HeaderInfo';
-import PhotoGrid from '../../containers/user/itemDetails/PhotoGrid';
-import PropertyInfo from '../../containers/user/itemDetails/PropertyInfo';
-import AmenitiesList from '../../containers/user/itemDetails/AmenitiesList';
-import LocationMap from '../../containers/user/itemDetails/LocationMap';
-import ReviewsSection from '../../containers/user/itemDetails/ReviewsSection';
-import HostInfo from '../../containers/user/itemDetails/HostInfo';
-import BookingCard from '../../containers/user/itemDetails/BookingCard';
+import Breadcrumbs from '../../containers/user/vehicleDetails/Breadcrumbs';
+import HeaderInfo from '../../containers/user/vehicleDetails/HeaderInfo';
+import PhotoGrid from '../../containers/user/vehicleDetails/PhotoGrid';
+import PropertyInfo from '../../containers/user/vehicleDetails/PropertyInfo';
+import AmenitiesList from '../../containers/user/vehicleDetails/AmenitiesList';
+import LocationMap from '../../containers/user/vehicleDetails/LocationMap';
+import ReviewsSection from '../../containers/user/vehicleDetails/ReviewsSection';
+import HostInfo from '../../containers/user/vehicleDetails/HostInfo';
+import BookingCard from '../../containers/user/vehicleDetails/BookingCard';
 
 const VehicleDetails = () => {
     const vehicleData = {

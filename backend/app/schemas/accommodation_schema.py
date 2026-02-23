@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional, Dict
 from enum import Enum
 
@@ -15,6 +15,10 @@ class AccommodationType(str, Enum):
     villa = "Villa"
     hostel = "Hostel"
     other = "Other"
+
+class AccommodationDistance(BaseModel):
+    susl_main_gate: Optional[str] = None
+    pambahinna_junction: Optional[str] = None
 
 class AccommodationImageSchema(BaseModel):
     filename: str
@@ -47,7 +51,22 @@ class AccommodationCreateRequest(BaseModel):
     images: Optional[List[AccommodationImageSchema]] = []
     address: Optional[AccommodationAddressSchema] = None
     location: Optional[AccommodationLocationSchema] = None
-    time_from_uni: Optional[Dict[str, str]] = None
+    time_from_uni: Optional[AccommodationDistance] = None  
+
+class OwnerResponse(BaseModel):
+    id: str = Field(..., alias="_id")
+    first_name: str
+    last_name: Optional[str] = None
+    email: EmailStr
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    verified: bool
+    status: str
+
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True
+
 
 class AccommodationResponse(BaseModel):
     id: str = Field(..., alias="_id")
@@ -58,7 +77,6 @@ class AccommodationResponse(BaseModel):
     no_of_bathrooms: int
     description: Optional[str] = None
     month_rent: float
-    owner_id: str
     status: AccommodationStatus
     reject_reason: Optional[str] = None
     verified: bool
@@ -67,14 +85,14 @@ class AccommodationResponse(BaseModel):
     images: List[AccommodationImageSchema] = []
     address: Optional[AccommodationAddressSchema] = None
     location: Optional[AccommodationLocationSchema] = None
-    time_from_uni: Optional[Dict[str, str]] = None
+    time_from_uni: Optional[AccommodationDistance] = None  
+    owner: Optional[OwnerResponse] = None   # <-- new field
     created_at: str
     last_updated: str
 
     class Config:
         orm_mode = True
         allow_population_by_field_name = True
-
 
 class AccommodationUpdateRequest(BaseModel):
     name: Optional[str] = None
@@ -89,4 +107,4 @@ class AccommodationUpdateRequest(BaseModel):
     images: Optional[List[AccommodationImageSchema]] = None
     address: Optional[AccommodationAddressSchema] = None
     location: Optional[AccommodationLocationSchema] = None
-    time_from_uni: Optional[Dict[str, str]] = None
+    time_from_uni: Optional[AccommodationDistance] = None  

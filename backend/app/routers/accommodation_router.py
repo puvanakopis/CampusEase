@@ -19,22 +19,19 @@ async def create_accommodation_endpoint(accom_request: AccommodationCreateReques
     accom_request.owner_id = current_user.id
     return await create_accommodation(accom_request)
 
-
 @router.get("/")
-async def get_all_accommodations_endpoint():
+async def list_accommodations():
     return await get_all_accommodations()
 
-
-@router.get("/{accommodation_id}", dependencies=[Depends(get_current_user)])
-async def get_accommodation_by_id_endpoint(accommodation_id: str):
+@router.get("/{accommodation_id}")
+async def get_accommodation(accommodation_id: str):
     return await get_accommodation_by_id(accommodation_id)
 
-
-@router.patch("/{accommodation_id}", dependencies=[Depends(role_required(["owner", "admin"]))])
+@router.patch("/{accommodation_id}")
 async def update_accommodation_endpoint(
     accommodation_id: str,
     accom_update: AccommodationUpdateRequest,
-    current_user=Depends(get_current_user)
+    
 ):
     update_payload = accom_update.dict(exclude_unset=True)
     return await update_accommodation(accommodation_id, update_payload)

@@ -149,16 +149,16 @@ const ViewAccommodationPopup = ({ accommodation, onClose, onEdit, activeTab }) =
                                     )}
                                     {accommodation.time_from_uni && (
                                         <>
-                                            {accommodation.time_from_uni.walking && (
+                                            {accommodation.time_from_uni.susl_main_gate && (
                                                 <div className="flex justify-between">
-                                                    <span className="text-slate-600">Walking from Uni:</span>
-                                                    <span className="font-medium">{accommodation.time_from_uni.walking}</span>
+                                                    <span className="text-slate-600">Walking Time from Pambahinna Junction:</span>
+                                                    <span className="font-medium">{accommodation.time_from_uni.susl_main_gate}</span>
                                                 </div>
                                             )}
-                                            {accommodation.time_from_uni.driving && (
+                                            {accommodation.time_from_uni.pambahinna_junction && (
                                                 <div className="flex justify-between">
-                                                    <span className="text-slate-600">Driving from Uni:</span>
-                                                    <span className="font-medium">{accommodation.time_from_uni.driving}</span>
+                                                    <span className="text-slate-600">Walking Time from SUSL Main Gate:</span>
+                                                    <span className="font-medium">{accommodation.time_from_uni.pambahinna_junction}</span>
                                                 </div>
                                             )}
                                         </>

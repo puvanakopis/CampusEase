@@ -294,24 +294,24 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">
-                                        Walking Time from Uni
+                                        Walking Time from Pambahinna Junction
                                     </label>
                                     <input
                                         type="text"
-                                        name="time_from_uni.walking"
-                                        value={formData.time_from_uni?.walking || ""}
+                                        name="time_from_uni.pambahinna_junction"
+                                        value={formData.time_from_uni?.pambahinna_junction || ""}
                                         onChange={handleChange}
                                         className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">
-                                        Driving Time from Uni
+                                        Walking Time from SUSL Main Gate
                                     </label>
                                     <input
                                         type="text"
-                                        name="time_from_uni.driving"
-                                        value={formData.time_from_uni?.driving || ""}
+                                        name="time_from_uni.susl_main_gate"
+                                        value={formData.time_from_uni?.susl_main_gate || ""}
                                         onChange={handleChange}
                                         className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     />

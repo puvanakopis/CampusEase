@@ -17,6 +17,10 @@ class AccommodationType(str, Enum):
     hostel = "Hostel"
     other = "Other"
 
+class AccommodationDistance(BaseModel):
+    susl_main_gate: Optional[str] = None
+    pambahinna_junction: Optional[str] = None
+
 class AccommodationImage(BaseModel):
     filename: str
     content_type: Optional[str] = None
@@ -62,7 +66,7 @@ class Accommodation(BaseModel):
     total_users: int = 0
     address: Optional[AccommodationAddress] = None
     location: Optional[AccommodationLocation] = None
-    time_from_uni: Optional[Dict[str, str]] = None  
+    time_from_uni: Optional[AccommodationDistance] = None  
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 
