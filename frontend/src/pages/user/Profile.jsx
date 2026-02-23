@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import ProfilePage from "../../containers/user/account/ProfilePage";
 import Sidebar from "../../components/user/Sidebar";
 import { AuthContext } from "../../context/AuthContext";
@@ -7,16 +7,36 @@ function Profile() {
     const { currentUser, updateCurrentUser } = useContext(AuthContext);
 
     const [formData, setFormData] = useState({
-        first_name: currentUser?.first_name || "",
-        last_name: currentUser?.last_name || "",
-        email: currentUser?.email || "",
-        phone: currentUser?.phone || "",
-        address: currentUser?.address || "",
-        role: currentUser?.role || "",
-        id_number: currentUser?.id_number || "",
-        photo: currentUser?.photo || null,
-        id_photo: currentUser?.id_photo || null,
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        address: "",
+        description: "",
+        role: "",
+        id_number: "",
+        photo: null,
     });
+
+    const [photoPreview, setPhotoPreview] = useState(null);
+
+    useEffect(() => {
+        if (currentUser) {
+            setFormData({
+                first_name: currentUser.first_name || "",
+                last_name: currentUser.last_name || "",
+                email: currentUser.email || "",
+                phone: currentUser.phone || "",
+                address: currentUser.address || "",
+                description: currentUser.description || "",
+                role: currentUser.role || "",
+                id_number: currentUser.id_number || "",
+                photo: null,
+            });
+
+            setPhotoPreview(currentUser.photo ? `/uploads/user_photo/${currentUser.photo.filename}` : null);
+        }
+    }, [currentUser]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,18 +47,20 @@ function Profile() {
         const { name, files } = e.target;
         if (files && files[0]) {
             const file = files[0];
-            const fileData = {
-                filename: URL.createObjectURL(file),
-                content_type: file.type,
-                size: file.size,
-                rawFile: file,
-            };
-            setFormData((prev) => ({ ...prev, [name]: fileData }));
+            setFormData((prev) => ({ ...prev, [name]: file }));
+
+            if (name === "photo") {
+                setPhotoPreview(URL.createObjectURL(file));
+            }
         }
     };
 
     const handleSave = async () => {
-        await updateCurrentUser(formData);
+        try {
+            await updateCurrentUser(formData);
+        } catch (err) {
+            console.error("Failed to update profile:", err);
+        }
     };
 
     return (
@@ -48,6 +70,7 @@ function Profile() {
                 <ProfilePage
                     currentUser={currentUser}
                     formData={formData}
+                    photoPreview={photoPreview}
                     handleChange={handleChange}
                     handleFileChange={handleFileChange}
                     handleSave={handleSave}

@@ -1,4 +1,5 @@
 import React from "react";
+import { getPhotoUrl } from "../../../utils/photo";
 
 const ProfilePage = ({
     currentUser,
@@ -7,6 +8,25 @@ const ProfilePage = ({
     handleFileChange,
     handleSave,
 }) => {
+
+    const [photoPreview, setPhotoPreview] = React.useState(
+        currentUser?.photo ? getPhotoUrl(currentUser.photo, "user_photo") : null
+    );
+
+    const handleFileInputChange = (e) => {
+        const { name, files } = e.target;
+        if (files && files[0]) {
+            handleFileChange(e);
+            if (name === "photo") {
+                const previewUrl = URL.createObjectURL(files[0]);
+                setPhotoPreview(previewUrl);
+            }
+        }
+    };
+
+    console.log(currentUser)
+    const avatar = photoPreview;
+
     return (
         <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col gap-8 px-4 md:px-10">
             {/* Header */}
@@ -27,7 +47,7 @@ const ProfilePage = ({
                             <img
                                 alt="User Avatar"
                                 className="h-full w-full rounded-full object-cover"
-                                src={formData.photo?.filename || "https://via.placeholder.com/150"}
+                                src={avatar}
                             />
                         </div>
 
@@ -38,7 +58,7 @@ const ProfilePage = ({
                                 name="photo"
                                 accept="image/*"
                                 className="hidden"
-                                onChange={handleFileChange}
+                                onChange={handleFileInputChange}
                             />
                             <span className="material-symbols-outlined text-sm">edit</span>
                         </label>
@@ -59,9 +79,13 @@ const ProfilePage = ({
                                 {currentUser?.verified ? "Verified Student" : "Unverified"}
                             </span>
                         </div>
-                        <p className="text-slate-500 font-medium mb-4">
+                        <p className="text-slate-500 font-medium mb-2">
                             ID: {currentUser?._id || "N/A"} • Role: {currentUser?.role || "N/A"} • Status: {currentUser?.status || "N/A"}
                         </p>
+                        {/* User Description */}
+                        {currentUser?.description && (
+                            <p className="text-slate-600 italic">{currentUser.description}</p>
+                        )}
                     </div>
                 </div>
             </div>
@@ -187,31 +211,16 @@ const ProfilePage = ({
                         />
                     </div>
 
-                    {/* ID Photo */}
-                    <div className="flex flex-col gap-2 ">
-                        <label className="text-sm font-bold text-slate-600">Upload ID Photo</label>
-                        {formData.id_photo?.filename && (
-                            <img
-                                src={formData.id_photo.filename}
-                                alt="ID Photo"
-                                className="w-48 h-48 object-cover rounded-lg mb-2 border"
-                            />
-                        )}
-                        <div className="relative">
-                            <input
-                                type="file"
-                                name="id_photo"
-                                accept="image/*"
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                onChange={handleFileChange}
-                            />
-                            <div className="flex items-center justify-between px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
-                                <span>
-                                    {formData.id_photo?.filename ? "Change File" : "Drag & Drop or Select File"}
-                                </span>
-                                <span className="material-symbols-outlined text-slate-500">upload</span>
-                            </div>
-                        </div>
+                    {/* User Description */}
+                    <div className="flex flex-col gap-2 md:col-span-2">
+                        <label className="text-sm font-bold text-slate-600">Description</label>
+                        <textarea
+                            name="description"
+                            value={formData.description || ""}
+                            onChange={handleChange}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:ring-primary focus:border-primary focus:outline-none text-slate-900 transition duration-200 ease-in-out h-24"
+                            placeholder="Write something about yourself..."
+                        />
                     </div>
                 </div>
 

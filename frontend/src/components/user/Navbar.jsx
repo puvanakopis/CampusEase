@@ -19,7 +19,7 @@ const Navbar = () => {
     const isActive = (path) => location.pathname === path;
 
     const first_name = currentUser ? `${currentUser.first_name}`.trim() : "";
-    const avatar = getPhotoUrl(currentUser?.photo, "user_photo");
+    const avatar = getPhotoUrl(currentUser?.photo ?? null, "user_photo");
     const email = currentUser?.email || "";
     const role = currentUser?.role || "Student";
 

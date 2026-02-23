@@ -64,9 +64,9 @@ async def update_profile_endpoint(
     first_name: Optional[str] = Form(None),
     last_name: Optional[str] = Form(None),
     address: Optional[str] = Form(None),
+    description: Optional[str] = Form(None),
     phone: Optional[str] = Form(None),
     id_number: Optional[str] = Form(None),
-
     photo: Optional[UploadFile] = File(None),
     id_photo: Optional[UploadFile] = File(None),
 
@@ -76,6 +76,7 @@ async def update_profile_endpoint(
         "first_name": first_name,
         "last_name": last_name,
         "address": address,
+        "description": description,
         "phone": phone,
         "id_number": id_number,
     }

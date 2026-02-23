@@ -2,12 +2,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.routers import auth_router, accommodation_router
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
     title="CampusEase API",
     description="CampusEase FastAPI project",
     version="1.0.0"
 )
+
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,

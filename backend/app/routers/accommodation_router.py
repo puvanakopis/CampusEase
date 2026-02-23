@@ -36,7 +36,6 @@ async def update_accommodation_endpoint(
     update_payload = accom_update.dict(exclude_unset=True)
     return await update_accommodation(accommodation_id, update_payload)
 
-
 @router.delete("/{accommodation_id}", dependencies=[Depends(role_required(["owner", "admin"]))])
 async def delete_accommodation_endpoint(accommodation_id: str):
     return await delete_accommodation(accommodation_id)
