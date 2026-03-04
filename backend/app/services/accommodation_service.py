@@ -4,8 +4,13 @@ from fastapi import UploadFile, HTTPException
 from app.db.mongodb import accommodations_collection, owners_collection
 from app.utils.file_utils import save_file
 from app.services.counter_service import get_next_sequence
-from app.models.accommodation_model import Accommodation
-from app.schemas.accommodation_schema import AccommodationCreateRequest, OwnerResponse, AccommodationUpdateRequest
+from app.schemas.accommodation_schema import (
+    AccommodationCreateRequest,
+    AccommodationUpdateRequest,
+    AccommodationResponse,
+    OwnerResponse,
+    AccommodationReview
+)
 
 
 async def get_owner_by_id(owner_id: str) -> Optional[dict]:
@@ -15,10 +20,10 @@ async def get_owner_by_id(owner_id: str) -> Optional[dict]:
     return OwnerResponse(**owner_doc).dict(by_alias=True)
 
 
-async def create_accommodation(accom_request: AccommodationCreateRequest,files: Optional[List[UploadFile]] = None) -> dict:
+async def create_accommodation(accom_request: AccommodationCreateRequest, files: Optional[List[UploadFile]] = None) -> dict:
     new_id = await get_next_sequence("accommodation")
-
     accom_data = accom_request.dict(exclude={"images"})
+    
     accom_data.update({
         "_id": new_id,
         "status": accom_data.get("status", "pending"),
@@ -26,24 +31,20 @@ async def create_accommodation(accom_request: AccommodationCreateRequest,files: 
         "highly_rated": False,
         "created_at": datetime.utcnow(),
         "last_updated": datetime.utcnow(),
-        "images": [] 
+        "images": []
     })
 
     if files:
         for idx, file in enumerate(files, start=1):
             filename_base = f"{new_id}_image_{idx}"
             saved_meta = await save_file(file, filename_base, folder="uploads/accommodation")
-
-            accom_data["images"].append({
-                "filename": saved_meta["filename"]
-            })
+            accom_data["images"].append({"filename": saved_meta["filename"]})
 
     result = await accommodations_collection.insert_one(accom_data)
     if not result.acknowledged:
         raise HTTPException(status_code=500, detail="Failed to create accommodation")
 
-    accom_obj = Accommodation(**accom_data)
-
+    accom_obj = AccommodationResponse(**accom_data, owner=None, reviews=[])
     return {
         "success": True,
         "status_code": 201,
@@ -52,15 +53,60 @@ async def create_accommodation(accom_request: AccommodationCreateRequest,files: 
     }
 
 
+async def get_accommodation_by_id(accom_id: str) -> dict:
+    doc = await accommodations_collection.find_one({"_id": accom_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Accommodation not found")
+
+    owner_data = await get_owner_by_id(doc.get("owner_id"))
+
+    reviews = []
+    for rev in doc.get("reviews", []):
+        reviews.append(AccommodationReview(
+            id=rev.get("user_id"),
+            user_first_name=rev.get("user_first_name", ""),
+            user_role=rev.get("user_role", ""),
+            user_photo=rev.get("user_photo"),
+            message=rev.get("message", ""),
+            rating=rev.get("rating", 0),
+            created_at=rev.get("created_at", datetime.utcnow())
+        ))
+
+    doc_copy = doc.copy()
+    doc_copy.pop("reviews", None)
+
+    accom_obj = AccommodationResponse(**doc_copy, owner=owner_data, reviews=reviews)
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": "Accommodation fetched successfully",
+        "data": accom_obj.dict(by_alias=True)
+    }
+
+
 async def get_all_accommodations() -> dict:
     accom_list = []
     cursor = accommodations_collection.find()
     async for doc in cursor:
-        accom_obj = Accommodation(**doc)
-        owner_data = await get_owner_by_id(accom_obj.owner_id)
-        accom_dict = accom_obj.dict(by_alias=True)
-        accom_dict["owner"] = owner_data
-        accom_list.append(accom_dict)
+        owner_data = await get_owner_by_id(doc.get("owner_id"))
+
+        reviews = []
+        for rev in doc.get("reviews", []):
+            reviews.append(AccommodationReview(
+                id=rev.get("user_id"),
+                user_first_name=rev.get("user_first_name", ""),
+                user_role=rev.get("user_role", ""),
+                user_photo=rev.get("user_photo"),
+                message=rev.get("message", ""),
+                rating=rev.get("rating", 0),
+                created_at=rev.get("created_at", datetime.utcnow())
+            ))
+
+        doc_copy = doc.copy()
+        doc_copy.pop("reviews", None)
+
+        accom_obj = AccommodationResponse(**doc_copy, owner=owner_data, reviews=reviews)
+        accom_list.append(accom_obj.dict(by_alias=True))
 
     return {
         "success": True,
@@ -70,26 +116,7 @@ async def get_all_accommodations() -> dict:
     }
 
 
-async def get_accommodation_by_id(accom_id: str) -> dict:
-    doc = await accommodations_collection.find_one({"_id": accom_id})
-    if not doc:
-        raise HTTPException(status_code=404, detail="Accommodation not found")
-    
-    accom_obj = Accommodation(**doc)
-    from app.services.accommodation_service import get_owner_by_id
-    owner_data = await get_owner_by_id(accom_obj.owner_id)
-    
-    accom_dict = accom_obj.dict(by_alias=True)
-    accom_dict["owner"] = owner_data
-    return {
-        "success": True,
-        "status_code": 200,
-        "message": "Accommodation fetched successfully",
-        "data": accom_dict
-    }
-
-
-async def update_accommodation(accom_id: str,update_request: AccommodationUpdateRequest,files: Optional[List[UploadFile]] = None) -> dict:
+async def update_accommodation(accom_id: str, update_request: AccommodationUpdateRequest, files: Optional[List[UploadFile]] = None) -> dict:
     doc = await accommodations_collection.find_one({"_id": accom_id})
     if not doc:
         raise HTTPException(status_code=404, detail="Accommodation not found")
@@ -105,24 +132,34 @@ async def update_accommodation(accom_id: str,update_request: AccommodationUpdate
             existing_images.append({"filename": saved_meta["filename"]})
         update_data["images"] = existing_images
 
-    result = await accommodations_collection.update_one(
-        {"_id": accom_id},
-        {"$set": update_data}
-    )
+    result = await accommodations_collection.update_one({"_id": accom_id}, {"$set": update_data})
     if result.modified_count == 0 and not files:
         raise HTTPException(status_code=400, detail="No changes were applied")
 
     updated_doc = await accommodations_collection.find_one({"_id": accom_id})
-    accom_obj = Accommodation(**updated_doc)
-    owner_data = await get_owner_by_id(accom_obj.owner_id)
-    
-    accom_dict = accom_obj.dict(by_alias=True)
-    accom_dict["owner"] = owner_data
+    owner_data = await get_owner_by_id(updated_doc.get("owner_id"))
+
+    reviews = []
+    for rev in updated_doc.get("reviews", []):
+        reviews.append(AccommodationReview(
+            id=rev.get("user_id"),
+            user_first_name=rev.get("user_first_name", ""),
+            user_role=rev.get("user_role", ""),
+            user_photo=rev.get("user_photo"),
+            message=rev.get("message", ""),
+            rating=rev.get("rating", 0),
+            created_at=rev.get("created_at", datetime.utcnow())
+        ))
+
+    updated_doc_copy = updated_doc.copy()
+    updated_doc_copy.pop("reviews", None)
+
+    accom_obj = AccommodationResponse(**updated_doc_copy, owner=owner_data, reviews=reviews)
     return {
         "success": True,
         "status_code": 200,
         "message": "Accommodation updated successfully",
-        "data": accom_dict
+        "data": accom_obj.dict(by_alias=True)
     }
 
 
@@ -130,6 +167,7 @@ async def delete_accommodation(accom_id: str) -> dict:
     result = await accommodations_collection.delete_one({"_id": accom_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Accommodation not found")
+
     return {
         "success": True,
         "status_code": 200,

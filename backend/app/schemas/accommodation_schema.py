@@ -3,6 +3,10 @@ from typing import List, Optional
 from enum import Enum
 from datetime import datetime
 
+class UserPhoto(BaseModel):
+    filename: str
+    content_type: Optional[str] = None
+    size: Optional[int] = None
 
 
 class AccommodationStatus(str, Enum):
@@ -19,11 +23,6 @@ class AccommodationType(str, Enum):
     hostel = "hostel"
     other = "other"
 
-class AccommodationReview(BaseModel):
-    user_id: str
-    message: str
-    rating: float = Field(..., ge=0, le=5)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class AccommodationDistance(BaseModel):
     susl_main_gate: Optional[str] = None
@@ -45,10 +44,6 @@ class AccommodationLocationSchema(BaseModel):
     latitude: float
     longitude: float
 
-class OwnerPhoto(BaseModel):
-    filename: str
-    content_type: str
-    size: int
 
 class OwnerResponse(BaseModel):
     id: str = Field(..., alias="_id")
@@ -57,12 +52,25 @@ class OwnerResponse(BaseModel):
     email: EmailStr
     address: str
     phone: str
-    photo: Optional[OwnerPhoto] = None
+    photo: Optional[UserPhoto] = None
     verified: bool = False
     description: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 
+
+# Flattened review model
+class AccommodationReview(BaseModel):
+    user_id: str = Field(..., alias="id")
+    user_first_name: str
+    user_role: str
+    user_photo: Optional[UserPhoto] = None
+    message: str
+    rating: float = Field(..., ge=0, le=5)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    class Config:
+        allow_population_by_field_name = True
 
 
 class AccommodationCreateRequest(BaseModel):
@@ -71,18 +79,17 @@ class AccommodationCreateRequest(BaseModel):
     no_of_rooms: int
     no_of_beds: int
     no_of_bathrooms: int
-    description: str = None
-    owner_id: str = None
+    description: Optional[str] = None
+    owner_id: Optional[str] = None
     month_rent: float
     status: AccommodationStatus = AccommodationStatus.pending
     images: List[AccommodationImageSchema] = []
     amenities: List[AccommodationAmenitySchema] = []
     available_users: int = 0
     total_users: int = 0
-    address: AccommodationAddressSchema = None
-    location: AccommodationLocationSchema = None
-    time_from_uni: AccommodationDistance = None
-
+    address: Optional[AccommodationAddressSchema] = None
+    location: Optional[AccommodationLocationSchema] = None
+    time_from_uni: Optional[AccommodationDistance] = None
 
 
 class AccommodationResponse(BaseModel):
@@ -111,7 +118,6 @@ class AccommodationResponse(BaseModel):
     last_updated: datetime
 
 
-
 class AccommodationUpdateRequest(BaseModel):
     name: Optional[str] = None
     accommodation_type: Optional[AccommodationType] = None
@@ -133,3 +139,4 @@ class AccommodationUpdateRequest(BaseModel):
     location: Optional[AccommodationLocationSchema] = None
     time_from_uni: Optional[AccommodationDistance] = None
     last_updated: datetime = Field(default_factory=datetime.utcnow)
+    
