@@ -4,18 +4,18 @@ from enum import Enum
 from datetime import datetime
 
 class AccommodationStatus(str, Enum):
-    pending = "Pending"
-    available = "Available"
-    rejected = "Rejected"
-    booked = "Booked"
-    unavailable = "Unavailable"
+    pending = "pending"
+    available = "available"
+    rejected = "rejected"
+    booked = "booked"
+    unavailable = "unavailable"
 
 class AccommodationType(str, Enum):
-    apartment = "Apartment"
-    house = "House"
-    villa = "Villa"
-    hostel = "Hostel"
-    other = "Other"
+    apartment = "apartment"
+    house = "house"
+    villa = "villa"
+    hostel = "hostel"
+    other = "other"
 
 class AccommodationDistance(BaseModel):
     susl_main_gate: str = None
@@ -23,8 +23,6 @@ class AccommodationDistance(BaseModel):
 
 class AccommodationImage(BaseModel):
     filename: str
-    content_type: Optional[str] = None
-    size: Optional[int] = None
 
 class AccommodationReview(BaseModel):
     user_id: str

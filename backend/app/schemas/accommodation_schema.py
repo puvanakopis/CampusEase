@@ -6,21 +6,18 @@ from datetime import datetime
 
 
 class AccommodationStatus(str, Enum):
-    pending = "Pending"
-    available = "Available"
-    rejected = "Rejected"
-    booked = "Booked"
-    unavailable = "Unavailable"
-
+    pending = "pending"
+    available = "available"
+    rejected = "rejected"
+    booked = "booked"
+    unavailable = "unavailable"
 
 class AccommodationType(str, Enum):
-    apartment = "Apartment"
-    house = "House"
-    villa = "Villa"
-    hostel = "Hostel"
-    other = "Other"
-
-
+    apartment = "apartment"
+    house = "house"
+    villa = "villa"
+    hostel = "hostel"
+    other = "other"
 
 class AccommodationReview(BaseModel):
     user_id: str
@@ -28,20 +25,15 @@ class AccommodationReview(BaseModel):
     rating: float = Field(..., ge=0, le=5)
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-
 class AccommodationDistance(BaseModel):
     susl_main_gate: Optional[str] = None
     pambahinna_junction: Optional[str] = None
 
-
 class AccommodationImageSchema(BaseModel):
     filename: str
-    content_type: str
-    size: Optional[int] = None 
 
 class AccommodationAmenitySchema(BaseModel):
     name: str
-
 
 class AccommodationAddressSchema(BaseModel):
     street: Optional[str] = None
@@ -49,18 +41,14 @@ class AccommodationAddressSchema(BaseModel):
     postal_code: Optional[str] = None
     country: Optional[str] = None
 
-
 class AccommodationLocationSchema(BaseModel):
     latitude: float
     longitude: float
-
 
 class OwnerPhoto(BaseModel):
     filename: str
     content_type: str
     size: int
-
-
 
 class OwnerResponse(BaseModel):
     id: str = Field(..., alias="_id")

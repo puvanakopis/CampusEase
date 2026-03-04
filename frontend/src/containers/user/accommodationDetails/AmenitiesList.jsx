@@ -7,7 +7,9 @@ const AmenitiesList = ({ amenities }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
                 {amenities.map((amenity, index) => (
                     <div key={index} className="flex items-center gap-3 text-slate-700">
-                        <span className="material-symbols-outlined text-2xl text-slate-400">{amenity.icon}</span>
+                        <span className="material-symbols-outlined text-2xl text-green-500">
+                            check_circle
+                        </span>
                         <span>{amenity.name}</span>
                     </div>
                 ))}

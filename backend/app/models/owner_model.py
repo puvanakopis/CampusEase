@@ -32,6 +32,7 @@ class Owner(BaseModel):
     id_photo: Optional[OwnerPhoto] = None
     verified: bool = False
     decline_reason: Optional[str] = None
+    description: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 
