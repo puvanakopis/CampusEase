@@ -1,5 +1,6 @@
 import React from "react";
 import useNavigateTo from "../../../hooks/useNavigateTo";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const AccommodationCard = ({ data }) => {
     const navigateTo = useNavigateTo();
@@ -46,7 +47,7 @@ const AccommodationCard = ({ data }) => {
     };
 
     const image = images?.length
-        ? `/uploads/${images[0].filename}`
+        ? buildPhotoUrl(images[0].filename, "accommodation")
         : "https://via.placeholder.com/400x300?text=Accommodation";
 
     return (
@@ -60,6 +61,7 @@ const AccommodationCard = ({ data }) => {
                         {badge.text}
                     </span>
                 )}
+
                 <div
                     className="bg-gray-200 w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
                     style={{ backgroundImage: `url(${image})` }}
@@ -71,6 +73,7 @@ const AccommodationCard = ({ data }) => {
                     <h3 className="text-[#0d141b] text-lg font-bold leading-tight line-clamp-1">
                         {name}
                     </h3>
+
                     <div className="flex items-center gap-1 text-[#0d141b] font-bold text-sm">
                         <span className="material-symbols-outlined text-yellow-500 text-[18px]">star</span>
                         {rating}
@@ -95,6 +98,7 @@ const AccommodationCard = ({ data }) => {
                         <p className="text-xs text-[#4c739a]">{priceLabel}</p>
                         <p className="text-primary font-bold">{price}</p>
                     </div>
+
                     <button className="px-4 py-2 border bg-primary hover:bg-primary/90 text-white text-sm font-bold rounded-lg transition-colors">
                         View Details
                     </button>
