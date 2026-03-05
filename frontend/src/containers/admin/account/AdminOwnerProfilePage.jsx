@@ -12,7 +12,7 @@ const AdminProfilePage = ({
     setPhone,
     setRoleDescription,
     handleSaveChanges,
-    user,
+    currentUser,
     authLoading,
 }) => {
     if (authLoading) {
@@ -40,8 +40,8 @@ const AdminProfilePage = ({
                                 alt="Admin Avatar"
                                 className="h-full w-full rounded-full object-cover"
                                 src={
-                                    user?.photo?.filename
-                                        ? `${import.meta.env.VITE_API_BASE}/uploads/${user.photo.filename}`
+                                    currentUser?.photo?.filename
+                                        ? `${import.meta.env.VITE_API_BASE}/uploads/${currentUser.photo.filename}`
                                         : "https://i.pravatar.cc/300?img=12"
                                 }
                             />
@@ -68,9 +68,9 @@ const AdminProfilePage = ({
                             </div>
                         </div>
                         <p className="text-slate-500 font-medium mb-4">
-                            Admin ID: {user?._id || "N/A"} • Joined:{" "}
-                            {user?.created_at
-                                ? new Date(user.created_at).toLocaleDateString()
+                            Admin ID: {currentUser?._id || "N/A"} • Joined:{" "}
+                            {currentUser?.created_at
+                                ? new Date(currentUser.created_at).toLocaleDateString()
                                 : "N/A"}
                         </p>
                     </div>

@@ -3,7 +3,7 @@ import ApplicationPopup from "../../containers/owner/application/ApplicationPopu
 import { AuthContext } from "../../context/AuthContext";
 
 const OwnerApplication = () => {
-    const { user, updateCurrentUser } = useContext(AuthContext);
+    const { currentUser, updateCurrentUser } = useContext(AuthContext);
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -21,13 +21,13 @@ const OwnerApplication = () => {
     const [currentStatus, setCurrentStatus] = useState(null);
     const [declineReason, setDeclineReason] = useState(null);
 
-    // Fetch current user status
+    // Fetch currentUser status
     useEffect(() => {
-        if (user && user.role === "owner") {
-            setCurrentStatus(user.status);
-            setDeclineReason(user.decline_reason || null);
+        if (currentUser && currentUser.role === "owner") {
+            setCurrentStatus(currentUser.status);
+            setDeclineReason(currentUser.decline_reason || null);
         }
-    }, [user]);
+    }, [currentUser]);
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -67,7 +67,7 @@ const OwnerApplication = () => {
         e.preventDefault();
         if (!validateStep(2)) return;
 
-        // Prepare payload to update current user
+        // Prepare payload to update currentUser
         const updateData = {
             first_name: formData.firstName,
             last_name: formData.lastName,
@@ -102,7 +102,7 @@ const OwnerApplication = () => {
 
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm p-8 text-center">
+            <div className="bg-white min-h-[80vh] flex flex-col justify-center items-center rounded-xl border border-slate-200 shadow-sm p-8 text-center">
                 <div className="mx-auto">
                     <div className="size-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
                         <span className="material-symbols-outlined text-primary text-3xl">directions_car</span>

@@ -3,137 +3,197 @@ import React, { useState } from "react";
 const AddAccommodationPopup = ({ onClose, onSave }) => {
     const [formData, setFormData] = useState({
         name: "",
-        location: "",
-        type: "Hostel",
-        price: "",
+        accommodation_type: "hostel",
+        no_of_rooms: "",
+        no_of_beds: "",
+        no_of_bathrooms: "",
         description: "",
-        rooms: "",
+        month_rent: "",
         amenities: [],
-        owner: "",
-        ownerContact: "",
-        images: []
+        address: {
+            street: "",
+            city: "",
+            postal_code: "",
+            country: "Sri Lanka"
+        },
+        location: {
+            latitude: "",
+            longitude: ""
+        },
+        time_from_uni: {
+            susl_main_gate: "",
+            pambahinna_junction: ""
+        },
+        total_users: "",
+        available_users: "",
+        gender: "male"
     });
 
     const [step, setStep] = useState(1);
     const [newAmenity, setNewAmenity] = useState("");
-    const [imageUrls, setImageUrls] = useState([""]);
+    const [imageFiles, setImageFiles] = useState([]);
 
     const accommodationTypes = [
-        "Hostel", "Annex", "Single Room", "Double Room",
-        "Triple Room", "Apartment", "Studio", "House"
+        { value: "apartment", label: "Apartment" },
+        { value: "house", label: "House" },
+        { value: "villa", label: "Villa" },
+        { value: "hostel", label: "Hostel" },
+        { value: "other", label: "Other" }
     ];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+
+        if (name.includes('.')) {
+            const [parent, child] = name.split('.');
+            setFormData(prev => ({
+                ...prev,
+                [parent]: {
+                    ...prev[parent],
+                    [child]: value
+                }
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     const handleAddAmenity = () => {
-        if (newAmenity.trim() && !formData.amenities.includes(newAmenity.trim())) {
+        if (newAmenity.trim() && !formData.amenities.some(a => a.name === newAmenity.trim())) {
             setFormData(prev => ({
                 ...prev,
-                amenities: [...prev.amenities, newAmenity.trim()]
+                amenities: [...prev.amenities, { name: newAmenity.trim() }]
             }));
             setNewAmenity("");
         }
     };
 
-    const handleRemoveAmenity = (amenity) => {
+    const handleRemoveAmenity = (amenityName) => {
         setFormData(prev => ({
             ...prev,
-            amenities: prev.amenities.filter(a => a !== amenity)
+            amenities: prev.amenities.filter(a => a.name !== amenityName)
         }));
     };
 
-    const handleAddImageUrl = () => {
-        setImageUrls([...imageUrls, ""]);
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setImageFiles(prev => {
+            const newFiles = files.filter(f => !prev.some(pf => pf.name === f.name && pf.size === f.size));
+            return [...prev, ...newFiles];
+        });
     };
 
-    const handleImageUrlChange = (index, value) => {
-        const newUrls = [...imageUrls];
-        newUrls[index] = value;
-        setImageUrls(newUrls);
-    };
-
-    const handleRemoveImageUrl = (index) => {
-        const newUrls = imageUrls.filter((_, i) => i !== index);
-        setImageUrls(newUrls);
+    const handleRemoveImage = (index) => {
+        setImageFiles(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const validImages = imageUrls.filter(url => url.trim() !== "");
+        if (imageFiles.length === 0) return;
+
+        const accommodationData = {
+            name: formData.name,
+            accommodation_type: formData.accommodation_type,
+            no_of_rooms: parseInt(formData.no_of_rooms),
+            no_of_beds: parseInt(formData.no_of_beds),
+            no_of_bathrooms: parseInt(formData.no_of_bathrooms),
+            description: formData.description,
+            month_rent: parseFloat(formData.month_rent),
+            amenities: formData.amenities,
+            address: { ...formData.address },
+            location: {
+                latitude: formData.location.latitude ? parseFloat(formData.location.latitude) : 0,
+                longitude: formData.location.longitude ? parseFloat(formData.location.longitude) : 0
+            },
+            time_from_uni: {
+                susl_main_gate: formData.time_from_uni.susl_main_gate || null,
+                pambahinna_junction: formData.time_from_uni.pambahinna_junction || null
+            },
+            total_users: parseInt(formData.total_users),
+            available_users: parseInt(formData.available_users),
+            status: "pending",
+            gender: formData.gender
+        };
+
         onSave({
-            ...formData,
-            price: parseInt(formData.price),
-            rooms: parseInt(formData.rooms),
-            image: validImages[0] || "https://via.placeholder.com/400x300?text=Property+Image",
-            images: validImages
+            accommodationData,
+            imageFiles
         });
     };
 
     const renderStep1 = () => (
         <div className="space-y-4">
             <h4 className="font-bold text-slate-900 mb-3">Basic Information</h4>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                        Property Name *
-                    </label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Accommodation Name *</label>
                     <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 bg-slate-50 rounded-lg text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., Riverview Annex"
                     />
                 </div>
-
                 <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                        Location *
-                    </label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Street Address *</label>
                     <input
                         type="text"
-                        name="location"
-                        value={formData.location}
+                        name="address.street"
+                        value={formData.address.street}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 bg-slate-50 rounded-lg text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
                         placeholder="e.g., Pambahinna Junction"
                     />
                 </div>
-
                 <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                        Accommodation Type *
-                    </label>
-                    <select
-                        name="type"
-                        value={formData.type}
+                    <label className="block text-sm font-medium text-slate-700 mb-1">City *</label>
+                    <input
+                        type="text"
+                        name="address.city"
+                        value={formData.address.city}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 bg-slate-50 rounded-lg text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        required
+                        placeholder="e.g., Belihuloya"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Postal Code</label>
+                    <input
+                        type="text"
+                        name="address.postal_code"
+                        value={formData.address.postal_code}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        placeholder="e.g., 70140"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Accommodation Type *</label>
+                    <select
+                        name="accommodation_type"
+                        value={formData.accommodation_type}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     >
                         {accommodationTypes.map(type => (
-                            <option key={type} value={type}>{type}</option>
+                            <option key={type.value} value={type.value}>{type.label}</option>
                         ))}
                     </select>
                 </div>
-
                 <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                        Monthly Price (LKR) *
-                    </label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Monthly Price (LKR) *</label>
                     <input
                         type="number"
-                        name="price"
-                        value={formData.price}
+                        name="month_rent"
+                        value={formData.month_rent}
                         onChange={handleChange}
                         className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         required
@@ -144,34 +204,94 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Description *
-                </label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Description *</label>
                 <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     rows="3"
-                    placeholder="Describe the property, facilities, and any special features..."
+                    placeholder="Describe the accommodation, facilities, and any special features..."
                     required
                 />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                        Total Rooms Available *
-                    </label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Number of Rooms *</label>
                     <input
                         type="number"
-                        name="rooms"
-                        value={formData.rooms}
+                        name="no_of_rooms"
+                        value={formData.no_of_rooms}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out" required
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        required
                         placeholder="e.g., 7"
                         min="1"
                     />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Number of Beds *</label>
+                    <input
+                        type="number"
+                        name="no_of_beds"
+                        value={formData.no_of_beds}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        required
+                        placeholder="e.g., 14"
+                        min="1"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Number of Bathrooms *</label>
+                    <input
+                        type="number"
+                        name="no_of_bathrooms"
+                        value={formData.no_of_bathrooms}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        required
+                        placeholder="e.g., 3"
+                        min="1"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Total Users *</label>
+                    <input
+                        type="number"
+                        name="total_users"
+                        value={formData.total_users}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        placeholder="e.g., 20"
+                        min="0"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Available Users *</label>
+                    <input
+                        type="number"
+                        name="available_users"
+                        value={formData.available_users}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        placeholder="e.g., 0"
+                        min="0"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Gender *</label>
+                    <select
+                        name="gender"
+                        value={formData.gender}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        required
+                    >
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -179,12 +299,59 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
 
     const renderStep2 = () => (
         <div className="space-y-4">
-            <h4 className="font-bold text-slate-900 mb-3">Amenities & Images</h4>
+            <h4 className="font-bold text-slate-900 mb-3">Location Details</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Latitude</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="location.latitude"
+                        value={formData.location.latitude}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        placeholder="e.g., 6.8333"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Longitude</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="location.longitude"
+                        value={formData.location.longitude}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        placeholder="e.g., 80.8667"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Time to SUSL Main Gate</label>
+                    <input
+                        type="text"
+                        name="time_from_uni.susl_main_gate"
+                        value={formData.time_from_uni.susl_main_gate}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        placeholder="e.g., 15 mins"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Time to Pambahinna Junction</label>
+                    <input
+                        type="text"
+                        name="time_from_uni.pambahinna_junction"
+                        value={formData.time_from_uni.pambahinna_junction}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        placeholder="e.g., 10 mins"
+                    />
+                </div>
+            </div>
 
+            <h4 className="font-bold text-slate-900 mb-3 mt-6">Amenities & Images</h4>
             <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Amenities
-                </label>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Amenities</label>
                 <div className="flex gap-2 mb-3">
                     <input
                         type="text"
@@ -202,17 +369,13 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                         Add
                     </button>
                 </div>
-
                 <div className="flex flex-wrap gap-2">
                     {formData.amenities.map((amenity, index) => (
-                        <span
-                            key={index}
-                            className="inline-flex items-center gap-1 bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm"
-                        >
-                            {amenity}
+                        <span key={index} className="inline-flex items-center gap-1 bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">
+                            {amenity.name}
                             <button
                                 type="button"
-                                onClick={() => handleRemoveAmenity(amenity)}
+                                onClick={() => handleRemoveAmenity(amenity.name)}
                                 className="text-slate-500 hover:text-slate-700"
                             >
                                 <span className="material-symbols-outlined text-sm">close</span>
@@ -226,105 +389,38 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Image URLs
+                <label className="block text-sm font-medium text-slate-700 mb-2">Accommodation Images *</label>
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-primary hover:bg-slate-50 transition-colors">
+                    <span className="text-slate-400 text-sm mb-1">Click to select images or drag & drop</span>
+                    <span className="material-symbols-outlined text-3xl text-slate-300">image</span>
+                    <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                    />
                 </label>
-                {imageUrls.map((url, index) => (
-                    <div key={index} className="flex gap-2 mb-2">
-                        <input
-                            type="url"
-                            value={url}
-                            onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                            className="flex-1 px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            placeholder="https://example.com/image.jpg"
-                        />
-                        {imageUrls.length > 1 && (
+                <p className="text-sm text-slate-500 mt-1">You can select multiple images. The first image will be used as the main thumbnail.</p>
+
+                <div className="flex flex-wrap gap-2 mt-3">
+                    {imageFiles.map((file, index) => (
+                        <div key={index} className="relative w-24 h-24 border border-slate-200 rounded-lg overflow-hidden">
+                            <img
+                                src={URL.createObjectURL(file)}
+                                alt={`preview-${index}`}
+                                className="w-full h-full object-cover"
+                            />
                             <button
                                 type="button"
-                                onClick={() => handleRemoveImageUrl(index)}
-                                className="bg-red-100 text-red-600 px-3 py-2 rounded-lg hover:bg-red-200 transition-colors"
+                                onClick={() => handleRemoveImage(index)}
+                                className="absolute top-1 right-1 bg-white rounded-full p-1 text-slate-700 hover:text-slate-900"
                             >
-                                <span className="material-symbols-outlined text-sm">delete</span>
+                                <span className="material-symbols-outlined text-sm">close</span>
                             </button>
-                        )}
-                    </div>
-                ))}
-                <button
-                    type="button"
-                    onClick={handleAddImageUrl}
-                    className="text-primary hover:text-primary/80 text-sm font-medium flex items-center gap-1"
-                >
-                    <span className="material-symbols-outlined text-sm">add</span>
-                    Add another image URL
-                </button>
-            </div>
-
-            <div className="bg-primary/10 p-3 rounded-lg">
-                <div className="flex items-start gap-2">
-                    <span className="material-symbols-outlined text-primary/70 text-sm mt-0.5">info</span>
-                    <p className="text-sm text-primary/80">
-                        Tip: Use Google Drive, Imgur, or other image hosting services. The first image will be used as the main thumbnail.
-                    </p>
+                        </div>
+                    ))}
                 </div>
-            </div>
-        </div>
-    );
-
-    const renderStep3 = () => (
-        <div className="space-y-4">
-            <h4 className="font-bold text-slate-900 mb-3">Owner & Contact Information</h4>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                        Owner Name *
-                    </label>
-                    <input
-                        type="text"
-                        name="owner"
-                        value={formData.owner}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        required
-                        placeholder="e.g., Mr. Perera"
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                        Contact Number *
-                    </label>
-                    <input
-                        type="tel"
-                        name="ownerContact"
-                        value={formData.ownerContact}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        required
-                        placeholder="e.g., +94 77 123 4567"
-                    />
-                </div>
-            </div>
-
-            <div className="bg-yellow-50 p-3 rounded-lg">
-                <div className="flex items-start gap-2">
-                    <span className="material-symbols-outlined text-yellow-600 text-sm mt-0.5">warning</span>
-                    <p className="text-sm text-yellow-700">
-                        By submitting, you confirm that you have permission to list this property and all information provided is accurate.
-                    </p>
-                </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-                <input
-                    type="checkbox"
-                    id="terms"
-                    required
-                    className="rounded border-slate-300 text-primary focus:ring-primary"
-                />
-                <label htmlFor="terms" className="text-sm text-slate-700">
-                    I agree to the terms and conditions of property listing
-                </label>
             </div>
         </div>
     );
@@ -334,32 +430,23 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
             <div className="bg-white rounded-xl p-6 max-w-2xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-start mb-6">
                     <div>
-                        <h3 className="text-2xl font-bold text-slate-900">Add New Property</h3>
+                        <h3 className="text-2xl font-bold text-slate-900">Add New Accommodation</h3>
                         <p className="text-slate-500">Fill in the details to list your accommodation</p>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="text-slate-400 hover:text-slate-600"
-                    >
+                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
                         <span className="material-symbols-outlined">close</span>
                     </button>
                 </div>
 
-                {/* Progress Steps */}
                 <div className="flex justify-between mb-8">
-                    {[1, 2, 3].map((stepNumber) => (
+                    {[1, 2].map((stepNumber) => (
                         <div key={stepNumber} className="flex flex-col items-center">
-                            <div className={`size-10 rounded-full flex items-center justify-center mb-2 ${step >= stepNumber ? 'bg-primary text-white' : 'bg-slate-200 text-slate-400'}`}>
-                                {step > stepNumber ? (
-                                    <span className="material-symbols-outlined text-sm">check</span>
-                                ) : (
-                                    stepNumber
-                                )}
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${step >= stepNumber ? 'bg-primary text-white' : 'bg-slate-200 text-slate-400'}`}>
+                                {step > stepNumber ? <span className="material-symbols-outlined text-sm">check</span> : stepNumber}
                             </div>
                             <span className={`text-xs font-medium ${step >= stepNumber ? 'text-primary' : 'text-slate-400'}`}>
                                 {stepNumber === 1 && 'Basic Info'}
-                                {stepNumber === 2 && 'Amenities'}
-                                {stepNumber === 3 && 'Contact'}
+                                {stepNumber === 2 && 'Location & Amenities'}
                             </span>
                         </div>
                     ))}
@@ -368,7 +455,6 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                 <form onSubmit={handleSubmit}>
                     {step === 1 && renderStep1()}
                     {step === 2 && renderStep2()}
-                    {step === 3 && renderStep3()}
 
                     <div className="flex justify-between mt-8">
                         <div>
@@ -392,7 +478,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                                 Cancel
                             </button>
 
-                            {step < 3 ? (
+                            {step < 2 ? (
                                 <button
                                     type="button"
                                     onClick={() => setStep(step + 1)}
@@ -407,7 +493,7 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                                 >
                                     <span className="flex items-center gap-2">
                                         <span className="material-symbols-outlined">check</span>
-                                        Submit Property
+                                        Submit Accommodation
                                     </span>
                                 </button>
                             )}

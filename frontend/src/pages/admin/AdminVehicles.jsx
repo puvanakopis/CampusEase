@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Heading from "../../containers/admin/Heading";
-import StatsCards from "../../containers/admin/StatsCards";
-import Tabs from "../../containers/admin/vehicles/Tabs";
+import Heading from "../../containers/admin/common/Heading";
+import StatsCards from "../../containers/admin/common/StatsCards";
+import Tabs from "../../containers/admin/common/Tabs";
 import VehicleTable from "../../containers/admin/vehicles/VehicleTable";
 import ViewVehiclePopup from "../../containers/admin/vehicles/ViewVehiclePopup";
 import VehicleRequestsTable from "../../containers/admin/vehicles/VehicleRequestsTable";

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
     const [authLoading, setAuthLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
             const usr = res.data.user;
 
             Cookies.set("token", token, { expires: 7 });
-            setUser(usr);
+            setCurrentUser(usr);
 
             toast.success("Login successful!", { id: toastId });
 
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
     // ------------------ LOGOUT ------------------
     const logout = () => {
         Cookies.remove("token");
-        setUser(null);
+        setCurrentUser(null);
         toast.success("Logged out successfully");
     };
 
@@ -58,11 +58,11 @@ export const AuthProvider = ({ children }) => {
 
         try {
             const res = await authApi.getCurrentUser();
-            setUser(res.user);
+            setCurrentUser(res.user);
         } catch (err) {
             console.error("Failed to fetch current user:", err);
             Cookies.remove("token");
-            setUser(null);
+            setCurrentUser(null);
         } finally {
             setAuthLoading(false);
         }
@@ -102,7 +102,6 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-
     // ------------------ SIGNUP REQUEST OTP ------------------
     const requestSignupOtp = async (role, firstName, lastName, email, password) => {
         const toastId = toast.loading("Sending OTP...");
@@ -134,7 +133,7 @@ export const AuthProvider = ({ children }) => {
             const usr = res.data.user;
 
             Cookies.set("token", token, { expires: 7 });
-            setUser(usr);
+            setCurrentUser(usr);
 
             toast.success("Signup successful!", { id: toastId });
 
@@ -151,9 +150,8 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-
     // ------------------ UPDATE PROFILE ------------------
-    const updateCurrentUser = async (updateData) => {
+    const updateCurrentUserProfile = async (updateData) => {
         const toastId = toast.loading("Updating profile...");
         try {
             const res = await authApi.updateProfile(updateData);
@@ -162,7 +160,7 @@ export const AuthProvider = ({ children }) => {
                 throw new Error(res.message);
             }
 
-            setUser(res.data);
+            setCurrentUser(res.data);
             toast.success("Profile updated successfully!", { id: toastId });
             return res.data;
         } catch (err) {
@@ -194,7 +192,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={{
-            user,
+            currentUser,
             authLoading,
             login,
             logout,
@@ -202,9 +200,8 @@ export const AuthProvider = ({ children }) => {
             resetPassword,
             requestSignupOtp,
             verifySignupOtp,
-            updateCurrentUser,
+            updateCurrentUser: updateCurrentUserProfile,
             updatePassword
-
         }}>
             {children}
         </AuthContext.Provider>

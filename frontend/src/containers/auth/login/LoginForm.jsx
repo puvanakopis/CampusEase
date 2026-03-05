@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const LoginForm = ({
     email,
@@ -8,6 +8,8 @@ const LoginForm = ({
     handleSubmit,
     loading,
 }) => {
+    const [showPassword, setShowPassword] = useState(false);
+
     return (
         <section className="w-full md:w-1/2 bg-white flex items-center justify-center p-6 md:p-12 lg:p-16 overflow-y-auto">
             <div className="w-full max-w-[420px]">
@@ -49,13 +51,20 @@ const LoginForm = ({
                                 lock_open
                             </span>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 placeholder="••••••••"
-                                className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-4 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                className="form-input w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 h-12 pl-11 pr-10 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
+                            {/* Show/hide password icon */}
+                            <span
+                                className="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl cursor-pointer"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? "visibility_off" : "visibility"}
+                            </span>
                         </div>
 
                         {/* Forgot password link */}

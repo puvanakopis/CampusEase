@@ -7,7 +7,7 @@ import { getPhotoUrl } from "../../utils/photo";
 const OwnerNavbar = () => {
     const navigateTo = useNavigateTo();
     const location = useLocation();
-    const { user, logout } = useContext(AuthContext);
+    const { currentUser, logout } = useContext(AuthContext);
 
     const activeKey = location.pathname.split("/")[2] || "";
 
@@ -15,10 +15,10 @@ const OwnerNavbar = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
 
-    const first_name = user ? `${user.first_name} `.trim() : "";
-    const avatar = getPhotoUrl(user?.photo, "user_photo");
-    const role = user?.role || "Owner";
-    const email = user?.email || "";
+    const first_name = currentUser ? `${currentUser.first_name} `.trim() : "";
+    const avatar = getPhotoUrl(currentUser?.photo, "user_photo");
+    const role = currentUser?.role || "Owner";
+    const email = currentUser?.email || "";
 
     const navItems = [
         { label: "Dashboard", path: "/owner/dashboard", key: "dashboard" },
@@ -92,7 +92,7 @@ const OwnerNavbar = () => {
 
                 {/* Profile */}
                 <div className="flex items-center gap-3">
-                    {user && (
+                    {currentUser && (
                         <div className="relative" ref={profileRef}>
                             <button
                                 onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -152,7 +152,7 @@ const OwnerNavbar = () => {
                             </button>
                         ))}
 
-                        {user && (
+                        {currentUser && (
                             <div className="w-full border-t border-slate-200 pt-4">
                                 <div className="flex items-center gap-3 mb-4 px-4">
                                     <img src={avatar} alt={first_name} className="w-12 h-12 rounded-full" />

@@ -1,8 +1,10 @@
-export const getPhotoUrl = (photo, type="user_photo") => {
-    const base = import.meta.env.VITE_API_BASE;
-    const defaultAvatar = "https://i.pravatar.cc/256";
+export const getPhotoUrl = (photo, type) => {
+    const base = import.meta.env.VITE_API_BASE || "";
 
-    if (!photo || !photo.filename) return defaultAvatar;
+    if (!photo || !photo.filename) {
+        return null;
+    }
 
-    return `${base}/uploads/${type}/${photo.filename}`;
+    const filename = encodeURIComponent(photo.filename);
+    return `${base}/uploads/${type}/${filename}`;
 };

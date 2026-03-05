@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Heading from "../../containers/admin/Heading";
-import StatsCards from "../../containers/admin/StatsCards";
-import Tabs from "../../containers/admin/booking/Tabs";
+import Heading from "../../containers/admin/common/Heading";
+import StatsCards from "../../containers/admin/common/StatsCards";
+import Tabs from "../../containers/admin/common/Tabs";
 import BookingTable from "../../containers/admin/booking/BookingTable";
 import ViewBookingPopup from "../../containers/admin/booking/ViewBookingPopup";
 import StatusChangePopup from "../../containers/admin/booking/StatusChangePopup";

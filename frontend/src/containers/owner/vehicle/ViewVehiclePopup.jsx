@@ -1,7 +1,10 @@
 import React from 'react';
 
-const ViewVehiclePopup = ({ selectedVehicle, setShowViewPopup, setShowEditPopup, setSelectedVehicle }) => {
+const ViewVehiclePopup = ({ selectedVehicle, setShowViewPopup, setShowEditPopup, setSelectedVehicle, activeTab }) => {
     if (!selectedVehicle) return null;
+
+    const isRejected = selectedVehicle.status === "Rejected";
+    const isPending = selectedVehicle.status === "Pending";
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -12,16 +15,18 @@ const ViewVehiclePopup = ({ selectedVehicle, setShowViewPopup, setShowEditPopup,
                         <p className="text-slate-500">Vehicle ID: {selectedVehicle.id}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => {
-                                setShowViewPopup(false);
-                                setShowEditPopup(true);
-                            }}
-                            className="border border-slate-200 text-slate-700 py-2 px-4 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center gap-2"
-                        >
-                            <span className="material-symbols-outlined text-sm">edit</span>
-                            Edit
-                        </button>
+                        {!isRejected && (
+                            <button
+                                onClick={() => {
+                                    setShowViewPopup(false);
+                                    setShowEditPopup(true);
+                                }}
+                                className="border border-slate-200 text-slate-700 py-2 px-4 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center gap-2"
+                            >
+                                <span className="material-symbols-outlined text-sm">edit</span>
+                                Edit
+                            </button>
+                        )}
                         <button
                             onClick={() => {
                                 setShowViewPopup(false);
@@ -46,7 +51,11 @@ const ViewVehiclePopup = ({ selectedVehicle, setShowViewPopup, setShowEditPopup,
                             }}
                         />
                         <div className="absolute top-4 left-4">
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${selectedVehicle.status === "Active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                                selectedVehicle.status === "Active" ? "bg-green-100 text-green-800" :
+                                selectedVehicle.status === "Pending" ? "bg-yellow-100 text-yellow-800" :
+                                "bg-red-100 text-red-800"
+                            }`}>
                                 {selectedVehicle.status}
                             </span>
                         </div>
@@ -142,12 +151,6 @@ const ViewVehiclePopup = ({ selectedVehicle, setShowViewPopup, setShowEditPopup,
                                         </div>
                                     </>
                                 )}
-                                {selectedVehicle.inactiveReason && (
-                                    <div className="flex justify-between">
-                                        <span className="text-slate-600">Inactive Reason:</span>
-                                        <span className="font-medium text-red-600">{selectedVehicle.inactiveReason}</span>
-                                    </div>
-                                )}
                             </div>
                         </div>
 
@@ -156,6 +159,63 @@ const ViewVehiclePopup = ({ selectedVehicle, setShowViewPopup, setShowEditPopup,
                             <h4 className="font-bold text-slate-900 mb-4">Description</h4>
                             <p className="text-slate-700 whitespace-pre-line">{selectedVehicle.description}</p>
                         </div>
+
+                        {/* Rejection Info (if rejected) */}
+                        {isRejected && (
+                            <div className="bg-red-50 rounded-lg p-5">
+                                <h4 className="font-bold text-slate-900 mb-4">Rejection Information</h4>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Rejected Date:</span>
+                                        <span className="font-medium">{selectedVehicle.rejectedDate}</span>
+                                    </div>
+                                    <div>
+                                        <span className="text-slate-600 block mb-2">Reason:</span>
+                                        <p className="text-sm text-red-700 bg-white p-3 rounded-lg">
+                                            {selectedVehicle.rejectionReason}
+                                        </p>
+                                    </div>
+                                    {selectedVehicle.adminRemarks && (
+                                        <div>
+                                            <span className="text-slate-600 block mb-2">Admin Remarks:</span>
+                                            <p className="text-sm text-slate-700 bg-white p-3 rounded-lg">
+                                                {selectedVehicle.adminRemarks}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Pending Info */}
+                        {isPending && (
+                            <div className="bg-yellow-50 rounded-lg p-5">
+                                <h4 className="font-bold text-slate-900 mb-4">Pending Review</h4>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Submitted Date:</span>
+                                        <span className="font-medium">{selectedVehicle.submittedDate}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Expected Response:</span>
+                                        <span className="font-medium">{selectedVehicle.expectedResponseDate}</span>
+                                    </div>
+                                    {selectedVehicle.adminNotes && (
+                                        <div>
+                                            <span className="text-slate-600 block mb-2">Admin Note:</span>
+                                            <p className="text-sm text-yellow-700 bg-white p-3 rounded-lg">
+                                                {selectedVehicle.adminNotes}
+                                            </p>
+                                        </div>
+                                    )}
+                                    <div className="mt-3 p-2 bg-yellow-100 rounded-lg">
+                                        <p className="text-xs text-yellow-800 text-center">
+                                            Your vehicle is currently under review. You'll be notified once it's approved.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Owner Information */}
                         <div className="bg-slate-50 rounded-lg p-5">
@@ -171,35 +231,37 @@ const ViewVehiclePopup = ({ selectedVehicle, setShowViewPopup, setShowEditPopup,
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-slate-600">Listed Since:</span>
-                                    <span className="font-medium">{selectedVehicle.createdAt}</span>
+                                    <span className="font-medium">{selectedVehicle.createdAt || selectedVehicle.submittedDate}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-slate-600">Last Updated:</span>
-                                    <span className="font-medium">{selectedVehicle.lastUpdated}</span>
+                                    <span className="font-medium">{selectedVehicle.lastUpdated || selectedVehicle.submittedDate}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Quick Actions */}
-                <div className="mt-8 bg-blue-50 rounded-lg p-5">
-                    <h4 className="font-bold text-slate-900 mb-4">Quick Actions</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <button className="bg-white border border-slate-200 text-slate-700 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
-                            <span className="material-symbols-outlined text-sm">receipt_long</span>
-                            View Rental History
-                        </button>
-                        <button className="bg-white border border-slate-200 text-slate-700 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
-                            <span className="material-symbols-outlined text-sm">calendar_month</span>
-                            Manage Availability
-                        </button>
-                        <button className="bg-white border border-slate-200 text-slate-700 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
-                            <span className="material-symbols-outlined text-sm">description</span>
-                            Generate Report
-                        </button>
+                {/* Quick Actions - Only for active vehicles */}
+                {!isPending && !isRejected && (
+                    <div className="mt-8 bg-blue-50 rounded-lg p-5">
+                        <h4 className="font-bold text-slate-900 mb-4">Quick Actions</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <button className="bg-white border border-slate-200 text-slate-700 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+                                <span className="material-symbols-outlined text-sm">receipt_long</span>
+                                View Rental History
+                            </button>
+                            <button className="bg-white border border-slate-200 text-slate-700 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+                                <span className="material-symbols-outlined text-sm">calendar_month</span>
+                                Manage Availability
+                            </button>
+                            <button className="bg-white border border-slate-200 text-slate-700 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+                                <span className="material-symbols-outlined text-sm">description</span>
+                                Generate Report
+                            </button>
+                        </div>
                     </div>
-                </div>
+                )}
 
                 <div className="mt-8 pt-6 border-t border-slate-200">
                     <div className="flex justify-end">

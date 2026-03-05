@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from app.routers import auth_router
+from app.core.config import settings
+from app.routers import auth_router, accommodation_router
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
     title="CampusEase API",
@@ -9,16 +10,19 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[settings.FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 app.include_router(auth_router.router)
+app.include_router(accommodation_router.router)
 
 @app.get("/")
 async def root():
-    return {"message": "API is running"}
+    return {"message": "CampusEase API is running"}

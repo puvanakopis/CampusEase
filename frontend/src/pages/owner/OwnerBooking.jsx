@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import StatsCards from "../../containers/owner/booking/StatsCards";
-import BookingTable from "../../containers/owner/booking/BookingTable";
-import BookingTabs from "../../containers/owner/booking/BookingTabs";
-import Pagination from "../../containers/owner/booking/Pagination";
+import Heading from "../../containers/owner/common/Heading";
+import StatsCards from "../../containers/owner/common/StatsCards";
 import AcceptPopup from "../../containers/owner/booking/AcceptPopup";
+import BookingTabs from "../../containers/owner/common/Tabs";
+import BookingTable from "../../containers/owner/booking/BookingTable";
 import DeclinePopup from "../../containers/owner/booking/DeclinePopup";
+import EditBookingPopup from "../../containers/owner/booking/EditBookingPopup";
+import Pagination from "../../containers/owner/booking/Pagination";
 import ViewDetailsPopup from "../../containers/owner/booking/ViewDetailsPopup";
 import ViewInvoicePopup from "../../containers/owner/booking/ViewInvoicePopup";
-import EditBookingPopup from "../../containers/owner/booking/EditBookingPopup";
 
 const OwnerBooking = () => {
     const [activeTab, setActiveTab] = useState("pending");
@@ -537,7 +538,7 @@ const OwnerBooking = () => {
     };
 
     return (
-        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8 min-h-screen">
+        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
             {/* Popups */}
             {showAcceptPopup && (
                 <AcceptPopup
@@ -582,40 +583,30 @@ const OwnerBooking = () => {
                 />
             )}
 
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Booking Management</h1>
-                    <p className="text-slate-500 mt-1">Review and manage all student service requests.</p>
-                </div>
-            </div>
+            <Heading
+                title="Booking Management"
+                subtitle="Review and manage all student service requests."
+            />
 
-            {/* Stats Cards */}
             <StatsCards stats={stats} />
 
-            {/* Main Content */}
-            <div className="flex-1">
-                {/* Tabs */}
-                <BookingTabs
-                    tabs={tabs}
-                    activeTab={activeTab}
-                    onTabChange={setActiveTab}
-                />
+            <BookingTabs
+                tabs={tabs}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+            />
 
-                {/* Table */}
-                <BookingTable
-                    bookings={getCurrentBookings()}
-                    getStatusBadge={getStatusBadge}
-                    getPriorityBadge={getPriorityBadge}
-                    getActionButtons={getActionButtons}
-                />
+            <BookingTable
+                bookings={getCurrentBookings()}
+                getStatusBadge={getStatusBadge}
+                getPriorityBadge={getPriorityBadge}
+                getActionButtons={getActionButtons}
+            />
 
-                {/* Pagination */}
-                <Pagination
-                    currentCount={getCurrentBookings().length}
-                    totalCount={getCurrentBookings().length}
-                />
-            </div>
+            <Pagination
+                currentCount={getCurrentBookings().length}
+                totalCount={getCurrentBookings().length}
+            />
         </main>
     );
 };

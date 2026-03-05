@@ -1,5 +1,5 @@
 import React from "react";
-import AdminHeading from "../../containers/admin/Heading";
+import AdminHeading from "../../containers/admin/common/Heading";
 import AdminTopStats from "../../containers/admin/dashboard/AdminTopStats";
 import AdminRevenueOverview from "../../containers/admin/dashboard/AdminRevenueOverview";
 import AdminRecentActivities from "../../containers/admin/dashboard/AdminRecentActivities";
