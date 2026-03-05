@@ -10,17 +10,79 @@ const ITEMS_PER_PAGE = 9;
 
 const Accommodations = () => {
   const { accommodations, accoLoading, fetchAccommodations } = useContext(AccommodationContext);
+
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [filters, setFilters] = useState({
+    types: [],
+    gender: "",
+    minRent: "",
+    maxRent: "",
+  });
+
+  const [sortOption, setSortOption] = useState("distance");
 
   useEffect(() => {
     fetchAccommodations();
   }, []);
 
-  const availableAccommodations = accommodations.filter(acc => acc.status === "available");
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    setCurrentPage(1);
+  };
 
-  const totalPages = Math.ceil(availableAccommodations.length / ITEMS_PER_PAGE);
+  const handleSortChange = (value) => {
+    setSortOption(value);
+  };
+
+  const filteredAccommodations = accommodations
+    .filter((acc) => acc.status === "available")
+    .filter((acc) => {
+      if (filters.types.length > 0 && !filters.types.includes(acc.accommodation_type)) {
+        return false;
+      }
+
+      if (filters.gender && acc.gender !== filters.gender) {
+        return false;
+      }
+
+      if (filters.minRent && acc.month_rent < Number(filters.minRent)) {
+        return false;
+      }
+
+      if (filters.maxRent && acc.month_rent > Number(filters.maxRent)) {
+        return false;
+      }
+
+      return true;
+    });
+
+  const sortedAccommodations = [...filteredAccommodations].sort((a, b) => {
+    if (sortOption === "price_low_high") {
+      return a.month_rent - b.month_rent;
+    }
+
+    if (sortOption === "top_rated") {
+      return (b.highly_rated ? 1 : 0) - (a.highly_rated ? 1 : 0);
+    }
+
+    if (sortOption === "distance") {
+      const aDist = parseFloat(a.time_from_uni?.susl_main_gate || 0);
+      const bDist = parseFloat(b.time_from_uni?.susl_main_gate || 0);
+      return aDist - bDist;
+    }
+
+    return 0;
+  });
+
+  const totalPages = Math.ceil(sortedAccommodations.length / ITEMS_PER_PAGE);
+
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentAccommodations = availableAccommodations.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const currentAccommodations = sortedAccommodations.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
@@ -30,21 +92,27 @@ const Accommodations = () => {
   return (
     <div className="bg-[#f6f7f8]">
       <div className="flex flex-col lg:flex-row px-4 py-10 md:px-24 max-w-8xl mx-auto gap-6">
-        <FiltersSidebar />
+
+        <FiltersSidebar filters={filters} onFilterChange={handleFilterChange} />
 
         <main className="flex-1 flex flex-col gap-6">
+
           <PageHeader
             title="Accommodation Rentals"
             description="Student housing near Sabaragamuwa University of Sri Lanka (SUSL)."
           />
 
           <SortBar
-            total={availableAccommodations.length}
+            total={sortedAccommodations.length}
             location="Belihuloya & Pambahinna"
+            sortOption={sortOption}
+            onSortChange={handleSortChange}
           />
 
           {accoLoading ? (
-            <div className="text-center py-20 text-lg font-semibold">Loading accommodations...</div>
+            <div className="text-center py-20 text-lg font-semibold">
+              Loading accommodations...
+            </div>
           ) : (
             <AccommodationGrid accommodations={currentAccommodations} />
           )}
@@ -54,6 +122,7 @@ const Accommodations = () => {
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
+
         </main>
       </div>
     </div>
