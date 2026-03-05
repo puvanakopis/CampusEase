@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 from fastapi import UploadFile, HTTPException
-from app.db.mongodb import accommodations_collection, owners_collection
+from app.db.mongodb import accommodations_collection, owners_collection, users_collection
 from app.utils.file_utils import save_file
 from app.services.counter_service import get_next_sequence
 from app.schemas.accommodation_schema import (
@@ -9,7 +9,8 @@ from app.schemas.accommodation_schema import (
     AccommodationUpdateRequest,
     AccommodationResponse,
     OwnerResponse,
-    AccommodationReview
+    AccommodationReview,
+    UserResponse
 )
 
 
@@ -18,6 +19,19 @@ async def get_owner_by_id(owner_id: str) -> Optional[dict]:
     if not owner_doc:
         return None
     return OwnerResponse(**owner_doc).dict(by_alias=True)
+
+
+async def get_user_by_id(user_id: str) -> Optional[UserResponse]:
+    user_doc = await users_collection.find_one({"_id": str(user_id)})
+    if not user_doc:
+        return None
+    return UserResponse(
+        id=user_doc["_id"],
+        first_name=user_doc.get("first_name", ""),
+        role=user_doc.get("role", ""),
+        photo=user_doc.get("photo")
+    )
+
 
 
 async def create_accommodation(accom_request: AccommodationCreateRequest, files: Optional[List[UploadFile]] = None) -> dict:
@@ -62,15 +76,9 @@ async def get_accommodation_by_id(accom_id: str) -> dict:
 
     reviews = []
     for rev in doc.get("reviews", []):
-        reviews.append(AccommodationReview(
-            id=rev.get("user_id"),
-            user_first_name=rev.get("user_first_name", ""),
-            user_role=rev.get("user_role", ""),
-            user_photo=rev.get("user_photo"),
-            message=rev.get("message", ""),
-            rating=rev.get("rating", 0),
-            created_at=rev.get("created_at", datetime.utcnow())
-        ))
+        user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
+        user_obj = await get_user_by_id(user_id)
+        reviews.append(AccommodationReview(user=user_obj, **rev))
 
     doc_copy = doc.copy()
     doc_copy.pop("reviews", None)
@@ -92,15 +100,9 @@ async def get_all_accommodations() -> dict:
 
         reviews = []
         for rev in doc.get("reviews", []):
-            reviews.append(AccommodationReview(
-                id=rev.get("user_id"),
-                user_first_name=rev.get("user_first_name", ""),
-                user_role=rev.get("user_role", ""),
-                user_photo=rev.get("user_photo"),
-                message=rev.get("message", ""),
-                rating=rev.get("rating", 0),
-                created_at=rev.get("created_at", datetime.utcnow())
-            ))
+            user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
+            user_obj = await get_user_by_id(user_id)
+            reviews.append(AccommodationReview(user=user_obj, **rev))
 
         doc_copy = doc.copy()
         doc_copy.pop("reviews", None)
@@ -132,7 +134,11 @@ async def update_accommodation(accom_id: str, update_request: AccommodationUpdat
             existing_images.append({"filename": saved_meta["filename"]})
         update_data["images"] = existing_images
 
-    result = await accommodations_collection.update_one({"_id": accom_id}, {"$set": update_data})
+    result = await accommodations_collection.update_one(
+        {"_id": accom_id},
+        {"$set": update_data}
+    )
+
     if result.modified_count == 0 and not files:
         raise HTTPException(status_code=400, detail="No changes were applied")
 
@@ -141,15 +147,9 @@ async def update_accommodation(accom_id: str, update_request: AccommodationUpdat
 
     reviews = []
     for rev in updated_doc.get("reviews", []):
-        reviews.append(AccommodationReview(
-            id=rev.get("user_id"),
-            user_first_name=rev.get("user_first_name", ""),
-            user_role=rev.get("user_role", ""),
-            user_photo=rev.get("user_photo"),
-            message=rev.get("message", ""),
-            rating=rev.get("rating", 0),
-            created_at=rev.get("created_at", datetime.utcnow())
-        ))
+        user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
+        user_obj = await get_user_by_id(user_id)
+        reviews.append(AccommodationReview(user=user_obj, **rev))
 
     updated_doc_copy = updated_doc.copy()
     updated_doc_copy.pop("reviews", None)

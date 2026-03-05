@@ -99,6 +99,7 @@ const AccommodationDetails = () => {
             ).toFixed(2)
             : 0;
 
+    console.log(accommodationData)
     return (
         <div className="bg-background-light">
             <div className="px-4 py-10 md:px-24 max-w-8xl mx-auto">
@@ -118,7 +119,7 @@ const AccommodationDetails = () => {
                 <PhotoGrid images={accommodationData.images || []} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative">
-                    {/* LEFT SIDE CONTENT */}
+
                     <div className="lg:col-span-2 space-y-10">
 
                         <PropertyInfo
@@ -147,11 +148,9 @@ const AccommodationDetails = () => {
 
                     </div>
 
-                    {/* RIGHT SIDE BOOKING CARD */}
                     <BookingCard
                         month_rent={accommodationData.month_rent}
                         rating={averageRating}
-                        paymentDetails={accommodationData.paymentDetails}
                         owner={accommodationData.owner}
                         available_users={accommodationData.available_users}
                         total_users={accommodationData.total_users}

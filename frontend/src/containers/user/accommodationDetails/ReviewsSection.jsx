@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getPhotoUrl } from '../../../utils/photo';
 
 const ReviewsSection = ({ reviews }) => {
     const [showModal, setShowModal] = useState(false);
@@ -25,30 +26,10 @@ const ReviewsSection = ({ reviews }) => {
         return stars;
     };
 
-    // Helper function to get user display name
-    const getUserName = (review) => {
-        if (review.user_first_name && review.user_first_name.trim() !== '') {
-            return review.user_first_name;
-        }
-        return 'Anonymous';
-    };
-
-    // Helper function to get user role
-    const getUserRole = (review) => {
-        if (review.user_role && review.user_role.trim() !== '') {
-            return review.user_role;
-        }
-        return 'Student';
-    };
-
-    // Helper function to get user photo
-    const getUserPhoto = (review) => {
-        return review.user_photo?.filename || '';
-    };
+    const getUserPhoto = (photo) => getPhotoUrl(photo, 'user_photo');
 
     return (
         <div className="border-t border-slate-200 pt-10">
-            {/* Header with average rating */}
             <div className="flex items-center gap-2 mb-6">
                 <span className="material-symbols-outlined text-2xl text-primary">star</span>
                 <h3 className="text-xl font-bold">
@@ -56,39 +37,28 @@ const ReviewsSection = ({ reviews }) => {
                 </h3>
             </div>
 
-            {/* Visible reviews */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {visibleReviews.map((review, index) => (
-                    <div key={review.id || index} className="space-y-3">
+                    <div key={index} className="space-y-3">
                         <div className="flex items-center gap-3">
-                            <div
-                                className="bg-cover rounded-full h-10 w-10 bg-slate-200"
-                                style={{ 
-                                    backgroundImage: getUserPhoto(review) 
-                                        ? `url('${getUserPhoto(review)}')` 
-                                        : 'none'
-                                }}
-                            ></div>
+                            <img
+                                src={getUserPhoto(review.user.photo)}
+                                alt={review.user.first_name}
+                                className="w-10 h-10 rounded-full bg-slate-200 object-cover"
+                            />
                             <div>
-                                <p className="font-semibold text-sm">{getUserName(review)}</p>
-                                <p className="text-xs text-slate-500">{getUserRole(review)}</p>
+                                <p className="font-semibold text-sm">{review.user.first_name}</p>
+                                <p className="text-xs text-slate-500">{review.user.role}</p>
                                 <div className="flex">{renderStars(review.rating)}</div>
                             </div>
                         </div>
                         <p className="text-sm text-slate-600 leading-relaxed">
                             "{review.message}"
                         </p>
-                        {/* Optional: Show review date if available */}
-                        {review.created_at && (
-                            <p className="text-xs text-slate-400">
-                                {new Date(review.created_at).toLocaleDateString()}
-                            </p>
-                        )}
                     </div>
                 ))}
             </div>
 
-            {/* Show all button */}
             {reviews.length > maxVisible && (
                 <button
                     onClick={() => setShowModal(true)}
@@ -98,7 +68,6 @@ const ReviewsSection = ({ reviews }) => {
                 </button>
             )}
 
-            {/* Modal for all reviews */}
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-end justify-center bg-black bg-opacity-50 md:items-center">
                     <div className="bg-white w-full max-w-md rounded-t-2xl md:rounded-2xl shadow-xl">
@@ -113,30 +82,22 @@ const ReviewsSection = ({ reviews }) => {
                         </div>
                         <div className="p-6 max-h-[400px] overflow-y-auto space-y-6">
                             {reviews.map((review, index) => (
-                                <div key={review.id || index} className="space-y-3">
+                                <div key={index} className="space-y-3">
                                     <div className="flex items-center gap-3">
-                                        <div
-                                            className="bg-cover rounded-full h-10 w-10 bg-slate-200"
-                                            style={{ 
-                                                backgroundImage: getUserPhoto(review) 
-                                                    ? `url('${getUserPhoto(review)}')` 
-                                                    : 'none'
-                                            }}
-                                        ></div>
+                                        <img
+                                            src={getUserPhoto(review.user.photo)}
+                                            alt={review.user.first_name}
+                                            className="w-10 h-10 rounded-full bg-slate-200 object-cover"
+                                        />
                                         <div>
-                                            <p className="font-semibold text-sm">{getUserName(review)}</p>
-                                            <p className="text-xs text-slate-500">{getUserRole(review)}</p>
+                                            <p className="font-semibold text-sm">{review.user.first_name}</p>
+                                            <p className="text-xs text-slate-500">{review.user.role}</p>
                                             <div className="flex">{renderStars(review.rating)}</div>
                                         </div>
                                     </div>
                                     <p className="text-sm text-slate-600 leading-relaxed">
                                         "{review.message}"
                                     </p>
-                                    {review.created_at && (
-                                        <p className="text-xs text-slate-400">
-                                            {new Date(review.created_at).toLocaleDateString()}
-                                        </p>
-                                    )}
                                 </div>
                             ))}
                         </div>
