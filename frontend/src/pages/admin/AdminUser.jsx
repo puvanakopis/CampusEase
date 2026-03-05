@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Heading from "../../containers/admin/Heading";
-import StatsCards from "../../containers/admin/StatsCards";
-import Tabs from "../../containers/admin/user/Tabs";
+import Heading from "../../containers/admin/common/Heading";
+import StatsCards from "../../containers/admin/common/StatsCards";
+import Tabs from "../../containers/admin/common/Tabs";
 import UserTable from "../../containers/admin/user/UserTable";
 import ViewUserPopup from "../../containers/admin/user/ViewUserPopup";
 import StatusChangePopup from "../../containers/admin/user/StatusChangePopup";

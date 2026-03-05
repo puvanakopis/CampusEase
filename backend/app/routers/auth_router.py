@@ -4,7 +4,7 @@ from app.services.auth_service import (
     request_signup_otp, verify_signup_otp, login_user,
     request_password_reset, reset_password , update_current_user, update_password
 )
-from app.dependencies.auth_dependencies import get_current_user
+from app.middlewares.auth_middleware import get_current_user
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -64,9 +64,9 @@ async def update_profile_endpoint(
     first_name: Optional[str] = Form(None),
     last_name: Optional[str] = Form(None),
     address: Optional[str] = Form(None),
+    description: Optional[str] = Form(None),
     phone: Optional[str] = Form(None),
     id_number: Optional[str] = Form(None),
-
     photo: Optional[UploadFile] = File(None),
     id_photo: Optional[UploadFile] = File(None),
 
@@ -76,6 +76,7 @@ async def update_profile_endpoint(
         "first_name": first_name,
         "last_name": last_name,
         "address": address,
+        "description": description,
         "phone": phone,
         "id_number": id_number,
     }

@@ -33,6 +33,7 @@ class User(BaseModel):
     id_photo: Optional[Photo] = None
     verified: bool = False
     decline_reason: Optional[str] = None
+    description: Optional[str] = None
     save_accommodations: List[str] = []
     save_transports: List[str] = []
     created_at: datetime = Field(default_factory=datetime.utcnow)

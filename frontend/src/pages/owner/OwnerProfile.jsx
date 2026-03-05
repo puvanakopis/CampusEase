@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
 import OwnerSidebar from "../../components/owner/OwnerSidebar";
-import OwnerProfilePage from '../../containers/owner/account/OwnerProfilePage';
+import OwnerProfilePage from "../../containers/owner/account/OwnerProfilePage";
 import { AuthContext } from "../../context/AuthContext";
 
 function OwnerProfile() {
-    const { user, authLoading, updateCurrentUser } = useContext(AuthContext);
+    const { currentUser, authLoading, updateCurrentUser } = useContext(AuthContext);
+
     const [formData, setFormData] = useState({
         first_name: "",
         last_name: "",
@@ -16,28 +17,42 @@ function OwnerProfile() {
         business_description: "",
         id_number: "",
         role: "",
+        photo: null,
     });
 
     useEffect(() => {
-        if (user) {
+        if (currentUser) {
             setFormData({
-                first_name: user.first_name || "",
-                last_name: user.last_name || "",
-                email: user.email || "",
-                phone: user.phone || "",
-                address: user.address || "",
-                role: user.role || "",
-                business_name: user.business_name || "Perera Rentals",
-                business_type: user.business_type || "Individual",
-                business_description: user.business_description || "",
-                id_number: user.id_number || "",
+                first_name: currentUser.first_name || "",
+                last_name: currentUser.last_name || "",
+                email: currentUser.email || "",
+                phone: currentUser.phone || "",
+                address: currentUser.address || "",
+                role: currentUser.role || "",
+                business_name: currentUser.business_name || "",
+                business_type: currentUser.business_type || "Individual",
+                business_description: currentUser.business_description || "",
+                id_number: currentUser.id_number || "",
+                photo: null,
             });
         }
-    }, [user]);
+    }, [currentUser]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleFileChange = (e) => {
+        const { name, files } = e.target;
+
+        if (files && files[0]) {
+            const file = files[0];
+            setFormData((prev) => ({
+                ...prev,
+                [name]: file,
+            }));
+        }
     };
 
     const handleSave = async () => {
@@ -52,11 +67,13 @@ function OwnerProfile() {
         <div className="bg-[#f6f7f8]">
             <div className="px-4 py-10 md:px-24 max-w-8xl mx-auto gap-6 min-h-screen flex">
                 <OwnerSidebar />
+
                 <OwnerProfilePage
-                    user={user}
+                    currentUser={currentUser}
                     authLoading={authLoading}
                     formData={formData}
                     handleChange={handleChange}
+                    handleFileChange={handleFileChange}
                     handleSave={handleSave}
                 />
             </div>

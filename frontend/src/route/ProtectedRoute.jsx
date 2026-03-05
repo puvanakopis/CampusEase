@@ -100,7 +100,7 @@ const ProtectedRoute = ({ role, user }) => {
     if (role === "owner") return <Navigate to="/owner/dashboard" replace />;
     if (role === "admin") return <Navigate to="/admin/dashboard" replace />;
     if (role === "student" || role === "staff") return <Navigate to="/" replace />;
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 };
 

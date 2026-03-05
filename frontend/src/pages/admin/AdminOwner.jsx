@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Heading from "../../containers/admin/Heading";
-import StatsCards from "../../containers/admin/StatsCards";
-import Tabs from "../../containers/admin/owner/Tabs";
+import Heading from "../../containers/admin/common/Heading";
+import StatsCards from "../../containers/admin/common/StatsCards";
+import Tabs from "../../containers/admin/common/Tabs";
 import OwnerTable from "../../containers/admin/owner/OwnerTable";
 import OwnerRequestsTable from "../../containers/admin/owner/OwnerRequestsTable";
 import ViewOwnerPopup from "../../containers/admin/owner/ViewOwnerPopup";

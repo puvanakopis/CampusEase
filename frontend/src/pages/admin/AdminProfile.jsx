@@ -3,7 +3,7 @@ import AdminProfilePage from "../../containers/admin/account/AdminOwnerProfilePa
 import { AuthContext } from "../../context/AuthContext";
 
 function AdminProfile() {
-    const { user, updateCurrentUser, authLoading } = useContext(AuthContext);
+    const { currentUser, updateCurrentUser, authLoading } = useContext(AuthContext);
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -14,13 +14,13 @@ function AdminProfile() {
     );
 
     useEffect(() => {
-        if (user) {
-            setFirstName(user.first_name || "");
-            setLastName(user.last_name || "");
-            setEmail(user.email || "");
-            setPhone(user.phone || "");
+        if (currentUser) {
+            setFirstName(currentUser.first_name || "");
+            setLastName(currentUser.last_name || "");
+            setEmail(currentUser.email || "");
+            setPhone(currentUser.phone || "");
         }
-    }, [user]);
+    }, [currentUser]);
 
     const handleSaveChanges = async () => {
         const updateData = {
@@ -51,7 +51,7 @@ function AdminProfile() {
                     setPhone={setPhone}
                     setRoleDescription={setRoleDescription}
                     handleSaveChanges={handleSaveChanges}
-                    user={user}
+                    currentUser={currentUser}
                     authLoading={authLoading}
                 />
             </div>

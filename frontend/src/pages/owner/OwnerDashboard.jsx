@@ -1,6 +1,6 @@
 import React from "react";
-import Heading from "../../containers/owner/dashboard/Heading";
-import TopStats from "../../containers/owner/dashboard/TopStats";
+import Heading from "../../containers/owner/common/Heading";
+import StatsCards from "../../containers/owner/common/StatsCards";
 import RevenueOverview from "../../containers/owner/dashboard/RevenueOverview";
 import RecentBookings from "../../containers/owner/dashboard/RecentBookings";
 
@@ -35,17 +35,7 @@ const OwnerDashboard = () => {
       badgeText: "+12% vs last mo",
       badgeColor: "text-green-600",
       badgeBg: "bg-green-50",
-    },
-    {
-      icon: "grade",
-      iconBg: "bg-yellow-50",
-      iconColor: "text-yellow-500",
-      label: "Average Rating",
-      value: "4.8 / 5.0",
-      badgeText: "18 reviews",
-      badgeColor: "text-slate-600",
-      badgeBg: "bg-slate-50",
-    },
+    }
   ];
 
   const revenueData = {
@@ -66,15 +56,15 @@ const OwnerDashboard = () => {
   ];
 
   return (
-    <div className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
+    <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
       <Heading
         title="Welcome to Your Dashboard"
         subtitle="Monitor and manage all your properties and bookings in one place."
       />
-      <TopStats stats={topStatsData} />
+      <StatsCards stats={topStatsData} />
       <RevenueOverview revenueData={revenueData} />
       <RecentBookings bookings={bookingsData} />
-    </div>
+    </main>
   );
 };
 
