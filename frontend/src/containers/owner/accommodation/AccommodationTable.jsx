@@ -1,50 +1,38 @@
 import React, { useState, useMemo } from "react";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const AccommodationTable = ({ accommodations, onView, onEdit, onDelete, onToggleAvailability, showEditDelete = true }) => {
+const AccommodationTable = ({
+    accommodations,
+    onView,
+    onEdit,
+    onDelete,
+    onToggleAvailability,
+    showEditDelete = true
+}) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [filterType, setFilterType] = useState("All");
     const [filterStatus, setFilterStatus] = useState("All");
-
-    const getImageUrl = (images) => {
-        if (images && images.length > 0) {
-            return `https://via.placeholder.com/100x100?text=${images[0].filename}`;
-        }
-        return "https://via.placeholder.com/100x100?text=Accommodation";
-    };
 
     const formatAddress = (address) => {
         if (!address) return "Location not specified";
         return address.street || "Location not specified";
     };
 
-    const getOccupiedCount = (total, available) => {
-        return total - available;
-    };
+    const getOccupiedCount = (total, available) => total - available;
 
     const getOccupancyPercentage = (total, available) => {
         if (total === 0) return 0;
         return ((total - available) / total) * 100;
     };
 
-    // --------------------------
-    // 🔍 FILTER + SEARCH LOGIC
-    // --------------------------
     const filteredList = useMemo(() => {
         return accommodations
             .filter((item) => {
-                // Search filter
                 const matchesSearch =
                     item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     item.address?.street?.toLowerCase().includes(searchQuery.toLowerCase());
-
-                // Type filter
-                const matchesType =
-                    filterType === "All" || item.accommodation_type === filterType;
-
-                // Status filter
-                const matchesStatus =
-                    filterStatus === "All" || item.status === filterStatus;
-
+                const matchesType = filterType === "All" || item.accommodation_type === filterType;
+                const matchesStatus = filterStatus === "All" || item.status === filterStatus;
                 return matchesSearch && matchesType && matchesStatus;
             })
             .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -59,7 +47,6 @@ const AccommodationTable = ({ accommodations, onView, onEdit, onDelete, onToggle
                 </h3>
 
                 <div className="flex items-center gap-3 flex-wrap">
-
                     {/* Search */}
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
@@ -125,9 +112,9 @@ const AccommodationTable = ({ accommodations, onView, onEdit, onDelete, onToggle
                             <tr key={accommodation._id} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                                        <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={getImageUrl(accommodation.images)}
+                                                src={buildPhotoUrl(accommodation.images[0].filename, "accommodation")}
                                                 alt={accommodation.name}
                                                 className="w-full h-full object-cover"
                                             />
@@ -184,7 +171,8 @@ const AccommodationTable = ({ accommodations, onView, onEdit, onDelete, onToggle
                                         {accommodation.status}
                                     </span>
                                 </td>
-                                <td>
+
+                                <td className="px-6 py-4 text-center">
                                     {(accommodation.status === "Available" || accommodation.status === "Unavailable") && (
                                         <button
                                             onClick={() => onToggleAvailability(accommodation)}
@@ -198,7 +186,7 @@ const AccommodationTable = ({ accommodations, onView, onEdit, onDelete, onToggle
                                     )}
                                 </td>
 
-                                <td className="px-6 py-4">
+                                <td className="px-6 py-4 text-center">
                                     <div className="flex items-center justify-center gap-2">
                                         <button
                                             onClick={() => onView(accommodation)}
@@ -231,13 +219,11 @@ const AccommodationTable = ({ accommodations, onView, onEdit, onDelete, onToggle
 
                         {filteredList.length === 0 && (
                             <tr>
-                                <td colSpan="7" className="px-6 py-12 text-center">
+                                <td colSpan="8" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
                                         <span className="material-symbols-outlined text-4xl mb-2">apartment</span>
                                         <p className="text-sm">No accommodations match your filters</p>
-                                        <p className="text-xs text-slate-500 mt-1">
-                                            Try adjusting search or filters
-                                        </p>
+                                        <p className="text-xs text-slate-500 mt-1">Try adjusting search or filters</p>
                                     </div>
                                 </td>
                             </tr>

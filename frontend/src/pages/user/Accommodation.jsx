@@ -16,9 +16,11 @@ const Accommodations = () => {
     fetchAccommodations();
   }, []);
 
-  const totalPages = Math.ceil(accommodations.length / ITEMS_PER_PAGE);
+  const availableAccommodations = accommodations.filter(acc => acc.status === "available");
+
+  const totalPages = Math.ceil(availableAccommodations.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentAccommodations = accommodations.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentAccommodations = availableAccommodations.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
@@ -37,7 +39,7 @@ const Accommodations = () => {
           />
 
           <SortBar
-            total={accommodations.length}
+            total={availableAccommodations.length}
             location="Belihuloya & Pambahinna"
           />
 

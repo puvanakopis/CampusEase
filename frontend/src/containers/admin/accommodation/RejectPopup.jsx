@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const RejectPopup = ({ request, onClose, onConfirm }) => {
     const [reason, setReason] = useState("");
@@ -43,7 +44,7 @@ const RejectPopup = ({ request, onClose, onConfirm }) => {
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={request?.images[0]?.filename ? `/images/${request.images[0].filename}` : "https://via.placeholder.com/100x100?text=Accommodation"}
+                                src={buildPhotoUrl(request?.images[0]?.filename,'accommodation')}
                                 alt={request?.name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {

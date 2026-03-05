@@ -1,28 +1,76 @@
 import React, { useState, useMemo } from "react";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const AccommodationRequestsTable = ({ accommodationRequests, onViewRequest, onApproveRequest, onRejectRequest }) => {
+const AccommodationRequestsTable = ({
+    accommodationRequests,
+    onViewRequest,
+    onApproveRequest,
+    onRejectRequest
+}) => {
     const [searchQuery, setSearchQuery] = useState("");
 
     const filteredRequests = useMemo(() => {
         if (!searchQuery) return accommodationRequests;
         return accommodationRequests.filter((request) => {
-            const nameMatch = request.name.toLowerCase().includes(searchQuery.toLowerCase());
-            const ownerMatch = request.owner_id.toLowerCase().includes(searchQuery.toLowerCase());
+            const nameMatch = request.name?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
+            const ownerNameMatch = request.owner?.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                request.owner?.last_name?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
             const locationMatch = (request.address?.street || '').toLowerCase().includes(searchQuery.toLowerCase());
-            return nameMatch || ownerMatch || locationMatch;
+            return nameMatch || ownerNameMatch || locationMatch;
         });
     }, [searchQuery, accommodationRequests]);
+
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        try {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        } catch {
+            return 'N/A';
+        }
+    };
+
+    const getOwnerName = (request) => {
+        if (request.owner) {
+            return `${request.owner.first_name || ''} ${request.owner.last_name || ''}`.trim() || 'N/A';
+        }
+        return request.owner_id || 'N/A';
+    };
+
+    const getOwnerAccommodationsCount = (request) => {
+        if (request.owner && request.owner._id) {
+            return '?';
+        }
+        return '0';
+    };
+
+    const getStatusColor = (status) => {
+        switch (status?.toLowerCase()) {
+            case "pending":
+                return "bg-yellow-100 text-yellow-800";
+            case "approved":
+            case "available":
+                return "bg-green-100 text-green-800";
+            case "rejected":
+                return "bg-red-100 text-red-800";
+            default:
+                return "bg-gray-100 text-gray-800";
+        }
+    };
 
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+            <div className="px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
                     Accommodation Requests ({filteredRequests.length})
                 </h3>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
                     {/* Search */}
-                    <div className="relative">
+                    <div className="relative w-full sm:w-64">
                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
                             search
                         </span>
@@ -31,14 +79,15 @@ const AccommodationRequestsTable = ({ accommodationRequests, onViewRequest, onAp
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search accommodations..."
-                            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
                 </div>
             </div>
 
+            {/* Table Container - Scrollable on mobile */}
             <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[1200px] lg:min-w-full">
                     <thead className="bg-slate-50">
                         <tr>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Request Details</th>
@@ -49,13 +98,13 @@ const AccommodationRequestsTable = ({ accommodationRequests, onViewRequest, onAp
                     </thead>
 
                     <tbody className="divide-y divide-slate-100">
-                        {accommodationRequests.map((request) => (
-                            <tr key={request._id} className="hover:bg-slate-50 transition-colors">
+                        {filteredRequests.map((request) => (
+                            <tr key={request._id || request.id} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-start gap-3">
                                         <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={request.images[0]?.filename ? `/images/${request.images[0].filename}` : "https://via.placeholder.com/100x100?text=Accommodation"}
+                                                src={buildPhotoUrl(request.images[0]?.filename, "accommodation")}
                                                 alt={request.name}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {
@@ -64,70 +113,101 @@ const AccommodationRequestsTable = ({ accommodationRequests, onViewRequest, onAp
                                             />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-semibold text-slate-900">{request.name}</p>
-                                            <p className="text-[10px] text-slate-400">Request ID: {request._id}</p>
-                                            <p className="text-xs text-slate-600 mt-1">Requested: {new Date(request.created_at).toLocaleDateString()}</p>
+                                            <p className="text-sm font-semibold text-slate-900">{request.name || 'N/A'}</p>
+                                            <p className="text-[10px] text-slate-400">ID: {request._id || request.id}</p>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${getStatusColor(request.status)}`}>
+                                                    {request.status || 'Pending'}
+                                                </span>
+                                                <p className="text-xs text-slate-600">Requested: {formatDate(request.created_at)}</p>
+                                            </div>
                                         </div>
                                     </div>
                                     {request.reject_reason && (
-                                        <div className="mt-2 p-2 bg-yellow-50 rounded text-xs text-yellow-700">
-                                            <span className="font-medium">Reason: </span>{request.reject_reason}
+                                        <div className="mt-2 p-2 bg-red-50 rounded text-xs text-red-700">
+                                            <span className="font-medium">Rejection Reason: </span>{request.reject_reason}
                                         </div>
                                     )}
                                 </td>
                                 <td className="px-6 py-4">
                                     <div>
-                                        <p className="text-sm font-medium text-slate-900">{request.owner_id}</p>
+                                        <p className="text-sm font-medium text-slate-900">{getOwnerName(request)}</p>
+                                        {request.owner && (
+                                            <>
+                                                <p className="text-xs text-slate-500 mt-1">{request.owner.email || 'No email'}</p>
+                                                <p className="text-xs text-slate-500">{request.owner.phone || 'No phone'}</p>
+                                            </>
+                                        )}
                                         <div className="mt-2 text-xs">
-                                            <span className="text-slate-500">Accommodations Limit: </span>
-                                            <span className={`font-medium text-green-600`}>
-                                                0/5
+                                            <span className="text-slate-500">Owner Status: </span>
+                                            <span className={`font-medium ${request.owner?.verified ? 'text-green-600' : 'text-yellow-600'}`}>
+                                                {request.owner?.verified ? 'Verified' : 'Unverified'}
+                                            </span>
+                                        </div>
+                                        <div className="mt-1 text-xs">
+                                            <span className="text-slate-500">Accommodations: </span>
+                                            <span className="font-medium text-slate-900">
+                                                {getOwnerAccommodationsCount(request)}/5
                                             </span>
                                         </div>
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <div className="space-y-1">
+                                    <div className="space-y-2">
                                         <div className="flex items-center gap-2">
                                             <span className="text-xs text-slate-500">Type:</span>
-                                            <span className="text-xs font-medium">{request.accommodation_type}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs text-slate-500">Location:</span>
-                                            <span className="text-xs font-medium">{request.address?.street || 'N/A'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs text-slate-500">Price:</span>
-                                            <span className="text-xs font-medium text--600">
-                                                LKR {request.month_rent.toLocaleString()}
+                                            <span className="text-xs font-medium capitalize px-2 py-0.5 bg-slate-100 rounded">
+                                                {request.accommodation_type || 'N/A'}
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xs text-slate-500">Rooms:</span>
-                                            <span className="text-xs font-medium">{request.no_of_rooms}</span>
+                                            <span className="text-xs text-slate-500">Location:</span>
+                                            <span className="text-xs font-medium">
+                                                {request.address?.street || 'N/A'}
+                                                {request.address?.city && `, ${request.address.city}`}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-slate-500">Price:</span>
+                                            <span className="text-xs font-medium text-green-600">
+                                                LKR {request.month_rent?.toLocaleString() || 'N/A'}/month
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-slate-500">Rooms/Beds:</span>
+                                            <span className="text-xs font-medium">
+                                                {request.no_of_rooms || 0} rooms, {request.no_of_beds || 0} beds
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-slate-500">Bathrooms:</span>
+                                            <span className="text-xs font-medium">{request.no_of_bathrooms || 0}</span>
                                         </div>
                                         <div className="mt-2">
                                             <span className="text-xs text-slate-500">Amenities:</span>
                                             <div className="flex flex-wrap gap-1 mt-1">
-                                                {request.amenities.slice(0, 3).map((amenity, idx) => (
+                                                {request.amenities?.slice(0, 3).map((amenity, idx) => (
                                                     <span
                                                         key={idx}
                                                         className="text-[10px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded"
                                                     >
-                                                        {amenity.name}
+                                                        {amenity.name || amenity}
                                                     </span>
                                                 ))}
-                                                {request.amenities.length > 3 && (
+                                                {request.amenities?.length > 3 && (
                                                     <span className="text-[10px] text-slate-500">
                                                         +{request.amenities.length - 3} more
                                                     </span>
+                                                )}
+                                                {(!request.amenities || request.amenities.length === 0) && (
+                                                    <span className="text-[10px] text-slate-400">No amenities listed</span>
                                                 )}
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <div className="flex flex-col gap-2">
+                                    <div className="flex flex-col gap-2 min-w-[100px]">
                                         <button
                                             onClick={() => onViewRequest(request)}
                                             className="bg-primary hover:bg-primary/80 text-white text-[10px] font-bold py-2 px-4 rounded-md uppercase tracking-wider transition-colors"
@@ -135,8 +215,8 @@ const AccommodationRequestsTable = ({ accommodationRequests, onViewRequest, onAp
                                             View Details
                                         </button>
                                         <button
-                                            onClick={() => onApproveRequest(request._id)}
-                                            className="bg-primary hover:bg-primary/90 text-white text-[10px] font-bold py-2 px-4 rounded-md uppercase tracking-wider transition-colors"
+                                            onClick={() => onApproveRequest(request)}
+                                            className="bg-green-600 hover:bg-green-500 text-white text-[10px] font-bold py-2 px-4 rounded-md uppercase tracking-wider transition-colors"
                                         >
                                             Approve
                                         </button>
@@ -150,7 +230,7 @@ const AccommodationRequestsTable = ({ accommodationRequests, onViewRequest, onAp
                                 </td>
                             </tr>
                         ))}
-                        {accommodationRequests.length === 0 && (
+                        {filteredRequests.length === 0 && (
                             <tr>
                                 <td colSpan="4" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
@@ -159,8 +239,16 @@ const AccommodationRequestsTable = ({ accommodationRequests, onViewRequest, onAp
                                         </span>
                                         <p className="text-sm">No pending accommodation requests</p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            All requests have been processed
+                                            {searchQuery ? 'No matches found for your search' : 'All requests have been processed'}
                                         </p>
+                                        {searchQuery && (
+                                            <button
+                                                onClick={() => setSearchQuery('')}
+                                                className="mt-4 text-primary text-xs hover:underline"
+                                            >
+                                                Clear search
+                                            </button>
+                                        )}
                                     </div>
                                 </td>
                             </tr>

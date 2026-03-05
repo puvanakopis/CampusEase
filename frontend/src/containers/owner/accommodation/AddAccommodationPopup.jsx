@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 
-const AddAccommodationPopup = ({ currentUser, onClose, onSave }) => {
+const AddAccommodationPopup = ({ onClose, onSave }) => {
     const [formData, setFormData] = useState({
         name: "",
-        accommodation_type: "Hostel",
+        accommodation_type: "hostel",
         no_of_rooms: "",
         no_of_beds: "",
         no_of_bathrooms: "",
         description: "",
         month_rent: "",
         amenities: [],
-        images: [],
         address: {
             street: "",
             city: "",
             postal_code: "",
             country: "Sri Lanka"
         },
-        owner_id: currentUser._id,
         location: {
             latitude: "",
             longitude: ""
@@ -25,7 +23,9 @@ const AddAccommodationPopup = ({ currentUser, onClose, onSave }) => {
         time_from_uni: {
             susl_main_gate: "",
             pambahinna_junction: ""
-        }
+        },
+        total_users: "",
+        available_users: ""
     });
 
     const [step, setStep] = useState(1);
@@ -33,11 +33,11 @@ const AddAccommodationPopup = ({ currentUser, onClose, onSave }) => {
     const [imageFiles, setImageFiles] = useState([]);
 
     const accommodationTypes = [
-        { value: "Apartment", label: "Apartment" },
-        { value: "House", label: "House" },
-        { value: "Villa", label: "Villa" },
-        { value: "Hostel", label: "Hostel" },
-        { value: "Other", label: "Other" }
+        { value: "apartment", label: "Apartment" },
+        { value: "house", label: "House" },
+        { value: "villa", label: "Villa" },
+        { value: "hostel", label: "Hostel" },
+        { value: "other", label: "Other" }
     ];
 
     const handleChange = (e) => {
@@ -91,27 +91,34 @@ const AddAccommodationPopup = ({ currentUser, onClose, onSave }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (imageFiles.length === 0) {
-            return;
-        }
+        if (imageFiles.length === 0) return;
 
-        const accommodationImages = imageFiles.map(file => ({
-            filename: file.name,
-            content_type: file.type,
-            size: file.size
-        }));
-
-        onSave({
-            ...formData,
+        const accommodationData = {
+            name: formData.name,
+            accommodation_type: formData.accommodation_type,
             no_of_rooms: parseInt(formData.no_of_rooms),
             no_of_beds: parseInt(formData.no_of_beds),
             no_of_bathrooms: parseInt(formData.no_of_bathrooms),
-            month_rent: parseInt(formData.month_rent),
-            images: accommodationImages,
+            description: formData.description,
+            month_rent: parseFloat(formData.month_rent),
+            amenities: formData.amenities,
+            address: { ...formData.address },
             location: {
-                latitude: parseFloat(formData.location.latitude) || 0,
-                longitude: parseFloat(formData.location.longitude) || 0
-            }
+                latitude: formData.location.latitude ? parseFloat(formData.location.latitude) : 0,
+                longitude: formData.location.longitude ? parseFloat(formData.location.longitude) : 0
+            },
+            time_from_uni: {
+                susl_main_gate: formData.time_from_uni.susl_main_gate || null,
+                pambahinna_junction: formData.time_from_uni.pambahinna_junction || null
+            },
+            total_users: parseInt(formData.total_users),
+            available_users: parseInt(formData.available_users),
+            status: "pending"
+        };
+
+        onSave({
+            accommodationData,
+            imageFiles
         });
     };
 
@@ -247,6 +254,30 @@ const AddAccommodationPopup = ({ currentUser, onClose, onSave }) => {
                         min="1"
                     />
                 </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Total Users *</label>
+                    <input
+                        type="number"
+                        name="total_users"
+                        value={formData.total_users}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        placeholder="e.g., 20"
+                        min="0"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Available Users *</label>
+                    <input
+                        type="number"
+                        name="available_users"
+                        value={formData.available_users}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        placeholder="e.g., 0"
+                        min="0"
+                    />
+                </div>
             </div>
         </div>
     );
@@ -286,11 +317,10 @@ const AddAccommodationPopup = ({ currentUser, onClose, onSave }) => {
                         name="time_from_uni.susl_main_gate"
                         value={formData.time_from_uni.susl_main_gate}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         placeholder="e.g., 15 mins"
                     />
                 </div>
-
                 <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">Time to Pambahinna Junction</label>
                     <input
@@ -298,7 +328,7 @@ const AddAccommodationPopup = ({ currentUser, onClose, onSave }) => {
                         name="time_from_uni.pambahinna_junction"
                         value={formData.time_from_uni.pambahinna_junction}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         placeholder="e.g., 10 mins"
                     />
                 </div>
@@ -345,8 +375,6 @@ const AddAccommodationPopup = ({ currentUser, onClose, onSave }) => {
 
             <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Accommodation Images *</label>
-
-                {/* Custom file upload button */}
                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-primary hover:bg-slate-50 transition-colors">
                     <span className="text-slate-400 text-sm mb-1">Click to select images or drag & drop</span>
                     <span className="material-symbols-outlined text-3xl text-slate-300">image</span>
@@ -360,7 +388,6 @@ const AddAccommodationPopup = ({ currentUser, onClose, onSave }) => {
                 </label>
                 <p className="text-sm text-slate-500 mt-1">You can select multiple images. The first image will be used as the main thumbnail.</p>
 
-                {/* Image Previews */}
                 <div className="flex flex-wrap gap-2 mt-3">
                     {imageFiles.map((file, index) => (
                         <div key={index} className="relative w-24 h-24 border border-slate-200 rounded-lg overflow-hidden">
@@ -396,7 +423,6 @@ const AddAccommodationPopup = ({ currentUser, onClose, onSave }) => {
                     </button>
                 </div>
 
-                {/* Progress Steps */}
                 <div className="flex justify-between mb-8">
                     {[1, 2].map((stepNumber) => (
                         <div key={stepNumber} className="flex flex-col items-center">

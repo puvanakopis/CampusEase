@@ -18,6 +18,7 @@ const AdminAccommodation = () => {
         accommodations,
         fetchAccommodations,
         updateAccommodation,
+        accoLoading
     } = useContext(AccommodationContext);
 
     const [activeTab, setActiveTab] = useState("current");
@@ -34,22 +35,22 @@ const AdminAccommodation = () => {
 
     // ------------------- FILTERS -------------------
     const activeAccommodations = accommodations.filter(
-        (a) => a.status === "Available"
+        (a) => a.status === "available"
     );
 
     const inactiveAccommodations = accommodations.filter(
-        (a) => a.status === "Unavailable" || a.status === "Rejected"
+        (a) => a.status === "unavailable" || a.status === "rejected"
     );
 
     const accommodationRequests = accommodations.filter(
-        (a) => a.status === "Pending"
+        (a) => a.status === "pending"
     );
 
     // ------------------- TABS -------------------
     const tabs = [
         {
             id: "current",
-            label: "All  Accommodations",
+            label: "All Accommodations",
             count: activeAccommodations.length,
         },
         {
@@ -66,17 +67,17 @@ const AdminAccommodation = () => {
 
     // ------------------- STATS -------------------
     const totalUsers = accommodations.reduce(
-        (sum, a) => sum + a.total_users,
+        (sum, a) => sum + (a.total_users || 0),
         0
     );
 
     const occupiedUsers = accommodations.reduce(
-        (sum, a) => sum + (a.total_users - a.available_users),
+        (sum, a) => sum + ((a.total_users || 0) - (a.available_users || 0)),
         0
     );
 
     const monthlyRevenue = accommodations.reduce(
-        (sum, a) => sum + a.month_rent * (a.total_users - a.available_users),
+        (sum, a) => sum + (a.month_rent || 0) * ((a.total_users || 0) - (a.available_users || 0)),
         0
     );
 
@@ -114,16 +115,20 @@ const AdminAccommodation = () => {
 
     const handleApproveRequest = async (request) => {
         try {
-            await updateAccommodation(request._id, {
-                status: "Available",
-                verified: true,
-                reject_reason: null,
-            });
-
+            const updatePayload = {
+                accommodationData: {
+                    status: "available",
+                    verified: true,
+                    reject_reason: null,
+                }
+            };
+            
+            await updateAccommodation(request._id, updatePayload);
             toast.success("Accommodation approved and activated");
+            await fetchAccommodations(); 
         } catch (error) {
-            console.log(error)
-            toast.error("Approval failed");
+            console.log(error);
+            toast.error(error.message || "Approval failed");
         }
     };
 
@@ -136,17 +141,22 @@ const AdminAccommodation = () => {
         if (!requestToReject) return;
 
         try {
-            await updateAccommodation(requestToReject._id, {
-                status: "Rejected",
-                reject_reason: reason,
-            });
+            const updatePayload = {
+                accommodationData: {
+                    status: "rejected",
+                    reject_reason: reason,
+                    verified: false
+                }
+            };
 
+            await updateAccommodation(requestToReject._id, updatePayload);
             toast.success("Accommodation request rejected");
             setShowRejectPopup(false);
             setRequestToReject(null);
+            await fetchAccommodations();
         } catch (error) {
-            console.log(error)
-            toast.error("Reject failed");
+            console.log(error);
+            toast.error(error.message || "Reject failed");
         }
     };
 
@@ -158,19 +168,24 @@ const AdminAccommodation = () => {
     const handleConfirmStatusChange = async (reason) => {
         if (!accommodationToChangeStatus) return;
 
-        const newStatus = accommodationToChangeStatus.status === "Available"
-            ? "Unavailable"
-            : "Available";
+        const newStatus = accommodationToChangeStatus.status === "available"
+            ? "unavailable"
+            : "available";
 
         try {
-            await updateAccommodation(accommodationToChangeStatus._id, {
-                status: newStatus,
-                reject_reason: newStatus === "Unavailable" ? reason : null,
-            });
-            toast.success(`Accommodation ${newStatus === "Available" ? "activated" : "deactivated"}`);
+            const updatePayload = {
+                accommodationData: {
+                    status: newStatus,
+                    reject_reason: newStatus === "unavailable" ? reason : null,
+                }
+            };
+
+            await updateAccommodation(accommodationToChangeStatus._id, updatePayload);
+            toast.success(`Accommodation ${newStatus === "available" ? "activated" : "deactivated"}`);
+            await fetchAccommodations(); 
         } catch (error) {
             console.error(error);
-            toast.error("Status update failed");
+            toast.error(error.message || "Status update failed");
         } finally {
             setShowStatusPopup(false);
             setAccommodationToChangeStatus(null);
@@ -180,6 +195,19 @@ const AdminAccommodation = () => {
     useEffect(() => {
         fetchAccommodations();
     }, []);
+
+    if (accoLoading && accommodations.length === 0) {
+        return (
+            <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
+                <div className="flex justify-center items-center h-64">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                        <p className="mt-4 text-slate-600">Loading accommodations...</p>
+                    </div>
+                </div>
+            </main>
+        );
+    }
 
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
@@ -234,7 +262,6 @@ const AdminAccommodation = () => {
                     onView={handleViewAccommodation}
                     onToggleStatus={handleToggleAccommodationStatus}
                     isAdmin={true}
-                    a
                 />
             )}
 
@@ -242,11 +269,7 @@ const AdminAccommodation = () => {
                 <AccommodationRequestsTable
                     accommodationRequests={accommodationRequests}
                     onViewRequest={handleViewAccommodation}
-                    onApproveRequest={(id) =>
-                        handleApproveRequest(
-                            accommodationRequests.find((r) => r._id === id)
-                        )
-                    }
+                    onApproveRequest={handleApproveRequest}
                     onRejectRequest={handleRejectRequest}
                 />
             )}

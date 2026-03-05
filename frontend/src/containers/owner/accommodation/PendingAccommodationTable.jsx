@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Pagination from "../common/Pagination"; 
+import Pagination from "../common/Pagination";
 
 const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete }) => {
     const [currentPage, setCurrentPage] = useState(1);

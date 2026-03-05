@@ -93,19 +93,22 @@ const OwnerAccommodation = () => {
 
 
     // ADD
-    const handleAddAccommodation = async (newAccommodation) => {
-        console.log(newAccommodation)
-        await createAccommodation(newAccommodation);
+    const handleAddAccommodation = async (payload) => {
+        await createAccommodation(payload);
         setShowAddPopup(false);
     };
 
-    // EDIT / RESUBMIT
-    const handleEditAccommodation = async (updatedAccommodation) => {
+
+    // EDIT / RESUBMIT 
+    const handleEditAccommodation = async (payload) => {
         if (resubmitMode) {
-            await updateAccommodation(updatedAccommodation._id, {
-                ...updatedAccommodation,
-                status: "Pending",
-                reject_reason: null,
+            await updateAccommodation(payload.accommodationData._id, {
+                accommodationData: {
+                    ...payload.accommodationData,
+                    status: "pending",
+                    reject_reason: null,
+                },
+                imageFiles: payload.imageFiles || []
             });
 
             setResubmitMode(false);
@@ -114,11 +117,10 @@ const OwnerAccommodation = () => {
             return;
         }
 
-        await updateAccommodation(updatedAccommodation._id, updatedAccommodation);
+        await updateAccommodation(payload.accommodationData._id, payload);
         setShowEditPopup(false);
         setSelectedAccommodation(null);
     };
-
     // DELETE
     const handleDeleteAccommodation = async (id) => {
         if (window.confirm("Are you sure you want to delete this accommodation?")) {

@@ -20,7 +20,6 @@ const AccommodationDetails = () => {
     const [loading, setLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
 
-    // Fetch accommodation using URL ID
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -32,7 +31,6 @@ const AccommodationDetails = () => {
                 }
 
                 setAccommodationData(data);
-                console.log(data)
             } catch (err) {
                 console.error(err);
                 setNotFound(true);
@@ -45,7 +43,6 @@ const AccommodationDetails = () => {
     }, [id, getAccommodationById]);
 
 
-    console.log(accommodationData);
     const generateBreadcrumbs = (data) => {
         return [
             {
@@ -99,7 +96,6 @@ const AccommodationDetails = () => {
             ).toFixed(2)
             : 0;
 
-    console.log(accommodationData)
     return (
         <div className="bg-background-light">
             <div className="px-4 py-10 md:px-24 max-w-8xl mx-auto">

@@ -1,4 +1,5 @@
 import React from "react";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const ViewAccommodationPopup = ({ accommodation, onClose }) => {
     const getStatusDisplay = (status) => {
@@ -50,7 +51,7 @@ const ViewAccommodationPopup = ({ accommodation, onClose }) => {
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="w-24 h-24 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={accommodation.images?.[0]?.filename ? `/images/${accommodation.images[0].filename}` : "https://via.placeholder.com/100x100?text=Accommodation"}
+                                src={buildPhotoUrl(accommodation.images?.[0]?.filename, 'accommodation')}
                                 alt={accommodation.name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {

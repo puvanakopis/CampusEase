@@ -1,8 +1,12 @@
 import { axiosAuth } from "./authService";
 
 export const accommodationApi = {
-    createAccommodation: async (payload) => {
-        const res = await axiosAuth.post("/accommodation", payload);
+    createAccommodation: async (formData) => {
+        const res = await axiosAuth.post("/accommodation", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return res.data;
     },
 
@@ -16,8 +20,12 @@ export const accommodationApi = {
         return res.data;
     },
 
-    updateAccommodation: async (id, updateData) => {
-        const res = await axiosAuth.patch(`/accommodation/${id}`, updateData);
+    updateAccommodation: async (id, formData) => {
+        const res = await axiosAuth.patch(`/accommodation/${id}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return res.data;
     },
 

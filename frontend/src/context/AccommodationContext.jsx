@@ -34,7 +34,17 @@ export const AccommodationProvider = ({ children }) => {
   const createAccommodation = async (payload) => {
     const toastId = toast.loading("Creating accommodation...");
     try {
-      const res = await accommodationApi.createAccommodation(payload);
+      const formData = new FormData();
+      
+      formData.append('accom_request', JSON.stringify(payload.accommodationData));
+      
+      if (payload.imageFiles && payload.imageFiles.length > 0) {
+        payload.imageFiles.forEach((file) => {
+          formData.append('files', file);
+        });
+      }
+
+      const res = await accommodationApi.createAccommodation(formData);
 
       if (!res.success) {
         toast.error(res.message, { id: toastId });
@@ -72,10 +82,20 @@ export const AccommodationProvider = ({ children }) => {
   };
 
   // ------------------ UPDATE ------------------
-  const updateAccommodation = async (id, updateData) => {
+  const updateAccommodation = async (id, payload) => {
     const toastId = toast.loading("Updating accommodation...");
     try {
-      const res = await accommodationApi.updateAccommodation(id, updateData);
+      const formData = new FormData();
+      
+      formData.append('update_request', JSON.stringify(payload.accommodationData));
+      
+      if (payload.imageFiles && payload.imageFiles.length > 0) {
+        payload.imageFiles.forEach((file) => {
+          formData.append('files', file);
+        });
+      }
+
+      const res = await accommodationApi.updateAccommodation(id, formData);
 
       if (!res.success) {
         toast.error(res.message, { id: toastId });
