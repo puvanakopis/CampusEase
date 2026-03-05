@@ -1,8 +1,19 @@
 import React from "react";
 
+const accommodationTypes = [
+    { label: "Apartment", value: "apartment" },
+    { label: "House", value: "house" },
+    { label: "Villa", value: "villa" },
+    { label: "Hostel", value: "hostel" },
+    { label: "Other", value: "other" },
+];
+
+const genders = ["Male", "Female"];
+
 const FiltersSidebar = () => {
     return (
         <aside className="hidden lg:flex w-80 h-max flex-col gap-4 border border-[#e7edf3] rounded-xl bg-white p-6 sticky top-[65px]">
+
             {/* Header */}
             <div className="flex flex-col gap-1 pb-4 border-b border-[#e7edf3]">
                 <h1 className="text-[#0d141b] text-lg font-bold leading-normal">Filters</h1>
@@ -11,34 +22,31 @@ const FiltersSidebar = () => {
                 </p>
             </div>
 
-            {/* Property Type */}
+            {/* Accommodation Type */}
             <div className="flex flex-col gap-3 py-2">
                 <label className="text-[#0d141b] text-sm font-bold flex items-center gap-2">
-                    <span className="material-symbols-outlined text-lg text-primary">
-                        house
-                    </span>{" "}
+                    <span className="material-symbols-outlined text-lg text-primary">house</span>
                     Property Type
                 </label>
                 <div className="flex flex-col gap-2">
-                    {["Boarding (Bodim)", "Student Hostel", "Single Annex", "Shared Room"].map((type, i) => (
+                    {accommodationTypes.map((type, i) => (
                         <label key={i} className="flex items-center gap-3 cursor-pointer group">
                             <input
                                 type="checkbox"
                                 className="form-checkbox rounded text-primary border-gray-300 focus:ring-primary h-4 w-4 bg-transparent"
-                                defaultChecked={i === 0}
                             />
-                            <span className="text-[#0d141b] text-sm font-medium group-hover:text-primary transition-colors">{type}</span>
+                            <span className="text-[#0d141b] text-sm font-medium group-hover:text-primary transition-colors">
+                                {type.label}
+                            </span>
                         </label>
                     ))}
                 </div>
             </div>
 
-            {/* Monthly Budget */}
+            {/* Monthly Rent */}
             <div className="flex flex-col gap-3 py-2">
                 <label className="text-[#0d141b] text-sm font-bold flex items-center gap-2">
-                    <span className="material-symbols-outlined text-lg text-primary">
-                        payments
-                    </span>{" "}
+                    <span className="material-symbols-outlined text-lg text-primary">payments</span>
                     Monthly Budget (LKR)
                 </label>
                 <div className="flex items-center gap-2">
@@ -63,10 +71,16 @@ const FiltersSidebar = () => {
                     Gender
                 </label>
                 <div className="flex flex-col gap-2">
-                    {["Male", "Female"].map((gender, i) => (
+                    {genders.map((gender, i) => (
                         <label key={i} className="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="gender" className="form-radio rounded text-primary border-gray-300 focus:ring-primary h-4 w-4 bg-transparent" defaultChecked={i === 0} />
-                            <span className="text-[#0d141b] text-sm font-medium group-hover:text-primary transition-colors">{gender}</span>
+                            <input
+                                type="radio"
+                                name="gender"
+                                className="form-radio rounded text-primary border-gray-300 focus:ring-primary h-4 w-4 bg-transparent"
+                            />
+                            <span className="text-[#0d141b] text-sm font-medium group-hover:text-primary transition-colors">
+                                {gender}
+                            </span>
                         </label>
                     ))}
                 </div>

@@ -37,6 +37,7 @@ async def get_user_by_id(user_id: str) -> Optional[UserResponse]:
 async def create_accommodation(accom_request: AccommodationCreateRequest, files: Optional[List[UploadFile]] = None) -> dict:
     new_id = await get_next_sequence("accommodation")
     accom_data = accom_request.dict(exclude={"images"})
+    accom_data["gender"] = accom_data.get("gender").value if accom_data.get("gender") else None    
     
     accom_data.update({
         "_id": new_id,
@@ -124,6 +125,8 @@ async def update_accommodation(accom_id: str, update_request: AccommodationUpdat
         raise HTTPException(status_code=404, detail="Accommodation not found")
 
     update_data = update_request.dict(exclude_unset=True)
+    if "gender" in update_data and update_data["gender"]:
+        update_data["gender"] = update_data["gender"].value
     update_data["last_updated"] = datetime.utcnow()
 
     if files:

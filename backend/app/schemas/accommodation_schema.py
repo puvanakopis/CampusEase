@@ -8,6 +8,9 @@ class UserPhoto(BaseModel):
     content_type: str
     size: int
 
+class AccommodationGender(str, Enum):
+    male = "male"
+    female = "female"
 
 class AccommodationStatus(str, Enum):
     pending = "pending"
@@ -95,6 +98,8 @@ class AccommodationCreateRequest(BaseModel):
     address: AccommodationAddressSchema = None
     location: AccommodationLocationSchema = None
     time_from_uni: AccommodationDistance = None
+    gender: AccommodationGender.male
+
 
 
 
@@ -120,6 +125,7 @@ class AccommodationResponse(BaseModel):
     address: Optional[AccommodationAddressSchema] = None
     location: Optional[AccommodationLocationSchema] = None
     time_from_uni: Optional[AccommodationDistance] = None
+    gender: Optional[AccommodationGender]=None
     created_at: datetime
     last_updated: datetime
 
@@ -145,4 +151,5 @@ class AccommodationUpdateRequest(BaseModel):
     address: Optional[AccommodationAddressSchema] = None
     location: Optional[AccommodationLocationSchema] = None
     time_from_uni: Optional[AccommodationDistance] = None
+    gender: Optional[AccommodationGender]=None
     last_updated: datetime = Field(default_factory=datetime.utcnow)

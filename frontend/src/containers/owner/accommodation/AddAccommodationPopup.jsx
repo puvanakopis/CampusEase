@@ -25,7 +25,8 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
             pambahinna_junction: ""
         },
         total_users: "",
-        available_users: ""
+        available_users: "",
+        gender: "male"
     });
 
     const [step, setStep] = useState(1);
@@ -113,7 +114,8 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
             },
             total_users: parseInt(formData.total_users),
             available_users: parseInt(formData.available_users),
-            status: "pending"
+            status: "pending",
+            gender: formData.gender
         };
 
         onSave({
@@ -277,6 +279,19 @@ const AddAccommodationPopup = ({ onClose, onSave }) => {
                         placeholder="e.g., 0"
                         min="0"
                     />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Gender *</label>
+                    <select
+                        name="gender"
+                        value={formData.gender}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        required
+                    >
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
                 </div>
             </div>
         </div>

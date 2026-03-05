@@ -32,7 +32,8 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
             total_users: acc.total_users || "",
             available_users: acc.available_users || "",
             status: acc.status || "pending",
-            images: acc.images || [] 
+            images: acc.images || [],
+            gender: acc.gender || "male"
         };
     };
 
@@ -107,12 +108,12 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
     };
 
     const handleNext = (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         setStep(2);
     };
 
     const handlePrevious = (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         setStep(1);
     };
 
@@ -151,8 +152,9 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
             total_users: parseInt(formData.total_users),
             available_users: parseInt(formData.available_users),
             status: activeTab === "pending" ? "pending" : formData.status,
-            existing_images: existingImages.map(img => img.filename), 
-            images_to_delete: imagesToDelete 
+            existing_images: existingImages.map(img => img.filename),
+            images_to_delete: imagesToDelete,
+            gender: formData.gender
         };
 
         if (activeTab === "rejected") {
@@ -161,7 +163,7 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
 
         onSave({
             accommodationData,
-            imageFiles 
+            imageFiles
         });
     };
 
@@ -323,6 +325,19 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
                         required
                     />
                 </div>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Gender *</label>
+                    <select
+                        name="gender"
+                        value={formData.gender}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        required
+                    >
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
             </div>
         </div>
     );
@@ -420,7 +435,7 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
 
             <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Accommodation Images *</label>
-                
+
                 {/* Existing Images */}
                 {existingImages.length > 0 && (
                     <div className="mb-4">
@@ -429,12 +444,12 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
                             {existingImages.map((image, index) => (
                                 <div key={index} className="relative w-24 h-24 border border-slate-200 rounded-lg overflow-hidden group">
                                     <img
-                                        src={buildPhotoUrl(image.filename,'accommodation')}
+                                        src={buildPhotoUrl(image.filename, 'accommodation')}
                                         alt={`existing-${index}`}
                                         className="w-full h-full object-cover"
                                         onError={(e) => {
                                             e.target.onerror = null;
-                                            e.target.src = '/placeholder-image.jpg'; 
+                                            e.target.src = '/placeholder-image.jpg';
                                         }}
                                     />
                                     <button

@@ -3,6 +3,10 @@ from pydantic import BaseModel, Field
 from enum import Enum
 from datetime import datetime
 
+class AccommodationGender(str, Enum):
+    male = "male"
+    female = "female"
+
 class AccommodationStatus(str, Enum):
     pending = "pending"
     available = "available"
@@ -65,6 +69,7 @@ class Accommodation(BaseModel):
     address: AccommodationAddress = None
     location: AccommodationLocation = None
     time_from_uni: AccommodationDistance = None  
+    gender: AccommodationGender.male
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_updated: datetime = Field(default_factory=datetime.utcnow)
     

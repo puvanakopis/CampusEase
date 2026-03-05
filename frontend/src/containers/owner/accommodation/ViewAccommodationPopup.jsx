@@ -96,6 +96,7 @@ const ViewAccommodationPopup = ({ accommodation, onClose, onEdit, activeTab }) =
                         <h4 className="font-bold text-slate-900 mb-2">Accommodation Details</h4>
                         <div className="text-sm text-slate-600 space-y-1">
                             <div className="flex justify-between"><span>Type:</span> <span className="font-medium">{accommodation.accommodation_type}</span></div>
+                            <div className="flex justify-between"><span>Gender:</span> <span className="font-medium capitalize">{accommodation.gender || "Not specified"}</span></div>
                             <div className="flex justify-between"><span>Monthly Price:</span> <span className="font-medium text-green-600">LKR {accommodation.month_rent?.toLocaleString()}</span></div>
                             <div className="flex justify-between"><span>Total Rooms:</span> <span className="font-medium">{accommodation.no_of_rooms}</span></div>
                             <div className="flex justify-between"><span>Total Beds:</span> <span className="font-medium">{accommodation.no_of_beds}</span></div>
