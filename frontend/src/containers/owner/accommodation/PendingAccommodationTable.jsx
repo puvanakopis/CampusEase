@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Pagination from "../common/Pagination";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete }) => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
     const itemsPerPage = 10;
 
-    const getImageUrl = (images) => {
-        if (images && images.length > 0) {
-            return `https://via.placeholder.com/100x100?text=${images[0].filename}`;
-        }
-        return "https://via.placeholder.com/100x100?text=Accommodation";
-    };
+    const filteredAccommodations = useMemo(() => {
+        if (!searchQuery.trim()) return accommodations;
+        
+        return accommodations.filter((item) => {
+            const searchLower = searchQuery.toLowerCase();
+            return (
+                item.name.toLowerCase().includes(searchLower) ||
+                item.address?.street?.toLowerCase().includes(searchLower) ||
+                item.accommodation_type?.toLowerCase().includes(searchLower)
+            );
+        });
+    }, [accommodations, searchQuery]);
 
     const formatAddress = (address) => {
         if (!address) return "Location not specified";
@@ -23,10 +31,10 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
     };
 
     // Pagination logic
-    const totalPages = Math.ceil(accommodations.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredAccommodations.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const paginatedAccommodations = accommodations.slice(startIndex, endIndex);
+    const paginatedAccommodations = filteredAccommodations.slice(startIndex, endIndex);
 
     const handlePageChange = (page) => {
         if (page < 1 || page > totalPages) return;
@@ -36,9 +44,9 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+            <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Pending Accommodations ({accommodations.length})
+                    Pending Accommodations ({filteredAccommodations.length})
                 </h3>
                 <div className="flex items-center gap-3">
                     <div className="relative">
@@ -48,6 +56,8 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                         <input
                             type="text"
                             placeholder="Search accommodations..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
@@ -84,12 +94,14 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                                     <div className="flex items-center gap-3">
                                         <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={getImageUrl(accommodation.images)}
+                                                src={accommodation.images?.[0]?.filename 
+                                                    ? buildPhotoUrl(accommodation.images[0].filename, "accommodation")
+                                                    : "https://via.placeholder.com/100x100?text=No+Image"
+                                                }
                                                 alt={accommodation.name}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {
-                                                    e.target.src =
-                                                        "https://via.placeholder.com/100x100?text=Accommodation";
+                                                    e.target.src = "https://via.placeholder.com/100x100?text=Error";
                                                 }}
                                             />
                                         </div>
@@ -104,7 +116,7 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                                     <div className="space-y-1">
                                         <p className="text-sm text-slate-600 capitalize">Type: {accommodation.accommodation_type}</p>
                                         <p className="text-sm font-bold text-green-600">
-                                            LKR {accommodation.month_rent.toLocaleString()}
+                                            LKR {accommodation.month_rent?.toLocaleString()}
                                         </p>
                                         <p className="text-xs text-slate-500">Rooms: {accommodation.no_of_rooms}</p>
                                         <p className="text-xs text-slate-500">Beds: {accommodation.no_of_beds}</p>
@@ -154,16 +166,18 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                             </tr>
                         ))}
 
-                        {accommodations.length === 0 && (
+                        {filteredAccommodations.length === 0 && (
                             <tr>
                                 <td colSpan="5" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
                                         <span className="material-symbols-outlined text-4xl mb-2">
-                                            pending_actions
+                                            {searchQuery ? "search_off" : "pending_actions"}
                                         </span>
-                                        <p className="text-sm">No pending accommodations</p>
+                                        <p className="text-sm">
+                                            {searchQuery ? "No results match your search" : "No pending accommodations"}
+                                        </p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            All submissions have been processed
+                                            {searchQuery ? "Try adjusting your search terms" : "All submissions have been processed"}
                                         </p>
                                     </div>
                                 </td>
@@ -174,13 +188,13 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
             </div>
 
             {/* Pagination */}
-            {accommodations.length > itemsPerPage && (
+            {filteredAccommodations.length > itemsPerPage && (
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={handlePageChange}
                     currentCount={paginatedAccommodations.length}
-                    totalCount={accommodations.length}
+                    totalCount={filteredAccommodations.length}
                 />
             )}
         </div>

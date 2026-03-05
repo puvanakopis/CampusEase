@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const RejectedAccommodationTable = ({ accommodations, onView, onEditBeforeResubmit, onDelete }) => {
-    const getImageUrl = (images) => {
-        if (images && images.length > 0) {
-            return `https://via.placeholder.com/100x100?text=${images[0].filename}`;
-        }
-        return "https://via.placeholder.com/100x100?text=Accommodation";
-    };
+const RejectedAccommodationTable = ({ 
+    accommodations, 
+    onView, 
+    onEditBeforeResubmit, 
+    onDelete,
+}) => {
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const filteredAccommodations = useMemo(() => {
+        if (!searchQuery.trim()) return accommodations;
+        
+        return accommodations.filter((item) => {
+            const searchLower = searchQuery.toLowerCase();
+            return (
+                item.name.toLowerCase().includes(searchLower) ||
+                item.address?.street?.toLowerCase().includes(searchLower) ||
+                item.accommodation_type?.toLowerCase().includes(searchLower) ||
+                item.reject_reason?.toLowerCase().includes(searchLower)
+            );
+        });
+    }, [accommodations, searchQuery]);
 
     const formatAddress = (address) => {
         if (!address) return "Location not specified";
@@ -21,9 +36,9 @@ const RejectedAccommodationTable = ({ accommodations, onView, onEditBeforeResubm
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+            <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Rejected Accommodations ({accommodations.length})
+                    Rejected Accommodations ({filteredAccommodations.length})
                 </h3>
                 <div className="flex items-center gap-3">
                     {/* Search */}
@@ -34,6 +49,8 @@ const RejectedAccommodationTable = ({ accommodations, onView, onEditBeforeResubm
                         <input
                             type="text"
                             placeholder="Search accommodations..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
@@ -64,18 +81,20 @@ const RejectedAccommodationTable = ({ accommodations, onView, onEditBeforeResubm
                     </thead>
 
                     <tbody className="divide-y divide-slate-100">
-                        {accommodations.map((accommodation) => (
+                        {filteredAccommodations.map((accommodation) => (
                             <tr key={accommodation._id} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={getImageUrl(accommodation.images)}
+                                                src={accommodation.images?.[0]?.filename 
+                                                    ? buildPhotoUrl(accommodation.images[0].filename, "accommodation")
+                                                    : "https://via.placeholder.com/100x100?text=No+Image"
+                                                }
                                                 alt={accommodation.name}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {
-                                                    e.target.src =
-                                                        "https://via.placeholder.com/100x100?text=Accommodation";
+                                                    e.target.src = "https://via.placeholder.com/100x100?text=Error";
                                                 }}
                                             />
                                         </div>
@@ -90,7 +109,7 @@ const RejectedAccommodationTable = ({ accommodations, onView, onEditBeforeResubm
                                     <div className="space-y-1">
                                         <p className="text-sm text-slate-600 capitalize">Type: {accommodation.accommodation_type}</p>
                                         <p className="text-sm font-bold text-green-600">
-                                            LKR {accommodation.month_rent.toLocaleString()}
+                                            LKR {accommodation.month_rent?.toLocaleString()}
                                         </p>
                                         <p className="text-xs text-slate-500">Rooms: {accommodation.no_of_rooms}</p>
                                     </div>
@@ -144,16 +163,18 @@ const RejectedAccommodationTable = ({ accommodations, onView, onEditBeforeResubm
                             </tr>
                         ))}
 
-                        {accommodations.length === 0 && (
+                        {filteredAccommodations.length === 0 && (
                             <tr>
                                 <td colSpan="5" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
                                         <span className="material-symbols-outlined text-4xl mb-2">
-                                            check_circle
+                                            {searchQuery ? "search_off" : "check_circle"}
                                         </span>
-                                        <p className="text-sm">No rejected accommodations</p>
+                                        <p className="text-sm">
+                                            {searchQuery ? "No results match your search" : "No rejected accommodations"}
+                                        </p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            All submissions have been approved
+                                            {searchQuery ? "Try adjusting your search terms" : "All submissions have been approved"}
                                         </p>
                                     </div>
                                 </td>

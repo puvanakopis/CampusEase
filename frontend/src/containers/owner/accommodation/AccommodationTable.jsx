@@ -31,12 +31,23 @@ const AccommodationTable = ({
                 const matchesSearch =
                     item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     item.address?.street?.toLowerCase().includes(searchQuery.toLowerCase());
-                const matchesType = filterType === "All" || item.accommodation_type === filterType;
-                const matchesStatus = filterStatus === "All" || item.status === filterStatus;
+                const matchesType = filterType === "All" || item.accommodation_type === filterType.toLowerCase();
+                const matchesStatus = filterStatus === "All" || item.status === filterStatus.toLowerCase();
                 return matchesSearch && matchesType && matchesStatus;
             })
             .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }, [accommodations, searchQuery, filterType, filterStatus]);
+
+    const getStatusBadgeClass = (status) => {
+        const statusClasses = {
+            'available': 'bg-green-100 text-green-800',
+            'pending': 'bg-yellow-100 text-yellow-800',
+            'rejected': 'bg-red-100 text-red-800',
+            'booked': 'bg-blue-100 text-blue-800',
+            'unavailable': 'bg-gray-100 text-gray-800'
+        };
+        return statusClasses[status?.toLowerCase()] || 'bg-gray-100 text-gray-800';
+    };
 
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
@@ -82,11 +93,11 @@ const AccommodationTable = ({
                         className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     >
                         <option value="All">Status: All</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Available">Available</option>
-                        <option value="Rejected">Rejected</option>
-                        <option value="Booked">Booked</option>
-                        <option value="Unavailable">Unavailable</option>
+                        <option value="pending">Pending</option>
+                        <option value="available">Available</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="booked">Booked</option>
+                        <option value="unavailable">Unavailable</option>
                     </select>
                 </div>
             </div>
@@ -114,9 +125,15 @@ const AccommodationTable = ({
                                     <div className="flex items-center gap-3">
                                         <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={buildPhotoUrl(accommodation.images[0].filename, "accommodation")}
+                                                src={accommodation.images?.[0]?.filename 
+                                                    ? buildPhotoUrl(accommodation.images[0].filename, "accommodation")
+                                                    : "https://via.placeholder.com/100x100?text=No+Image"
+                                                }
                                                 alt={accommodation.name}
                                                 className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    e.target.src = "https://via.placeholder.com/100x100?text=Error";
+                                                }}
                                             />
                                         </div>
                                         <div>
@@ -133,7 +150,7 @@ const AccommodationTable = ({
 
                                 <td className="px-6 py-4">
                                     <p className="text-sm font-bold text-green-600">
-                                        LKR {accommodation.month_rent.toLocaleString()}
+                                        LKR {accommodation.month_rent?.toLocaleString()}
                                     </p>
                                     <p className="text-[10px] text-slate-400">per month</p>
                                 </td>
@@ -145,14 +162,14 @@ const AccommodationTable = ({
                                 <td className="px-6 py-4">
                                     <div>
                                         <p className="text-sm font-medium text-slate-900">
-                                            {getOccupiedCount(accommodation.total_users, accommodation.available_users)}/
-                                            {accommodation.total_users}
+                                            {getOccupiedCount(accommodation.total_users || 0, accommodation.available_users || 0)}/
+                                            {accommodation.total_users || 0}
                                         </p>
                                         <div className="w-20 bg-slate-200 rounded-full h-1.5 mt-1">
                                             <div
                                                 className="bg-primary h-1.5 rounded-full"
                                                 style={{
-                                                    width: `${getOccupancyPercentage(accommodation.total_users, accommodation.available_users)}%`,
+                                                    width: `${getOccupancyPercentage(accommodation.total_users || 0, accommodation.available_users || 0)}%`,
                                                 }}
                                             ></div>
                                         </div>
@@ -161,27 +178,22 @@ const AccommodationTable = ({
 
                                 <td className="px-6 py-4">
                                     <span
-                                        className={`px-3 py-1 rounded-full text-xs font-bold ${accommodation.status === "Available"
-                                            ? "bg-green-100 text-green-800"
-                                            : accommodation.status === "Rejected"
-                                                ? "bg-red-100 text-red-800"
-                                                : "bg-yellow-100 text-yellow-800"
-                                            }`}
+                                        className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusBadgeClass(accommodation.status)}`}
                                     >
                                         {accommodation.status}
                                     </span>
                                 </td>
 
                                 <td className="px-6 py-4 text-center">
-                                    {(accommodation.status === "Available" || accommodation.status === "Unavailable") && (
+                                    {(accommodation.status?.toLowerCase() === "available" || accommodation.status?.toLowerCase() === "unavailable") && (
                                         <button
                                             onClick={() => onToggleAvailability(accommodation)}
-                                            className={`${accommodation.status === "Available"
+                                            className={`${accommodation.status?.toLowerCase() === "available"
                                                 ? "bg-gray-600 hover:bg-gray-500"
                                                 : "bg-green-600 hover:bg-green-500"
                                                 } text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors`}
                                         >
-                                            {accommodation.status === "Available" ? "Mark Unavailable" : "Mark Available"}
+                                            {accommodation.status?.toLowerCase() === "available" ? "Mark Unavailable" : "Mark Available"}
                                         </button>
                                     )}
                                 </td>
@@ -221,9 +233,19 @@ const AccommodationTable = ({
                             <tr>
                                 <td colSpan="8" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
-                                        <span className="material-symbols-outlined text-4xl mb-2">apartment</span>
-                                        <p className="text-sm">No accommodations match your filters</p>
-                                        <p className="text-xs text-slate-500 mt-1">Try adjusting search or filters</p>
+                                        <span className="material-symbols-outlined text-4xl mb-2">
+                                            {searchQuery || filterType !== "All" || filterStatus !== "All" ? "search_off" : "apartment"}
+                                        </span>
+                                        <p className="text-sm">
+                                            {searchQuery || filterType !== "All" || filterStatus !== "All" 
+                                                ? "No accommodations match your filters" 
+                                                : "No accommodations available"}
+                                        </p>
+                                        <p className="text-xs text-slate-500 mt-1">
+                                            {searchQuery || filterType !== "All" || filterStatus !== "All" 
+                                                ? "Try adjusting search or filters" 
+                                                : "Add your first accommodation to get started"}
+                                        </p>
                                     </div>
                                 </td>
                             </tr>
