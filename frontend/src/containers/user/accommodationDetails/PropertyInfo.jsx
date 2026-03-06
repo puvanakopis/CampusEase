@@ -39,7 +39,7 @@ const PropertyInfo = ({
             </div>
 
             {/* Tags */}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 pt-4">
                 {verified && (
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border bg-blue-50 text-blue-700 border-blue-100">
                         <span className="material-symbols-outlined text-lg">verified</span>
