@@ -176,3 +176,4 @@ class VehicleUpdateRequest(BaseModel):
     time_from_uni: Optional[VehicleDistance] = None
     remove_images: Optional[List[str]] = None  # NEW
     last_updated: datetime = Field(default_factory=datetime.utcnow)
+    
