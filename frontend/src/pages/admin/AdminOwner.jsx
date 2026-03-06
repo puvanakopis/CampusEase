@@ -1,145 +1,203 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { OwnerContext } from "../../context/OwnerContext";
 import Heading from "../../containers/admin/common/Heading";
 import StatsCards from "../../containers/admin/common/StatsCards";
 import Tabs from "../../containers/admin/common/Tabs";
 import OwnerTable from "../../containers/admin/owner/OwnerTable";
+import OwnerRequestsTable from "../../containers/admin/owner/OwnerRequestsTable";
 import ViewOwnerPopup from "../../containers/admin/owner/ViewOwnerPopup";
 import StatusChangePopup from "../../containers/admin/owner/StatusChangePopup";
-
-const OWNER_STATUS_TABS = [
-    { id: "all", label: "All Owners" },
-    { id: "Pending Approval", label: "Pending Approval" },
-    { id: "Active", label: "Active Owners" },
-    { id: "Inactive", label: "Inactive Owners" },
-    { id: "Declined Approval", label: "Declined Owners" }
-];
+import RejectPopup from "../../containers/admin/owner/RejectPopup";
+import toast from "react-hot-toast";
 
 const AdminOwnerManagement = () => {
-    const { owners, loading, updateOwner, deleteOwner } = useContext(OwnerContext);
+    const { owners, fetchOwners, updateOwner, loading } = useContext(OwnerContext);
 
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedOwner, setSelectedOwner] = useState(null);
-    const [activeTab, setActiveTab] = useState(OWNER_STATUS_TABS[0].id);
+    const [activeTab, setActiveTab] = useState("all");
     const [showStatusPopup, setShowStatusPopup] = useState(false);
     const [ownerToChangeStatus, setOwnerToChangeStatus] = useState(null);
+    const [showRejectPopup, setShowRejectPopup] = useState(false);
+    const [requestToReject, setRequestToReject] = useState(null);
 
-    // Group owners by status
-    const ownersByStatus = OWNER_STATUS_TABS.reduce((acc, tab) => {
-        if (tab.id === "all") acc[tab.id] = owners; // all owners
-        else acc[tab.id] = owners.filter(owner => owner.status === tab.id);
-        return acc;
-    }, {});
+    // ------------------- FILTERS -------------------
 
-    // Generate tabs with counts
-    const tabs = OWNER_STATUS_TABS.map(tab => ({
-        ...tab,
-        count: ownersByStatus[tab.id]?.length || 0
-    }));
+    const allOwners = owners;
 
-    // Stats
+    const activeOwners = owners.filter(
+        (o) => o.status === "Active"
+    );
+
+    const inactiveOwners = owners.filter(
+        (o) => o.status === "Inactive"
+    );
+
+    const pendingOwners = owners.filter(
+        (o) => o.status === "Pending Approval"
+    );
+
+    const declinedOwners = owners.filter(
+        (o) => o.status === "Declined Approval"
+    );
+
+    // ------------------- TABS -------------------
+
+    const tabs = [
+        {
+            id: "all",
+            label: "All",
+            count: owners.length,
+        },
+        {
+            id: "Active",
+            label: "Active",
+            count: activeOwners.length,
+        },
+        {
+            id: "Inactive",
+            label: "Inactive",
+            count: inactiveOwners.length,
+        },
+        {
+            id: "Pending Approval",
+            label: "Pending Approval",
+            count: pendingOwners.length,
+        },
+        {
+            id: "Declined Approval",
+            label: "Declined",
+            count: declinedOwners.length,
+        },
+    ];
+
+    // ------------------- STATS -------------------
+
     const stats = [
         {
             label: "Total Owners",
             icon: "group",
             value: owners.length,
-            subtext: `${ownersByStatus["Active"]?.length || 0} active`,
-            trendIcon: "trending_up",
-            subtextColor: "text-green-500"
+            subtext: "Registered in system",
         },
         {
             label: "Pending Approvals",
             icon: "pending_actions",
-            value: ownersByStatus["Pending Approval"]?.length || 0,
+            value: pendingOwners.length,
             subtext: "Awaiting review",
-            trendIcon: "hourglass_empty",
-            subtextColor: "text-yellow-600"
+            subtextColor: "text-yellow-500",
         },
         {
-            label: "Avg. Owner Rating",
-            icon: "star",
-            value: owners.length > 0
-                ? (owners.reduce((sum, owner) => sum + (owner.rating || 0), 0) / owners.length).toFixed(1)
-                : "0.0",
-            subtext: `${owners.filter(o => (o.rating || 0) >= 4).length} owners rated 4+`,
-            subtextColor: "text-yellow-600"
-        }
+            label: "Declined Owners",
+            icon: "cancel",
+            value: declinedOwners.length,
+            subtext: "Not approved",
+            subtextColor: "text-red-500",
+        },
     ];
+
+    // ------------------- ACTION HANDLERS -------------------
 
     const handleViewOwner = (owner) => {
         setSelectedOwner(owner);
         setShowViewPopup(true);
     };
 
-    const handleDeleteOwner = async (ownerId) => {
-        if (window.confirm("Are you sure you want to delete this owner? This will also remove all their properties.")) {
-            try {
-                await deleteOwner(ownerId);
-            } catch (error) {
-                console.error("Error deleting owner:", error);
-            }
-        }
-    };
-
-    const handleApproveRequest = async (requestId) => {
+    const handleApproveRequest = async (request) => {
         try {
-            await updateOwner(requestId, {
+            const updatePayload = {
                 status: "Active",
-                verified: true
-            });
+                verified: true,
+                decline_reason: null,
+            };
+
+            await updateOwner(request._id, updatePayload);
+            toast.success("Owner approved successfully");
+            await fetchOwners();
         } catch (error) {
-            console.error("Error approving owner:", error);
+            console.log(error);
+            toast.error(error.message || "Approval failed");
         }
     };
 
-    const handleRejectRequest = async (requestId) => {
-        const reason = window.prompt("Please provide a reason for rejection:");
-        if (reason) {
-            try {
-                await updateOwner(requestId, {
-                    status: "Declined Approval",
-                    decline_reason: reason,
-                    verified: false
-                });
-            } catch (error) {
-                console.error("Error rejecting owner:", error);
-            }
+    const handleRejectRequest = (request) => {
+        setRequestToReject(request);
+        setShowRejectPopup(true);
+    };
+
+    const handleConfirmReject = async (reason) => {
+        if (!requestToReject) return;
+
+        try {
+            const updatePayload = {
+                status: "Declined Approval",
+                decline_reason: reason,
+                verified: false,
+            };
+
+            await updateOwner(requestToReject._id, updatePayload);
+            toast.success("Owner request rejected");
+            setShowRejectPopup(false);
+            setRequestToReject(null);
+            await fetchOwners();
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message || "Reject failed");
         }
     };
 
-    const handleToggleOwnerStatus = (ownerId, currentStatus) => {
-        const owner = owners.find(o => o.id === ownerId || o._id === ownerId);
-        if (!owner) return;
-
-        setOwnerToChangeStatus({ ...owner, currentStatus });
+    const handleToggleOwnerStatus = (owner) => {
+        setOwnerToChangeStatus(owner);
         setShowStatusPopup(true);
     };
 
     const handleConfirmStatusChange = async (reason) => {
         if (!ownerToChangeStatus) return;
 
-        const newStatus = ownerToChangeStatus.currentStatus === "Active" ? "Inactive" : "Active";
-        const updateData = {
-            status: newStatus,
-            last_updated: new Date().toISOString()
-        };
-
-        if (newStatus === "Inactive" && reason) {
-            updateData.decline_reason = reason;
-        }
+        const newStatus = ownerToChangeStatus.status === "Active" ? "Inactive" : "Active";
 
         try {
-            await updateOwner(ownerToChangeStatus._id || ownerToChangeStatus.id, updateData);
+            const updatePayload = {
+                status: newStatus,
+                decline_reason: newStatus === "Inactive" ? reason : null,
+            };
+
+            await updateOwner(ownerToChangeStatus._id, updatePayload);
+            toast.success(
+                `Owner ${newStatus === "Active" ? "activated" : "deactivated"} successfully`
+            );
+            await fetchOwners();
+        } catch (error) {
+            console.error(error);
+            toast.error(error.message || "Status update failed");
+        } finally {
             setShowStatusPopup(false);
             setOwnerToChangeStatus(null);
-        } catch (error) {
-            console.error("Error updating owner status:", error);
         }
     };
 
+    useEffect(() => {
+        fetchOwners();
+    }, []);
+
+    if (loading && owners.length === 0) {
+        return (
+            <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
+                <div className="flex justify-center items-center h-64">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                        <p className="mt-4 text-slate-600">
+                            Loading owners...
+                        </p>
+                    </div>
+                </div>
+            </main>
+        );
+    }
+
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-            {/* Popups */}
+
             {showViewPopup && selectedOwner && (
                 <ViewOwnerPopup
                     owner={selectedOwner}
@@ -147,13 +205,14 @@ const AdminOwnerManagement = () => {
                         setShowViewPopup(false);
                         setSelectedOwner(null);
                     }}
+                    isAdmin={true}
                 />
             )}
 
             {showStatusPopup && ownerToChangeStatus && (
                 <StatusChangePopup
                     owner={ownerToChangeStatus}
-                    currentStatus={ownerToChangeStatus.currentStatus}
+                    currentStatus={ownerToChangeStatus.status}
                     onClose={() => {
                         setShowStatusPopup(false);
                         setOwnerToChangeStatus(null);
@@ -162,9 +221,20 @@ const AdminOwnerManagement = () => {
                 />
             )}
 
+            {showRejectPopup && requestToReject && (
+                <RejectPopup
+                    request={requestToReject}
+                    onClose={() => {
+                        setShowRejectPopup(false);
+                        setRequestToReject(null);
+                    }}
+                    onConfirm={handleConfirmReject}
+                />
+            )}
+
             <Heading
                 title="Admin Owner Management"
-                subtitle="Manage property owners, review registration requests, and handle owner accounts."
+                subtitle="Manage property owners and review new registration requests."
                 showButton={false}
             />
 
@@ -176,28 +246,55 @@ const AdminOwnerManagement = () => {
                 onTabChange={setActiveTab}
             />
 
-            {loading ? (
-                <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                    <p className="text-slate-600 mt-4">Loading owners...</p>
-                </div>
-            ) : (
-                <>
-                    {OWNER_STATUS_TABS.map(tab => (
-                        activeTab === tab.id && (
-                            <OwnerTable
-                                key={tab.id}
-                                owners={ownersByStatus[tab.id] || []}
-                                onView={handleViewOwner}
-                                onDelete={handleDeleteOwner}
-                                onToggleStatus={handleToggleOwnerStatus}
-                                onApproveRequest={tab.id === "Pending Approval" ? handleApproveRequest : undefined}
-                                onRejectRequest={tab.id === "Pending Approval" ? handleRejectRequest : undefined}
-                            />
-                        )
-                    ))}
-                </>
+            {activeTab === "all" && (
+                <OwnerTable
+                    title="All Owners"
+                    owners={allOwners}
+                    onView={handleViewOwner}
+                    onToggleStatus={handleToggleOwnerStatus}
+                    isAdmin={true}
+                />
             )}
+
+            {activeTab === "Active" && (
+                <OwnerTable
+                    title="Active Owners"
+                    owners={activeOwners}
+                    onView={handleViewOwner}
+                    onToggleStatus={handleToggleOwnerStatus}
+                    isAdmin={true}
+                />
+            )}
+
+            {activeTab === "Inactive" && (
+                <OwnerTable
+                    title="Inactive Owners"
+                    owners={inactiveOwners}
+                    onView={handleViewOwner}
+                    onToggleStatus={handleToggleOwnerStatus}
+                    isAdmin={true}
+                />
+            )}
+
+            {activeTab === "Declined Approval" && (
+                <OwnerTable
+                    title="Declined Owners"
+                    owners={declinedOwners}
+                    onView={handleViewOwner}
+                    onToggleStatus={handleToggleOwnerStatus}
+                    isAdmin={true}
+                />
+            )}
+
+            {activeTab === "Pending Approval" && (
+                <OwnerRequestsTable
+                    ownerRequests={pendingOwners}
+                    onViewRequest={handleViewOwner}
+                    onApproveRequest={handleApproveRequest}
+                    onRejectRequest={handleRejectRequest}
+                />
+            )}
+
         </main>
     );
 };
