@@ -102,3 +102,31 @@ async def get_all_vehicles():
         "message": "Vehicles fetched successfully",
         "data": vehicles
     }
+
+
+async def get_vehicle_by_id(vehicle_id: str):
+
+    doc = await vehicles_collection.find_one({"_id": vehicle_id})
+
+    if not doc:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+
+    owner = await get_owner_by_id(doc.get("owner_id"))
+
+    reviews = []
+    for rev in doc.get("reviews", []):
+        user = await get_user_by_id(rev.get("user_id"))
+        reviews.append(VehicleReview(user=user, **rev))
+
+    doc_copy = doc.copy()
+    doc_copy.pop("reviews", None)
+
+    vehicle_obj = VehicleResponse(**doc_copy, owner=owner, reviews=reviews)
+
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": "Vehicle fetched successfully",
+        "data": vehicle_obj.dict(by_alias=True)
+    }
+

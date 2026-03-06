@@ -8,7 +8,8 @@ from app.schemas.vehicle_schema import (
 
 from app.services.vehicle_service import (
     create_vehicle,
-    get_all_vehicles,    
+    get_vehicle_by_id,
+    get_all_vehicles
 )
 
 from app.middlewares.auth_middleware import get_current_user, role_required
@@ -30,3 +31,8 @@ async def create_vehicle_endpoint(
 @router.get("/")
 async def list_vehicles():
     return await get_all_vehicles()
+
+
+@router.get("/{vehicle_id}")
+async def get_vehicle_endpoint(vehicle_id: str):
+    return await get_vehicle_by_id(vehicle_id)
