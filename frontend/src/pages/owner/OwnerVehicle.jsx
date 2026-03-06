@@ -2,7 +2,7 @@ import React, { useState, useContext, useMemo, useEffect } from "react";
 import Heading from "../../containers/owner/common/Heading";
 import StatsCards from "../../containers/owner/common/StatsCards";
 import Tabs from "../../containers/owner/common/Tabs";
-import ActiveVehicleTable from "../../containers/owner/vehicle/ActiveVehicleTable";
+import VehicleTable from "../../containers/owner/vehicle/VehicleTable";
 import PendingVehicleTable from "../../containers/owner/vehicle/PendingVehicleTable";
 import RejectedVehicleTable from "../../containers/owner/vehicle/RejectedVehicleTable";
 import AddVehiclePopup from "../../containers/owner/vehicle/AddVehiclePopup";
@@ -241,7 +241,7 @@ const OwnerVehicle = () => {
                 activeTab === "available" ||
                 activeTab === "booked" ||
                 activeTab === "unavailable") && (
-                    <ActiveVehicleTable
+                    <VehicleTable
                         vehicles={
                             activeTab === "available"
                                 ? availableList

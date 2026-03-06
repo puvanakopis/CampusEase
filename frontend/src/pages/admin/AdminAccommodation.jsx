@@ -22,7 +22,7 @@ const AdminAccommodation = () => {
         accoLoading
     } = useContext(AccommodationContext);
 
-    const [activeTab, setActiveTab] = useState("available");
+    const [activeTab, setActiveTab] = useState("all");
 
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedAccommodation, setSelectedAccommodation] = useState(null);
@@ -33,8 +33,6 @@ const AdminAccommodation = () => {
 
     const [showRejectPopup, setShowRejectPopup] = useState(false);
     const [requestToReject, setRequestToReject] = useState(null);
-
-    // ------------------- FILTERS -------------------
 
     // ------------------- FILTERS -------------------
 
@@ -95,49 +93,28 @@ const AdminAccommodation = () => {
         },
     ];
 
-    // ------------------- STATS -------------------
-
-    const totalUsers = accommodations.reduce(
-        (sum, a) => sum + (a.total_users || 0),
-        0
-    );
-
-    const occupiedUsers = accommodations.reduce(
-        (sum, a) => sum + ((a.total_users || 0) - (a.available_users || 0)),
-        0
-    );
-
-    const monthlyRevenue = accommodations.reduce(
-        (sum, a) =>
-            sum +
-            (a.month_rent || 0) *
-            ((a.total_users || 0) - (a.available_users || 0)),
-        0
-    );
+    // ------------------- ADMIN STATS (MATCH VEHICLES) -------------------
 
     const stats = [
         {
             label: "Total Accommodations",
             icon: "apartment",
             value: accommodations.length,
-            subtext: `${availableAccommodations.length} available`,
-            trendIcon: "trending_up",
-            subtextColor: "text-green-500",
+            subtext: "Registered in system",
         },
         {
-            label: "Total Occupancy",
-            icon: "group",
-            value:
-                totalUsers > 0
-                    ? `${((occupiedUsers / totalUsers) * 100).toFixed(1)}%`
-                    : "0%",
-            subtext: `${occupiedUsers} of ${totalUsers} users`,
+            label: "Pending Requests",
+            icon: "hourglass_empty",
+            value: accommodationRequests.length,
+            subtext: "Waiting for approval",
+            subtextColor: "text-yellow-500",
         },
         {
-            label: "Monthly Revenue",
-            icon: "payments",
-            value: `LKR ${monthlyRevenue.toLocaleString()}`,
-            subtext: "From booked accommodations",
+            label: "Rejected Accommodations",
+            icon: "cancel",
+            value: rejectedAccommodations.length,
+            subtext: "Not approved",
+            subtextColor: "text-red-500",
         },
     ];
 
@@ -232,8 +209,7 @@ const AdminAccommodation = () => {
             );
 
             toast.success(
-                `Accommodation ${newStatus === "available" ? "activated" : "deactivated"
-                }`
+                `Accommodation ${newStatus === "available" ? "activated" : "deactivated"}`
             );
 
             await fetchAccommodations();
