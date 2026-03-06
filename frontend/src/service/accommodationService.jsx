@@ -15,6 +15,11 @@ export const accommodationApi = {
         return res.data;
     },
 
+    getMyAccommodations: async () => {
+        const res = await axiosAuth.get("/accommodation/owner");
+        return res.data;
+    },
+
     getById: async (id) => {
         const res = await axiosAuth.get(`/accommodation/${id}`);
         return res.data;

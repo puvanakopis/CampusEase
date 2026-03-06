@@ -105,6 +105,36 @@ async def get_all_vehicles():
     }
 
 
+async def get_vehicle_by_owner(owner_id: str):
+
+    vehicles = []
+
+    cursor = vehicles_collection.find({"owner_id": owner_id})
+
+    async for doc in cursor:
+
+        owner = await get_owner_by_id(doc.get("owner_id"))
+
+        reviews = []
+        for rev in doc.get("reviews", []):
+            user = await get_user_by_id(rev.get("user_id"))
+            reviews.append(VehicleReview(user=user, **rev))
+
+        doc_copy = doc.copy()
+        doc_copy.pop("reviews", None)
+
+        vehicle_obj = VehicleResponse(**doc_copy, owner=owner, reviews=reviews)
+
+        vehicles.append(vehicle_obj.dict(by_alias=True))
+
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": "Owner vehicles fetched successfully",
+        "data": vehicles
+    }
+
+
 async def get_vehicle_by_id(vehicle_id: str):
 
     doc = await vehicles_collection.find_one({"_id": vehicle_id})

@@ -6,6 +6,7 @@ export const VehicleContext = createContext();
 
 export const VehicleProvider = ({ children }) => {
     const [vehicles, setVehicles] = useState([]);
+    const [ownerVehicles, setOwnerVehicles] = useState([]);
     const [loading, setLoading] = useState(false);
 
     // ------------------ FETCH ALL VEHICLES ------------------
@@ -13,9 +14,9 @@ export const VehicleProvider = ({ children }) => {
         setLoading(true);
         try {
             const res = await vehicleApi.getAll();
+
             if (res.success) {
                 setVehicles(res.data);
-                console.log(res.data);
             } else {
                 toast.error(res.message || "Failed to load vehicles");
             }
@@ -30,12 +31,35 @@ export const VehicleProvider = ({ children }) => {
         fetchVehicles();
     }, []);
 
+    // ------------------ FETCH OWNER VEHICLES ------------------
+    const fetchMyVehicles = async () => {
+        setLoading(true);
+        try {
+            const res = await vehicleApi.getOwnerVehicles();
+
+            if (res.success) {
+                setOwnerVehicles(res.data);
+            } else {
+                toast.error(res.message || "Failed to load owner vehicles");
+            }
+        } catch (err) {
+            toast.error(err.message || "Failed to load owner vehicles");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // ------------------ CREATE VEHICLE ------------------
     const createVehicle = async (payload) => {
         const toastId = toast.loading("Creating vehicle...");
+
         try {
             const formData = new FormData();
-            formData.append("vehicle_request", JSON.stringify(payload.vehicleData));
+
+            formData.append(
+                "vehicle_request",
+                JSON.stringify(payload.vehicleData)
+            );
 
             if (payload.imageFiles && payload.imageFiles.length > 0) {
                 payload.imageFiles.forEach((file) => {
@@ -51,10 +75,15 @@ export const VehicleProvider = ({ children }) => {
             }
 
             toast.success("Vehicle created successfully!", { id: toastId });
+
             await fetchVehicles();
+            await fetchMyVehicles();
+
             return res.data;
         } catch (err) {
-            toast.error(err.message || "Failed to create vehicle", { id: toastId });
+            toast.error(err.message || "Failed to create vehicle", {
+                id: toastId,
+            });
             throw err;
         }
     };
@@ -62,16 +91,22 @@ export const VehicleProvider = ({ children }) => {
     // ------------------ GET VEHICLE BY ID ------------------
     const getVehicleById = async (id) => {
         const toastId = toast.loading("Loading vehicle...");
+
         try {
             const res = await vehicleApi.getById(id);
+
             if (!res.success) {
                 toast.error(res.message, { id: toastId });
                 throw new Error(res.message);
             }
+
             toast.success("Vehicle loaded", { id: toastId });
+
             return res.data;
         } catch (err) {
-            toast.error(err.message || "Failed to load vehicle", { id: toastId });
+            toast.error(err.message || "Failed to load vehicle", {
+                id: toastId,
+            });
             throw err;
         }
     };
@@ -79,9 +114,14 @@ export const VehicleProvider = ({ children }) => {
     // ------------------ UPDATE VEHICLE ------------------
     const updateVehicle = async (id, payload) => {
         const toastId = toast.loading("Updating vehicle...");
+
         try {
             const formData = new FormData();
-            formData.append("update_request", JSON.stringify(payload.vehicleData));
+
+            formData.append(
+                "update_request",
+                JSON.stringify(payload.vehicleData)
+            );
 
             if (payload.imageFiles && payload.imageFiles.length > 0) {
                 payload.imageFiles.forEach((file) => {
@@ -97,7 +137,10 @@ export const VehicleProvider = ({ children }) => {
             }
 
             toast.success("Vehicle updated successfully!", { id: toastId });
+
             await fetchVehicles();
+            await fetchMyVehicles();
+
             return res.data;
         } catch (err) {
             toast.error(err.message || "Update failed", { id: toastId });
@@ -108,14 +151,19 @@ export const VehicleProvider = ({ children }) => {
     // ------------------ DELETE VEHICLE ------------------
     const deleteVehicle = async (id) => {
         const toastId = toast.loading("Deleting vehicle...");
+
         try {
             const res = await vehicleApi.deleteVehicle(id);
+
             if (!res.success) {
                 toast.error(res.message, { id: toastId });
                 throw new Error(res.message);
             }
+
             toast.success("Vehicle deleted successfully!", { id: toastId });
+
             await fetchVehicles();
+            await fetchMyVehicles();
         } catch (err) {
             toast.error(err.message || "Delete failed", { id: toastId });
             throw err;
@@ -126,8 +174,10 @@ export const VehicleProvider = ({ children }) => {
         <VehicleContext.Provider
             value={{
                 vehicles,
+                ownerVehicles,
                 loading,
                 fetchVehicles,
+                fetchMyVehicles,
                 createVehicle,
                 getVehicleById,
                 updateVehicle,

@@ -18,6 +18,11 @@ export const vehicleApi = {
         return res.data;
     },
 
+    getOwnerVehicles: async () => {
+        const res = await axiosAuth.get("/vehicle/owner");
+        return res.data;
+    },
+
     updateVehicle: async (id, formData) => {
         const res = await axiosAuth.patch(`/vehicle/${id}`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
