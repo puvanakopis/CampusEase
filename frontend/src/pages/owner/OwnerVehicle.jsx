@@ -1,6 +1,4 @@
-import React, { useState, useContext, useMemo } from "react";
-import { VehicleContext } from "../../context/VehicleContext";
-import { AuthContext } from "../../context/AuthContext";
+import React, { useState, useContext, useMemo, useEffect } from "react";
 import Heading from "../../containers/owner/common/Heading";
 import StatsCards from "../../containers/owner/common/StatsCards";
 import Tabs from "../../containers/owner/common/Tabs";
@@ -10,104 +8,122 @@ import RejectedVehicleTable from "../../containers/owner/vehicle/RejectedVehicle
 import AddVehiclePopup from "../../containers/owner/vehicle/AddVehiclePopup";
 import EditVehiclePopup from "../../containers/owner/vehicle/EditVehiclePopup";
 import ViewVehiclePopup from "../../containers/owner/vehicle/ViewVehiclePopup";
+import LoadingSpinner from "../../components/common/Loading";
+
+import { VehicleContext } from "../../context/VehicleContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const OwnerVehicle = () => {
-    const { vehicles, loading, fetchVehicles, createVehicle, updateVehicle, deleteVehicle } = useContext(VehicleContext);
+    const {
+        vehicles,
+        vehicleLoading,
+        createVehicle,
+        updateVehicle,
+        deleteVehicle,
+        fetchVehicles
+    } = useContext(VehicleContext);
+
     const { currentUser } = useContext(AuthContext);
 
-    const [activeTab, setActiveTab] = useState("active");
+    const [activeTab, setActiveTab] = useState("all");
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [resubmitMode, setResubmitMode] = useState(false);
 
-    // Filter vehicles by status and owner
-    const ownerVehicles = useMemo(() => {
-        if (!vehicles.length || !currentUser) return [];
-        return vehicles.filter(v => v.owner?._id === currentUser.id || v.owner_id === currentUser.id);
-    }, [vehicles, currentUser]);
+    useEffect(() => {
+        fetchVehicles();
+    }, []);
 
-    const activeVehicles = useMemo(() => ownerVehicles.filter(v => v.status === "available" || v.status === "booked"), [ownerVehicles]);
-    const pendingVehicles = useMemo(() => ownerVehicles.filter(v => v.status === "pending"), [ownerVehicles]);
-    const rejectedVehicles = useMemo(() => ownerVehicles.filter(v => v.status === "rejected" || v.status === "unavailable"), [ownerVehicles]);
+    const getStatus = (vehicle) => vehicle?.status?.toLowerCase() || '';
 
-    // Stats calculation
+    // ------------ Tabs with all statuses ------------
+    const allList = useMemo(() => vehicles, [vehicles]);
+    const pendingList = useMemo(() => vehicles.filter(v => getStatus(v) === "pending"), [vehicles]);
+    const availableList = useMemo(() => vehicles.filter(v => getStatus(v) === "available"), [vehicles]);
+    const bookedList = useMemo(() => vehicles.filter(v => getStatus(v) === "booked"), [vehicles]);
+    const unavailableList = useMemo(() => vehicles.filter(v => getStatus(v) === "unavailable"), [vehicles]);
+    const rejectedList = useMemo(() => vehicles.filter(v => getStatus(v) === "rejected"), [vehicles]);
+
+    const tabs = [
+        { id: "all", label: "All Vehicles", count: allList.length },
+        { id: "available", label: "Available", count: availableList.length },
+        { id: "pending", label: "Pending", count: pendingList.length },
+        { id: "booked", label: "Booked", count: bookedList.length },
+        { id: "unavailable", label: "Unavailable", count: unavailableList.length },
+        { id: "rejected", label: "Rejected", count: rejectedList.length },
+    ];
+
+    // ------------ Stats ------------
     const stats = useMemo(() => {
-        const rentedVehicles = activeVehicles.filter(v => v.status === "booked");
-        const totalRevenue = rentedVehicles.reduce((acc, v) => acc + (v.day_rent || 0), 0);
+        const totalVehicles = vehicles.length;
 
         return [
             {
-                label: "Total Bookings",
-                icon: "event_available",
-                value: rentedVehicles.length,
-                subtext: `${rentedVehicles.length} of ${activeVehicles.length} vehicles rented`,
-                subtextColor: "text-blue-500"
-            },
-            {
-                label: "Active Vehicles",
+                label: "Total Vehicles",
                 icon: "directions_car",
-                value: activeVehicles.length,
-                subtext: `${rentedVehicles.length} currently rented out`,
-                subtextColor: "text-blue-500"
+                value: totalVehicles,
+                subtext: `${availableList.length} available, ${bookedList.length} booked`,
+                trendIcon: "trending_up",
+                subtextColor: "text-green-500",
             },
             {
-                label: "Monthly Revenue",
-                icon: "payments",
-                value: `LKR ${totalRevenue.toLocaleString()}`,
-                subtext: "Based on current rentals",
-                subtextColor: "text-slate-500"
-            }
+                label: "Available Vehicles",
+                icon: "check_circle",
+                value: availableList.length,
+                subtext: `${availableList.length} vehicles ready`,
+            },
+            {
+                label: "Pending / Rejected Vehicles",
+                icon: "hourglass_empty",
+                value: pendingList.length + rejectedList.length,
+                subtext: `${pendingList.length} pending, ${rejectedList.length} rejected`,
+            },
         ];
-    }, [activeVehicles]);
+    }, [vehicles, availableList.length, bookedList.length, pendingList.length, rejectedList.length]);
 
-    // Tabs
-    const tabs = [
-        { id: "active", label: "Active Vehicles", count: activeVehicles.length },
-        { id: "pending", label: "Pending Vehicles", count: pendingVehicles.length },
-        { id: "rejected", label: "Rejected Vehicles", count: rejectedVehicles.length }
-    ];
-
-    // Handlers
-    const handleAddVehicle = async (formData, imageFiles) => {
+    // ------------ Handlers ------------
+    const handleAddVehicle = async (payload) => {
         try {
-            await createVehicle({ vehicleData: formData, imageFiles });
+            await createVehicle(payload);
             setShowAddPopup(false);
-            await fetchVehicles();
         } catch (error) {
-            console.error("Error adding vehicle:", error);
+            console.error("Failed to create vehicle:", error);
         }
     };
 
-    const handleEditVehicle = async (vehicleData, imageFiles, removedImages = []) => {
+    const handleEditVehicle = async (payload) => {
         try {
-            const payload = {
-                vehicleData: {
-                    ...vehicleData,
-                    status: resubmitMode ? "pending" : vehicleData.status,
-                    reject_reason: resubmitMode ? null : vehicleData.reject_reason
-                },
-                imageFiles,
-                removedImages
-            };
-            await updateVehicle(vehicleData._id || vehicleData.id, payload);
-            setResubmitMode(false);
+            if (resubmitMode) {
+                await updateVehicle(selectedVehicle._id, {
+                    vehicleData: {
+                        ...payload.vehicleData,
+                        status: "pending",
+                        reject_reason: null,
+                    },
+                    imageFiles: payload.imageFiles || [],
+                    removedImages: payload.removedImages || []
+                });
+                setResubmitMode(false);
+            } else {
+                await updateVehicle(selectedVehicle._id, payload);
+            }
+
             setShowEditPopup(false);
             setSelectedVehicle(null);
-            await fetchVehicles();
         } catch (error) {
-            console.error("Error updating vehicle:", error);
+            console.error("Failed to update vehicle:", error);
         }
     };
 
-    const handleDeleteVehicle = async (vehicleId) => {
-        if (!window.confirm("Are you sure you want to delete this vehicle?")) return;
-        try {
-            await deleteVehicle(vehicleId);
-            await fetchVehicles();
-        } catch (error) {
-            console.error("Error deleting vehicle:", error);
+    const handleDeleteVehicle = async (id) => {
+        if (window.confirm("Are you sure you want to delete this vehicle?")) {
+            try {
+                await deleteVehicle(id);
+            } catch (error) {
+                console.error("Failed to delete vehicle:", error);
+            }
         }
     };
 
@@ -118,48 +134,71 @@ const OwnerVehicle = () => {
 
     const handleEditClick = (vehicle) => {
         setSelectedVehicle(vehicle);
-        setResubmitMode(false);
         setShowEditPopup(true);
+        setResubmitMode(false);
     };
 
     const handleEditBeforeResubmit = (vehicle) => {
         setSelectedVehicle(vehicle);
-        setResubmitMode(true);
         setShowEditPopup(true);
+        setResubmitMode(true);
     };
+
+    const handleToggleAvailability = async (vehicle) => {
+        const currentStatus = getStatus(vehicle);
+        const newStatus = currentStatus === "available" ? "unavailable" : "available";
+
+        try {
+            await updateVehicle(vehicle._id, {
+                vehicleData: { status: newStatus },
+                imageFiles: [],
+                removedImages: []
+            });
+        } catch (error) {
+            console.error("Failed to toggle availability:", error);
+        }
+    };
+
+    // ------------ Render ------------
+    if (vehicleLoading && vehicles.length === 0) {
+        return <LoadingSpinner />;
+    }
 
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-            {/* Loading */}
-            {loading && (
-                <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-                    <div className="bg-white p-4 rounded-lg shadow-lg">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                        <p className="mt-2 text-sm text-gray-600">Loading...</p>
-                    </div>
-                </div>
-            )}
-
             {/* Popups */}
             {showAddPopup && (
                 <AddVehiclePopup
-                    setShowAddPopup={setShowAddPopup}
-                    handleAddVehicle={handleAddVehicle}
+                    currentUser={currentUser}
+                    onClose={() => setShowAddPopup(false)}
+                    onSave={handleAddVehicle}
                 />
             )}
+
             {showViewPopup && selectedVehicle && (
                 <ViewVehiclePopup
-                    selectedVehicle={selectedVehicle}
-                    onClose={() => setShowViewPopup(false)}
+                    vehicle={selectedVehicle}
+                    onClose={() => {
+                        setShowViewPopup(false);
+                        setSelectedVehicle(null);
+                    }}
+                    onEdit={() => {
+                        setShowViewPopup(false);
+                        setShowEditPopup(true);
+                    }}
                     activeTab={activeTab}
                 />
             )}
+
             {showEditPopup && selectedVehicle && (
                 <EditVehiclePopup
-                    selectedVehicle={selectedVehicle}
-                    setShowEditPopup={setShowEditPopup}
-                    setSelectedVehicle={setSelectedVehicle}
-                    handleEditVehicle={handleEditVehicle}
+                    vehicle={selectedVehicle}
+                    onClose={() => {
+                        setShowEditPopup(false);
+                        setSelectedVehicle(null);
+                        setResubmitMode(false);
+                    }}
+                    onSave={handleEditVehicle}
                     activeTab={activeTab}
                     resubmitMode={resubmitMode}
                 />
@@ -173,42 +212,52 @@ const OwnerVehicle = () => {
                 onButtonClick={() => setShowAddPopup(true)}
             />
 
-            {/* Stats */}
+            {/* Stats Cards */}
             <StatsCards stats={stats} />
 
-            {/* Tabs */}
+            {/* Tabs with all statuses */}
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
-            {/* Tables */}
-            {activeTab === "active" && (
-                <ActiveVehicleTable
-                    vehicles={activeVehicles}
-                    handleViewVehicle={handleViewVehicle}
-                    handleEditClick={handleEditClick}
-                    handleDeleteVehicle={handleDeleteVehicle}
-                    loading={loading}
-                />
-            )}
-
+            {/* Tab Content */}
             {activeTab === "pending" && (
                 <PendingVehicleTable
-                    vehicles={pendingVehicles}
-                    handleViewVehicle={handleViewVehicle}
-                    handleEditClick={handleEditClick}
-                    handleDeleteVehicle={handleDeleteVehicle}
-                    loading={loading}
+                    vehicles={pendingList}
+                    onView={handleViewVehicle}
+                    onEdit={handleEditClick}
+                    onDelete={handleDeleteVehicle}
                 />
             )}
 
             {activeTab === "rejected" && (
                 <RejectedVehicleTable
-                    vehicles={rejectedVehicles}
-                    handleViewVehicle={handleViewVehicle}
-                    handleEditBeforeResubmit={handleEditBeforeResubmit}
-                    handleDeleteVehicle={handleDeleteVehicle}
-                    loading={loading}
+                    vehicles={rejectedList}
+                    onView={handleViewVehicle}
+                    onEditBeforeResubmit={handleEditBeforeResubmit}
+                    onDelete={handleDeleteVehicle}
                 />
             )}
+
+            {(activeTab === "all" ||
+                activeTab === "available" ||
+                activeTab === "booked" ||
+                activeTab === "unavailable") && (
+                    <ActiveVehicleTable
+                        vehicles={
+                            activeTab === "available"
+                                ? availableList
+                                : activeTab === "booked"
+                                    ? bookedList
+                                    : activeTab === "unavailable"
+                                        ? unavailableList
+                                        : allList
+                        }
+                        onView={handleViewVehicle}
+                        onEdit={handleEditClick}
+                        onDelete={handleDeleteVehicle}
+                        onToggleAvailability={handleToggleAvailability}
+                        showEditDelete={true}
+                    />
+                )}
         </main>
     );
 };
