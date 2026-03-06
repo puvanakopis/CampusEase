@@ -51,10 +51,6 @@ class VehicleReview(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-class VehicleAmenity(BaseModel):
-    name: str
-
-
 class VehicleAddress(BaseModel):
     street: str = None
     city: str = None
@@ -89,7 +85,7 @@ class Vehicle(BaseModel):
     status: VehicleStatus = VehicleStatus.pending
     reject_reason: Optional[str] = None
     images: List[VehicleImage] = []
-    amenities: List[VehicleAmenity] = []
+    amenities: Optional[List[str]] = []
     reviews: Optional[List[VehicleReview]] = []
     address: VehicleAddress = None
     location: VehicleLocation = None

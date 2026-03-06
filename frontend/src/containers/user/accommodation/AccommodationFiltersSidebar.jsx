@@ -13,7 +13,7 @@ const genders = [
     { label: "Female", value: "female" }
 ];
 
-const FiltersSidebar = ({ filters, onFilterChange }) => {
+const AccommodationFiltersSidebar = ({ filters, onFilterChange }) => {
 
     const [localFilters, setLocalFilters] = useState(filters);
 
@@ -139,4 +139,4 @@ const FiltersSidebar = ({ filters, onFilterChange }) => {
     );
 };
 
-export default FiltersSidebar;
+export default AccommodationFiltersSidebar;

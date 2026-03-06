@@ -1,6 +1,6 @@
 import React from "react";
 
-const SortBar = ({ total, location, sortOption, onSortChange }) => {
+const AccommodationSortBar = ({ total, location, sortOption, onSortChange }) => {
     return (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[#e7edf3]">
 
@@ -26,4 +26,4 @@ const SortBar = ({ total, location, sortOption, onSortChange }) => {
     );
 };
 
-export default SortBar;
+export default AccommodationSortBar;

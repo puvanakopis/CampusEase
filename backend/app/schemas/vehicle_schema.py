@@ -44,10 +44,6 @@ class VehicleImageSchema(BaseModel):
     filename: str
 
 
-class VehicleAmenitySchema(BaseModel):
-    name: str
-
-
 class VehicleAddressSchema(BaseModel):
     street: Optional[str] = None
     city: Optional[str] = None
@@ -112,7 +108,7 @@ class VehicleCreateRequest(BaseModel):
     day_rent: float
     status: VehicleStatus = VehicleStatus.pending
     images: List[VehicleImageSchema] = []
-    amenities: List[VehicleAmenitySchema] = []
+    amenities: List[str] 
     address: Optional[VehicleAddressSchema] = None
     location: Optional[VehicleLocationSchema] = None
     time_from_uni: Optional[VehicleDistance] = None
@@ -140,7 +136,7 @@ class VehicleResponse(BaseModel):
     status: VehicleStatus
     reject_reason: Optional[str]  = None
     images: List[VehicleImageSchema] = []
-    amenities: List[VehicleAmenitySchema] = []
+    amenities: Optional[List[str]] = []
     reviews: List[VehicleReview] = []
     address: Optional[VehicleAddressSchema]
     location: Optional[VehicleLocationSchema]
@@ -170,7 +166,7 @@ class VehicleUpdateRequest(BaseModel):
     status: Optional[VehicleStatus] = None
     reject_reason: Optional[str] = None
     images: Optional[List[VehicleImageSchema]] = None
-    amenities: Optional[List[VehicleAmenitySchema]] = None
+    amenities: List[str] 
     address: Optional[VehicleAddressSchema] = None
     location: Optional[VehicleLocationSchema] = None
     time_from_uni: Optional[VehicleDistance] = None

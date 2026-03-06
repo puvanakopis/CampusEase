@@ -35,7 +35,11 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                 pambahinna_junction: veh.time_from_uni?.pambahinna_junction || ""
             },
             status: veh.status || "pending",
-            images: veh.images || []
+            images: veh.images || [],
+            // FIX: Handle both formats - if amenities are objects with name, extract just the names
+            amenities: Array.isArray(veh.amenities) 
+                ? veh.amenities.map(a => typeof a === 'object' ? a.name : a) 
+                : []
         };
     };
 
@@ -44,6 +48,7 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
     const [imageFiles, setImageFiles] = useState([]);
     const [existingImages, setExistingImages] = useState(vehicle.images || []);
     const [imagesToDelete, setImagesToDelete] = useState([]);
+    const [amenityInput, setAmenityInput] = useState("");
 
     const vehicleTypes = [
         { value: "car", label: "Car" },
@@ -68,6 +73,24 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
         { value: "semi_automatic", label: "Semi-Automatic" }
     ];
 
+    const popularAmenities = [
+        "GPS Navigation",
+        "Bluetooth",
+        "USB Charger",
+        "Child Seat",
+        "Roof Rack",
+        "Dash Cam",
+        "Rear Camera",
+        "Parking Sensors",
+        "Cruise Control",
+        "Push Button Start",
+        "Keyless Entry",
+        "Sunroof",
+        "Leather Seats",
+        "Heated Seats",
+        "Tinted Windows"
+    ];
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
@@ -77,7 +100,7 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                 ...prev,
                 [parent]: {
                     ...prev[parent],
-                    [child]: value
+                    [child]: type === 'checkbox' ? checked : value
                 }
             }));
         } else {
@@ -113,8 +136,48 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
         setImageFiles(prev => prev.filter((_, i) => i !== index));
     };
 
+    const handleAddAmenity = () => {
+        if (amenityInput.trim() && !formData.amenities.includes(amenityInput.trim())) {
+            setFormData(prev => ({
+                ...prev,
+                amenities: [...prev.amenities, amenityInput.trim()]
+            }));
+            setAmenityInput("");
+        }
+    };
+
+    const handleRemoveAmenity = (amenity) => {
+        setFormData(prev => ({
+            ...prev,
+            amenities: prev.amenities.filter(a => a !== amenity)
+        }));
+    };
+
+    const handleSelectPopularAmenity = (amenity) => {
+        if (!formData.amenities.includes(amenity)) {
+            setFormData(prev => ({
+                ...prev,
+                amenities: [...prev.amenities, amenity]
+            }));
+        }
+    };
+
     const handleNext = (e) => {
         e.preventDefault();
+
+        // Validate step 1 fields
+        const requiredFields = [
+            'name', 'brand', 'model', 'year', 'no_of_seats',
+            'registration_number', 'day_rent'
+        ];
+
+        const missingFields = requiredFields.filter(field => !formData[field]);
+
+        if (missingFields.length > 0) {
+            toast.error("Please fill in all required fields");
+            return;
+        }
+
         setStep(2);
     };
 
@@ -162,6 +225,8 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                 pambahinna_junction: formData.time_from_uni.pambahinna_junction || null
             },
             status: activeTab === "pending" ? "pending" : formData.status,
+            // FIX: Send amenities as array of strings, not objects
+            amenities: formData.amenities, // This is already an array of strings
             existing_images: existingImages.map(img => img.filename),
             images_to_delete: imagesToDelete
         };
@@ -283,17 +348,22 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                         ))}
                     </select>
                 </div>
-                <div className="flex items-center">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            name="air_conditioning"
-                            checked={formData.air_conditioning}
-                            onChange={handleChange}
-                            className="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary"
-                        />
-                        <span className="text-sm font-medium text-slate-700">Air Conditioning</span>
-                    </label>
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Air Conditioning *</label>
+                    <select
+                        name="air_conditioning"
+                        value={formData.air_conditioning ? "true" : "false"}
+                        onChange={(e) => {
+                            setFormData(prev => ({
+                                ...prev,
+                                air_conditioning: e.target.value === "true"
+                            }));
+                        }}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                    >
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">Daily Rent (LKR) *</label>
@@ -462,6 +532,75 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                     />
                 </div>
             </div>
+
+            <h4 className="font-bold text-slate-900 mb-3 mt-6">Amenities</h4>
+
+            {/* Popular Amenities Quick Select */}
+            <div className="mb-4">
+                <label className="block text-sm font-medium text-slate-700 mb-2">Popular Amenities</label>
+                <div className="flex flex-wrap gap-2">
+                    {popularAmenities.map(amenity => (
+                        <button
+                            key={amenity}
+                            type="button"
+                            onClick={() => handleSelectPopularAmenity(amenity)}
+                            className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${formData.amenities.includes(amenity)
+                                    ? 'bg-primary text-white border-primary'
+                                    : 'border-slate-300 text-slate-700 hover:border-primary hover:text-primary'
+                                }`}
+                            disabled={formData.amenities.includes(amenity)}
+                        >
+                            {amenity}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Add Custom Amenity */}
+            <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Add Custom Amenity</label>
+                <div className="flex gap-2">
+                    <input
+                        type="text"
+                        value={amenityInput}
+                        onChange={(e) => setAmenityInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddAmenity())}
+                        className="flex-1 px-4 py-2 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        placeholder="e.g., WiFi, Music System, etc."
+                    />
+                    <button
+                        type="button"
+                        onClick={handleAddAmenity}
+                        className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                    >
+                        Add
+                    </button>
+                </div>
+            </div>
+
+            {/* Selected Amenities */}
+            {formData.amenities.length > 0 && (
+                <div className="mt-4">
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Selected Amenities</label>
+                    <div className="flex flex-wrap gap-2">
+                        {formData.amenities.map((amenity, index) => (
+                            <div
+                                key={index}
+                                className="flex items-center gap-1 px-3 py-1.5 bg-primary/10 text-primary rounded-full"
+                            >
+                                <span className="text-sm">{amenity}</span>
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemoveAmenity(amenity)}
+                                    className="hover:text-red-500 transition-colors"
+                                >
+                                    <span className="material-symbols-outlined text-sm">close</span>
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <h4 className="font-bold text-slate-900 mb-3 mt-6">Vehicle Images *</h4>
 
