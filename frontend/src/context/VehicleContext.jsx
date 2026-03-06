@@ -15,6 +15,7 @@ export const VehicleProvider = ({ children }) => {
             const res = await vehicleApi.getAll();
             if (res.success) {
                 setVehicles(res.data);
+                console.log(res.data);
             } else {
                 toast.error(res.message || "Failed to load vehicles");
             }

@@ -1,280 +1,259 @@
-import React from 'react';
+import React from "react";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const ViewVehiclePopup = ({ selectedVehicle, setShowViewPopup, setShowEditPopup, setSelectedVehicle, activeTab }) => {
+const ViewVehiclePopup = ({ selectedVehicle, onClose }) => {
     if (!selectedVehicle) return null;
 
-    const isRejected = selectedVehicle.status === "Rejected";
-    const isPending = selectedVehicle.status === "Pending";
+    const isRejected =
+        selectedVehicle.status === "rejected" || selectedVehicle.status === "Rejected";
+    const isPending =
+        selectedVehicle.status === "pending" || selectedVehicle.status === "Pending";
+
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat("en-LK", {
+            style: "currency",
+            currency: "LKR",
+            minimumFractionDigits: 0,
+        })
+            .format(amount || 0)
+            .replace("LKR", "LKR");
+    };
+
+    const formatDate = (dateString) => {
+        if (!dateString) return "N/A";
+        return new Date(dateString).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        });
+    };
+
+    const getStatusColor = (status) => {
+        switch (status.toLowerCase()) {
+            case "available":
+                return "bg-green-100 text-green-800";
+            case "pending":
+                return "bg-yellow-100 text-yellow-800";
+            case "rejected":
+            case "unavailable":
+                return "bg-red-100 text-red-800";
+            case "booked":
+                return "bg-blue-100 text-blue-800";
+            default:
+                return "bg-gray-100 text-gray-800";
+        }
+    };
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl p-6 max-w-4xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-                <div className="flex justify-between items-start mb-6">
+            <div className="bg-white rounded-xl w-full max-w-4xl shadow-lg overflow-y-auto max-h-[90vh]">
+                {/* Header */}
+                <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
                     <div>
-                        <h3 className="text-2xl font-bold text-slate-900">{selectedVehicle.name}</h3>
-                        <p className="text-slate-500">Vehicle ID: {selectedVehicle.id}</p>
+                        <h3 className="text-lg font-bold text-slate-900">{selectedVehicle.name}</h3>
+                        <p className="text-xs text-slate-500 mt-1">
+                            ID: {selectedVehicle._id || selectedVehicle.id}
+                        </p>
                     </div>
                     <div className="flex items-center gap-3">
-                        {!isRejected && (
-                            <button
-                                onClick={() => {
-                                    setShowViewPopup(false);
-                                    setShowEditPopup(true);
-                                }}
-                                className="border border-slate-200 text-slate-700 py-2 px-4 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center gap-2"
-                            >
-                                <span className="material-symbols-outlined text-sm">edit</span>
-                                Edit
-                            </button>
-                        )}
                         <button
-                            onClick={() => {
-                                setShowViewPopup(false);
-                                setSelectedVehicle(null);
-                            }}
-                            className="text-slate-400 hover:text-slate-600"
+                            onClick={onClose}
+                            className="text-slate-400 hover:text-slate-600 transition-colors"
                         >
-                            <span className="material-symbols-outlined">close</span>
+                            <span className="material-symbols-outlined text-xl">close</span>
                         </button>
                     </div>
                 </div>
 
-                {/* Vehicle Image */}
-                <div className="mb-8">
-                    <div className="relative h-64 md:h-80 rounded-xl overflow-hidden bg-slate-100">
-                        <img
-                            src={selectedVehicle.image}
-                            alt={selectedVehicle.name}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                                e.target.src = "https://via.placeholder.com/800x400?text=Vehicle+Image";
-                            }}
-                        />
-                        <div className="absolute top-4 left-4">
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                                selectedVehicle.status === "Active" ? "bg-green-100 text-green-800" :
-                                selectedVehicle.status === "Pending" ? "bg-yellow-100 text-yellow-800" :
-                                "bg-red-100 text-red-800"
-                            }`}>
-                                {selectedVehicle.status}
-                            </span>
+                {/* Vehicle Images */}
+                <div className="px-6 py-4">
+                    <div className="flex items-start gap-4 mb-4 p-3 bg-slate-50 rounded-lg">
+                        <div className="w-32 h-32 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                            <img
+                                src={buildPhotoUrl(selectedVehicle.images[0].filename, "vehicle")}
+                                alt={selectedVehicle.name}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                    e.target.src =
+                                        "https://via.placeholder.com/150x150?text=Vehicle+Image";
+                                }}
+                            />
                         </div>
-                        {selectedVehicle.currentlyRented && (
-                            <div className="absolute top-4 right-4">
-                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-primary">
-                                    Currently Rented
+                        <div className="flex-1">
+                            <p className="text-sm font-semibold text-slate-900">{selectedVehicle.name}</p>
+                            <p className="text-xs text-slate-500">
+                                Owner ID: {selectedVehicle.owner?._id || selectedVehicle.owner}
+                            </p>
+                            <p className="text-xs text-slate-600 mt-1">
+                                {selectedVehicle.address
+                                    ? `${selectedVehicle.address.street || ""}, ${selectedVehicle.address.city || ""}`
+                                    : "Location not specified"}
+                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                                <span
+                                    className={`px-2 py-0.5 rounded-full text-xs ${getStatusColor(
+                                        selectedVehicle.status
+                                    )}`}
+                                >
+                                    Status: {selectedVehicle.status}
+                                </span>
+                                {selectedVehicle.status.toLowerCase() === "booked" && (
+                                    <span className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800">
+                                        Currently Rented
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Vehicle Details */}
+                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                        <h4 className="font-bold text-slate-900 mb-2">Vehicle Details</h4>
+                        <div className="text-sm text-slate-600 space-y-1">
+                            <div className="flex justify-between">
+                                <span>Brand:</span>
+                                <span className="font-medium">{selectedVehicle.brand || "N/A"}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Model:</span>
+                                <span className="font-medium">{selectedVehicle.model || "N/A"}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Type:</span>
+                                <span className="font-medium">{selectedVehicle.vehicle_type || "N/A"}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Year:</span>
+                                <span className="font-medium">{selectedVehicle.year || "N/A"}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Transmission:</span>
+                                <span className="font-medium">{selectedVehicle.transmission || "N/A"}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Fuel Type:</span>
+                                <span className="font-medium">{selectedVehicle.fuel_type || "N/A"}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Seats:</span>
+                                <span className="font-medium">{selectedVehicle.no_of_seats || "N/A"}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Air Conditioning:</span>
+                                <span className="font-medium">
+                                    {selectedVehicle.air_conditioning ? "Yes" : "No"}
                                 </span>
                             </div>
-                        )}
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Left Column */}
-                    <div className="space-y-6">
-                        {/* Vehicle Specifications */}
-                        <div className="bg-slate-50 rounded-lg p-5">
-                            <h4 className="font-bold text-slate-900 mb-4">Vehicle Specifications</h4>
-                            <div className="space-y-3">
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Type:</span>
-                                    <span className="font-medium">{selectedVehicle.type}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Year:</span>
-                                    <span className="font-medium">{selectedVehicle.year}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Transmission:</span>
-                                    <span className="font-medium">{selectedVehicle.transmission}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Fuel Type:</span>
-                                    <span className="font-medium">{selectedVehicle.fuelType}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Seating Capacity:</span>
-                                    <span className="font-medium">{selectedVehicle.seats} seats</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Mileage:</span>
-                                    <span className="font-medium">{selectedVehicle.mileage}</span>
-                                </div>
-                            </div>
                         </div>
+                    </div>
 
-                        {/* Features */}
-                        <div className="bg-slate-50 rounded-lg p-5">
-                            <h4 className="font-bold text-slate-900 mb-4">Features</h4>
+                    {/* Amenities */}
+                    {selectedVehicle.amenities?.length > 0 && (
+                        <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                            <h4 className="font-bold text-slate-900 mb-2">Amenities</h4>
                             <div className="flex flex-wrap gap-2">
-                                {selectedVehicle.features?.map((feature, index) => (
+                                {selectedVehicle.amenities.map((amenity, idx) => (
                                     <span
-                                        key={index}
+                                        key={idx}
                                         className="bg-white px-3 py-1.5 rounded-lg text-sm text-slate-700 border border-slate-200"
                                     >
-                                        {feature}
+                                        {amenity.name || amenity}
                                     </span>
                                 ))}
                             </div>
                         </div>
-                    </div>
+                    )}
 
-                    {/* Right Column */}
-                    <div className="space-y-6">
-                        {/* Rental Information */}
-                        <div className="bg-slate-50 rounded-lg p-5">
-                            <h4 className="font-bold text-slate-900 mb-4">Rental Information</h4>
-                            <div className="space-y-3">
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Monthly Price:</span>
-                                    <span className="font-medium text-green-600">LKR {selectedVehicle.price.toLocaleString()}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Location:</span>
-                                    <span className="font-medium">{selectedVehicle.location}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Current Status:</span>
-                                    <span className={`font-medium ${selectedVehicle.currentlyRented ? 'text-blue-600' : 'text-green-600'}`}>
-                                        {selectedVehicle.currentlyRented ? 'Rented Out' : 'Available'}
-                                    </span>
-                                </div>
-                                {selectedVehicle.currentlyRented && (
-                                    <>
-                                        <div className="flex justify-between">
-                                            <span className="text-slate-600">Rented To:</span>
-                                            <span className="font-medium">{selectedVehicle.rentedTo}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-slate-600">Rental Period:</span>
-                                            <span className="font-medium">{selectedVehicle.rentedFrom} to {selectedVehicle.rentedUntil}</span>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
+                    {/* Rental Info */}
+                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                        <h4 className="font-bold text-slate-900 mb-2">Rental Information</h4>
+                        <div className="flex justify-between text-sm text-slate-600">
+                            <span>Price:</span>
+                            <span className="font-medium text-green-600">
+                                {formatCurrency(selectedVehicle.day_rent || selectedVehicle.price)}
+                            </span>
                         </div>
-
-                        {/* Description */}
-                        <div className="bg-slate-50 rounded-lg p-5">
-                            <h4 className="font-bold text-slate-900 mb-4">Description</h4>
-                            <p className="text-slate-700 whitespace-pre-line">{selectedVehicle.description}</p>
-                        </div>
-
-                        {/* Rejection Info (if rejected) */}
-                        {isRejected && (
-                            <div className="bg-red-50 rounded-lg p-5">
-                                <h4 className="font-bold text-slate-900 mb-4">Rejection Information</h4>
-                                <div className="space-y-3">
-                                    <div className="flex justify-between">
-                                        <span className="text-slate-600">Rejected Date:</span>
-                                        <span className="font-medium">{selectedVehicle.rejectedDate}</span>
-                                    </div>
-                                    <div>
-                                        <span className="text-slate-600 block mb-2">Reason:</span>
-                                        <p className="text-sm text-red-700 bg-white p-3 rounded-lg">
-                                            {selectedVehicle.rejectionReason}
-                                        </p>
-                                    </div>
-                                    {selectedVehicle.adminRemarks && (
-                                        <div>
-                                            <span className="text-slate-600 block mb-2">Admin Remarks:</span>
-                                            <p className="text-sm text-slate-700 bg-white p-3 rounded-lg">
-                                                {selectedVehicle.adminRemarks}
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Pending Info */}
-                        {isPending && (
-                            <div className="bg-yellow-50 rounded-lg p-5">
-                                <h4 className="font-bold text-slate-900 mb-4">Pending Review</h4>
-                                <div className="space-y-3">
-                                    <div className="flex justify-between">
-                                        <span className="text-slate-600">Submitted Date:</span>
-                                        <span className="font-medium">{selectedVehicle.submittedDate}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-slate-600">Expected Response:</span>
-                                        <span className="font-medium">{selectedVehicle.expectedResponseDate}</span>
-                                    </div>
-                                    {selectedVehicle.adminNotes && (
-                                        <div>
-                                            <span className="text-slate-600 block mb-2">Admin Note:</span>
-                                            <p className="text-sm text-yellow-700 bg-white p-3 rounded-lg">
-                                                {selectedVehicle.adminNotes}
-                                            </p>
-                                        </div>
-                                    )}
-                                    <div className="mt-3 p-2 bg-yellow-100 rounded-lg">
-                                        <p className="text-xs text-yellow-800 text-center">
-                                            Your vehicle is currently under review. You'll be notified once it's approved.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Owner Information */}
-                        <div className="bg-slate-50 rounded-lg p-5">
-                            <h4 className="font-bold text-slate-900 mb-4">Owner Information</h4>
-                            <div className="space-y-3">
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Owner:</span>
-                                    <span className="font-medium">{selectedVehicle.owner}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Contact:</span>
-                                    <span className="font-medium">{selectedVehicle.ownerContact}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Listed Since:</span>
-                                    <span className="font-medium">{selectedVehicle.createdAt || selectedVehicle.submittedDate}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-slate-600">Last Updated:</span>
-                                    <span className="font-medium">{selectedVehicle.lastUpdated || selectedVehicle.submittedDate}</span>
-                                </div>
-                            </div>
+                        <div className="flex justify-between text-sm text-slate-600 mt-1">
+                            <span>Location:</span>
+                            <span className="font-medium">
+                                {selectedVehicle.address?.city || selectedVehicle.location || "N/A"}
+                            </span>
                         </div>
                     </div>
+
+                    {/* Registration Info */}
+                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                        <h4 className="font-bold text-slate-900 mb-2">Registration Details</h4>
+                        <div className="flex flex-col gap-1 text-sm text-slate-600">
+                            <div className="flex justify-between">
+                                <span>Registration No:</span>
+                                <span className="font-medium">{selectedVehicle.registration_number || "N/A"}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Insurance No:</span>
+                                <span className="font-medium">{selectedVehicle.insurance_number || "N/A"}</span>
+                            </div>
+                            {selectedVehicle.insurance_expiry && (
+                                <div className="flex justify-between">
+                                    <span>Insurance Expiry:</span>
+                                    <span className="font-medium">{formatDate(selectedVehicle.insurance_expiry)}</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Description */}
+                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                        <h4 className="font-bold text-slate-900 mb-2">Description</h4>
+                        <p className="text-sm text-slate-700 whitespace-pre-line">
+                            {selectedVehicle.description || "No description provided."}
+                        </p>
+                    </div>
+
+                    {/* Rejection Info */}
+                    {isRejected && (
+                        <div className="mb-4 p-3 bg-red-50 rounded-lg">
+                            <h4 className="font-bold text-slate-900 mb-2">Rejection Information</h4>
+                            <div className="text-sm text-slate-600 space-y-2">
+                                <div className="flex justify-between">
+                                    <span>Rejected Date:</span>
+                                    <span className="font-medium">{formatDate(selectedVehicle.last_updated)}</span>
+                                </div>
+                                <div>
+                                    <span className="block mb-1 text-slate-600">Reason:</span>
+                                    <p className="bg-white p-2 rounded-lg text-red-700">
+                                        {selectedVehicle.reject_reason || "N/A"}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Pending Info */}
+                    {isPending && (
+                        <div className="mb-4 p-3 bg-yellow-50 rounded-lg">
+                            <h4 className="font-bold text-slate-900 mb-2">Pending Review</h4>
+                            <div className="text-sm text-slate-600 space-y-2">
+                                <div className="flex justify-between">
+                                    <span>Submitted Date:</span>
+                                    <span className="font-medium">{formatDate(selectedVehicle.created_at)}</span>
+                                </div>
+                                <div className="mt-2 p-2 bg-yellow-100 rounded-lg text-xs text-yellow-800 text-center">
+                                    Your vehicle is currently under review. You'll be notified once it's approved.
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
-                {/* Quick Actions - Only for active vehicles */}
-                {!isPending && !isRejected && (
-                    <div className="mt-8 bg-blue-50 rounded-lg p-5">
-                        <h4 className="font-bold text-slate-900 mb-4">Quick Actions</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <button className="bg-white border border-slate-200 text-slate-700 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
-                                <span className="material-symbols-outlined text-sm">receipt_long</span>
-                                View Rental History
-                            </button>
-                            <button className="bg-white border border-slate-200 text-slate-700 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
-                                <span className="material-symbols-outlined text-sm">calendar_month</span>
-                                Manage Availability
-                            </button>
-                            <button className="bg-white border border-slate-200 text-slate-700 py-2.5 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
-                                <span className="material-symbols-outlined text-sm">description</span>
-                                Generate Report
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                <div className="mt-8 pt-6 border-t border-slate-200">
-                    <div className="flex justify-end">
-                        <button
-                            onClick={() => {
-                                setShowViewPopup(false);
-                                setSelectedVehicle(null);
-                            }}
-                            className="bg-primary text-white py-2.5 px-8 rounded-lg font-medium hover:bg-primary/80 transition-colors"
-                        >
-                            Close
-                        </button>
-                    </div>
+                {/* Footer */}
+                <div className="px-6 py-4 border-t border-slate-200 flex justify-end">
+                    <button
+                        onClick={onClose}
+                        className="px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary hover:bg-primary/90 transition-colors"
+                    >
+                        Close
+                    </button>
                 </div>
             </div>
         </div>

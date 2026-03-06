@@ -58,38 +58,27 @@ const OwnerAccommodation = () => {
     // ------------ Stats ------------
     const stats = useMemo(() => {
         const totalAccommodations = accommodations.length;
-        const totalUsers = accommodations.reduce((sum, prop) => sum + (prop.total_users || 0), 0);
-        const occupiedUsers = accommodations.reduce(
-            (sum, prop) => sum + ((prop.total_users || 0) - (prop.available_users || 0)),
-            0
-        );
-        const occupancyPercentage = totalUsers > 0 ? ((occupiedUsers / totalUsers) * 100).toFixed(1) : "0";
-
-        const monthlyRevenue = accommodations.reduce(
-            (sum, prop) => sum + ((prop.month_rent || 0) * ((prop.total_users || 0) - (prop.available_users || 0))),
-            0
-        );
 
         return [
             {
                 label: "Total Accommodations",
                 icon: "apartment",
                 value: totalAccommodations,
-                subtext: `${availableList.length} available, ${bookedList.length} booked, ${pendingList.length} pending, ${rejectedList.length} rejected`,
+                subtext: `${availableList.length} available, ${bookedList.length} booked`,
                 trendIcon: "trending_up",
                 subtextColor: "text-green-500",
             },
             {
-                label: "Total Occupancy",
-                icon: "group",
-                value: `${occupancyPercentage}%`,
-                subtext: `${occupiedUsers} of ${totalUsers} rooms occupied`,
+                label: "Available Accommodations",
+                icon: "check_circle",
+                value: availableList.length,
+                subtext: `${availableList.length} accommodations ready`,
             },
             {
-                label: "Monthly Revenue",
-                icon: "payments",
-                value: `LKR ${monthlyRevenue.toLocaleString()}`,
-                subtext: "From All Accommodations",
+                label: "Pending / Rejected Accommodations",
+                icon: "hourglass_empty",
+                value: pendingList.length + rejectedList.length,
+                subtext: `${pendingList.length} pending, ${rejectedList.length} rejected`,
             },
         ];
     }, [accommodations, availableList.length, bookedList.length, pendingList.length, rejectedList.length]);
