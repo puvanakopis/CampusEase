@@ -9,6 +9,7 @@ from app.services.counter_service import get_next_sequence
 from app.schemas.vehicle_schema import (
     VehicleCreateRequest,
     VehicleResponse,
+    VehicleReview,
     OwnerResponse,
     UserResponse
 )
@@ -70,4 +71,34 @@ async def create_vehicle(vehicle_request: VehicleCreateRequest, files: Optional[
         "status_code": 201,
         "message": "Vehicle created successfully",
         "data": vehicle_obj.dict(by_alias=True)
+    }
+
+
+async def get_all_vehicles():
+
+    vehicles = []
+
+    cursor = vehicles_collection.find()
+
+    async for doc in cursor:
+
+        owner = await get_owner_by_id(doc.get("owner_id"))
+
+        reviews = []
+        for rev in doc.get("reviews", []):
+            user = await get_user_by_id(rev.get("user_id"))
+            reviews.append(VehicleReview(user=user, **rev))
+
+        doc_copy = doc.copy()
+        doc_copy.pop("reviews", None)
+
+        vehicle_obj = VehicleResponse(**doc_copy, owner=owner, reviews=reviews)
+
+        vehicles.append(vehicle_obj.dict(by_alias=True))
+
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": "Vehicles fetched successfully",
+        "data": vehicles
     }
