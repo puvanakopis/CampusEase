@@ -87,18 +87,18 @@ class AccommodationCreateRequest(BaseModel):
     no_of_rooms: int
     no_of_beds: int
     no_of_bathrooms: int
-    description: str = None
-    owner_id: str = None
+    description: Optional[str] = None
+    owner_id: Optional[str] = None
     month_rent: float
     status: AccommodationStatus = AccommodationStatus.pending
     images: List[AccommodationImageSchema] = []
     amenities: List[AccommodationAmenitySchema] = []
     available_users: int = 0
     total_users: int = 0
-    address: AccommodationAddressSchema = None
-    location: AccommodationLocationSchema = None
-    time_from_uni: AccommodationDistance = None
-    gender: AccommodationGender.male
+    address: Optional[AccommodationAddressSchema] = None
+    location: Optional[AccommodationLocationSchema] = None
+    time_from_uni: Optional[AccommodationDistance] = None
+    gender: AccommodationGender = AccommodationGender.male
 
 
 

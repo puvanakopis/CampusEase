@@ -28,7 +28,7 @@ const HeaderInfo = ({ title, location, walkDistance, rating, reviewsCount }) => 
                                 star
                             </span>
                             <span className="font-semibold text-slate-900">{rating}</span>
-                            ({reviewsCount} reviews)
+                            ({reviewsCount} {reviewsCount === 1 ? 'review' : 'reviews'})
                         </span>
                     </div>
                 </div>

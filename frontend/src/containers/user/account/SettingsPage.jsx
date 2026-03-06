@@ -26,7 +26,7 @@ const SettingsPage = ({
             </div>
 
             {/* Change Password Section */}
-            <section className="pt-8 w-full">
+            <section className="w-full">
                 <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
                     <span className="material-symbols-outlined text-primary">lock</span>
                     Change Password

@@ -1,16 +1,13 @@
 import React from "react";
 
-const SortBar = ({ total, location, sortOption, onSortChange }) => {
+const VehicleSortBar = ({ total, location, sortOption, onSortChange }) => {
     return (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[#e7edf3]">
-
             <p className="text-[#0d141b] text-sm font-medium">
-                Found <span className="font-bold">{total}</span> places in {location}
+                Found <span className="font-bold">{total}</span> vehicles in {location}
             </p>
-
             <div className="flex items-center gap-2 self-end sm:self-auto w-max">
                 <span className="text-sm text-[#4c739a] hidden sm:block">Sort by:</span>
-
                 <select
                     value={sortOption}
                     onChange={(e) => onSortChange(e.target.value)}
@@ -20,10 +17,9 @@ const SortBar = ({ total, location, sortOption, onSortChange }) => {
                     <option value="price_low_high">Price: Low to High</option>
                     <option value="top_rated">Top Rated</option>
                 </select>
-
             </div>
         </div>
     );
 };
 
-export default SortBar;
+export default VehicleSortBar;

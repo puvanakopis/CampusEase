@@ -1,17 +1,12 @@
-// StatusChangePopup.jsx (for vehicles)
 import React, { useState } from "react";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const StatusChangePopup = ({
-    vehicle,
-    currentStatus,
-    onClose,
-    onConfirm
-}) => {
+const VehicleStatusChangePopup = ({ vehicle, currentStatus, onClose, onConfirm }) => {
     const [reason, setReason] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const action = currentStatus === "Active" ? "deactivate" : "activate";
-    const title = currentStatus === "Active" ? "Deactivate Vehicle" : "Activate Vehicle";
+    const action = currentStatus === "available" ? "deactivate" : "activate";
+    const title = currentStatus === "available" ? "Deactivate Vehicle" : "Activate Vehicle";
 
     const handleSubmit = async () => {
         if (action === "deactivate" && !reason.trim()) {
@@ -28,6 +23,17 @@ const StatusChangePopup = ({
         } finally {
             setLoading(false);
         }
+    };
+
+    const getStatusDisplay = (status) => {
+        const statusMap = {
+            'pending': 'Pending',
+            'available': 'Available',
+            'rejected': 'Rejected',
+            'booked': 'Booked',
+            'unavailable': 'Unavailable'
+        };
+        return statusMap[status] || status;
     };
 
     return (
@@ -57,7 +63,7 @@ const StatusChangePopup = ({
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={vehicle?.image}
+                                src={buildPhotoUrl(vehicle.images?.[0]?.filename, 'vehicle')}
                                 alt={vehicle?.name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
@@ -67,42 +73,41 @@ const StatusChangePopup = ({
                         </div>
                         <div>
                             <p className="text-sm font-semibold text-slate-900">{vehicle?.name}</p>
-                            <p className="text-xs text-slate-500">ID: {vehicle?.id}</p>
-                            <p className="text-xs text-slate-600 mt-1">{vehicle?.type} • {vehicle?.route?.split(' - ')[0]}</p>
+                            <p className="text-xs text-slate-500">ID: {vehicle?._id}</p>
+                            <p className="text-xs text-slate-600 mt-1">{vehicle?.brand} {vehicle?.model} ({vehicle?.year})</p>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-                                    Current: {currentStatus}
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "available" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                                    Current: {getStatusDisplay(currentStatus)}
                                 </span>
                                 <span className="text-xs text-slate-400">→</span>
-                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Active" ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}>
-                                    New: {currentStatus === "Active" ? "Inactive" : "Active"}
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "available" ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}>
+                                    New: {currentStatus === "available" ? "Unavailable" : "Available"}
                                 </span>
                             </div>
                         </div>
                     </div>
 
                     {/* Reason Input (for deactivation only) */}
-                    {currentStatus === "Active" && (
+                    {currentStatus === "available" && (
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-slate-700 mb-2">
                                 Reason for Deactivation *
                             </label>
                             <textarea
-                                rows={5}
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}
                                 placeholder="Please explain why this vehicle is being deactivated (e.g., maintenance, repairs, out of service)..."
-                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                className="w-full h-32 px-4 py-3 border border-slate-200 rounded-lg text-sm resize-none focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 required
                             />
                             <p className="text-xs text-slate-500 mt-1">
-                                This reason will be visible to the vehicle owner, driver, and administrators.
+                                This reason will be visible to the vehicle owner and administrators.
                             </p>
                         </div>
                     )}
 
                     {/* Activation Note */}
-                    {currentStatus === "Inactive" && (
+                    {currentStatus !== "available" && (
                         <div className="mb-4 p-3 bg-blue-50 rounded-lg">
                             <div className="flex items-start gap-2">
                                 <span className="material-symbols-outlined text-blue-500 text-sm mt-0.5">
@@ -111,37 +116,14 @@ const StatusChangePopup = ({
                                 <div>
                                     <p className="text-sm font-medium text-primary">Activation Note</p>
                                     <p className="text-xs text-blue-600 mt-1">
-                                        This vehicle will become available for bookings immediately.
-                                        {vehicle?.inactiveReason && (
+                                        This vehicle will become available for student bookings immediately.
+                                        {vehicle?.reject_reason && (
                                             <>
                                                 <br />
                                                 <span className="font-medium mt-1 block">Previous reason: </span>
-                                                "{vehicle.inactiveReason}"
+                                                "{vehicle.reject_reason}"
                                             </>
                                         )}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Impact Warning for Active Vehicles */}
-                    {currentStatus === "Active" && (
-                        <div className="mb-4 p-3 bg-yellow-50 rounded-lg">
-                            <div className="flex items-start gap-2">
-                                <span className="material-symbols-outlined text-yellow-500 text-sm mt-0.5">
-                                    warning
-                                </span>
-                                <div>
-                                    <p className="text-sm font-medium text-yellow-800">Important Notice</p>
-                                    <p className="text-xs text-yellow-600 mt-1">
-                                        Deactivating this vehicle will:
-                                        <ul className="list-disc pl-4 mt-1 space-y-1">
-                                            <li>Stop all future bookings</li>
-                                            <li>Notify all passengers with upcoming trips</li>
-                                            <li>Require reassignment of scheduled trips</li>
-                                            <li>Affect daily revenue calculations</li>
-                                        </ul>
                                     </p>
                                 </div>
                             </div>
@@ -160,26 +142,25 @@ const StatusChangePopup = ({
                     </button>
                     <button
                         onClick={handleSubmit}
-                        disabled={loading || (currentStatus === "Active" && !reason.trim())}
-                        className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 bg-primary hover:bg-primary/90 disabled:bg-primary/90"
+                        disabled={loading || (currentStatus === "available" && !reason.trim())}
+                        className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 bg-primary hover:bg-primary/90 disabled:bg-primary"
                     >
-                        {
-                            loading ? (
-                                <>
-                                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Processing...
-                                </>
-                            ) : (
-                                title
-                            )}
+                        {loading ? (
+                            <>
+                                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Processing...
+                            </>
+                        ) : (
+                            title
+                        )}
                     </button>
                 </div>
-            </div >
-        </div >
+            </div>
+        </div>
     );
 };
 
-export default StatusChangePopup;
+export default VehicleStatusChangePopup;
