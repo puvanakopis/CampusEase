@@ -20,3 +20,12 @@ async def list_users():
 async def get_user(user_id: str):
     return await get_user_by_id(user_id)
 
+
+@router.patch("/{user_id}", dependencies=[Depends(role_required(["admin"]))])
+async def update_user_endpoint(user_id: str, update_request: UserUpdateRequest):
+    return await update_user(user_id, update_request)
+
+
+@router.delete("/{user_id}", dependencies=[Depends(role_required(["admin"]))])
+async def delete_user_endpoint(user_id: str):
+    return await delete_user(user_id)
