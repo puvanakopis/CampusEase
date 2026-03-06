@@ -115,9 +115,10 @@ async def verify_signup_otp(role: str, email: str, otp: str):
         "email": otp_record["email"],
         "password": otp_record["temp_password"],
         "role": role,
+        "status": "Pending Approval",
         "created_at": datetime.utcnow(),
         "last_updated": datetime.utcnow(),
-}
+    }
 
     await collection.insert_one(user_data)
     await otps_collection.delete_one({"email": email_lower, "type": "signup"})

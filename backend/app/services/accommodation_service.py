@@ -119,6 +119,39 @@ async def get_all_accommodations() -> dict:
     }
 
 
+async def get_accommodations_by_owner(owner_id: str) -> dict:
+    accom_list = []
+
+    cursor = accommodations_collection.find({"owner_id": owner_id})
+
+    async for doc in cursor:
+        owner_data = await get_owner_by_id(doc.get("owner_id"))
+
+        reviews = []
+        for rev in doc.get("reviews", []):
+            user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
+            user_obj = await get_user_by_id(user_id)
+            reviews.append(AccommodationReview(user=user_obj, **rev))
+
+        doc_copy = doc.copy()
+        doc_copy.pop("reviews", None)
+
+        accom_obj = AccommodationResponse(
+            **doc_copy,
+            owner=owner_data,
+            reviews=reviews
+        )
+
+        accom_list.append(accom_obj.dict(by_alias=True))
+
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": "Owner accommodations fetched successfully",
+        "data": accom_list
+    }
+
+
 async def update_accommodation(accom_id: str, update_request: AccommodationUpdateRequest, files: Optional[List[UploadFile]] = None) -> dict:
     doc = await accommodations_collection.find_one({"_id": accom_id})
     if not doc:

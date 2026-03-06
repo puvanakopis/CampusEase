@@ -15,12 +15,12 @@ import { AuthContext } from "../../context/AuthContext";
 
 const OwnerVehicle = () => {
     const {
-        vehicles,
-        vehicleLoading,
+        ownerVehicles,
+        loading,
         createVehicle,
         updateVehicle,
         deleteVehicle,
-        fetchVehicles
+        fetchMyVehicles
     } = useContext(VehicleContext);
 
     const { currentUser } = useContext(AuthContext);
@@ -33,19 +33,35 @@ const OwnerVehicle = () => {
     const [resubmitMode, setResubmitMode] = useState(false);
 
     useEffect(() => {
-        fetchVehicles();
+        fetchMyVehicles();
     }, []);
 
-    const getStatus = (vehicle) => vehicle?.status?.toLowerCase() || '';
+    const getStatus = (vehicle) => vehicle?.status?.toLowerCase() || "";
 
-    // ------------ Tabs with all statuses ------------
-    const allList = useMemo(() => vehicles, [vehicles]);
-    const pendingList = useMemo(() => vehicles.filter(v => getStatus(v) === "pending"), [vehicles]);
-    const availableList = useMemo(() => vehicles.filter(v => getStatus(v) === "available"), [vehicles]);
-    const bookedList = useMemo(() => vehicles.filter(v => getStatus(v) === "booked"), [vehicles]);
-    const unavailableList = useMemo(() => vehicles.filter(v => getStatus(v) === "unavailable"), [vehicles]);
-    const rejectedList = useMemo(() => vehicles.filter(v => getStatus(v) === "rejected"), [vehicles]);
+    // ------------ Lists ------------
+    const allList = useMemo(() => ownerVehicles, [ownerVehicles]);
+    const pendingList = useMemo(
+        () => ownerVehicles.filter((v) => getStatus(v) === "pending"),
+        [ownerVehicles]
+    );
+    const availableList = useMemo(
+        () => ownerVehicles.filter((v) => getStatus(v) === "available"),
+        [ownerVehicles]
+    );
+    const bookedList = useMemo(
+        () => ownerVehicles.filter((v) => getStatus(v) === "booked"),
+        [ownerVehicles]
+    );
+    const unavailableList = useMemo(
+        () => ownerVehicles.filter((v) => getStatus(v) === "unavailable"),
+        [ownerVehicles]
+    );
+    const rejectedList = useMemo(
+        () => ownerVehicles.filter((v) => getStatus(v) === "rejected"),
+        [ownerVehicles]
+    );
 
+    // ------------ Tabs ------------
     const tabs = [
         { id: "all", label: "All Vehicles", count: allList.length },
         { id: "available", label: "Available", count: availableList.length },
@@ -57,7 +73,7 @@ const OwnerVehicle = () => {
 
     // ------------ Stats ------------
     const stats = useMemo(() => {
-        const totalVehicles = vehicles.length;
+        const totalVehicles = ownerVehicles.length;
 
         return [
             {
@@ -81,7 +97,13 @@ const OwnerVehicle = () => {
                 subtext: `${pendingList.length} pending, ${rejectedList.length} rejected`,
             },
         ];
-    }, [vehicles, availableList.length, bookedList.length, pendingList.length, rejectedList.length]);
+    }, [
+        ownerVehicles,
+        availableList.length,
+        bookedList.length,
+        pendingList.length,
+        rejectedList.length,
+    ]);
 
     // ------------ Handlers ------------
     const handleAddVehicle = async (payload) => {
@@ -103,7 +125,7 @@ const OwnerVehicle = () => {
                         reject_reason: null,
                     },
                     imageFiles: payload.imageFiles || [],
-                    removedImages: payload.removedImages || []
+                    removedImages: payload.removedImages || [],
                 });
                 setResubmitMode(false);
             } else {
@@ -146,21 +168,22 @@ const OwnerVehicle = () => {
 
     const handleToggleAvailability = async (vehicle) => {
         const currentStatus = getStatus(vehicle);
-        const newStatus = currentStatus === "available" ? "unavailable" : "available";
+        const newStatus =
+            currentStatus === "available" ? "unavailable" : "available";
 
         try {
             await updateVehicle(vehicle._id, {
                 vehicleData: { status: newStatus },
                 imageFiles: [],
-                removedImages: []
+                removedImages: [],
             });
         } catch (error) {
             console.error("Failed to toggle availability:", error);
         }
     };
 
-    // ------------ Render ------------
-    if (vehicleLoading && vehicles.length === 0) {
+    // ------------ Loading ------------
+    if (loading && ownerVehicles.length === 0) {
         return <LoadingSpinner />;
     }
 
@@ -212,10 +235,10 @@ const OwnerVehicle = () => {
                 onButtonClick={() => setShowAddPopup(true)}
             />
 
-            {/* Stats Cards */}
+            {/* Stats */}
             <StatsCards stats={stats} />
 
-            {/* Tabs with all statuses */}
+            {/* Tabs */}
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
             {/* Tab Content */}

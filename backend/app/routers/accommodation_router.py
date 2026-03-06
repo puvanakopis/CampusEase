@@ -10,7 +10,8 @@ from app.services.accommodation_service import (
     update_accommodation,
     delete_accommodation,
     create_accommodation,
-    get_all_accommodations
+    get_all_accommodations,
+    get_accommodations_by_owner
 )
 from app.middlewares.auth_middleware import get_current_user, role_required
 
@@ -32,6 +33,9 @@ async def create_accommodation_endpoint(
 async def list_accommodations():
     return await get_all_accommodations()
 
+@router.get("/owner", dependencies=[Depends(role_required(["owner"]))])
+async def get_my_accommodations(current_user=Depends(get_current_user)):
+    return await get_accommodations_by_owner(current_user.id)
 
 @router.get("/{accommodation_id}")
 async def get_accommodation_endpoint(accommodation_id: str):
