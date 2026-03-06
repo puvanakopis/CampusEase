@@ -8,6 +8,7 @@ from app.services.counter_service import get_next_sequence
 
 from app.schemas.vehicle_schema import (
     VehicleCreateRequest,
+    VehicleUpdateRequest,
     VehicleResponse,
     VehicleReview,
     OwnerResponse,
@@ -129,4 +130,37 @@ async def get_vehicle_by_id(vehicle_id: str):
         "message": "Vehicle fetched successfully",
         "data": vehicle_obj.dict(by_alias=True)
     }
+
+
+async def update_vehicle(vehicle_id: str, update_request: VehicleUpdateRequest, files: Optional[List[UploadFile]] = None):
+
+    doc = await vehicles_collection.find_one({"_id": vehicle_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+
+    update_data = update_request.dict(exclude_unset=True)
+    update_data["last_updated"] = datetime.utcnow()
+
+    existing_images = doc.get("images", [])
+
+    if update_request.remove_images:
+        existing_images = [img for img in existing_images if img["filename"] not in update_request.remove_images]
+
+    if files:
+        for idx, file in enumerate(files, start=1):
+            filename_base = f"{vehicle_id}_image_{len(existing_images)+idx}"
+            saved = await save_file(file, filename_base, folder="uploads/vehicle")
+            existing_images.append({"filename": saved["filename"]})
+
+    update_data["images"] = existing_images
+
+    result = await vehicles_collection.update_one(
+        {"_id": vehicle_id},
+        {"$set": update_data}
+    )
+
+    if result.modified_count == 0 and not files and not update_request.remove_images:
+        raise HTTPException(status_code=400, detail="No changes applied")
+
+    return await get_vehicle_by_id(vehicle_id)
 

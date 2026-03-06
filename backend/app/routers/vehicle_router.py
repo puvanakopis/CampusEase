@@ -3,13 +3,15 @@ from fastapi import APIRouter, Depends, UploadFile, File, Form
 from typing import List, Optional
 
 from app.schemas.vehicle_schema import (
-    VehicleCreateRequest
+    VehicleCreateRequest,
+    VehicleUpdateRequest
 )
 
 from app.services.vehicle_service import (
     create_vehicle,
     get_vehicle_by_id,
-    get_all_vehicles
+    get_all_vehicles,
+    update_vehicle,
 )
 
 from app.middlewares.auth_middleware import get_current_user, role_required
@@ -36,3 +38,13 @@ async def list_vehicles():
 @router.get("/{vehicle_id}")
 async def get_vehicle_endpoint(vehicle_id: str):
     return await get_vehicle_by_id(vehicle_id)
+
+
+@router.patch("/{vehicle_id}", dependencies=[Depends(role_required(["owner","admin"]))])
+async def update_vehicle_endpoint(
+    vehicle_id: str,
+    update_request: str = Form(...),
+    files: Optional[List[UploadFile]] = File(None)
+):
+    update_data = VehicleUpdateRequest(**json.loads(update_request))
+    return await update_vehicle(vehicle_id, update_data, files)
