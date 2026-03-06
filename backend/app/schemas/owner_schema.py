@@ -26,8 +26,8 @@ class OwnerResponse(BaseModel):
     phone: Optional[str] = None
     role: str = "owner"
     photo: Optional[OwnerPhoto] = None
-    status: OwnerStatus
-    verified: bool
+    status: Optional[str] = None
+    verified: Optional[bool] = None
     decline_reason: Optional[str] = None
     description: Optional[str] = None
     created_at: datetime

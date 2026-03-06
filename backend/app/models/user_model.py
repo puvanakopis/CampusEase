@@ -28,7 +28,7 @@ class User(BaseModel):
     phone: Optional[str] = ""
     role: UserRole = UserRole.student
     photo: Optional[Photo] = None
-    status: UserStatus = UserStatus.active
+    status: UserStatus = UserStatus.pending
     id_number: Optional[str] = None
     id_photo: Optional[Photo] = None
     verified: bool = False

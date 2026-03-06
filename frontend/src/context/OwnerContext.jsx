@@ -1,12 +1,15 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import { ownerApi } from "../service/ownerService";
+import { AuthContext } from "./AuthContext";
 
 export const OwnerContext = createContext();
 
 export const OwnerProvider = ({ children }) => {
     const [owners, setOwners] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    const { currentUser } = useContext(AuthContext);
 
     // ------------------ FETCH ALL OWNERS ------------------
     const fetchOwners = async () => {
@@ -78,8 +81,10 @@ export const OwnerProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        fetchOwners();
-    }, []);
+        if (currentUser?.role === "admin") {
+            fetchOwners();
+        }
+    }, [currentUser]);
 
     return (
         <OwnerContext.Provider
