@@ -3,6 +3,9 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { AccommodationProvider } from "./context/AccommodationContext";
+import { VehicleProvider } from "./context/VehicleContext";
+import { OwnerProvider } from "./context/OwnerContext";
+import { UserProvider } from "./context/UserContext";
 import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -10,7 +13,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <AuthProvider>
         <AccommodationProvider>
-          <App />
+          <VehicleProvider>
+            <OwnerProvider>
+              <UserProvider>
+                <App />
+              </UserProvider >
+            </OwnerProvider >
+          </VehicleProvider >
         </AccommodationProvider >
       </AuthProvider>
     </BrowserRouter>

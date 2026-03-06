@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
-import FiltersSidebar from "../../containers/user/accommodation/FiltersSidebar";
-import PageHeader from "../../containers/user/accommodation/PageHeader";
-import SortBar from "../../containers/user/accommodation/SortBar";
+import AccommodationFiltersSidebar from "../../containers/user/accommodation/AccommodationFiltersSidebar";
+import AccommodationPageHeader from "../../containers/user/accommodation/AccommodationPageHeader";
+import AccommodationSortBar from "../../containers/user/accommodation/AccommodationSortBar";
 import AccommodationGrid from "../../containers/user/accommodation/AccommodationGrid";
 import Pagination from "../../components/user/Pagination";
 import { AccommodationContext } from "../../context/AccommodationContext";
@@ -93,16 +93,16 @@ const Accommodations = () => {
     <div className="bg-[#f6f7f8]">
       <div className="flex flex-col lg:flex-row px-4 py-10 md:px-24 max-w-8xl mx-auto gap-6">
 
-        <FiltersSidebar filters={filters} onFilterChange={handleFilterChange} />
+        <AccommodationFiltersSidebar filters={filters} onFilterChange={handleFilterChange} />
 
         <main className="flex-1 flex flex-col gap-6">
 
-          <PageHeader
+          <AccommodationPageHeader
             title="Accommodation Rentals"
             description="Student housing near Sabaragamuwa University of Sri Lanka (SUSL)."
           />
 
-          <SortBar
+          <AccommodationSortBar
             total={sortedAccommodations.length}
             location="Belihuloya & Pambahinna"
             sortOption={sortOption}

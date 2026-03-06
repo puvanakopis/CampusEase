@@ -1,281 +1,230 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Heading from "../../containers/admin/common/Heading";
 import StatsCards from "../../containers/admin/common/StatsCards";
 import Tabs from "../../containers/admin/common/Tabs";
 import VehicleTable from "../../containers/admin/vehicles/VehicleTable";
-import ViewVehiclePopup from "../../containers/admin/vehicles/ViewVehiclePopup";
 import VehicleRequestsTable from "../../containers/admin/vehicles/VehicleRequestsTable";
-import StatusChangePopup from "../../containers/admin/vehicles/StatusChangePopup"; 
+import ViewVehiclePopup from "../../containers/admin/vehicles/ViewVehiclePopup";
+import VehicleStatusChangePopup from "../../containers/admin/vehicles/VehicleStatusChangePopup";
+import VehicleRejectPopup from "../../containers/admin/vehicles/VehicleRejectPopup";
+import { VehicleContext } from "../../context/VehicleContext";
+import toast from "react-hot-toast";
 
 const AdminVehicles = () => {
+    const {
+        vehicles,
+        fetchVehicles,
+        updateVehicle,
+        loading: vehicleLoading
+    } = useContext(VehicleContext);
+
+    const [activeTab, setActiveTab] = useState("all");
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
-    const [activeTab, setActiveTab] = useState("current");
-    const [showStatusPopup, setShowStatusPopup] = useState(false); 
-    const [vehicleToChangeStatus, setVehicleToChangeStatus] = useState(null); 
+    const [showStatusPopup, setShowStatusPopup] = useState(false);
+    const [vehicleToChangeStatus, setVehicleToChangeStatus] = useState(null);
+    const [showVehicleRejectPopup, setShowVehicleRejectPopup] = useState(false);
+    const [requestToReject, setRequestToReject] = useState(null);
 
-    const [allVehicles, setAllVehicles] = useState([
-        {
-            id: "V-SUSL-1001",
-            name: "Campus Express Shuttle",
-            type: "Shuttle",
-            route: "Main Gate - Library - Science Block",
-            capacity: 20,
-            price: 50,
-            status: "Active",
-            driver: "Mr. Kamal Perera",
-            driverContact: "+94 77 111 2233",
-            driverLicense: "DL-3456789",
-            schedule: "7:00 AM - 7:00 PM (30 min intervals)",
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCI5BnAKspEOg_BzW-S6Bd0vthfJXCjNSmdAVzbeMnGiInqD4TBHKDoOIHCmS6Wl_-j8cyilhjlemCGKvQ-n1wgYe3NuA5MtA0thgik4PnK2zwWjlnCbBZ78oO7XVGNhOz1W-LTZM9dUrEmHJdqLrWTK0vkuLsWIRRToS00v0JSqQOamGhp7nchxCb_OwNQdbrecjCejjwZb_mCzQrFoeONrze74vZ6eI97C-ewlMUlmKffkx1wty73DzxgB2LgNXqzWmGTURPZbsw",
-            description: "Main campus shuttle service connecting key locations within university premises.",
-            amenities: ["AC", "WiFi", "USB Charging", "CCTV"],
-            registration: "CAB-7890",
-            insurance: "Valid until 2025-12-31",
-            lastService: "2024-10-15",
-            nextService: "2025-01-15",
-            owner: "University Transport Division",
-            ownerContact: "+94 81 238 5001",
-            ownerId: "UTD-001",
-            ownerEmail: "transport@susl.lk",
-            createdAt: "2024-01-10",
-            lastUpdated: "2024-10-25",
-            approvedBy: "Admin User",
-            approvedDate: "2024-01-12",
-            averageRating: 4.5,
-            totalTrips: 1250
-        },
-        {
-            id: "V-SUSL-1002",
-            name: "Night Rider Van",
-            type: "Van",
-            route: "Hostel Zone - Town Center - Hospital",
-            capacity: 12,
-            price: 80,
-            status: "Active",
-            driver: "Mr. Sunil Fernando",
-            driverContact: "+94 76 222 3344",
-            driverLicense: "DL-4567890",
-            schedule: "6:00 PM - 11:00 PM (1 hour intervals)",
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBwOUPIKoOHaAM_E-TBru2zCVRI3Ssm_LYBqy9OohQOx9fZ7bJFKvFZeXYP-TL5_hnUPQRzHpFmqXIkmL594Z2YVtMNyZ6adghT3SaAi0Q29G-yRY1dWnDXX4DuymdYSw76W9egefXCZ7WnVcqqgYIreJXZ9-WdrrDNT-ZVxNJlTNElTURfj5tpQpeMRuNJtM2fGiyxD9VRg_Si88XLJUgR7cYjdntOdqJg3Yo4z7js1y1HXXZkV1FJXr76YpQn-c4zmKy77-uQ4bI",
-            description: "Safe and reliable night service for students traveling after classes.",
-            amenities: ["AC", "Security Cam", "GPS Tracking", "First Aid Kit"],
-            registration: "CA-5678",
-            insurance: "Valid until 2025-10-31",
-            lastService: "2024-10-10",
-            nextService: "2025-01-10",
-            owner: "Mr. Rajapakse",
-            ownerContact: "+94 71 333 4455",
-            ownerId: "PVT-002",
-            ownerEmail: "rajapakse.transport@gmail.com",
-            createdAt: "2024-02-15",
-            lastUpdated: "2024-10-20",
-            approvedBy: "Admin User",
-            approvedDate: "2024-02-18",
-            averageRating: 4.2,
-            totalTrips: 890
-        },
-        {
-            id: "V-SUSL-1003",
-            name: "Old Campus Bus",
-            type: "Bus",
-            route: "University - Belihuloya - Balangoda",
-            capacity: 40,
-            price: 120,
-            status: "Inactive",
-            image: "https://via.placeholder.com/400x300?text=Inactive+Vehicle",
-            description: "Large capacity bus for inter-city travel. Currently under maintenance.",
-            amenities: ["AC", "Restroom", "Luggage Storage", "Reclining Seats"],
-            registration: "CA-9012",
-            insurance: "Valid until 2025-08-31",
-            lastService: "2024-09-01",
-            nextService: "2024-12-01",
-            driver: "Mr. Bandara",
-            driverContact: "+94 77 444 5566",
-            driverLicense: "DL-5678901",
-            schedule: "Suspended",
-            owner: "University Transport Division",
-            ownerContact: "+94 81 238 5001",
-            ownerId: "UTD-001",
-            ownerEmail: "transport@susl.lk",
-            createdAt: "2023-11-01",
-            lastUpdated: "2024-10-01",
-            approvedBy: "Admin User",
-            approvedDate: "2023-11-05",
-            inactiveReason: "Engine overhaul and major repairs",
-            averageRating: 4.0,
-            totalTrips: 2100
-        }
-    ]);
+    // ------------------- FILTERS -------------------
 
-    const [vehicleRequests, setVehicleRequests] = useState([
-        {
-            id: "V-REQ-001",
-            name: "Green Campus EV",
-            type: "Electric Van",
-            route: "Main Campus - Hostel Zone - Sports Complex",
-            capacity: 15,
-            price: 60,
-            status: "Pending",
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBj70YCtt3xEQ41nzjit8EF3C5db8W9u5nFJ41O6tsQNQZ32UUuM0r-fKYxfvOefR7TyBkFee4rs8YZDVYTwXyeF5-2LN0ZZz3qRbc401qQBKu3-BLoGjavC3RQ8ElCf3xEA10qYwUGCWQ1qjTe0HQcnYP4a5EZfsLO31qfm3KcCDHNTpgkFbw3QYArc_yLM9k66cLBfwfJkDiVYNLjmY74jn02DsNtzcc-1VEe-oQxzEqhZKUDlPatpomI-ZActGKMR5Msq05n_iI",
-            description: "Environmentally friendly electric vehicle for campus transportation.",
-            amenities: ["Zero Emissions", "WiFi", "USB Charging", "Digital Display"],
-            registration: "EV-2024",
-            insurance: "Valid until 2026-12-31",
-            driver: "Mr. Nimal Silva",
-            driverContact: "+94 76 555 6677",
-            driverLicense: "DL-6789012",
-            schedule: "8:00 AM - 6:00 PM (20 min intervals)",
-            owner: "Green Transport Solutions",
-            ownerContact: "+94 71 666 7788",
-            ownerId: "PVT-003",
-            ownerEmail: "green.transport@gmail.com",
-            requestedDate: "2024-10-24",
-            reason: "Introducing eco-friendly transport option to campus",
-            currentVehicles: 2,
-            maxVehicles: 5,
-            vehicleAge: "New",
-            emissions: "Zero"
-        },
-        {
-            id: "V-REQ-002",
-            name: "Student Carpool Service",
-            type: "Car",
-            route: "Flexible - Based on demand",
-            capacity: 4,
-            price: 100,
-            status: "Pending",
-            image: "https://via.placeholder.com/400x300?text=Vehicle+Image",
-            description: "Premium car service for small group transportation and special trips.",
-            amenities: ["Premium AC", "WiFi", "Refreshments", "Privacy Glass"],
-            registration: "CAR-7891",
-            insurance: "Valid until 2025-11-30",
-            driver: "Ms. Anoma Ratnayake",
-            driverContact: "+94 77 777 8888",
-            driverLicense: "DL-7890123",
-            schedule: "On-demand booking system",
-            owner: "Campus Premium Services",
-            ownerContact: "+94 76 888 9999",
-            ownerId: "PVT-004",
-            ownerEmail: "premium.campus@gmail.com",
-            requestedDate: "2024-10-23",
-            reason: "New service for executive transport needs",
-            currentVehicles: 1,
-            maxVehicles: 3,
-            vehicleAge: "2 years",
-            emissions: "Euro 6"
-        },
-    ]);
+    const allVehicles = vehicles;
+
+    const availableVehicles = vehicles.filter(
+        (v) => v.status === "available"
+    );
+
+    const bookedVehicles = vehicles.filter(
+        (v) => v.status === "booked"
+    );
+
+    const unavailableVehicles = vehicles.filter(
+        (v) => v.status === "unavailable"
+    );
+
+    const rejectedVehicles = vehicles.filter(
+        (v) => v.status === "rejected"
+    );
+
+    const vehicleRequests = vehicles.filter(
+        (v) => v.status === "pending"
+    );
+
+    // ------------------- TABS -------------------
 
     const tabs = [
-        { id: "current", label: "Active Vehicles", count: allVehicles.filter(v => v.status === "Active").length },
-        { id: "requests", label: "Vehicle Requests", count: vehicleRequests.length },
-        { id: "inactive", label: "Inactive Vehicles", count: allVehicles.filter(v => v.status === "Inactive").length }
+        {
+            id: "all",
+            label: "All",
+            count: vehicles.length,
+        },
+        {
+            id: "available",
+            label: "Available",
+            count: availableVehicles.length,
+        },
+        {
+            id: "booked",
+            label: "Booked",
+            count: bookedVehicles.length,
+        },
+        {
+            id: "unavailable",
+            label: "Unavailable",
+            count: unavailableVehicles.length,
+        },
+        {
+            id: "rejected",
+            label: "Rejected",
+            count: rejectedVehicles.length,
+        },
+        {
+            id: "requests",
+            label: "Vehicle Requests",
+            count: vehicleRequests.length,
+        },
     ];
+
+    // ------------------- MEANINGFUL STATS -------------------
 
     const stats = [
         {
             label: "Total Vehicles",
             icon: "directions_car",
-            value: allVehicles.length,
-            subtext: `${allVehicles.filter(v => v.status === "Active").length} active`,
-            trendIcon: "trending_up",
-            subtextColor: "text-green-500"
+            value: vehicles.length,
+            subtext: "Registered in system",
         },
         {
-            label: "Total Capacity",
-            icon: "group",
-            value: allVehicles.reduce((sum, vehicle) => sum + vehicle.capacity, 0),
-            subtext: `${allVehicles.filter(v => v.status === "Active").reduce((sum, v) => sum + v.capacity, 0)} active seats`
+            label: "Pending Requests",
+            icon: "hourglass_empty",
+            value: vehicleRequests.length,
+            subtext: "Waiting for approval",
+            subtextColor: "text-yellow-500",
         },
         {
-            label: "Daily Revenue",
-            icon: "payments",
-            value: `LKR ${(allVehicles.reduce((sum, vehicle) => sum + (vehicle.price * 20), 0)).toLocaleString()}`,
-            subtext: "Estimated from active vehicles"
-        }
+            label: "Rejected Vehicles",
+            icon: "cancel",
+            value: rejectedVehicles.length,
+            subtext: "Not approved",
+            subtextColor: "text-red-500",
+        },
     ];
+
+    // ------------------- ACTION HANDLERS -------------------
 
     const handleViewVehicle = (vehicle) => {
         setSelectedVehicle(vehicle);
         setShowViewPopup(true);
     };
 
-    const handleDeleteVehicle = (vehicleId) => {
-        if (window.confirm("Are you sure you want to delete this vehicle?")) {
-            setAllVehicles(allVehicles.filter(vehicle => vehicle.id !== vehicleId));
+    const handleApproveRequest = async (request) => {
+        try {
+            const updatePayload = {
+                vehicleData: {
+                    status: "available",
+                    verified: true,
+                    reject_reason: null,
+                },
+            };
+
+            await updateVehicle(request._id, updatePayload);
+            toast.success("Vehicle approved and activated");
+            await fetchVehicles();
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message || "Approval failed");
         }
     };
 
-    const handleApproveRequest = (requestId) => {
-        const request = vehicleRequests.find(req => req.id === requestId);
-        if (!request) return;
-
-        const newVehicle = {
-            ...request,
-            id: `V-SUSL-${Math.floor(1000 + Math.random() * 9000)}`,
-            status: "Active",
-            totalTrips: 0,
-            averageRating: 0,
-            createdAt: new Date().toISOString().split('T')[0],
-            lastUpdated: new Date().toISOString().split('T')[0],
-            approvedBy: "Admin User",
-            approvedDate: new Date().toISOString().split('T')[0],
-            lastService: new Date().toISOString().split('T')[0],
-            nextService: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString().split('T')[0]
-        };
-
-        setAllVehicles([...allVehicles, newVehicle]);
-        setVehicleRequests(vehicleRequests.filter(req => req.id !== requestId));
-
-        alert(`Vehicle "${request.name}" has been approved and listed. Owner has been notified.`);
+    const handleRejectRequest = (request) => {
+        setRequestToReject(request);
+        setShowVehicleRejectPopup(true);
     };
 
-    const handleRejectRequest = (requestId) => {
-        const request = vehicleRequests.find(req => req.id === requestId);
-        if (window.confirm(`Are you sure you want to reject "${request?.name}"?`)) {
-            setVehicleRequests(vehicleRequests.filter(req => req.id !== requestId));
-            alert(`Vehicle request for "${request?.name}" has been rejected. Owner has been notified.`);
+    const handleConfirmReject = async (reason) => {
+        if (!requestToReject) return;
+
+        try {
+            const updatePayload = {
+                vehicleData: {
+                    status: "rejected",
+                    reject_reason: reason,
+                    verified: false,
+                },
+            };
+
+            await updateVehicle(requestToReject._id, updatePayload);
+            toast.success("Vehicle request rejected");
+            setShowVehicleRejectPopup(false);
+            setRequestToReject(null);
+            await fetchVehicles();
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message || "Reject failed");
         }
     };
 
-    const handleToggleVehicleStatus = (vehicleId, currentStatus) => {
-        const vehicle = allVehicles.find(v => v.id === vehicleId);
-        if (!vehicle) return;
-
-        // Set the vehicle for status change and show popup
-        setVehicleToChangeStatus({ ...vehicle, currentStatus });
+    const handleToggleVehicleStatus = (vehicle) => {
+        setVehicleToChangeStatus(vehicle);
         setShowStatusPopup(true);
     };
 
     const handleConfirmStatusChange = async (reason) => {
         if (!vehicleToChangeStatus) return;
 
-        const newStatus = vehicleToChangeStatus.currentStatus === "Active" ? "Inactive" : "Active";
+        const newStatus =
+            vehicleToChangeStatus.status === "available"
+                ? "unavailable"
+                : "available";
 
-        setAllVehicles(allVehicles.map(v =>
-            v.id === vehicleToChangeStatus.id ? {
-                ...v,
-                status: newStatus,
-                lastUpdated: new Date().toISOString().split('T')[0],
-                schedule: newStatus === "Inactive" ? "Suspended" : v.schedule,
-                ...(newStatus === "Inactive" ? { inactiveReason: reason } : { inactiveReason: null })
-            } : v
-        ));
+        try {
+            const updatePayload = {
+                vehicleData: {
+                    status: newStatus,
+                    reject_reason: newStatus === "unavailable" ? reason : null,
+                },
+            };
 
-        // Optional: Send notification to vehicle owner and driver
-        // await sendStatusChangeNotification(vehicleToChangeStatus.ownerEmail, newStatus, reason);
+            await updateVehicle(vehicleToChangeStatus._id, updatePayload);
 
-        alert(`Vehicle "${vehicleToChangeStatus.name}" has been ${newStatus.toLowerCase()}.`);
+            toast.success(
+                `Vehicle ${newStatus === "available" ? "activated" : "deactivated"}`
+            );
 
-        // Close popup and reset
-        setShowStatusPopup(false);
-        setVehicleToChangeStatus(null);
+            await fetchVehicles();
+        } catch (error) {
+            console.error(error);
+            toast.error(error.message || "Status update failed");
+        } finally {
+            setShowStatusPopup(false);
+            setVehicleToChangeStatus(null);
+        }
     };
+
+    useEffect(() => {
+        fetchVehicles();
+    }, []);
+
+    if (vehicleLoading && vehicles.length === 0) {
+        return (
+            <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
+                <div className="flex justify-center items-center h-64">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                        <p className="mt-4 text-slate-600">
+                            Loading vehicles...
+                        </p>
+                    </div>
+                </div>
+            </main>
+        );
+    }
 
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
+
             {/* Popups */}
+
             {showViewPopup && selectedVehicle && (
                 <ViewVehiclePopup
                     vehicle={selectedVehicle}
@@ -287,16 +236,26 @@ const AdminVehicles = () => {
                 />
             )}
 
-            {/* Status Change Popup */}
             {showStatusPopup && vehicleToChangeStatus && (
-                <StatusChangePopup
+                <VehicleStatusChangePopup
                     vehicle={vehicleToChangeStatus}
-                    currentStatus={vehicleToChangeStatus.currentStatus}
+                    currentStatus={vehicleToChangeStatus.status}
                     onClose={() => {
                         setShowStatusPopup(false);
                         setVehicleToChangeStatus(null);
                     }}
                     onConfirm={handleConfirmStatusChange}
+                />
+            )}
+
+            {showVehicleRejectPopup && requestToReject && (
+                <VehicleRejectPopup
+                    request={requestToReject}
+                    onClose={() => {
+                        setShowVehicleRejectPopup(false);
+                        setRequestToReject(null);
+                    }}
+                    onConfirm={handleConfirmReject}
                 />
             )}
 
@@ -314,11 +273,51 @@ const AdminVehicles = () => {
                 onTabChange={setActiveTab}
             />
 
-            {activeTab === "current" && (
+            {activeTab === "all" && (
                 <VehicleTable
-                    vehicles={allVehicles.filter(vehicle => vehicle.status === "Active")}
+                    title="All Vehicles"
+                    vehicles={allVehicles}
                     onView={handleViewVehicle}
-                    onDelete={handleDeleteVehicle}
+                    onToggleStatus={handleToggleVehicleStatus}
+                    isAdmin={true}
+                />
+            )}
+
+            {activeTab === "available" && (
+                <VehicleTable
+                    title="Available Vehicles"
+                    vehicles={availableVehicles}
+                    onView={handleViewVehicle}
+                    onToggleStatus={handleToggleVehicleStatus}
+                    isAdmin={true}
+                />
+            )}
+
+            {activeTab === "booked" && (
+                <VehicleTable
+                    title="Booked Vehicles"
+                    vehicles={bookedVehicles}
+                    onView={handleViewVehicle}
+                    onToggleStatus={handleToggleVehicleStatus}
+                    isAdmin={true}
+                />
+            )}
+
+            {activeTab === "unavailable" && (
+                <VehicleTable
+                    title="Unavailable Vehicles"
+                    vehicles={unavailableVehicles}
+                    onView={handleViewVehicle}
+                    onToggleStatus={handleToggleVehicleStatus}
+                    isAdmin={true}
+                />
+            )}
+
+            {activeTab === "rejected" && (
+                <VehicleTable
+                    title="Rejected Vehicles"
+                    vehicles={rejectedVehicles}
+                    onView={handleViewVehicle}
                     onToggleStatus={handleToggleVehicleStatus}
                     isAdmin={true}
                 />
@@ -333,15 +332,6 @@ const AdminVehicles = () => {
                 />
             )}
 
-            {activeTab === "inactive" && (
-                <VehicleTable
-                    vehicles={allVehicles.filter(vehicle => vehicle.status === "Inactive")}
-                    onView={handleViewVehicle}
-                    onDelete={handleDeleteVehicle}
-                    onToggleStatus={handleToggleVehicleStatus}
-                    isAdmin={true}
-                />
-            )}
         </main>
     );
 };

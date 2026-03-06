@@ -6,8 +6,8 @@ const Breadcrumbs = ({ items }) => (
             {items.map((item, index) => (
                 <React.Fragment key={index}>
                     <li>
-                        {item.href ? (
-                            <a className="hover:text-primary transition-colors" href={item.href}>
+                        {item.link ? (
+                            <a className="hover:text-primary transition-colors" href={item.link}>
                                 {item.label}
                             </a>
                         ) : (

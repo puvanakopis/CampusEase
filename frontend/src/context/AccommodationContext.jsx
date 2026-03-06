@@ -6,6 +6,7 @@ export const AccommodationContext = createContext();
 
 export const AccommodationProvider = ({ children }) => {
   const [accommodations, setAccommodations] = useState([]);
+  const [ownerAccommodations, setOwnerAccommodations] = useState([]);
   const [accoLoading, setAccoLoading] = useState(false);
 
   // ------------------ FETCH ALL ------------------
@@ -13,6 +14,7 @@ export const AccommodationProvider = ({ children }) => {
     setAccoLoading(true);
     try {
       const res = await accommodationApi.getAll();
+
       if (res.success) {
         setAccommodations(res.data);
       } else {
@@ -20,6 +22,24 @@ export const AccommodationProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(err.message || "Failed to load accommodations");
+    } finally {
+      setAccoLoading(false);
+    }
+  };
+
+  // ------------------ FETCH OWNER ACCOMMODATIONS ------------------
+  const fetchMyAccommodations = async () => {
+    setAccoLoading(true);
+    try {
+      const res = await accommodationApi.getMyAccommodations();
+
+      if (res.success) {
+        setOwnerAccommodations(res.data);
+      } else {
+        toast.error(res.message || "Failed to load your accommodations");
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to load your accommodations");
     } finally {
       setAccoLoading(false);
     }
@@ -35,12 +55,12 @@ export const AccommodationProvider = ({ children }) => {
     const toastId = toast.loading("Creating accommodation...");
     try {
       const formData = new FormData();
-      
-      formData.append('accom_request', JSON.stringify(payload.accommodationData));
-      
+
+      formData.append("accom_request", JSON.stringify(payload.accommodationData));
+
       if (payload.imageFiles && payload.imageFiles.length > 0) {
         payload.imageFiles.forEach((file) => {
-          formData.append('files', file);
+          formData.append("files", file);
         });
       }
 
@@ -52,9 +72,11 @@ export const AccommodationProvider = ({ children }) => {
       }
 
       toast.success("Accommodation created successfully!", { id: toastId });
-      await fetchAccommodations();
-      return res.data;
 
+      await fetchAccommodations();
+      await fetchMyAccommodations();
+
+      return res.data;
     } catch (err) {
       toast.error(err.message || "Failed to create", { id: toastId });
       throw err;
@@ -74,7 +96,6 @@ export const AccommodationProvider = ({ children }) => {
 
       toast.success("Loaded", { id: toastId });
       return res.data;
-
     } catch (err) {
       toast.error(err.message || "Failed to load accommodation", { id: toastId });
       throw err;
@@ -86,12 +107,15 @@ export const AccommodationProvider = ({ children }) => {
     const toastId = toast.loading("Updating accommodation...");
     try {
       const formData = new FormData();
-      
-      formData.append('update_request', JSON.stringify(payload.accommodationData));
-      
+
+      formData.append(
+        "update_request",
+        JSON.stringify(payload.accommodationData)
+      );
+
       if (payload.imageFiles && payload.imageFiles.length > 0) {
         payload.imageFiles.forEach((file) => {
-          formData.append('files', file);
+          formData.append("files", file);
         });
       }
 
@@ -103,9 +127,11 @@ export const AccommodationProvider = ({ children }) => {
       }
 
       toast.success("Updated successfully!", { id: toastId });
-      await fetchAccommodations();
-      return res.data;
 
+      await fetchAccommodations();
+      await fetchMyAccommodations();
+
+      return res.data;
     } catch (err) {
       toast.error(err.message || "Update failed", { id: toastId });
       throw err;
@@ -124,8 +150,9 @@ export const AccommodationProvider = ({ children }) => {
       }
 
       toast.success("Deleted successfully!", { id: toastId });
-      await fetchAccommodations();
 
+      await fetchAccommodations();
+      await fetchMyAccommodations();
     } catch (err) {
       toast.error(err.message || "Delete failed", { id: toastId });
       throw err;
@@ -136,9 +163,12 @@ export const AccommodationProvider = ({ children }) => {
     <AccommodationContext.Provider
       value={{
         accommodations,
+        ownerAccommodations,
         accoLoading,
 
         fetchAccommodations,
+        fetchMyAccommodations,
+
         createAccommodation,
         getAccommodationById,
         updateAccommodation,

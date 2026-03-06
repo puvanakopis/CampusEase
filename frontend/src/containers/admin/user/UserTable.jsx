@@ -1,92 +1,206 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const UserTable = ({
+    title,
     users,
     onView,
-    onEdit,
-    onDelete,
-    onToggleStatus
+    onToggleStatus,
+    isAdmin = false
 }) => {
-    const handleToggleStatusClick = (user, e) => {
-        e.stopPropagation();
-        if (onToggleStatus) {
-            onToggleStatus(user.id, user.status);
-        }
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filterStatus, setFilterStatus] = useState("All");
+    const [filterVerified, setFilterVerified] = useState("All");
+    const [filterRole, setFilterRole] = useState("All");
+
+    const getStatusDisplay = (status) => {
+        if (!status) return 'N/A';
+        return status;
     };
 
     const getStatusColor = (status) => {
         switch (status) {
-            case "Active": return "bg-green-100 text-green-800";
-            case "Suspended": return "bg-red-100 text-red-800";
-            case "Inactive": return "bg-yellow-100 text-yellow-800";
-            default: return "bg-gray-100 text-gray-800";
+            case "Active":
+                return "bg-green-100 text-green-800";
+            case "Pending Approval":
+                return "bg-yellow-100 text-yellow-800";
+            case "Declined Approval":
+                return "bg-red-100 text-red-800";
+            case "Inactive":
+                return "bg-gray-100 text-gray-800";
+            default:
+                return "bg-gray-100 text-gray-800";
         }
     };
 
     const getRoleColor = (role) => {
         switch (role) {
-            case "Student": return "bg-blue-100 text-primary";
-            case "Professional": return "bg-purple-100 text-purple-800";
-            default: return "bg-gray-100 text-gray-800";
+            case "student":
+                return "bg-blue-100 text-blue-800";
+            case "staff":
+                return "bg-purple-100 text-purple-800";
+            default:
+                return "bg-gray-100 text-gray-800";
+        }
+    };
+
+    const uniqueStatuses = useMemo(() => {
+        const statuses = users.map(u => u.status);
+        return ['All', ...new Set(statuses)];
+    }, [users]);
+
+    const filteredUsers = useMemo(() => {
+        return users.filter((user) => {
+            const searchLower = searchQuery.toLowerCase();
+            const fullName = `${user.first_name || ''} ${user.last_name || ''}`.toLowerCase();
+            const matchesSearch =
+                fullName.includes(searchLower) ||
+                user.email?.toLowerCase().includes(searchLower) ||
+                user._id?.toLowerCase().includes(searchLower) ||
+                user.phone?.toLowerCase().includes(searchLower);
+
+            const matchesStatus =
+                filterStatus === "All" ||
+                user.status === filterStatus;
+
+            const matchesVerified =
+                filterVerified === "All" ||
+                (filterVerified === "Verified" && user.verified) ||
+                (filterVerified === "Unverified" && !user.verified);
+
+            const matchesRole =
+                filterRole === "All" ||
+                user.role === filterRole;
+
+            return matchesSearch && matchesStatus && matchesVerified && matchesRole;
+        });
+    }, [users, searchQuery, filterStatus, filterVerified, filterRole]);
+
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        try {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        } catch {
+            return 'N/A';
         }
     };
 
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+            <div className="px-6 py-4 border-b border-slate-200 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Users ({users.length})
+                    {title} ({filteredUsers.length})
                 </h3>
-                <div className="flex items-center gap-3">
+
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto">
                     {/* Search */}
-                    <div className="flex items-center gap-3">
-                        {/* Search Input */}
-                        <div className="relative">
-                            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
-                                search
-                            </span>
-                            <input
-                                type="text"
-                                placeholder="Search users..."
-                                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            />
-                        </div>
-
-                        {/* Role Filter */}
-                        <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
-                            <option>Role: All</option>
-                            <option>Student</option>
-                            <option>Professional</option>
-                        </select>
-
-                        {/* Status Filter */}
-                        <select className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out">
-                            <option>Status: All</option>
-                            <option>Active</option>
-                            <option>Suspended</option>
-                            <option>Inactive</option>
-                        </select>
+                    <div className="relative w-full sm:w-64">
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+                            search
+                        </span>
+                        <input
+                            type="text"
+                            placeholder="Search by name, email, or ID..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        />
                     </div>
+
+                    {/* Role Filter */}
+                    <select
+                        value={filterRole}
+                        onChange={(e) => setFilterRole(e.target.value)}
+                        className="w-full sm:w-auto bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                    >
+                        <option value="All">All Roles</option>
+                        <option value="student">Students</option>
+                        <option value="staff">Staff</option>
+                    </select>
+
+                    {/* Status Filter */}
+                    <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="w-full sm:w-auto bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                    >
+                        {uniqueStatuses.map(status => (
+                            <option key={status} value={status}>{status}</option>
+                        ))}
+                    </select>
+
+                    {/* Verified Filter */}
+                    <select
+                        value={filterVerified}
+                        onChange={(e) => setFilterVerified(e.target.value)}
+                        className="w-full sm:w-auto bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                    >
+                        <option value="All">All Verification</option>
+                        <option value="Verified">Verified</option>
+                        <option value="Unverified">Unverified</option>
+                    </select>
                 </div>
             </div>
 
+            {/* Active Filters Display */}
+            {(searchQuery || filterStatus !== 'All' || filterVerified !== 'All' || filterRole !== 'All') && (
+                <div className="px-6 py-2 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center gap-2">
+                    <span className="text-xs text-slate-500">Active filters:</span>
+                    {searchQuery && (
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                            Search: "{searchQuery}"
+                        </span>
+                    )}
+                    {filterRole !== 'All' && (
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                            Role: {filterRole}
+                        </span>
+                    )}
+                    {filterStatus !== 'All' && (
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                            Status: {filterStatus}
+                        </span>
+                    )}
+                    {filterVerified !== 'All' && (
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                            {filterVerified}
+                        </span>
+                    )}
+                    <button
+                        onClick={() => {
+                            setSearchQuery('');
+                            setFilterStatus('All');
+                            setFilterVerified('All');
+                            setFilterRole('All');
+                        }}
+                        className="text-xs text-slate-500 hover:text-primary ml-auto"
+                    >
+                        Clear all
+                    </button>
+                </div>
+            )}
+
             {/* Table */}
             <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[1000px] lg:min-w-full">
                     <thead className="bg-slate-50">
                         <tr>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                User Profile
+                                User
                             </th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Role & Details
+                                Role & Contact
                             </th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Bookings & Activity
+                                Status & Verification
                             </th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Status & Rating
+                                Saved Items
                             </th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
                                 Actions
@@ -95,14 +209,14 @@ const UserTable = ({
                     </thead>
 
                     <tbody className="divide-y divide-slate-100">
-                        {users.map((user) => (
-                            <tr key={user.id} className="hover:bg-slate-50 transition-colors">
+                        {filteredUsers.map((user) => (
+                            <tr key={user._id || user.id} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={user.profileImage}
-                                                alt={user.name}
+                                                src={buildPhotoUrl(user.photo?.filename, "user_photo")}
+                                                alt={`${user.first_name} ${user.last_name || ''}`}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {
                                                     e.target.src = "https://via.placeholder.com/100x100?text=User";
@@ -110,120 +224,124 @@ const UserTable = ({
                                             />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-semibold text-slate-900">{user.name}</p>
-                                            <p className="text-[10px] text-slate-400">ID: {user.id}</p>
-                                            <p className="text-xs text-slate-600 mt-1">{user.email}</p>
-                                            <p className="text-xs text-slate-500">{user.phone}</p>
+                                            <p className="text-sm font-semibold text-slate-900">
+                                                {user.first_name} {user.last_name || ''}
+                                            </p>
+                                            <p className="text-[10px] text-slate-400">ID: {user._id || user.id}</p>
+                                            <p className="text-xs text-slate-600 mt-1">
+                                                Joined: {formatDate(user.created_at)}
+                                            </p>
                                         </div>
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="space-y-2">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getRoleColor(user.role)}`}>
-                                            {user.role}
+                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${getRoleColor(user.role)}`}>
+                                            {user.role === "student" ? "Student" : "Staff"}
                                         </span>
-                                        {user.role === "Student" ? (
-                                            <div className="space-y-1">
-                                                <p className="text-xs text-slate-700">{user.university}</p>
-                                                <p className="text-xs text-slate-500">{user.faculty} • {user.year}</p>
-                                                <p className="text-xs text-slate-400">ID: {user.studentId}</p>
-                                            </div>
-                                        ) : (
-                                            <div className="space-y-1">
-                                                <p className="text-xs text-slate-700">{user.company}</p>
-                                                <p className="text-xs text-slate-500">{user.designation}</p>
-                                            </div>
-                                        )}
-                                        <p className="text-xs text-slate-400">Joined: {user.registrationDate}</p>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="space-y-2">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xs text-slate-500">Total Bookings:</span>
-                                            <span className="text-sm font-medium">{user.totalBookings}</span>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xs text-slate-500">Active Bookings:</span>
-                                            <span className="text-sm font-medium text-green-600">{user.activeBookings}</span>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xs text-slate-500">Total Spent:</span>
-                                            <span className="text-sm font-medium text-blue-600">LKR {user.totalSpent.toLocaleString()}</span>
-                                        </div>
-                                        <p className="text-xs text-slate-400">Last Login: {user.lastLogin}</p>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="space-y-2">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(user.status)}`}>
-                                            {user.status}
-                                        </span>
-                                        {user.rating > 0 ? (
-                                            <div className="flex items-center gap-1">
-                                                <span className="material-symbols-outlined text-yellow-500 text-sm">
-                                                    star
-                                                </span>
-                                                <span className="text-sm font-medium">{user.rating}</span>
-                                                <span className="text-xs text-slate-500">/5.0</span>
-                                                <span className="text-xs text-slate-400">({user.reviews} reviews)</span>
-                                            </div>
-                                        ) : (
-                                            <p className="text-xs text-slate-400">No ratings yet</p>
+                                        <p className="text-sm text-slate-900">{user.email}</p>
+                                        <p className="text-xs text-slate-500 mt-1">{user.phone || 'No phone'}</p>
+                                        {user.address && (
+                                            <p className="text-xs text-slate-500 mt-1 truncate max-w-[200px]" title={user.address}>
+                                                {user.address}
+                                            </p>
                                         )}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <div className="flex flex-col gap-2">
+                                    <div className="space-y-2">
+                                        <span
+                                            className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(
+                                                user.status
+                                            )}`}
+                                        >
+                                            {getStatusDisplay(user.status)}
+                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-slate-500">Verified:</span>
+                                            <span className={`text-xs font-medium ${user.verified ? 'text-green-600' : 'text-yellow-600'}`}>
+                                                {user.verified ? 'Yes' : 'No'}
+                                            </span>
+                                        </div>
+                                        {user.decline_reason && (
+                                            <p className="text-[10px] text-red-600 mt-1 max-w-[150px]" title={user.decline_reason}>
+                                                Reason: {user.decline_reason.substring(0, 30)}
+                                                {user.decline_reason.length > 30 ? '...' : ''}
+                                            </p>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-xs text-slate-500">Saved Accoms:</span>
+                                            <span className="text-sm font-medium">{user.save_accommodations?.length || 0}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-xs text-slate-500">Saved Transports:</span>
+                                            <span className="text-sm font-medium">{user.save_transports?.length || 0}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <div className="flex items-center justify-center gap-2">
                                         <button
                                             onClick={() => onView(user)}
-                                            className="bg-primary hover:bg-primary/80 text-white text-[10px] font-bold py-2 px-3 rounded-md uppercase tracking-wider transition-colors"
+                                            className="bg-primary hover:bg-primary/80 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
                                             title="View Details"
                                         >
                                             View
                                         </button>
 
-                                        <button
-                                            onClick={() => onEdit(user)}
-                                            className="bg-primary hover:bg-primary/90 text-white text-[10px] font-bold py-2 px-3 rounded-md uppercase tracking-wider transition-colors"
-                                            title="Edit User"
-                                        >
-                                            Edit
-                                        </button>
-
-                                        <button
-                                            onClick={(e) => handleToggleStatusClick(user, e)}
-                                            className={`${user.status === "Active"
-                                                ? "bg-yellow-600 hover:bg-yellow-500"
-                                                : "bg-green-600 hover:bg-green-500"
-                                                } text-white text-[10px] font-bold py-2 px-3 rounded-md uppercase tracking-wider transition-colors`}
-                                            title={user.status === "Active" ? "Suspend User" : "Activate User"}
-                                        >
-                                            {user.status === "Active" ? "Suspend" : "Activate"}
-                                        </button>
-
-                                        <button
-                                            onClick={() => onDelete(user.id)}
-                                            className="bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-2 px-3 rounded-md uppercase tracking-wider transition-colors"
-                                            title="Delete User"
-                                        >
-                                            Delete
-                                        </button>
+                                        {isAdmin && onToggleStatus && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onToggleStatus(user);
+                                                }}
+                                                className={`${user.status === "Active"
+                                                    ? "bg-yellow-600 hover:bg-yellow-500"
+                                                    : "bg-primary hover:bg-primary/90"
+                                                    } text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors`}
+                                                title={
+                                                    user.status === "Active"
+                                                        ? "Deactivate User"
+                                                        : "Activate User"
+                                                }
+                                            >
+                                                {user.status === "Active" ? "Deactivate" : "Activate"}
+                                            </button>
+                                        )}
                                     </div>
                                 </td>
                             </tr>
                         ))}
-                        {users.length === 0 && (
+                        {filteredUsers.length === 0 && (
                             <tr>
                                 <td colSpan="5" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
                                         <span className="material-symbols-outlined text-4xl mb-2">
-                                            person_off
+                                            group
                                         </span>
                                         <p className="text-sm">No users found</p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            Try changing your filters or search terms
+                                            {searchQuery || filterStatus !== 'All' || filterVerified !== 'All' || filterRole !== 'All'
+                                                ? 'Try adjusting your filters'
+                                                : 'No users available'}
                                         </p>
+                                        {(searchQuery || filterStatus !== 'All' || filterVerified !== 'All' || filterRole !== 'All') && (
+                                            <button
+                                                onClick={() => {
+                                                    setSearchQuery('');
+                                                    setFilterStatus('All');
+                                                    setFilterVerified('All');
+                                                    setFilterRole('All');
+                                                }}
+                                                className="mt-4 text-primary text-xs hover:underline"
+                                            >
+                                                Clear all filters
+                                            </button>
+                                        )}
                                     </div>
                                 </td>
                             </tr>
@@ -231,6 +349,15 @@ const UserTable = ({
                     </tbody>
                 </table>
             </div>
+
+            {/* Footer with pagination info */}
+            {filteredUsers.length > 0 && (
+                <div className="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-between items-center">
+                    <p className="text-xs text-slate-500">
+                        Showing {filteredUsers.length} of {users.length} users
+                    </p>
+                </div>
+            )}
         </div>
     );
 };

@@ -1,20 +1,16 @@
 import React, { useState } from "react";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const StatusChangePopup = ({
-    owner,
-    currentStatus,
-    onClose,
-    onConfirm
-}) => {
-    const [reason, setReason] = useState("");
+const StatusChangePopup = ({ owner, currentStatus, onClose, onConfirm }) => {
+    const [reason, setReason] = useState(owner?.decline_reason || "");
     const [loading, setLoading] = useState(false);
 
-    const action = currentStatus === "Active" ? "suspend" : "activate";
-    const title = currentStatus === "Active" ? "Suspend Owner Account" : "Activate Owner Account";
+    const action = currentStatus === "Active" ? "deactivate" : "activate";
+    const title = currentStatus === "Active" ? "Deactivate Owner" : "Activate Owner";
 
     const handleSubmit = async () => {
-        if (action === "suspend" && !reason.trim()) {
-            alert("Please provide a reason for suspension.");
+        if (action === "deactivate" && !reason.trim()) {
+            alert("Please provide a reason for deactivation.");
             return;
         }
 
@@ -46,7 +42,7 @@ const StatusChangePopup = ({
                         </button>
                     </div>
                     <p className="text-sm text-slate-600 mt-1">
-                        Owner: <span className="font-medium">{owner?.name}</span>
+                        Owner: <span className="font-medium">{owner?.first_name} {owner?.last_name || ''}</span>
                     </p>
                 </div>
 
@@ -56,8 +52,8 @@ const StatusChangePopup = ({
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={owner?.profileImage}
-                                alt={owner?.name}
+                                src={buildPhotoUrl(owner?.photo?.filename, "user_photo")}
+                                alt={owner?.first_name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
                                     e.target.src = "https://via.placeholder.com/100x100?text=Owner";
@@ -65,75 +61,59 @@ const StatusChangePopup = ({
                             />
                         </div>
                         <div>
-                            <p className="text-sm font-semibold text-slate-900">{owner?.name}</p>
-                            <p className="text-xs text-slate-500">ID: {owner?.id}</p>
+                            <p className="text-sm font-semibold text-slate-900">
+                                {owner?.first_name} {owner?.last_name || ''}
+                            </p>
+                            <p className="text-xs text-slate-500">ID: {owner?._id || owner?.id}</p>
                             <p className="text-xs text-slate-600 mt-1">{owner?.email}</p>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Active"
+                                        ? "bg-green-100 text-green-800"
+                                        : "bg-gray-100 text-gray-800"
+                                    }`}>
                                     Current: {currentStatus}
                                 </span>
                                 <span className="text-xs text-slate-400">→</span>
-                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Active" ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}>
-                                    New: {currentStatus === "Active" ? "Suspended" : "Active"}
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Active"
+                                        ? "bg-gray-100 text-gray-800"
+                                        : "bg-green-100 text-green-800"
+                                    }`}>
+                                    New: {currentStatus === "Active" ? "Inactive" : "Active"}
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Impact Warning */}
-                    <div className="mb-4 p-3 bg-yellow-50 rounded-lg">
-                        <div className="flex items-start gap-2">
-                            <span className="material-symbols-outlined text-yellow-500 text-sm mt-0.5">
-                                warning
-                            </span>
-                            <div>
-                                <p className="text-sm font-medium text-yellow-800">Important Note</p>
-                                <p className="text-xs text-yellow-600 mt-1">
-                                    {currentStatus === "Active"
-                                        ? "Suspending this owner will make all their properties unavailable for new bookings. Existing bookings will remain active."
-                                        : "Activating this owner will restore access to their properties for new bookings."}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Reason Input (for suspension only) */}
+                    {/* Reason Input (for deactivation only) */}
                     {currentStatus === "Active" && (
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-slate-700 mb-2">
-                                Reason for Suspension *
+                                Reason for Deactivation *
                             </label>
                             <textarea
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}
-                                placeholder="Please explain why this owner is being suspended..."
-                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 resize-none focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                placeholder="Please explain why this owner is being deactivated..."
+                                className="w-full h-32 px-4 py-3 border border-slate-200 rounded-lg text-sm resize-none focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 required
                             />
                             <p className="text-xs text-slate-500 mt-1">
-                                This reason will be sent to the owner via email.
+                                This reason will be saved with the owner's record.
                             </p>
                         </div>
                     )}
 
                     {/* Activation Note */}
-                    {currentStatus === "Suspended" && (
+                    {currentStatus !== "Active" && owner?.decline_reason && (
                         <div className="mb-4 p-3 bg-blue-50 rounded-lg">
                             <div className="flex items-start gap-2">
                                 <span className="material-symbols-outlined text-blue-500 text-sm mt-0.5">
                                     info
                                 </span>
                                 <div>
-                                    <p className="text-sm font-medium text-primary">Activation Note</p>
+                                    <p className="text-sm font-medium text-primary">Previous Deactivation Reason</p>
                                     <p className="text-xs text-blue-600 mt-1">
-                                        This owner will regain full access to the system. All their properties will become available.
-                                        {owner?.suspensionReason && (
-                                            <>
-                                                <br />
-                                                <span className="font-medium mt-1 block">Previous reason for suspension: </span>
-                                                "{owner.suspensionReason}"
-                                            </>
-                                        )}
+                                        "{owner.decline_reason}"
                                     </p>
                                 </div>
                             </div>
@@ -153,10 +133,7 @@ const StatusChangePopup = ({
                     <button
                         onClick={handleSubmit}
                         disabled={loading || (currentStatus === "Active" && !reason.trim())}
-                        className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 ${currentStatus === "Active"
-                            ? "bg-red-600 hover:bg-red-700 disabled:bg-red-300"
-                            : "bg-green-600 hover:bg-green-700 disabled:bg-green-300"
-                            }`}
+                        className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 bg-primary hover:bg-primary/90 disabled:bg-primary"
                     >
                         {loading ? (
                             <>

@@ -15,12 +15,12 @@ import { AuthContext } from "../../context/AuthContext";
 
 const OwnerAccommodation = () => {
     const {
-        accommodations,
+        ownerAccommodations,
         accoLoading,
         createAccommodation,
         updateAccommodation,
         deleteAccommodation,
-        fetchAccommodations
+        fetchMyAccommodations
     } = useContext(AccommodationContext);
 
     const { currentUser } = useContext(AuthContext);
@@ -33,19 +33,41 @@ const OwnerAccommodation = () => {
     const [resubmitMode, setResubmitMode] = useState(false);
 
     useEffect(() => {
-        fetchAccommodations();
+        fetchMyAccommodations();
     }, []);
 
-    const getStatus = (accommodation) => accommodation?.status?.toLowerCase() || '';
+    const getStatus = (accommodation) =>
+        accommodation?.status?.toLowerCase() || "";
 
-    // ------------ Tabs with all statuses ------------
-    const allList = useMemo(() => accommodations, [accommodations]);
-    const pendingList = useMemo(() => accommodations.filter(a => getStatus(a) === "pending"), [accommodations]);
-    const availableList = useMemo(() => accommodations.filter(a => getStatus(a) === "available"), [accommodations]);
-    const bookedList = useMemo(() => accommodations.filter(a => getStatus(a) === "booked"), [accommodations]);
-    const unavailableList = useMemo(() => accommodations.filter(a => getStatus(a) === "unavailable"), [accommodations]);
-    const rejectedList = useMemo(() => accommodations.filter(a => getStatus(a) === "rejected"), [accommodations]);
+    // ------------ Filter Lists ------------
+    const allList = useMemo(() => ownerAccommodations, [ownerAccommodations]);
 
+    const pendingList = useMemo(
+        () => ownerAccommodations.filter(a => getStatus(a) === "pending"),
+        [ownerAccommodations]
+    );
+
+    const availableList = useMemo(
+        () => ownerAccommodations.filter(a => getStatus(a) === "available"),
+        [ownerAccommodations]
+    );
+
+    const bookedList = useMemo(
+        () => ownerAccommodations.filter(a => getStatus(a) === "booked"),
+        [ownerAccommodations]
+    );
+
+    const unavailableList = useMemo(
+        () => ownerAccommodations.filter(a => getStatus(a) === "unavailable"),
+        [ownerAccommodations]
+    );
+
+    const rejectedList = useMemo(
+        () => ownerAccommodations.filter(a => getStatus(a) === "rejected"),
+        [ownerAccommodations]
+    );
+
+    // ------------ Tabs ------------
     const tabs = [
         { id: "all", label: "All Accommodations", count: allList.length },
         { id: "available", label: "Available", count: availableList.length },
@@ -57,42 +79,37 @@ const OwnerAccommodation = () => {
 
     // ------------ Stats ------------
     const stats = useMemo(() => {
-        const totalAccommodations = accommodations.length;
-        const totalUsers = accommodations.reduce((sum, prop) => sum + (prop.total_users || 0), 0);
-        const occupiedUsers = accommodations.reduce(
-            (sum, prop) => sum + ((prop.total_users || 0) - (prop.available_users || 0)),
-            0
-        );
-        const occupancyPercentage = totalUsers > 0 ? ((occupiedUsers / totalUsers) * 100).toFixed(1) : "0";
-
-        const monthlyRevenue = accommodations.reduce(
-            (sum, prop) => sum + ((prop.month_rent || 0) * ((prop.total_users || 0) - (prop.available_users || 0))),
-            0
-        );
+        const total = ownerAccommodations.length;
 
         return [
             {
                 label: "Total Accommodations",
                 icon: "apartment",
-                value: totalAccommodations,
-                subtext: `${availableList.length} available, ${bookedList.length} booked, ${pendingList.length} pending, ${rejectedList.length} rejected`,
+                value: total,
+                subtext: `${availableList.length} available, ${bookedList.length} booked`,
                 trendIcon: "trending_up",
                 subtextColor: "text-green-500",
             },
             {
-                label: "Total Occupancy",
-                icon: "group",
-                value: `${occupancyPercentage}%`,
-                subtext: `${occupiedUsers} of ${totalUsers} rooms occupied`,
+                label: "Available Accommodations",
+                icon: "check_circle",
+                value: availableList.length,
+                subtext: `${availableList.length} accommodations ready`,
             },
             {
-                label: "Monthly Revenue",
-                icon: "payments",
-                value: `LKR ${monthlyRevenue.toLocaleString()}`,
-                subtext: "From All Accommodations",
+                label: "Pending / Rejected",
+                icon: "hourglass_empty",
+                value: pendingList.length + rejectedList.length,
+                subtext: `${pendingList.length} pending, ${rejectedList.length} rejected`,
             },
         ];
-    }, [accommodations, availableList.length, bookedList.length, pendingList.length, rejectedList.length]);
+    }, [
+        ownerAccommodations,
+        availableList.length,
+        bookedList.length,
+        pendingList.length,
+        rejectedList.length
+    ]);
 
     // ------------ Handlers ------------
     const handleAddAccommodation = async (payload) => {
@@ -122,6 +139,7 @@ const OwnerAccommodation = () => {
 
             setShowEditPopup(false);
             setSelectedAccommodation(null);
+
         } catch (error) {
             console.error("Failed to update accommodation:", error);
         }
@@ -168,13 +186,15 @@ const OwnerAccommodation = () => {
         }
     };
 
-    // ------------ Render ------------
-    if (accoLoading && accommodations.length === 0) {
+    // ------------ Loading ------------
+    if (accoLoading && ownerAccommodations.length === 0) {
         return <LoadingSpinner />;
     }
 
+    // ------------ Render ------------
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
+
             {/* Popups */}
             {showAddPopup && (
                 <AddAccommodationPopup
@@ -221,10 +241,10 @@ const OwnerAccommodation = () => {
                 onButtonClick={() => setShowAddPopup(true)}
             />
 
-            {/* Stats Cards */}
+            {/* Stats */}
             <StatsCards stats={stats} />
 
-            {/* Tabs with all statuses */}
+            {/* Tabs */}
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
             {/* Tab Content */}
