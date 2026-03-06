@@ -31,3 +31,32 @@ async def get_owner_by_id(owner_id: str) -> OwnerResponse:
         "data": owner_obj.dict(by_alias=True)
     }
 
+
+async def update_owner(owner_id: str, update_request: OwnerUpdateRequest):
+    doc = await owners_collection.find_one({"_id": owner_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Owner not found")
+
+    update_data = update_request.dict(exclude_unset=True)
+    update_data["last_updated"] = datetime.utcnow()
+
+    result = await owners_collection.update_one(
+        {"_id": owner_id},
+        {"$set": update_data}
+    )
+
+    if result.modified_count == 0:
+        raise HTTPException(status_code=400, detail="No changes applied")
+
+    return await get_owner_by_id(owner_id)
+
+
+async def delete_owner(owner_id: str):
+    result = await owners_collection.delete_one({"_id": owner_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Owner not found")
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": "Owner deleted successfully"
+    }
