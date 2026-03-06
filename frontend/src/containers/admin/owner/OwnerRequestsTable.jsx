@@ -6,22 +6,13 @@ const OwnerRequestsTable = ({
     onApproveRequest,
     onRejectRequest
 }) => {
-    const getDocumentStatus = (status) => {
-        switch (status) {
-            case "verified": return "text-green-600";
-            case "pending": return "text-yellow-600";
-            case "not_uploaded": return "text-red-600";
-            default: return "text-gray-600";
-        }
+    const getDocumentStatus = (verified) => {
+        return verified ? "text-green-600" : "text-yellow-600";
     };
 
-    const getDocumentLabel = (status) => {
-        switch (status) {
-            case "verified": return "Verified";
-            case "pending": return "Pending Review";
-            case "not_uploaded": return "Not Uploaded";
-            default: return "Unknown";
-        }
+    const formatDate = (dateString) => {
+        if (!dateString) return "N/A";
+        return new Date(dateString).toLocaleDateString();
     };
 
     return (
@@ -57,7 +48,7 @@ const OwnerRequestsTable = ({
                                 Documents Status
                             </th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Property Plans
+                                Description
                             </th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
                                 Actions
@@ -66,13 +57,13 @@ const OwnerRequestsTable = ({
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                         {ownerRequests.map((request) => (
-                            <tr key={request.id} className="hover:bg-slate-50 transition-colors">
+                            <tr key={request._id || request.id} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={request.profileImage}
-                                                alt={request.name}
+                                                src={request.photo?.filename || "https://via.placeholder.com/100x100?text=Owner"}
+                                                alt={request.first_name}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {
                                                     e.target.src = "https://via.placeholder.com/100x100?text=Owner";
@@ -80,18 +71,16 @@ const OwnerRequestsTable = ({
                                             />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-semibold text-slate-900">{request.name}</p>
-                                            <p className="text-[10px] text-slate-400">Request ID: {request.id}</p>
-                                            <p className="text-xs text-slate-600 mt-1">Requested: {request.requestedDate}</p>
+                                            <p className="text-sm font-semibold text-slate-900">
+                                                {request.first_name} {request.last_name || ''}
+                                            </p>
+                                            <p className="text-[10px] text-slate-400">ID: {request._id || request.id}</p>
+                                            <p className="text-xs text-slate-600 mt-1">Requested: {formatDate(request.created_at)}</p>
                                             <p className="text-xs text-slate-500">{request.email}</p>
                                             <p className="text-xs text-slate-500">{request.phone}</p>
-                                            <div className="mt-2">
-                                                <p className="text-xs font-medium text-slate-700">{request.businessType}</p>
-                                                <p className="text-xs text-slate-500">Experience: {request.experience}</p>
-                                            </div>
-                                            {request.reason && (
+                                            {request.description && (
                                                 <div className="mt-2 p-2 bg-blue-50 rounded text-xs text-blue-700">
-                                                    <span className="font-medium">Reason: </span>{request.reason}
+                                                    <span className="font-medium">Description: </span>{request.description}
                                                 </div>
                                             )}
                                         </div>
@@ -100,33 +89,27 @@ const OwnerRequestsTable = ({
                                 <td className="px-6 py-4">
                                     <div className="space-y-2">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-xs text-slate-600">NIC:</span>
-                                            <span className={`text-xs font-medium ${getDocumentStatus(request.documents.nic)}`}>
-                                                {getDocumentLabel(request.documents.nic)}
+                                            <span className="text-xs text-slate-600">Verified:</span>
+                                            <span className={`text-xs font-medium ${getDocumentStatus(request.verified)}`}>
+                                                {request.verified ? "Verified" : "Pending"}
                                             </span>
                                         </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xs text-slate-600">Business Reg:</span>
-                                            <span className={`text-xs font-medium ${getDocumentStatus(request.documents.businessRegistration)}`}>
-                                                {getDocumentLabel(request.documents.businessRegistration)}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xs text-slate-600">Tax Cert:</span>
-                                            <span className={`text-xs font-medium ${getDocumentStatus(request.documents.taxCertificate)}`}>
-                                                {getDocumentLabel(request.documents.taxCertificate)}
-                                            </span>
-                                        </div>
+                                        {request.decline_reason && (
+                                            <div className="mt-2 p-2 bg-red-50 rounded text-xs text-red-600">
+                                                <span className="font-medium">Decline Reason: </span>
+                                                {request.decline_reason}
+                                            </div>
+                                        )}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="space-y-2">
-                                        {request.propertyPlans.map((plan, idx) => (
-                                            <div key={idx} className="p-2 bg-slate-50 rounded text-xs">
-                                                <p className="font-medium">{plan.type}</p>
-                                                <p className="text-slate-600">{plan.rooms} rooms • {plan.location}</p>
-                                            </div>
-                                        ))}
+                                        <p className="text-xs text-slate-600">{request.description || "No description provided"}</p>
+                                        {request.address && (
+                                            <p className="text-xs text-slate-500">
+                                                <span className="font-medium">Address:</span> {request.address}
+                                            </p>
+                                        )}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
@@ -138,19 +121,13 @@ const OwnerRequestsTable = ({
                                             View Details
                                         </button>
                                         <button
-                                            onClick={() => onApproveRequest(request.id)}
-                                            disabled={request.documents.nic !== "verified" || request.documents.businessRegistration !== "verified"}
-                                            className={`${request.documents.nic !== "verified" || request.documents.businessRegistration !== "verified"
-                                                ? 'bg-gray-400 cursor-not-allowed'
-                                                : 'bg-green-600 hover:bg-green-500'} 
-                                                text-white text-[10px] font-bold py-2 px-4 rounded-md uppercase tracking-wider transition-colors`}
+                                            onClick={() => onApproveRequest(request._id || request.id)}
+                                            className="bg-green-600 hover:bg-green-500 text-white text-[10px] font-bold py-2 px-4 rounded-md uppercase tracking-wider transition-colors"
                                         >
-                                            {request.documents.nic !== "verified" || request.documents.businessRegistration !== "verified"
-                                                ? 'Documents Pending'
-                                                : 'Approve Registration'}
+                                            Approve Registration
                                         </button>
                                         <button
-                                            onClick={() => onRejectRequest(request.id)}
+                                            onClick={() => onRejectRequest(request._id || request.id)}
                                             className="bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-2 px-4 rounded-md uppercase tracking-wider transition-colors"
                                         >
                                             Reject
