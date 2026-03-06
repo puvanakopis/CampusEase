@@ -12,6 +12,7 @@ from app.services.vehicle_service import (
     get_vehicle_by_id,
     get_all_vehicles,
     update_vehicle,
+    delete_vehicle
 )
 
 from app.middlewares.auth_middleware import get_current_user, role_required
@@ -48,3 +49,8 @@ async def update_vehicle_endpoint(
 ):
     update_data = VehicleUpdateRequest(**json.loads(update_request))
     return await update_vehicle(vehicle_id, update_data, files)
+
+
+@router.delete("/{vehicle_id}", dependencies=[Depends(role_required(["owner","admin"]))])
+async def delete_vehicle_endpoint(vehicle_id: str):
+    return await delete_vehicle(vehicle_id)

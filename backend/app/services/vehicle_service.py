@@ -164,3 +164,16 @@ async def update_vehicle(vehicle_id: str, update_request: VehicleUpdateRequest, 
 
     return await get_vehicle_by_id(vehicle_id)
 
+
+async def delete_vehicle(vehicle_id: str):
+
+    result = await vehicles_collection.delete_one({"_id": vehicle_id})
+
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": "Vehicle deleted successfully"
+    }
