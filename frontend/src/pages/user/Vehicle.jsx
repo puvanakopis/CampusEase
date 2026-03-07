@@ -5,11 +5,13 @@ import VehicleSortBar from "../../containers/user/vehicle/VehicleSortBar";
 import VehicleGrid from "../../containers/user/vehicle/VehicleGrid";
 import Pagination from "../../components/user/Pagination";
 import { VehicleContext } from "../../context/VehicleContext";
+import { SaveItemContext } from "../../context/SaveItemContext";
+import { USER_ITEMS_PER_PAGE } from "../../constants/pagination";
 
-const ITEMS_PER_PAGE = 9;
 
 const Vehicle = () => {
     const { vehicles, loading, fetchVehicles } = useContext(VehicleContext);
+    const { fetchSavedItems } = useContext(SaveItemContext);
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -24,6 +26,7 @@ const Vehicle = () => {
 
     useEffect(() => {
         fetchVehicles();
+        fetchSavedItems();
     }, []);
 
     const handleFilterChange = (newFilters) => {
@@ -34,8 +37,6 @@ const Vehicle = () => {
     const handleSortChange = (value) => {
         setSortOption(value);
     };
-
-    console.log(vehicles)
 
     const filteredVehicles = vehicles
         .filter((vehicle) => vehicle.status === "available")
@@ -78,13 +79,13 @@ const Vehicle = () => {
         return 0;
     });
 
-    const totalPages = Math.ceil(sortedVehicles.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(sortedVehicles.length / USER_ITEMS_PER_PAGE);
 
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const startIndex = (currentPage - 1) * USER_ITEMS_PER_PAGE;
 
     const currentVehicles = sortedVehicles.slice(
         startIndex,
-        startIndex + ITEMS_PER_PAGE
+        startIndex + USER_ITEMS_PER_PAGE
     );
 
     const handlePageChange = (page) => {
