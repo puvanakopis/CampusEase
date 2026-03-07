@@ -36,9 +36,8 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
             },
             status: veh.status || "pending",
             images: veh.images || [],
-            // FIX: Handle both formats - if amenities are objects with name, extract just the names
-            amenities: Array.isArray(veh.amenities) 
-                ? veh.amenities.map(a => typeof a === 'object' ? a.name : a) 
+            amenities: Array.isArray(veh.amenities)
+                ? veh.amenities.map(a => typeof a === 'object' ? a.name : a)
                 : []
         };
     };
@@ -165,7 +164,6 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
     const handleNext = (e) => {
         e.preventDefault();
 
-        // Validate step 1 fields
         const requiredFields = [
             'name', 'brand', 'model', 'year', 'no_of_seats',
             'registration_number', 'day_rent'
@@ -225,8 +223,7 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                 pambahinna_junction: formData.time_from_uni.pambahinna_junction || null
             },
             status: activeTab === "pending" ? "pending" : formData.status,
-            // FIX: Send amenities as array of strings, not objects
-            amenities: formData.amenities, // This is already an array of strings
+            amenities: formData.amenities,
             existing_images: existingImages.map(img => img.filename),
             images_to_delete: imagesToDelete
         };
@@ -244,199 +241,214 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
 
     const renderStep1 = () => (
         <div className="space-y-4">
-            <h4 className="font-bold text-slate-900 mb-3">Basic Information</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Vehicle Name *</label>
-                    <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        required
-                        placeholder="e.g., Toyota Axio"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Brand *</label>
-                    <input
-                        type="text"
-                        name="brand"
-                        value={formData.brand}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        required
-                        placeholder="e.g., Toyota"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Model *</label>
-                    <input
-                        type="text"
-                        name="model"
-                        value={formData.model}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        required
-                        placeholder="e.g., Axio"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Year *</label>
-                    <input
-                        type="number"
-                        name="year"
-                        value={formData.year}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        required
-                        placeholder="e.g., 2020"
-                        min="2000"
-                        max={new Date().getFullYear()}
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Vehicle Type *</label>
-                    <select
-                        name="vehicle_type"
-                        value={formData.vehicle_type}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                    >
-                        {vehicleTypes.map(type => (
-                            <option key={type.value} value={type.value}>{type.label}</option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Number of Seats *</label>
-                    <input
-                        type="number"
-                        name="no_of_seats"
-                        value={formData.no_of_seats}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        required
-                        placeholder="e.g., 5"
-                        min="1"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Fuel Type *</label>
-                    <select
-                        name="fuel_type"
-                        value={formData.fuel_type}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                    >
-                        {fuelTypes.map(type => (
-                            <option key={type.value} value={type.value}>{type.label}</option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Transmission *</label>
-                    <select
-                        name="transmission"
-                        value={formData.transmission}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                    >
-                        {transmissionTypes.map(type => (
-                            <option key={type.value} value={type.value}>{type.label}</option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Air Conditioning *</label>
-                    <select
-                        name="air_conditioning"
-                        value={formData.air_conditioning ? "true" : "false"}
-                        onChange={(e) => {
-                            setFormData(prev => ({
-                                ...prev,
-                                air_conditioning: e.target.value === "true"
-                            }));
-                        }}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                    >
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Daily Rent (LKR) *</label>
-                    <input
-                        type="number"
-                        name="day_rent"
-                        value={formData.day_rent}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        required
-                        placeholder="e.g., 5000"
-                        min="0"
-                    />
+            {/* Basic Information Section */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-3">Basic Information</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Vehicle Name *</label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            required
+                            placeholder="e.g., Toyota Axio"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Brand *</label>
+                        <input
+                            type="text"
+                            name="brand"
+                            value={formData.brand}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            required
+                            placeholder="e.g., Toyota"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Model *</label>
+                        <input
+                            type="text"
+                            name="model"
+                            value={formData.model}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            required
+                            placeholder="e.g., Axio"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Year *</label>
+                        <input
+                            type="number"
+                            name="year"
+                            value={formData.year}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            required
+                            placeholder="e.g., 2020"
+                            min="2000"
+                            max={new Date().getFullYear()}
+                        />
+                    </div>
                 </div>
             </div>
 
-            <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Description *</label>
+            {/* Vehicle Specifications Section */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-3">Vehicle Specifications</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Vehicle Type *</label>
+                        <select
+                            name="vehicle_type"
+                            value={formData.vehicle_type}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        >
+                            {vehicleTypes.map(type => (
+                                <option key={type.value} value={type.value}>{type.label}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Number of Seats *</label>
+                        <input
+                            type="number"
+                            name="no_of_seats"
+                            value={formData.no_of_seats}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            required
+                            placeholder="e.g., 5"
+                            min="1"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Fuel Type *</label>
+                        <select
+                            name="fuel_type"
+                            value={formData.fuel_type}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        >
+                            {fuelTypes.map(type => (
+                                <option key={type.value} value={type.value}>{type.label}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Transmission *</label>
+                        <select
+                            name="transmission"
+                            value={formData.transmission}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        >
+                            {transmissionTypes.map(type => (
+                                <option key={type.value} value={type.value}>{type.label}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Air Conditioning</label>
+                        <select
+                            name="air_conditioning"
+                            value={formData.air_conditioning ? "true" : "false"}
+                            onChange={(e) => {
+                                setFormData(prev => ({
+                                    ...prev,
+                                    air_conditioning: e.target.value === "true"
+                                }));
+                            }}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        >
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Daily Rent (LKR) *</label>
+                        <input
+                            type="number"
+                            name="day_rent"
+                            value={formData.day_rent}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            required
+                            placeholder="e.g., 5000"
+                            min="0"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Description Section */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-2">Description</h4>
                 <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     rows="3"
                     placeholder="Describe the vehicle condition, features, and any special notes..."
                     required
                 />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Registration Number *</label>
-                    <input
-                        type="text"
-                        name="registration_number"
-                        value={formData.registration_number}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        required
-                        placeholder="e.g., WP-XXXX"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Insurance Number</label>
-                    <input
-                        type="text"
-                        name="insurance_number"
-                        value={formData.insurance_number}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        placeholder="Insurance policy number"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Insurance Expiry Date</label>
-                    <input
-                        type="date"
-                        name="insurance_expiry"
-                        value={formData.insurance_expiry}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                    />
+            {/* Registration & Insurance Section */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-3">Registration & Insurance</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Registration Number *</label>
+                        <input
+                            type="text"
+                            name="registration_number"
+                            value={formData.registration_number}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            required
+                            placeholder="e.g., WP-XXXX"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Insurance Number</label>
+                        <input
+                            type="text"
+                            name="insurance_number"
+                            value={formData.insurance_number}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            placeholder="Insurance policy number"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Insurance Expiry Date</label>
+                        <input
+                            type="date"
+                            name="insurance_expiry"
+                            value={formData.insurance_expiry}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        />
+                    </div>
                 </div>
             </div>
 
             {activeTab === "active" && (
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Status *</label>
+                <div className="p-3 bg-slate-50 rounded-lg">
+                    <h4 className="font-bold text-slate-900 mb-2">Status</h4>
                     <select
                         name="status"
                         value={formData.status}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                     >
                         <option value="available">Available</option>
                         <option value="booked">Booked</option>
@@ -449,239 +461,262 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
 
     const renderStep2 = () => (
         <div className="space-y-4">
-            <h4 className="font-bold text-slate-900 mb-3">Location Details</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">City/Location *</label>
-                    <input
-                        type="text"
-                        name="address.city"
-                        value={formData.address.city}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        required
-                        placeholder="e.g., Belihuloya"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Street Address</label>
-                    <input
-                        type="text"
-                        name="address.street"
-                        value={formData.address.street}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        placeholder="Street address"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Postal Code</label>
-                    <input
-                        type="text"
-                        name="address.postal_code"
-                        value={formData.address.postal_code}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        placeholder="Postal code"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Latitude</label>
-                    <input
-                        type="number"
-                        step="any"
-                        name="location.latitude"
-                        value={formData.location.latitude}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        placeholder="e.g., 6.8333"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Longitude</label>
-                    <input
-                        type="number"
-                        step="any"
-                        name="location.longitude"
-                        value={formData.location.longitude}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        placeholder="e.g., 80.8667"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Time to SUSL Main Gate</label>
-                    <input
-                        type="text"
-                        name="time_from_uni.susl_main_gate"
-                        value={formData.time_from_uni.susl_main_gate}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        placeholder="e.g., 15 mins"
-                    />
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Time to Pambahinna Junction</label>
-                    <input
-                        type="text"
-                        name="time_from_uni.pambahinna_junction"
-                        value={formData.time_from_uni.pambahinna_junction}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        placeholder="e.g., 10 mins"
-                    />
-                </div>
-            </div>
-
-            <h4 className="font-bold text-slate-900 mb-3 mt-6">Amenities</h4>
-
-            {/* Popular Amenities Quick Select */}
-            <div className="mb-4">
-                <label className="block text-sm font-medium text-slate-700 mb-2">Popular Amenities</label>
-                <div className="flex flex-wrap gap-2">
-                    {popularAmenities.map(amenity => (
-                        <button
-                            key={amenity}
-                            type="button"
-                            onClick={() => handleSelectPopularAmenity(amenity)}
-                            className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${formData.amenities.includes(amenity)
-                                    ? 'bg-primary text-white border-primary'
-                                    : 'border-slate-300 text-slate-700 hover:border-primary hover:text-primary'
-                                }`}
-                            disabled={formData.amenities.includes(amenity)}
-                        >
-                            {amenity}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Add Custom Amenity */}
-            <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Add Custom Amenity</label>
-                <div className="flex gap-2">
-                    <input
-                        type="text"
-                        value={amenityInput}
-                        onChange={(e) => setAmenityInput(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddAmenity())}
-                        className="flex-1 px-4 py-2 border border-slate-200 rounded-lg bg-slate-50 text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                        placeholder="e.g., WiFi, Music System, etc."
-                    />
-                    <button
-                        type="button"
-                        onClick={handleAddAmenity}
-                        className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
-                    >
-                        Add
-                    </button>
-                </div>
-            </div>
-
-            {/* Selected Amenities */}
-            {formData.amenities.length > 0 && (
-                <div className="mt-4">
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Selected Amenities</label>
-                    <div className="flex flex-wrap gap-2">
-                        {formData.amenities.map((amenity, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center gap-1 px-3 py-1.5 bg-primary/10 text-primary rounded-full"
-                            >
-                                <span className="text-sm">{amenity}</span>
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveAmenity(amenity)}
-                                    className="hover:text-red-500 transition-colors"
-                                >
-                                    <span className="material-symbols-outlined text-sm">close</span>
-                                </button>
-                            </div>
-                        ))}
+            {/* Address Section */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-3">Address</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">City/Location *</label>
+                        <input
+                            type="text"
+                            name="address.city"
+                            value={formData.address.city}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            required
+                            placeholder="e.g., Belihuloya"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Street Address</label>
+                        <input
+                            type="text"
+                            name="address.street"
+                            value={formData.address.street}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            placeholder="Street address"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Postal Code</label>
+                        <input
+                            type="text"
+                            name="address.postal_code"
+                            value={formData.address.postal_code}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            placeholder="Postal code"
+                        />
                     </div>
                 </div>
-            )}
+            </div>
 
-            <h4 className="font-bold text-slate-900 mb-3 mt-6">Vehicle Images *</h4>
+            {/* Location Coordinates Section */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-3">Location Coordinates</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Latitude</label>
+                        <input
+                            type="number"
+                            step="any"
+                            name="location.latitude"
+                            value={formData.location.latitude}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            placeholder="e.g., 6.8333"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Longitude</label>
+                        <input
+                            type="number"
+                            step="any"
+                            name="location.longitude"
+                            value={formData.location.longitude}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            placeholder="e.g., 80.8667"
+                        />
+                    </div>
+                </div>
+            </div>
 
-            {/* Existing Images */}
-            {existingImages.length > 0 && (
+            {/* Time from University Section */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-3">Time from University</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Time to SUSL Main Gate</label>
+                        <input
+                            type="text"
+                            name="time_from_uni.susl_main_gate"
+                            value={formData.time_from_uni.susl_main_gate}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            placeholder="e.g., 15 mins"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Time to Pambahinna Junction</label>
+                        <input
+                            type="text"
+                            name="time_from_uni.pambahinna_junction"
+                            value={formData.time_from_uni.pambahinna_junction}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            placeholder="e.g., 10 mins"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Amenities Section */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-3">Amenities</h4>
+
+                {/* Popular Amenities Quick Select */}
                 <div className="mb-4">
-                    <p className="text-sm font-medium text-slate-700 mb-2">Current Images:</p>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Popular Amenities</label>
                     <div className="flex flex-wrap gap-2">
-                        {existingImages.map((image, index) => (
-                            <div key={index} className="relative w-24 h-24 border border-slate-200 rounded-lg overflow-hidden group">
-                                <img
-                                    src={buildPhotoUrl(image.filename, 'vehicle')}
-                                    alt={`existing-${index}`}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                        e.target.onerror = null;
-                                        e.target.src = '/placeholder-image.jpg';
-                                    }}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveExistingImage(index)}
-                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    title="Remove image"
-                                >
-                                    <span className="material-symbols-outlined text-sm">close</span>
-                                </button>
-                            </div>
+                        {popularAmenities.map(amenity => (
+                            <button
+                                key={amenity}
+                                type="button"
+                                onClick={() => handleSelectPopularAmenity(amenity)}
+                                className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${formData.amenities.includes(amenity)
+                                        ? 'bg-primary text-white border-primary'
+                                        : 'border-slate-300 text-slate-700 hover:border-primary hover:text-primary bg-white'
+                                    }`}
+                                disabled={formData.amenities.includes(amenity)}
+                            >
+                                {amenity}
+                            </button>
                         ))}
                     </div>
                 </div>
-            )}
 
-            {/* Upload New Images */}
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-primary hover:bg-slate-50 transition-colors">
-                <span className="text-slate-400 text-sm mb-1">Click to add more images or drag & drop</span>
-                <span className="material-symbols-outlined text-3xl text-slate-300">image</span>
-                <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                />
-            </label>
-            <p className="text-sm text-slate-500 mt-1">You can select multiple images to add.</p>
-
-            {/* New Image Previews */}
-            {imageFiles.length > 0 && (
-                <div className="mt-4">
-                    <p className="text-sm font-medium text-slate-700 mb-2">New Images to Add:</p>
-                    <div className="flex flex-wrap gap-2">
-                        {imageFiles.map((file, index) => (
-                            <div key={index} className="relative w-24 h-24 border border-slate-200 rounded-lg overflow-hidden">
-                                <img
-                                    src={URL.createObjectURL(file)}
-                                    alt={`new-preview-${index}`}
-                                    className="w-full h-full object-cover"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveNewImage(index)}
-                                    className="absolute top-1 right-1 bg-white rounded-full p-1 text-slate-700 hover:text-slate-900"
-                                >
-                                    <span className="material-symbols-outlined text-sm">close</span>
-                                </button>
-                            </div>
-                        ))}
+                {/* Add Custom Amenity */}
+                <div className="mb-3">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Add Custom Amenity</label>
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={amenityInput}
+                            onChange={(e) => setAmenityInput(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddAmenity())}
+                            className="flex-1 px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            placeholder="e.g., WiFi, Music System, etc."
+                        />
+                        <button
+                            type="button"
+                            onClick={handleAddAmenity}
+                            className="border border-slate-200 text-slate-700 py-2 px-6 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm"
+                        >
+                            Add
+                        </button>
                     </div>
                 </div>
-            )}
+
+                {/* Selected Amenities */}
+                {formData.amenities.length > 0 && (
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">Selected Amenities</label>
+                        <div className="flex flex-wrap gap-2">
+                            {formData.amenities.map((amenity, index) => (
+                                <span key={index} className="inline-flex items-center gap-1 bg-white px-3 py-1.5 rounded-lg text-sm text-slate-700 border border-slate-200">
+                                    {amenity}
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveAmenity(amenity)}
+                                        className="text-slate-500 hover:text-slate-700"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">close</span>
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Images Section */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-3">Vehicle Images *</h4>
+
+                {/* Existing Images */}
+                {existingImages.length > 0 && (
+                    <div className="mb-4">
+                        <p className="text-sm font-medium text-slate-700 mb-2">Current Images:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {existingImages.map((image, index) => (
+                                <div key={index} className="relative w-24 h-24 border border-slate-200 rounded-lg overflow-hidden group">
+                                    <img
+                                        src={buildPhotoUrl(image.filename, 'vehicle')}
+                                        alt={`existing-${index}`}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = 'https://via.placeholder.com/100x100?text=Image';
+                                        }}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveExistingImage(index)}
+                                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        title="Remove image"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">close</span>
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Upload New Images */}
+                <div className="mb-3">
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-primary hover:bg-white/50 transition-colors">
+                        <span className="material-symbols-outlined text-3xl text-slate-300 mb-1">image</span>
+                        <span className="text-slate-400 text-sm">Click to add more images or drag & drop</span>
+                        <input
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="hidden"
+                        />
+                    </label>
+                    <p className="text-xs text-slate-500 mt-1">You can select multiple images to add.</p>
+                </div>
+
+                {/* New Image Previews */}
+                {imageFiles.length > 0 && (
+                    <div>
+                        <p className="text-sm font-medium text-slate-700 mb-2">New Images to Add:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {imageFiles.map((file, index) => (
+                                <div key={index} className="relative w-24 h-24 border border-slate-200 rounded-lg overflow-hidden group">
+                                    <img
+                                        src={URL.createObjectURL(file)}
+                                        alt={`new-preview-${index}`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveNewImage(index)}
+                                        className="absolute top-1 right-1 bg-white rounded-full p-1 text-slate-700 hover:text-slate-900 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">close</span>
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl p-6 max-w-2xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-                <div className="flex justify-between items-start mb-6">
+            <div className="bg-white rounded-xl w-full max-w-2xl shadow-lg overflow-y-auto max-h-[90vh]">
+                {/* Header */}
+                <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
                     <div>
-                        <h3 className="text-2xl font-bold text-slate-900">Edit Vehicle</h3>
-                        <p className="text-slate-500">Update vehicle details for {vehicle.name}</p>
+                        <h3 className="text-lg font-bold text-slate-900">Edit Vehicle</h3>
+                        <p className="text-xs text-slate-500 mt-1">ID: {vehicle._id}</p>
                         {activeTab === "pending" && (
                             <p className="text-xs text-yellow-600 mt-2">
                                 Note: Editing a pending vehicle will keep it in the pending queue for review.
@@ -693,74 +728,88 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                             </p>
                         )}
                     </div>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-                        <span className="material-symbols-outlined">close</span>
+                    <button
+                        onClick={onClose}
+                        className="text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                        <span className="material-symbols-outlined text-xl">close</span>
                     </button>
                 </div>
 
                 {/* Progress Steps */}
-                <div className="flex justify-between mb-8">
-                    {[1, 2].map((stepNumber) => (
-                        <div key={stepNumber} className="flex flex-col items-center">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${step >= stepNumber ? 'bg-primary text-white' : 'bg-slate-200 text-slate-400'}`}>
-                                {step > stepNumber ? <span className="material-symbols-outlined text-sm">check</span> : stepNumber}
+                <div className="px-6 py-4 border-b border-slate-200">
+                    <div className="flex justify-between">
+                        {[1, 2].map((stepNumber) => (
+                            <div key={stepNumber} className="flex flex-col items-center flex-1">
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${step >= stepNumber ? 'bg-primary text-white' : 'bg-slate-200 text-slate-400'
+                                    }`}>
+                                    {step > stepNumber ? (
+                                        <span className="material-symbols-outlined text-sm">check</span>
+                                    ) : (
+                                        stepNumber
+                                    )}
+                                </div>
+                                <span className={`text-xs font-medium ${step >= stepNumber ? 'text-primary' : 'text-slate-400'
+                                    }`}>
+                                    {stepNumber === 1 ? 'Basic Info' : 'Location & Images'}
+                                </span>
                             </div>
-                            <span className={`text-xs font-medium ${step >= stepNumber ? 'text-primary' : 'text-slate-400'}`}>
-                                {stepNumber === 1 && 'Basic Info'}
-                                {stepNumber === 2 && 'Location & Images'}
-                            </span>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
 
-                <form onSubmit={handleSubmit}>
-                    {step === 1 && renderStep1()}
-                    {step === 2 && renderStep2()}
+                {/* Form Content */}
+                <div className="px-6 py-4">
+                    <form onSubmit={handleSubmit}>
+                        {step === 1 && renderStep1()}
+                        {step === 2 && renderStep2()}
 
-                    <div className="flex justify-between mt-8">
-                        <div>
-                            {step > 1 && (
+                        {/* Footer */}
+                        <div className="flex justify-between mt-6 pt-4 border-t border-slate-200">
+                            <div>
+                                {step > 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={handlePrevious}
+                                        className="border border-slate-200 text-slate-700 py-2 px-6 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm flex items-center gap-1"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">arrow_back</span>
+                                        Previous
+                                    </button>
+                                )}
+                            </div>
+
+                            <div className="flex items-center gap-3">
                                 <button
                                     type="button"
-                                    onClick={handlePrevious}
-                                    className="border border-slate-200 text-slate-700 py-2.5 px-6 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+                                    onClick={onClose}
+                                    className="border border-slate-200 text-slate-700 py-2 px-6 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm"
                                 >
-                                    Previous
+                                    Cancel
                                 </button>
-                            )}
-                        </div>
 
-                        <div className="flex gap-3">
-                            <button
-                                type="button"
-                                onClick={onClose}
-                                className="border border-slate-200 text-slate-700 py-2.5 px-6 rounded-lg font-medium hover:bg-slate-50 transition-colors"
-                            >
-                                Cancel
-                            </button>
-
-                            {step < 2 ? (
-                                <button
-                                    type="button"
-                                    onClick={handleNext}
-                                    className="bg-primary text-white py-2.5 px-6 rounded-lg font-medium hover:bg-primary/80 transition-colors"
-                                >
-                                    Next
-                                </button>
-                            ) : (
-                                <button
-                                    type="submit"
-                                    className="bg-primary text-white py-2.5 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors"
-                                >
-                                    <span className="flex items-center gap-2">
-                                        <span className="material-symbols-outlined">check</span>
+                                {step < 2 ? (
+                                    <button
+                                        type="button"
+                                        onClick={handleNext}
+                                        className="bg-primary text-white py-2 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center gap-1"
+                                    >
+                                        Next
+                                        <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="submit"
+                                        className="bg-primary text-white py-2 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center gap-1"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">check</span>
                                         Save Changes
-                                    </span>
-                                </button>
-                            )}
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     );

@@ -6,7 +6,7 @@ import BookingTabs from "../../containers/owner/common/Tabs";
 import BookingTable from "../../containers/owner/booking/BookingTable";
 import DeclinePopup from "../../containers/owner/booking/DeclinePopup";
 import EditBookingPopup from "../../containers/owner/booking/EditBookingPopup";
-import Pagination from "../../containers/owner/booking/Pagination";
+import BookingPagination from "../../containers/owner/booking/Pagination";
 import ViewDetailsPopup from "../../containers/owner/booking/ViewDetailsPopup";
 import ViewInvoicePopup from "../../containers/owner/booking/ViewInvoicePopup";
 
@@ -538,7 +538,7 @@ const OwnerBooking = () => {
     };
 
     return (
-        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
+        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto ">
             {/* Popups */}
             {showAcceptPopup && (
                 <AcceptPopup
@@ -603,7 +603,7 @@ const OwnerBooking = () => {
                 getActionButtons={getActionButtons}
             />
 
-            <Pagination
+            <BookingPagination
                 currentCount={getCurrentBookings().length}
                 totalCount={getCurrentBookings().length}
             />

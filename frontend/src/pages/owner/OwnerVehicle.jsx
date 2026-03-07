@@ -10,9 +10,12 @@ import EditVehiclePopup from "../../containers/owner/vehicle/EditVehiclePopup";
 import ViewVehiclePopup from "../../containers/owner/vehicle/ViewVehiclePopup";
 import DeleteVehiclePopup from "../../containers/owner/vehicle/DeleteVehiclePopup";
 import LoadingSpinner from "../../components/common/Loading";
+import Pagination from "../../components/common/Pagination";
 
 import { VehicleContext } from "../../context/VehicleContext";
 import { AuthContext } from "../../context/AuthContext";
+
+const ITEMS_PER_PAGE = 5;
 
 const OwnerVehicle = () => {
     const {
@@ -21,7 +24,7 @@ const OwnerVehicle = () => {
         createVehicle,
         updateVehicle,
         deleteVehicle,
-        fetchMyVehicles
+        fetchMyVehicles,
     } = useContext(VehicleContext);
 
     const { currentUser } = useContext(AuthContext);
@@ -34,13 +37,19 @@ const OwnerVehicle = () => {
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [resubmitMode, setResubmitMode] = useState(false);
 
+    const [currentPage, setCurrentPage] = useState(1);
+
     useEffect(() => {
         fetchMyVehicles();
     }, []);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeTab]);
+
     const getStatus = (vehicle) => vehicle?.status?.toLowerCase() || "";
 
-    // ------------ Lists ------------
+    // ------------ Filter Lists ------------
     const allList = useMemo(() => ownerVehicles, [ownerVehicles]);
     const pendingList = useMemo(
         () => ownerVehicles.filter((v) => getStatus(v) === "pending"),
@@ -62,6 +71,37 @@ const OwnerVehicle = () => {
         () => ownerVehicles.filter((v) => getStatus(v) === "rejected"),
         [ownerVehicles]
     );
+
+    const getCurrentList = () => {
+        switch (activeTab) {
+            case "pending":
+                return pendingList;
+            case "rejected":
+                return rejectedList;
+            case "available":
+                return availableList;
+            case "booked":
+                return bookedList;
+            case "unavailable":
+                return unavailableList;
+            default:
+                return allList;
+        }
+    };
+
+    const currentList = getCurrentList();
+    const totalPages = Math.ceil(currentList.length / ITEMS_PER_PAGE);
+
+    const paginatedList = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        return currentList.slice(startIndex, endIndex);
+    }, [currentList, currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
     // ------------ Tabs ------------
     const tabs = [
@@ -189,13 +229,31 @@ const OwnerVehicle = () => {
         }
     };
 
+    const getItemName = () => {
+        switch (activeTab) {
+            case "pending":
+                return "pending vehicles";
+            case "rejected":
+                return "rejected vehicles";
+            case "available":
+                return "available vehicles";
+            case "booked":
+                return "booked vehicles";
+            case "unavailable":
+                return "unavailable vehicles";
+            default:
+                return "vehicles";
+        }
+    };
+
     // ------------ Loading ------------
     if (loading && ownerVehicles.length === 0) {
         return <LoadingSpinner />;
     }
 
+    // ------------ Render ------------
     return (
-        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
+        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto">
             {/* Popups */}
             {showAddPopup && (
                 <AddVehiclePopup
@@ -261,43 +319,80 @@ const OwnerVehicle = () => {
 
             {/* Tab Content */}
             {activeTab === "pending" && (
-                <PendingVehicleTable
-                    vehicles={pendingList}
-                    onView={handleViewVehicle}
-                    onEdit={handleEditClick}
-                    onDelete={handleDeleteClick}
-                />
+                <>
+                    <PendingVehicleTable
+                        vehicles={paginatedList}
+                        onView={handleViewVehicle}
+                        onEdit={handleEditClick}
+                        onDelete={handleDeleteClick}
+                    />
+                    {pendingList.length > ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={pendingList.length}
+                            itemsPerPage={ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
             {activeTab === "rejected" && (
-                <RejectedVehicleTable
-                    vehicles={rejectedList}
-                    onView={handleViewVehicle}
-                    onEditBeforeResubmit={handleEditBeforeResubmit}
-                    onDelete={handleDeleteClick}
-                />
+                <>
+                    <RejectedVehicleTable
+                        vehicles={paginatedList}
+                        onView={handleViewVehicle}
+                        onEditBeforeResubmit={handleEditBeforeResubmit}
+                        onDelete={handleDeleteClick}
+                    />
+                    {rejectedList.length > ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={rejectedList.length}
+                            itemsPerPage={ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
             {(activeTab === "all" ||
                 activeTab === "available" ||
                 activeTab === "booked" ||
                 activeTab === "unavailable") && (
-                    <VehicleTable
-                        vehicles={
-                            activeTab === "available"
-                                ? availableList
-                                : activeTab === "booked"
-                                    ? bookedList
-                                    : activeTab === "unavailable"
-                                        ? unavailableList
-                                        : allList
-                        }
-                        onView={handleViewVehicle}
-                        onEdit={handleEditClick}
-                        onDelete={handleDeleteClick}
-                        onToggleAvailability={handleToggleAvailability}
-                        showEditDelete={true}
-                    />
+                    <>
+                        <VehicleTable
+                            vehicles={paginatedList}
+                            heading={
+                                activeTab === "available"
+                                    ? "Available Vehicles"
+                                    : activeTab === "booked"
+                                        ? "Booked Vehicles"
+                                        : activeTab === "unavailable"
+                                            ? "Unavailable Vehicles"
+                                            : "All Vehicles"
+                            }
+                            onView={handleViewVehicle}
+                            onEdit={handleEditClick}
+                            onDelete={handleDeleteClick}
+                            onToggleAvailability={handleToggleAvailability}
+                            showEditDelete={true}
+                        />
+                        {currentList.length > ITEMS_PER_PAGE && (
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                totalItems={currentList.length}
+                                itemsPerPage={ITEMS_PER_PAGE}
+                                onPageChange={handlePageChange}
+                                itemName={getItemName()}
+                            />
+                        )}
+                    </>
                 )}
         </main>
     );

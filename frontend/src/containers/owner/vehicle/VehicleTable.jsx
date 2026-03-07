@@ -7,7 +7,8 @@ const VehicleTable = ({
     onEdit,
     onDelete,
     onToggleAvailability,
-    showEditDelete = true
+    showEditDelete = true,
+    heading = "Vehicles"
 }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [filterType, setFilterType] = useState("All");
@@ -49,7 +50,7 @@ const VehicleTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Vehicles ({filteredList.length})
+                    {heading} ({filteredList.length})
                 </h3>
 
                 <div className="flex items-center gap-3 flex-wrap">

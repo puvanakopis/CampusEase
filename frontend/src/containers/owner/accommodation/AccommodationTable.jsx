@@ -7,7 +7,8 @@ const AccommodationTable = ({
     onEdit,
     onDelete,
     onToggleAvailability,
-    showEditDelete = true
+    showEditDelete = true,
+    heading = "Accommodations"
 }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [filterType, setFilterType] = useState("All");
@@ -54,7 +55,7 @@ const AccommodationTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    All Accommodations ({filteredList.length})
+                    {heading} ({filteredList.length})
                 </h3>
 
                 <div className="flex items-center gap-3 flex-wrap">
@@ -125,7 +126,7 @@ const AccommodationTable = ({
                                     <div className="flex items-center gap-3">
                                         <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={accommodation.images?.[0]?.filename 
+                                                src={accommodation.images?.[0]?.filename
                                                     ? buildPhotoUrl(accommodation.images[0].filename, "accommodation")
                                                     : "https://via.placeholder.com/100x100?text=No+Image"
                                                 }
@@ -237,13 +238,13 @@ const AccommodationTable = ({
                                             {searchQuery || filterType !== "All" || filterStatus !== "All" ? "search_off" : "apartment"}
                                         </span>
                                         <p className="text-sm">
-                                            {searchQuery || filterType !== "All" || filterStatus !== "All" 
-                                                ? "No accommodations match your filters" 
+                                            {searchQuery || filterType !== "All" || filterStatus !== "All"
+                                                ? "No accommodations match your filters"
                                                 : "No accommodations available"}
                                         </p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            {searchQuery || filterType !== "All" || filterStatus !== "All" 
-                                                ? "Try adjusting search or filters" 
+                                            {searchQuery || filterType !== "All" || filterStatus !== "All"
+                                                ? "Try adjusting search or filters"
                                                 : "Add your first accommodation to get started"}
                                         </p>
                                     </div>
