@@ -2,12 +2,14 @@ import React, { useState, useMemo } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const VehicleTable = ({
+    length,
     vehicles,
     onView,
     onEdit,
     onDelete,
     onToggleAvailability,
-    showEditDelete = true
+    showEditDelete = true,
+    heading = "Vehicles"
 }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [filterType, setFilterType] = useState("All");
@@ -49,7 +51,7 @@ const VehicleTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Vehicles ({filteredList.length})
+                    {heading} ({length})
                 </h3>
 
                 <div className="flex items-center gap-3 flex-wrap">
@@ -83,18 +85,20 @@ const VehicleTable = ({
                     </select>
 
                     {/* Status Filter */}
-                    <select
-                        value={filterStatus}
-                        onChange={(e) => setFilterStatus(e.target.value)}
-                        className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                    >
-                        <option value="All">Status: All</option>
-                        <option value="pending">Pending</option>
-                        <option value="available">Available</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="booked">Booked</option>
-                        <option value="unavailable">Unavailable</option>
-                    </select>
+                    {heading === "All Vehicles" && (
+                        <select
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value)}
+                            className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        >
+                            <option value="All">Status: All</option>
+                            <option value="pending">Pending</option>
+                            <option value="available">Available</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="booked">Booked</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+                    )}
                 </div>
             </div>
 

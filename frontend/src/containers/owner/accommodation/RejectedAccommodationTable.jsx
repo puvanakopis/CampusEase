@@ -1,27 +1,33 @@
 import React, { useState, useMemo } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const RejectedAccommodationTable = ({ 
-    accommodations, 
-    onView, 
-    onEditBeforeResubmit, 
+const RejectedAccommodationTable = ({
+    length,
+    accommodations,
+    onView,
+    onEditBeforeResubmit,
     onDelete,
 }) => {
     const [searchQuery, setSearchQuery] = useState("");
+    const [filterType, setFilterType] = useState("All");
 
     const filteredAccommodations = useMemo(() => {
-        if (!searchQuery.trim()) return accommodations;
-        
         return accommodations.filter((item) => {
             const searchLower = searchQuery.toLowerCase();
-            return (
+            const matchesSearch =
+                !searchQuery.trim() ||
                 item.name.toLowerCase().includes(searchLower) ||
                 item.address?.street?.toLowerCase().includes(searchLower) ||
                 item.accommodation_type?.toLowerCase().includes(searchLower) ||
-                item.reject_reason?.toLowerCase().includes(searchLower)
-            );
+                item.reject_reason?.toLowerCase().includes(searchLower);
+
+            const matchesType =
+                filterType === "All" ||
+                item.accommodation_type?.toLowerCase() === filterType.toLowerCase();
+
+            return matchesSearch && matchesType;
         });
-    }, [accommodations, searchQuery]);
+    }, [accommodations, searchQuery, filterType]);
 
     const formatAddress = (address) => {
         if (!address) return "Location not specified";
@@ -38,9 +44,9 @@ const RejectedAccommodationTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Rejected Accommodations ({filteredAccommodations.length})
+                    Rejected Accommodations ({length})
                 </h3>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
                     {/* Search */}
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
@@ -54,6 +60,20 @@ const RejectedAccommodationTable = ({
                             className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
+
+                    {/* Type Filter */}
+                    <select
+                        value={filterType}
+                        onChange={(e) => setFilterType(e.target.value)}
+                        className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                    >
+                        <option value="All">Type: All</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="house">House</option>
+                        <option value="villa">Villa</option>
+                        <option value="guesthouse">Guesthouse</option>
+                        <option value="other">Other</option>
+                    </select>
                 </div>
             </div>
 
@@ -87,7 +107,7 @@ const RejectedAccommodationTable = ({
                                     <div className="flex items-center gap-3">
                                         <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={accommodation.images?.[0]?.filename 
+                                                src={accommodation.images?.[0]?.filename
                                                     ? buildPhotoUrl(accommodation.images[0].filename, "accommodation")
                                                     : "https://via.placeholder.com/100x100?text=No+Image"
                                                 }
@@ -168,13 +188,17 @@ const RejectedAccommodationTable = ({
                                 <td colSpan="5" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
                                         <span className="material-symbols-outlined text-4xl mb-2">
-                                            {searchQuery ? "search_off" : "check_circle"}
+                                            {searchQuery || filterType !== "All" ? "search_off" : "check_circle"}
                                         </span>
                                         <p className="text-sm">
-                                            {searchQuery ? "No results match your search" : "No rejected accommodations"}
+                                            {searchQuery || filterType !== "All"
+                                                ? "No accommodations match your filters"
+                                                : "No rejected accommodations"}
                                         </p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            {searchQuery ? "Try adjusting your search terms" : "All submissions have been approved"}
+                                            {searchQuery || filterType !== "All"
+                                                ? "Try adjusting search or filters"
+                                                : "All submissions have been approved"}
                                         </p>
                                     </div>
                                 </td>

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import useNavigateTo from "../../hooks/useNavigateTo";
 import { AuthContext } from "../../context/AuthContext";
-import { getPhotoUrl } from "../../utils/photo";
+import { buildPhotoUrl } from "../../utils/photoUtils";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +19,7 @@ const Navbar = () => {
     const isActive = (path) => location.pathname === path;
 
     const first_name = currentUser ? `${currentUser.first_name}`.trim() : "";
-    const avatar = getPhotoUrl(currentUser?.photo ?? null, "user_photo");
+    const avatar = buildPhotoUrl(currentUser?.photo.filename, "user_photo", first_name);
     const email = currentUser?.email || "";
     const role = currentUser?.role || "Student";
 
@@ -33,7 +33,8 @@ const Navbar = () => {
 
     const profileMenuItems = [
         { name: "Profile", path: "/profile", icon: "person" },
-        { name: "My Bookings", path: "/my-bookings", icon: "bookmarks" },
+        { name: "Saved Items", path: "/saved-items", icon: "favorite" },
+                { name: "My Bookings", path: "/my-bookings", icon: "bookmarks" },
         { name: "Logout", icon: "logout", isLogout: true },
     ];
 
@@ -110,29 +111,51 @@ const Navbar = () => {
                                 </button>
 
                                 {isProfileOpen && (
-                                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50">
-                                        <div className="px-4 py-3 border-b border-slate-100">
+                                    <div className="absolute right-0 mt-3 w-72 bg-white rounded-xl border border-slate-200 shadow-md overflow-hidden z-50">
+
+                                        {/* Profile Header */}
+                                        <div className="p-4 border-b border-slate-200">
                                             <div className="flex items-center gap-3">
-                                                <img src={avatar} alt={first_name} className="w-12 h-12 rounded-full" />
-                                                <div>
-                                                    <p className="font-semibold text-slate-900">{first_name}</p>
-                                                    <p className="text-sm text-slate-500">{email}</p>
+                                                <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100">
+                                                    <img
+                                                        src={avatar}
+                                                        alt={first_name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
+
+                                                <div className="flex flex-col">
+                                                    <p className="text-sm font-bold text-slate-900">
+                                                        {first_name}
+                                                    </p>
+                                                    <p className="text-xs text-slate-500">
+                                                        {email}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        {profileMenuItems.map((item, index) => (
-                                            <button
-                                                key={index}
-                                                onClick={() => handleProfileAction(item)}
-                                                className="flex items-center w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors"
-                                            >
-                                                <span className="material-symbols-outlined text-slate-600">{item.icon}</span>
-                                                <span className={`text-sm font-medium ${item.isLogout ? "text-red-600" : ""}`}>
-                                                    {item.name}
-                                                </span>
-                                            </button>
-                                        ))}
+                                        {/* Menu Items */}
+                                        <div className="py-1">
+                                            {profileMenuItems.map((item, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => handleProfileAction(item)}
+                                                    className="flex items-center gap-3 w-full px-4 py-3 text-left text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                                                >
+                                                    <span
+                                                        className={`material-symbols-outlined text-[20px] ${item.isLogout ? "text-red-600" : "text-slate-500"
+                                                            }`}
+                                                    >
+                                                        {item.icon}
+                                                    </span>
+
+                                                    <span className={item.isLogout ? "text-red-600" : ""}>
+                                                        {item.name}
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -198,7 +221,7 @@ const Navbar = () => {
                                 <div className="flex items-center gap-3 mb-4 px-4">
                                     <img src={avatar} alt={first_name} className="w-12 h-12 rounded-full" />
                                     <div>
-                                        <p className="font-semibold text-slate-900">{first_name}</p>
+                                        <p className="font-semibold text-slate-900">{first_name} </p>
                                         <p className="text-sm text-slate-500">{email}</p>
                                     </div>
                                 </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getPhotoUrl } from '../../../utils/photo';
+import { buildPhotoUrl } from '../../../utils/photoUtils';
 
 const ReviewsSection = ({ reviews }) => {
     const [showModal, setShowModal] = useState(false);
@@ -26,7 +26,7 @@ const ReviewsSection = ({ reviews }) => {
         return stars;
     };
 
-    const getUserPhoto = (photo) => getPhotoUrl(photo, 'user_photo');
+    const getUserPhoto = (photo) => buildPhotoUrl(photo, 'user_photo');
 
     return (
         <div className="border-t border-slate-200 pt-10">

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import PrimaryButton from '../../../components/common/PrimaryButton';
 import DatePicker from 'react-datepicker';
+import useNavigateTo from "../../../hooks/useNavigateTo";
 import 'react-datepicker/dist/react-datepicker.css';
 
 const BookingCard = ({ month_rent, rating, owner, available_users, total_users }) => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [bookingUsers, setBookingUsers] = useState(1);
-
+    const navigateTo = useNavigateTo();
     const currency = "LKR";
 
     const currentMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
@@ -39,6 +40,9 @@ const BookingCard = ({ month_rent, rating, owner, available_users, total_users }
         return months * month_rent * bookingUsers;
     };
 
+    const handleBooking = () => {
+        navigateTo("/booking");
+    };
     return (
         <div className="lg:col-span-1">
             <div className="sticky top-28 bg-white border border-slate-200 rounded-xl shadow-sm p-6">
@@ -136,13 +140,14 @@ const BookingCard = ({ month_rent, rating, owner, available_users, total_users }
 
                 </div>
 
-                {/* Booking Button */}
                 <PrimaryButton
                     disabled={!startDate || !endDate}
+                    onClick={handleBooking}
                     className="w-full py-3.5 text-lg mb-4"
                 >
                     Request Booking
                 </PrimaryButton>
+
 
                 <p className="text-center text-xs text-slate-500 mb-6 font-medium">
                     Your request will be sent to {owner.first_name}

@@ -72,7 +72,7 @@ const ViewUserPopup = ({ user, onClose }) => {
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="size-20 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={buildPhotoUrl(user.photo?.filename, "user_photo")}
+                                src={buildPhotoUrl(user.photo?.filename, "user_photo", user.first_name)}
                                 alt={user.first_name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
@@ -126,7 +126,6 @@ const ViewUserPopup = ({ user, onClose }) => {
                         </h4>
                         {user.role === "student" ? (
                             <div className="text-sm text-slate-600 space-y-1">
-                                {/* Add student-specific fields here if they exist in your schema */}
                                 <div className="flex justify-between">
                                     <span>Student Details:</span>
                                     <span className="font-medium">Standard User</span>
@@ -134,30 +133,12 @@ const ViewUserPopup = ({ user, onClose }) => {
                             </div>
                         ) : (
                             <div className="text-sm text-slate-600 space-y-1">
-                                {/* Add staff-specific fields here if they exist in your schema */}
                                 <div className="flex justify-between">
                                     <span>Staff Details:</span>
                                     <span className="font-medium">Standard User</span>
                                 </div>
                             </div>
                         )}
-                    </div>
-
-                    {/* Saved Items */}
-                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
-                        <h4 className="font-bold text-slate-900 mb-2">Saved Items</h4>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="text-center p-2 bg-white rounded-lg">
-                                <span className="material-symbols-outlined text-primary">home</span>
-                                <p className="text-lg font-bold text-slate-900">{user.save_accommodations?.length || 0}</p>
-                                <p className="text-xs text-slate-500">Saved Accommodations</p>
-                            </div>
-                            <div className="text-center p-2 bg-white rounded-lg">
-                                <span className="material-symbols-outlined text-primary">directions_bus</span>
-                                <p className="text-lg font-bold text-slate-900">{user.save_transports?.length || 0}</p>
-                                <p className="text-xs text-slate-500">Saved Transports</p>
-                            </div>
-                        </div>
                     </div>
 
                     {/* Dates */}

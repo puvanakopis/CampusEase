@@ -5,11 +5,13 @@ import AccommodationSortBar from "../../containers/user/accommodation/Accommodat
 import AccommodationGrid from "../../containers/user/accommodation/AccommodationGrid";
 import Pagination from "../../components/user/Pagination";
 import { AccommodationContext } from "../../context/AccommodationContext";
+import { SaveItemContext } from "../../context/SaveItemContext";
+import { USER_ITEMS_PER_PAGE } from "../../constants/pagination";
 
-const ITEMS_PER_PAGE = 9;
 
 const Accommodations = () => {
   const { accommodations, accoLoading, fetchAccommodations } = useContext(AccommodationContext);
+  const { fetchSavedItems } = useContext(SaveItemContext);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -24,6 +26,7 @@ const Accommodations = () => {
 
   useEffect(() => {
     fetchAccommodations();
+    fetchSavedItems(); // Fetch saved items when component mounts
   }, []);
 
   const handleFilterChange = (newFilters) => {
@@ -37,6 +40,7 @@ const Accommodations = () => {
 
   const filteredAccommodations = accommodations
     .filter((acc) => acc.status === "available")
+    .filter((acc) => acc.owner?.status === "Active")
     .filter((acc) => {
       if (filters.types.length > 0 && !filters.types.includes(acc.accommodation_type)) {
         return false;
@@ -75,13 +79,13 @@ const Accommodations = () => {
     return 0;
   });
 
-  const totalPages = Math.ceil(sortedAccommodations.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(sortedAccommodations.length / USER_ITEMS_PER_PAGE);
 
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const startIndex = (currentPage - 1) * USER_ITEMS_PER_PAGE;
 
   const currentAccommodations = sortedAccommodations.slice(
     startIndex,
-    startIndex + ITEMS_PER_PAGE
+    startIndex + USER_ITEMS_PER_PAGE
   );
 
   const handlePageChange = (page) => {

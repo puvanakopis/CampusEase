@@ -1,25 +1,23 @@
 import React, { useState, useMemo } from "react";
-import Pagination from "../common/Pagination";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const PendingVehicleTable = ({ vehicles, onView, onEdit, onDelete }) => {
-    const [currentPage, setCurrentPage] = useState(1);
+const PendingVehicleTable = ({ vehicles, onView, onEdit, onDelete, length }) => {
     const [searchQuery, setSearchQuery] = useState("");
-    const itemsPerPage = 10;
+    const [filterType, setFilterType] = useState("All");
 
     const filteredVehicles = useMemo(() => {
-        if (!searchQuery.trim()) return vehicles;
-
         return vehicles.filter((item) => {
-            const searchLower = searchQuery.toLowerCase();
-            return (
-                item.name.toLowerCase().includes(searchLower) ||
-                item.brand?.toLowerCase().includes(searchLower) ||
-                item.model?.toLowerCase().includes(searchLower) ||
-                item.registration_number?.toLowerCase().includes(searchLower)
-            );
+            const matchesSearch = !searchQuery.trim() ||
+                item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.model?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.registration_number?.toLowerCase().includes(searchQuery.toLowerCase());
+
+            const matchesType = filterType === "All" || item.vehicle_type === filterType.toLowerCase();
+
+            return matchesSearch && matchesType;
         });
-    }, [vehicles, searchQuery]);
+    }, [vehicles, searchQuery, filterType]);
 
     const formatAddress = (address) => {
         if (!address) return "Location not specified";
@@ -31,25 +29,15 @@ const PendingVehicleTable = ({ vehicles, onView, onEdit, onDelete }) => {
         return new Date(dateString).toLocaleDateString();
     };
 
-    // Pagination logic
-    const totalPages = Math.ceil(filteredVehicles.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedVehicles = filteredVehicles.slice(startIndex, endIndex);
-
-    const handlePageChange = (page) => {
-        if (page < 1 || page > totalPages) return;
-        setCurrentPage(page);
-    };
-
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Pending Vehicles ({filteredVehicles.length})
+                    Pending Vehicles ({length})
                 </h3>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
+                    {/* Search */}
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
                             search
@@ -62,6 +50,21 @@ const PendingVehicleTable = ({ vehicles, onView, onEdit, onDelete }) => {
                             className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
+
+                    {/* Type Filter */}
+                    <select
+                        value={filterType}
+                        onChange={(e) => setFilterType(e.target.value)}
+                        className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                    >
+                        <option value="All">Type: All</option>
+                        <option value="car">Car</option>
+                        <option value="van">Van</option>
+                        <option value="bike">Bike</option>
+                        <option value="three_wheel">Three Wheel</option>
+                        <option value="bus">Bus</option>
+                        <option value="other">Other</option>
+                    </select>
                 </div>
             </div>
 
@@ -89,7 +92,7 @@ const PendingVehicleTable = ({ vehicles, onView, onEdit, onDelete }) => {
                     </thead>
 
                     <tbody className="divide-y divide-slate-100">
-                        {paginatedVehicles.map((vehicle) => (
+                        {filteredVehicles.map((vehicle) => (
                             <tr key={vehicle._id} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
@@ -171,13 +174,17 @@ const PendingVehicleTable = ({ vehicles, onView, onEdit, onDelete }) => {
                                 <td colSpan="5" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
                                         <span className="material-symbols-outlined text-4xl mb-2">
-                                            {searchQuery ? "search_off" : "pending_actions"}
+                                            {searchQuery || filterType !== "All" ? "search_off" : "pending_actions"}
                                         </span>
                                         <p className="text-sm">
-                                            {searchQuery ? "No results match your search" : "No pending vehicles"}
+                                            {searchQuery || filterType !== "All"
+                                                ? "No vehicles match your filters"
+                                                : "No pending vehicles"}
                                         </p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            {searchQuery ? "Try adjusting your search terms" : "All submissions have been processed"}
+                                            {searchQuery || filterType !== "All"
+                                                ? "Try adjusting search or filters"
+                                                : "All submissions have been processed"}
                                         </p>
                                     </div>
                                 </td>
@@ -186,17 +193,6 @@ const PendingVehicleTable = ({ vehicles, onView, onEdit, onDelete }) => {
                     </tbody>
                 </table>
             </div>
-
-            {/* Pagination */}
-            {filteredVehicles.length > itemsPerPage && (
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                    currentCount={paginatedVehicles.length}
-                    totalCount={filteredVehicles.length}
-                />
-            )}
         </div>
     );
 };

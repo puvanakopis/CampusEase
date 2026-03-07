@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const VehicleTable = ({
+    length,
     title,
     vehicles,
     onView,
@@ -77,7 +78,7 @@ const VehicleTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    {title} ({filteredVehicles.length})
+                    {title} ({length})
                 </h3>
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto">
@@ -323,15 +324,6 @@ const VehicleTable = ({
                     </tbody>
                 </table>
             </div>
-
-            {/* Footer with pagination info */}
-            {filteredVehicles.length > 0 && (
-                <div className="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-between items-center">
-                    <p className="text-xs text-slate-500">
-                        Showing {filteredVehicles.length} of {vehicles.length} vehicles
-                    </p>
-                </div>
-            )}
         </div>
     );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const ViewVehiclePopup = ({ vehicle, onClose, onEdit, activeTab }) => {
+const ViewVehiclePopup = ({ vehicle, onClose }) => {
 
     const formatAddress = (address) => {
         if (!address) return "Address not provided";
@@ -40,15 +40,6 @@ const ViewVehiclePopup = ({ vehicle, onClose, onEdit, activeTab }) => {
                         <p className="text-xs text-slate-500 mt-1">ID: {vehicle._id}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        {activeTab !== "rejected" && onEdit && (
-                            <button
-                                onClick={onEdit}
-                                className="border border-slate-200 text-slate-700 py-1 px-3 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center gap-1 text-sm"
-                            >
-                                <span className="material-symbols-outlined text-sm">edit</span>
-                                Edit
-                            </button>
-                        )}
                         <button
                             onClick={onClose}
                             className="text-slate-400 hover:text-slate-600 transition-colors"

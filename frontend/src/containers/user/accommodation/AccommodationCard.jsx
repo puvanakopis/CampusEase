@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import useNavigateTo from "../../../hooks/useNavigateTo";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
+import { SaveItemContext } from "../../../context/SaveItemContext";
 
 const AccommodationCard = ({ data }) => {
     const navigateTo = useNavigateTo();
+    const { savedAccommodations, saveAccommodation, unsaveAccommodation } = useContext(SaveItemContext);
 
     if (!data) return null;
 
@@ -20,6 +22,7 @@ const AccommodationCard = ({ data }) => {
         no_of_beds,
         no_of_bathrooms,
         verified,
+        gender,
     } = data;
 
     const rating =
@@ -35,8 +38,9 @@ const AccommodationCard = ({ data }) => {
         `Rooms: ${no_of_rooms}`,
         `Beds: ${no_of_beds}`,
         `Bathrooms: ${no_of_bathrooms}`,
+        gender && `${gender}`,
         ...amenities.map((a) => a.name)
-    ];
+    ].filter(Boolean);
 
     const price = `LKR ${month_rent?.toLocaleString()}`;
     const priceLabel = "Per Month";
@@ -50,12 +54,39 @@ const AccommodationCard = ({ data }) => {
         ? buildPhotoUrl(images[0].filename, "accommodation")
         : "https://via.placeholder.com/400x300?text=Accommodation";
 
+    const isSaved = savedAccommodations.some(accommodation => accommodation._id === _id);
+
+    const handleSaveClick = async (e) => {
+        e.stopPropagation();
+        try {
+            if (isSaved) {
+                await unsaveAccommodation(_id);
+            } else {
+                await saveAccommodation(_id);
+            }
+        } catch (error) {
+            console.error("Error toggling save:", error);
+        }
+    };
+
     return (
         <div
             className="group flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:border-primary/50 cursor-pointer transition-shadow border border-[#e7edf3]"
             onClick={() => navigateTo(`/accommodation/${_id}`)}
         >
             <div className="relative h-48 w-full overflow-hidden">
+                <button
+                    onClick={handleSaveClick}
+                    className="absolute top-3 right-3 z-10 p-1.5 bg-white/80 rounded-full cursor-pointer hover:bg-white transition-colors"
+                >
+                    <span
+                        className={`material-symbols-outlined text-[20px] block ${isSaved ? 'text-red-500' : 'text-gray-600'
+                            }`}
+                        style={{ fontVariationSettings: isSaved ? '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20' : '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20' }}
+                    >
+                        favorite
+                    </span>
+                </button>
                 {badge && (
                     <span className={`absolute top-3 left-3 z-10 px-2 py-1 text-xs font-bold rounded shadow-sm ${badge.color}`}>
                         {badge.text}

@@ -8,7 +8,10 @@ import EditAccommodationPopup from "../../containers/owner/accommodation/EditAcc
 import PendingAccommodationTable from "../../containers/owner/accommodation/PendingAccommodationTable";
 import RejectedAccommodationTable from "../../containers/owner/accommodation/RejectedAccommodationTable";
 import ViewAccommodationPopup from "../../containers/owner/accommodation/ViewAccommodationPopup";
+import DeleteAccommodationPopup from "../../containers/owner/accommodation/DeleteAccommodationPopup";
 import LoadingSpinner from "../../components/common/Loading";
+import Pagination from "../../components/common/Pagination";
+import { OWNER_ITEMS_PER_PAGE } from "../../constants/pagination";
 
 import { AccommodationContext } from "../../context/AccommodationContext";
 import { AuthContext } from "../../context/AuthContext";
@@ -29,12 +32,19 @@ const OwnerAccommodation = () => {
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [selectedAccommodation, setSelectedAccommodation] = useState(null);
     const [resubmitMode, setResubmitMode] = useState(false);
+
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         fetchMyAccommodations();
     }, []);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeTab]);
 
     const getStatus = (accommodation) =>
         accommodation?.status?.toLowerCase() || "";
@@ -66,6 +76,32 @@ const OwnerAccommodation = () => {
         () => ownerAccommodations.filter(a => getStatus(a) === "rejected"),
         [ownerAccommodations]
     );
+
+    // Get current list based on active tab
+    const getCurrentList = () => {
+        switch (activeTab) {
+            case "pending": return pendingList;
+            case "rejected": return rejectedList;
+            case "available": return availableList;
+            case "booked": return bookedList;
+            case "unavailable": return unavailableList;
+            default: return allList;
+        }
+    };
+
+    const currentList = getCurrentList();
+    const totalPages = Math.ceil(currentList.length / OWNER_ITEMS_PER_PAGE);
+
+    const paginatedList = useMemo(() => {
+        const startIndex = (currentPage - 1) * OWNER_ITEMS_PER_PAGE;
+        const endIndex = startIndex + OWNER_ITEMS_PER_PAGE;
+        return currentList.slice(startIndex, endIndex);
+    }, [currentList, currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     // ------------ Tabs ------------
     const tabs = [
@@ -146,13 +182,19 @@ const OwnerAccommodation = () => {
     };
 
     const handleDeleteAccommodation = async (id) => {
-        if (window.confirm("Are you sure you want to delete this accommodation?")) {
-            try {
-                await deleteAccommodation(id);
-            } catch (error) {
-                console.error("Failed to delete accommodation:", error);
-            }
+        try {
+            await deleteAccommodation(id);
+            setShowDeletePopup(false);
+            setSelectedAccommodation(null);
+        } catch (error) {
+            console.error("Failed to delete accommodation:", error);
         }
+    };
+
+    const handleDeleteClick = (id) => {
+        const acc = allList.find(a => a._id === id);
+        setSelectedAccommodation(acc);
+        setShowDeletePopup(true);
     };
 
     const handleViewAccommodation = (acc) => {
@@ -186,15 +228,24 @@ const OwnerAccommodation = () => {
         }
     };
 
-    // ------------ Loading ------------
+    // Get item name for pagination based on active tab
+    const getItemName = () => {
+        switch (activeTab) {
+            case "pending": return "pending accommodations";
+            case "rejected": return "rejected accommodations";
+            case "available": return "available accommodations";
+            case "booked": return "booked accommodations";
+            case "unavailable": return "unavailable accommodations";
+            default: return "accommodations";
+        }
+    };
+
     if (accoLoading && ownerAccommodations.length === 0) {
         return <LoadingSpinner />;
     }
 
-    // ------------ Render ------------
     return (
-        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-
+        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto">
             {/* Popups */}
             {showAddPopup && (
                 <AddAccommodationPopup
@@ -233,6 +284,17 @@ const OwnerAccommodation = () => {
                 />
             )}
 
+            {showDeletePopup && selectedAccommodation && (
+                <DeleteAccommodationPopup
+                    accommodation={selectedAccommodation}
+                    onClose={() => {
+                        setShowDeletePopup(false);
+                        setSelectedAccommodation(null);
+                    }}
+                    onConfirm={handleDeleteAccommodation}
+                />
+            )}
+
             {/* Header */}
             <Heading
                 title="Accommodation Management"
@@ -248,45 +310,155 @@ const OwnerAccommodation = () => {
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
             {/* Tab Content */}
-            {activeTab === "pending" && (
-                <PendingAccommodationTable
-                    accommodations={pendingList}
-                    onView={handleViewAccommodation}
-                    onEdit={handleEditClick}
-                    onDelete={handleDeleteAccommodation}
-                />
-            )}
 
-            {activeTab === "rejected" && (
-                <RejectedAccommodationTable
-                    accommodations={rejectedList}
-                    onView={handleViewAccommodation}
-                    onEditBeforeResubmit={handleEditBeforeResubmit}
-                    onDelete={handleDeleteAccommodation}
-                />
-            )}
-
-            {(activeTab === "all" ||
-                activeTab === "available" ||
-                activeTab === "booked" ||
-                activeTab === "unavailable") && (
+            {activeTab === "all" && (
+                <>
                     <AccommodationTable
-                        accommodations={
-                            activeTab === "available"
-                                ? availableList
-                                : activeTab === "booked"
-                                    ? bookedList
-                                    : activeTab === "unavailable"
-                                        ? unavailableList
-                                        : allList
-                        }
+                        length={allList.length}
+                        accommodations={paginatedList}
+                        heading="All Accommodations"
                         onView={handleViewAccommodation}
                         onEdit={handleEditClick}
-                        onDelete={handleDeleteAccommodation}
+                        onDelete={handleDeleteClick}
                         onToggleAvailability={handleToggleAvailability}
                         showEditDelete={true}
                     />
-                )}
+
+                    {allList.length > OWNER_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={allList.length}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName="accommodations"
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab === "available" && (
+                <>
+                    <AccommodationTable
+                        length={availableList.length}
+                        accommodations={paginatedList}
+                        heading="Available Accommodations"
+                        onView={handleViewAccommodation}
+                        onEdit={handleEditClick}
+                        onDelete={handleDeleteClick}
+                        onToggleAvailability={handleToggleAvailability}
+                        showEditDelete={true}
+                    />
+
+                    {availableList.length > OWNER_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={availableList.length}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName="available accommodations"
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab === "pending" && (
+                <>
+                    <PendingAccommodationTable
+                        length={pendingList.length}
+                        accommodations={paginatedList}
+                        onView={handleViewAccommodation}
+                        onEdit={handleEditClick}
+                        onDelete={handleDeleteClick}
+                    />
+                    {pendingList.length > OWNER_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={pendingList.length}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab === "booked" && (
+                <>
+                    <AccommodationTable
+                        length={bookedList.length}
+                        accommodations={paginatedList}
+                        heading="Booked Accommodations"
+                        onView={handleViewAccommodation}
+                        onEdit={handleEditClick}
+                        onDelete={handleDeleteClick}
+                        onToggleAvailability={handleToggleAvailability}
+                        showEditDelete={true}
+                    />
+
+                    {bookedList.length > OWNER_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={bookedList.length}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName="booked accommodations"
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab === "unavailable" && (
+                <>
+                    <AccommodationTable
+                        length={unavailableList.length}
+                        accommodations={paginatedList}
+                        heading="Unavailable Accommodations"
+                        onView={handleViewAccommodation}
+                        onEdit={handleEditClick}
+                        onDelete={handleDeleteClick}
+                        onToggleAvailability={handleToggleAvailability}
+                        showEditDelete={true}
+                    />
+
+                    {unavailableList.length > OWNER_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={unavailableList.length}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName="unavailable accommodations"
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab === "rejected" && (
+                <>
+                    <RejectedAccommodationTable
+                        length={rejectedList.length}
+                        accommodations={paginatedList}
+                        onView={handleViewAccommodation}
+                        onEditBeforeResubmit={handleEditBeforeResubmit}
+                        onDelete={handleDeleteClick}
+                    />
+                    {rejectedList.length > OWNER_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={rejectedList.length}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
+            )}
+
         </main>
     );
 };

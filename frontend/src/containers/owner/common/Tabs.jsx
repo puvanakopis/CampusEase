@@ -2,7 +2,7 @@ import React from "react";
 
 const Tabs = ({ tabs, activeTab, onTabChange }) => {
     return (
-        <div className="border-b border-slate-200">
+        <div className="border-b border-slate-200 py-8">
             <div className="flex gap-6">
                 {tabs.map((tab) => (
                     <button

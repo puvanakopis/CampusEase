@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import Heading from "../../containers/admin/common/Heading";
 import StatsCards from "../../containers/admin/common/StatsCards";
 import Tabs from "../../containers/admin/common/Tabs";
@@ -7,6 +7,8 @@ import VehicleRequestsTable from "../../containers/admin/vehicles/VehicleRequest
 import ViewVehiclePopup from "../../containers/admin/vehicles/ViewVehiclePopup";
 import VehicleStatusChangePopup from "../../containers/admin/vehicles/VehicleStatusChangePopup";
 import VehicleRejectPopup from "../../containers/admin/vehicles/VehicleRejectPopup";
+import Pagination from "../../components/common/Pagination";
+import { ADMIN_ITEMS_PER_PAGE } from "../../constants/pagination";
 import { VehicleContext } from "../../context/VehicleContext";
 import toast from "react-hot-toast";
 
@@ -19,6 +21,8 @@ const AdminVehicles = () => {
     } = useContext(VehicleContext);
 
     const [activeTab, setActiveTab] = useState("all");
+    const [currentPage, setCurrentPage] = useState(1);
+
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [showStatusPopup, setShowStatusPopup] = useState(false);
@@ -26,8 +30,15 @@ const AdminVehicles = () => {
     const [showVehicleRejectPopup, setShowVehicleRejectPopup] = useState(false);
     const [requestToReject, setRequestToReject] = useState(null);
 
-    // ------------------- FILTERS -------------------
+    useEffect(() => {
+        fetchVehicles();
+    }, []);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeTab]);
+
+    // ------------------- FILTERS -------------------
     const allVehicles = vehicles;
 
     const availableVehicles = vehicles.filter(
@@ -46,12 +57,49 @@ const AdminVehicles = () => {
         (v) => v.status === "rejected"
     );
 
-    const vehicleRequests = vehicles.filter(
+    const requestVehicles = vehicles.filter(
         (v) => v.status === "pending"
     );
 
-    // ------------------- TABS -------------------
+    // Get current list based on active tab
+    const getCurrentList = () => {
+        switch (activeTab) {
+            case "available": return availableVehicles;
+            case "booked": return bookedVehicles;
+            case "unavailable": return unavailableVehicles;
+            case "rejected": return rejectedVehicles;
+            case "requests": return requestVehicles;
+            default: return allVehicles;
+        }
+    };
 
+    const currentList = getCurrentList();
+    const totalPages = Math.ceil(currentList.length / ADMIN_ITEMS_PER_PAGE);
+
+    const paginatedList = useMemo(() => {
+        const startIndex = (currentPage - 1) * ADMIN_ITEMS_PER_PAGE;
+        const endIndex = startIndex + ADMIN_ITEMS_PER_PAGE;
+        return currentList.slice(startIndex, endIndex);
+    }, [currentList, currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Get item name for pagination based on active tab
+    const getItemName = () => {
+        switch (activeTab) {
+            case "available": return "available vehicles";
+            case "booked": return "booked vehicles";
+            case "unavailable": return "unavailable vehicles";
+            case "rejected": return "rejected vehicles";
+            case "requests": return "vehicle requests";
+            default: return "vehicles";
+        }
+    };
+
+    // ------------------- TABS -------------------
     const tabs = [
         {
             id: "all",
@@ -80,13 +128,12 @@ const AdminVehicles = () => {
         },
         {
             id: "requests",
-            label: "Vehicle Requests",
-            count: vehicleRequests.length,
+            label: "Requests",
+            count: requestVehicles.length,
         },
     ];
 
     // ------------------- MEANINGFUL STATS -------------------
-
     const stats = [
         {
             label: "Total Vehicles",
@@ -97,7 +144,7 @@ const AdminVehicles = () => {
         {
             label: "Pending Requests",
             icon: "hourglass_empty",
-            value: vehicleRequests.length,
+            value: requestVehicles.length,
             subtext: "Waiting for approval",
             subtextColor: "text-yellow-500",
         },
@@ -111,7 +158,6 @@ const AdminVehicles = () => {
     ];
 
     // ------------------- ACTION HANDLERS -------------------
-
     const handleViewVehicle = (vehicle) => {
         setSelectedVehicle(vehicle);
         setShowViewPopup(true);
@@ -131,7 +177,7 @@ const AdminVehicles = () => {
             toast.success("Vehicle approved and activated");
             await fetchVehicles();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Approval failed");
         }
     };
@@ -159,7 +205,7 @@ const AdminVehicles = () => {
             setRequestToReject(null);
             await fetchVehicles();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Reject failed");
         }
     };
@@ -201,10 +247,6 @@ const AdminVehicles = () => {
         }
     };
 
-    useEffect(() => {
-        fetchVehicles();
-    }, []);
-
     if (vehicleLoading && vehicles.length === 0) {
         return (
             <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
@@ -222,9 +264,7 @@ const AdminVehicles = () => {
 
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-
             {/* Popups */}
-
             {showViewPopup && selectedVehicle && (
                 <ViewVehiclePopup
                     vehicle={selectedVehicle}
@@ -273,65 +313,148 @@ const AdminVehicles = () => {
                 onTabChange={setActiveTab}
             />
 
+            {/* All Vehicles Tab */}
             {activeTab === "all" && (
-                <VehicleTable
-                    title="All Vehicles"
-                    vehicles={allVehicles}
-                    onView={handleViewVehicle}
-                    onToggleStatus={handleToggleVehicleStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <VehicleTable
+                        length={vehicles.length}
+                        title="All Vehicles"
+                        vehicles={paginatedList}
+                        onView={handleViewVehicle}
+                        onToggleStatus={handleToggleVehicleStatus}
+                        isAdmin={true}
+                    />
+                    {allVehicles.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={allVehicles.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
+            {/* Available Vehicles Tab */}
             {activeTab === "available" && (
-                <VehicleTable
-                    title="Available Vehicles"
-                    vehicles={availableVehicles}
-                    onView={handleViewVehicle}
-                    onToggleStatus={handleToggleVehicleStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <VehicleTable
+                        length={availableVehicles.length}
+                        title="Available Vehicles"
+                        vehicles={paginatedList}
+                        onView={handleViewVehicle}
+                        onToggleStatus={handleToggleVehicleStatus}
+                        isAdmin={true}
+                    />
+                    {availableVehicles.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={availableVehicles.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
+            {/* Booked Vehicles Tab */}
             {activeTab === "booked" && (
-                <VehicleTable
-                    title="Booked Vehicles"
-                    vehicles={bookedVehicles}
-                    onView={handleViewVehicle}
-                    onToggleStatus={handleToggleVehicleStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <VehicleTable
+                        length={bookedVehicles.length}
+                        title="Booked Vehicles"
+                        vehicles={paginatedList}
+                        onView={handleViewVehicle}
+                        onToggleStatus={handleToggleVehicleStatus}
+                        isAdmin={true}
+                    />
+                    {bookedVehicles.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={bookedVehicles.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
+            {/* Unavailable Vehicles Tab */}
             {activeTab === "unavailable" && (
-                <VehicleTable
-                    title="Unavailable Vehicles"
-                    vehicles={unavailableVehicles}
-                    onView={handleViewVehicle}
-                    onToggleStatus={handleToggleVehicleStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <VehicleTable
+                        length={unavailableVehicles.length}
+                        title="Unavailable Vehicles"
+                        vehicles={paginatedList}
+                        onView={handleViewVehicle}
+                        onToggleStatus={handleToggleVehicleStatus}
+                        isAdmin={true}
+                    />
+                    {unavailableVehicles.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={unavailableVehicles.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
+            {/* Rejected Vehicles Tab */}
             {activeTab === "rejected" && (
-                <VehicleTable
-                    title="Rejected Vehicles"
-                    vehicles={rejectedVehicles}
-                    onView={handleViewVehicle}
-                    onToggleStatus={handleToggleVehicleStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <VehicleTable
+                        length={rejectedVehicles.length}
+                        title="Rejected Vehicles"
+                        vehicles={paginatedList}
+                        onView={handleViewVehicle}
+                        onToggleStatus={handleToggleVehicleStatus}
+                        isAdmin={true}
+                    />
+                    {rejectedVehicles.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={rejectedVehicles.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
+            {/* Vehicle Requests Tab */}
             {activeTab === "requests" && (
-                <VehicleRequestsTable
-                    vehicleRequests={vehicleRequests}
-                    onViewRequest={handleViewVehicle}
-                    onApproveRequest={handleApproveRequest}
-                    onRejectRequest={handleRejectRequest}
-                />
+                <>
+                    <VehicleRequestsTable
+                        length={requestVehicles.length}
+                        requestVehicles={paginatedList}
+                        onViewRequest={handleViewVehicle}
+                        onApproveRequest={handleApproveRequest}
+                        onRejectRequest={handleRejectRequest}
+                    />
+                    {requestVehicles.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={requestVehicles.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
-
         </main>
     );
 };

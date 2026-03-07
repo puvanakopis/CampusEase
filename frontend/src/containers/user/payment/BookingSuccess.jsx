@@ -1,53 +1,120 @@
-import React from "react";
+import React, { useRef } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import { useNavigate } from "react-router-dom";
 
 const BookingSuccess = () => {
+    const receiptRef = useRef();
+    const navigate = useNavigate();
+
+    const bookingReference = "SUSL-7829-XQ";
+
+    const handleDownload = async () => {
+        const element = receiptRef.current;
+
+        try {
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                allowTaint: false,
+                useCORS: true
+            });
+
+            const imgData = canvas.toDataURL("image/png");
+
+            const pdf = new jsPDF({
+                orientation: "portrait",
+                unit: "px",
+                format: "a4"
+            });
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            const imgWidth = pdfWidth - 80; // 40px margin on each side
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            // Center vertically
+            const yOffset = (pdfHeight - imgHeight) / 2;
+
+            pdf.addImage(imgData, "PNG", 40, yOffset, imgWidth, imgHeight);
+            pdf.save(`receipt-${bookingReference}.pdf`);
+        } catch (error) {
+            console.error("Error generating PDF:", error);
+        }
+    };
+
+    const goDashboard = () => {
+        navigate("/dashboard");
+    };
+
     return (
-        <div className="flex flex-col items-center text-center mb-12">
+        <div className="flex flex-col items-center text-center">
 
-            {/* Success Icon */}
-            <div className="w-24 h-24 bg-success/10 rounded-full flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-success text-6xl font-bold">
-                    check_circle
-                </span>
-            </div>
+            {/* RECEIPT AREA (PDF captures this) */}
+            <div ref={receiptRef} className="w-full bg-white p-6 rounded-xl">
 
-            {/* Heading */}
-            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-2">
-                Booking Confirmed!
-            </h1>
+                {/* Success Icon */}
+                <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="material-symbols-outlined text-green-600 text-5xl">
+                        check_circle
+                    </span>
+                </div>
 
-            {/* Subtext */}
-            <p className="text-slate-500 text-lg mb-8">
-                Your reservation at Sabaragamuwa University is all set.
-            </p>
+                {/* Title */}
+                <h2 className="text-xl font-bold text-slate-900 mb-1">
+                    Booking Confirmed!
+                </h2>
 
-            {/* Card */}
-            <div className="flex flex-col bg-white w-full rounded-2xl p-6 border border-slate-100 shadow-sm items-center justify-between gap-6">
+                {/* Subtitle */}
+                <p className="text-sm text-slate-500 mb-5">
+                    Your reservation at Sabaragamuwa University is all set.
+                </p>
 
-                {/* Reference */}
-                <div className="text-center w-full">
-                    <p className="text-xs uppercase tracking-widest font-bold text-slate-400 mb-1">
+                {/* Booking Details */}
+                <div className="w-full bg-white border border-slate-200 rounded-xl p-5 mb-5">
+                    <p className="text-[10px] uppercase tracking-wider font-medium text-slate-400 mb-1">
                         Booking Reference
                     </p>
-                    <p className="text-xl font-mono font-bold text-slate-900">
-                        SUSL-7829-XQ
+                    <p className="text-base font-bold text-slate-900 font-mono">
+                        {bookingReference}
                     </p>
-                </div>
 
-                {/* Buttons */}
-                <div className="flex  gap-3 w-full md:w-auto">
-
-                    <button className="px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
-                        <span className="material-symbols-outlined text-xl">download</span>
-                        Download Receipt
-                    </button>
-
-                    <button className="px-6 py-2 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
-                        Go to Dashboard
-                    </button>
+                    {/* Additional booking details can be added here */}
+                    <div className="mt-4 text-left">
+                        <p className="text-xs text-slate-600">Check-in: May 15, 2024</p>
+                        <p className="text-xs text-slate-600">Check-out: May 17, 2024</p>
+                        <p className="text-xs text-slate-600">Guests: 2 Adults</p>
+                        <p className="text-xs text-slate-600 font-medium mt-2">Total: $299.00</p>
+                    </div>
                 </div>
             </div>
 
+            {/* ACTION BUTTONS */}
+            <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">
+
+                <button
+                    onClick={handleDownload}
+                    className="flex-1 border border-slate-200 text-slate-700 py-2.5 px-4 rounded-lg font-medium hover:bg-slate-50 transition-colors text-xs flex items-center justify-center gap-1.5"
+                >
+                    <span className="material-symbols-outlined text-sm">
+                        download
+                    </span>
+                    Download Receipt
+                </button>
+
+                <button
+                    onClick={goDashboard}
+                    className="flex-1 bg-primary text-white py-2.5 px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors text-xs flex items-center justify-center gap-1.5"
+                >
+                    Go to Dashboard
+                    <span className="material-symbols-outlined text-sm">
+                        arrow_forward
+                    </span>
+                </button>
+
+            </div>
         </div>
     );
 };
