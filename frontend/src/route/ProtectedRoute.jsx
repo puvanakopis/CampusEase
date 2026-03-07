@@ -76,16 +76,19 @@ const ProtectedRoute = ({ role, user }) => {
   const location = useLocation();
 
   if (role === "owner") {
-    const pendingOrDeclined = !user?.status || user.status === "Pending Approval" || user.status === "Declined Approval";
+    const notActive = user.status !== "Active";
 
-    if (pendingOrDeclined) {
+    if (notActive) {
       if (location.pathname !== "/owner") {
         return <Navigate to="/owner" replace />;
       }
       return <Outlet />;
     }
-  }
 
+    if (location.pathname === "/owner") {
+      return <Navigate to="/owner/dashboard" replace />;
+    }
+  }
 
   const allowedPaths = ALLOWED_PATHS[role] || [];
 
