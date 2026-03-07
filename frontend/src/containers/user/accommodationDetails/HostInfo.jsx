@@ -5,8 +5,6 @@ import useNavigateTo from '../../../hooks/useNavigateTo';
 const HostInfo = ({ owner }) => {
     const navigateTo = useNavigateTo();
 
-    const ownerImage = owner.photo ? buildPhotoUrl(owner.photo.filename, "user_photo", owner.first_name) : null;
-
     const handleContactHost = () => {
         navigateTo(`/owner/${owner._id}`);
     };
@@ -16,10 +14,11 @@ const HostInfo = ({ owner }) => {
             <h3 className="text-xl font-bold mb-6">Hosted by {owner.first_name}</h3>
             <div className="flex flex-col md:flex-row gap-8">
                 <div className="flex flex-col gap-2 min-w-[200px]">
-                    <div
-                        className="bg-center bg-cover rounded-xl h-32 w-32 mb-2"
-                        style={{ backgroundImage: `url("${ownerImage}")` }}
-                    ></div>
+                    <img
+                        src={buildPhotoUrl(owner?.photo?.filename, "user_photo", owner.first_name)} 
+                        alt={`${owner.first_name} ${owner.last_name}`}
+                        className="rounded-xl h-32 w-32 mb-2 object-cover object-center"
+                    />
                     <h4 className="font-semibold text-lg">
                         {owner.first_name} {owner.last_name}
                     </h4>

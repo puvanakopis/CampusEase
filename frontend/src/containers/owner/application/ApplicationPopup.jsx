@@ -105,6 +105,25 @@ const ApplicationPopup = ({
                 </div>
             </div>
 
+            {/* Description Field - New Addition */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Description / Business Overview *
+                </label>
+                <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    placeholder="Tell us about yourself and your business. Include details about your experience, types of vehicles/properties you plan to list, and why you want to become an owner on our platform."
+                    required
+                    rows="4"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out resize-y"
+                />
+                <p className="text-xs text-slate-500 mt-1">
+                    Minimum 50 characters. This helps us understand your business better.
+                </p>
+            </div>
+
             {/* File Upload */}
             <div className="p-3 bg-slate-50 rounded-lg">
                 <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -142,6 +161,12 @@ const ApplicationPopup = ({
                 <p><strong>Phone:</strong> {formData.phone}</p>
                 <p><strong>NIC:</strong> {formData.nic}</p>
                 <p><strong>Address:</strong> {formData.address}</p>
+                <div className="pt-2 border-t border-slate-200 mt-2">
+                    <p><strong>Description:</strong></p>
+                    <p className="text-slate-600 mt-1 bg-white p-2 rounded">
+                        {formData.description || "No description provided"}
+                    </p>
+                </div>
             </div>
 
             <div className="flex items-start gap-2">

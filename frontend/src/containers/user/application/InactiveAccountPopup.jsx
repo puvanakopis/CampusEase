@@ -12,7 +12,7 @@ const InactiveAccountPopup = ({ setShowInactivePopup, declineReason, currentUser
                             Account Inactive
                         </h3>
                         <p className="text-slate-500">
-                            Your owner account is currently inactive. Please review the details below.
+                            Your user account is currently inactive. Please review the details below.
                         </p>
                     </div>
 
@@ -37,11 +37,11 @@ const InactiveAccountPopup = ({ setShowInactivePopup, declineReason, currentUser
                     </span>
                 </div>
 
-                {/* Owner Information */}
+                {/* User Information */}
                 <div className="bg-slate-50 rounded-lg p-4 mb-4">
                     <p className="text-sm font-medium text-slate-700 mb-3 flex items-center gap-2">
                         <span className="material-symbols-outlined text-sm">account_circle</span>
-                        Owner Information
+                        User Information
                     </p>
 
                     <div className="space-y-2 text-sm">
@@ -65,6 +65,12 @@ const InactiveAccountPopup = ({ setShowInactivePopup, declineReason, currentUser
                                 </span>
                             </div>
                         )}
+                        <div className="flex justify-between">
+                            <span className="text-slate-500">Role:</span>
+                            <span className="font-medium text-slate-900 capitalize">
+                                {currentUser?.role || 'Not specified'}
+                            </span>
+                        </div>
                         <div className="flex justify-between">
                             <span className="text-slate-500">Account Status:</span>
                             <span className="font-medium text-red-600">Inactive</span>
@@ -92,13 +98,23 @@ const InactiveAccountPopup = ({ setShowInactivePopup, declineReason, currentUser
                             <p className="text-base text-red-600 font-semibold">
                                 {declineReason}
                             </p>
-                            {currentUser?.description && (
+                            {currentUser?.deactivation_details && (
                                 <div className="mt-2">
                                     <p className="text-xs font-medium text-red-700 mb-1">
                                         Additional Details:
                                     </p>
                                     <p className="text-sm text-red-600 bg-red-100/50 p-2 rounded">
-                                        {currentUser.description}
+                                        {currentUser.deactivation_details}
+                                    </p>
+                                </div>
+                            )}
+                            {currentUser?.policy_violation && (
+                                <div className="mt-2">
+                                    <p className="text-xs font-medium text-red-700 mb-1">
+                                        Policy Violation:
+                                    </p>
+                                    <p className="text-sm text-red-600 bg-red-100/50 p-2 rounded">
+                                        {currentUser.policy_violation}
                                     </p>
                                 </div>
                             )}
@@ -206,8 +222,9 @@ const InactiveAccountPopup = ({ setShowInactivePopup, declineReason, currentUser
                                     `Name: ${currentUser?.first_name || ''} ${currentUser?.last_name || ''}\n` +
                                     `Email: ${currentUser?.email || ''}\n` +
                                     `ID Number: ${currentUser?.id_number || 'Not provided'}\n` +
+                                    `Role: ${currentUser?.role || 'Not specified'}\n` +
                                     `Deactivation Reason: ${declineReason || "Not specified"}\n\n` +
-                                    `Please help me reactivate my owner account.`
+                                    `Please help me reactivate my user account.`
                                 );
                                 window.location.href = `mailto:support@campusease.lk?subject=${subject}&body=${body}`;
                             }}

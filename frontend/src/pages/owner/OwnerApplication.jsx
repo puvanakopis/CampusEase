@@ -14,6 +14,7 @@ const OwnerApplication = () => {
         phone: "",
         nic: "",
         address: "",
+        description: "", 
         termsAgreed: false,
         identityDocument: null
     });
@@ -89,6 +90,7 @@ const OwnerApplication = () => {
                     formData.phone &&
                     formData.nic &&
                     formData.address &&
+                    formData.description && 
                     formData.identityDocument
                 );
             case 2:
@@ -112,6 +114,7 @@ const OwnerApplication = () => {
             phone: formData.phone,
             id_number: formData.nic,
             address: formData.address,
+            description: formData.description, 
             id_photo: formData.identityDocument
         };
 
@@ -121,7 +124,6 @@ const OwnerApplication = () => {
             setCurrentStatus(res.data.status);
             setDeclineReason(res.data.decline_reason || null);
 
-            // Update inactive details if status is Inactive
             if (res.data.status === "Inactive") {
                 setInactiveDetails({
                     decline_reason: res.data.decline_reason,
@@ -141,6 +143,7 @@ const OwnerApplication = () => {
             phone: "",
             nic: "",
             address: "",
+            description: "",
             termsAgreed: false,
             identityDocument: null
         });
