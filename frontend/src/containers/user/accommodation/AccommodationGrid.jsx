@@ -5,7 +5,7 @@ const AccommodationGrid = ({ accommodations }) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {accommodations.map((acc, idx) => (
-                <AccommodationCard key={idx} data={acc} />
+                <AccommodationCard key={acc._id || idx} data={acc} />
             ))}
         </div>
     );

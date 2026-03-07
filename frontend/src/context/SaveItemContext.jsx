@@ -17,6 +17,8 @@ export const SaveItemProvider = ({ children }) => {
             if (res.success) {
                 setSavedAccommodations(res.data.saved_accommodations);
                 setSavedTransports(res.data.saved_transports);
+                console.log("Accommodations",res.data.saved_accommodations)
+                console.log("Transports",res.data.saved_transports)
             } else {
                 toast.error(res.message || "Failed to fetch saved items");
             }
