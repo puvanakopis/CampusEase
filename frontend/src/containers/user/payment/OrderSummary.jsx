@@ -4,14 +4,13 @@ import PrimaryButton from '../../../components/common/PrimaryButton';
 const OrderSummary = ({ onConfirm }) => {
     return (
         <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col gap-6">
-
+            <div className="sticky top-24 bg-white border border-slate-200 rounded-xl p-6 flex flex-col gap-5">
                 {/* Header */}
-                <h3 className="text-xl font-bold">Order Summary</h3>
+                <h3 className="text-base font-bold text-slate-900">Order Summary</h3>
 
                 {/* Hostel Info */}
-                <div className="flex gap-4 items-center">
-                    <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="flex gap-3 items-center">
+                    <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 border border-slate-200">
                         <img
                             alt="Hostel"
                             className="w-full h-full object-cover"
@@ -19,9 +18,9 @@ const OrderSummary = ({ onConfirm }) => {
                         />
                     </div>
                     <div className="flex flex-col">
-                        <h4 className="font-bold text-slate-900">Riverview Annex</h4>
-                        <p className="text-slate-500 text-sm mt-1">Single Room - 1 Month</p>
-                        <p className="text-primary font-semibold text-sm mt-1 flex items-center gap-1">
+                        <h4 className="text-sm font-bold text-slate-900">Riverview Annex</h4>
+                        <p className="text-xs text-slate-500 mt-0.5">Single Room - 1 Month</p>
+                        <p className="text-primary text-xs font-medium mt-0.5 flex items-center gap-0.5">
                             <span className="material-symbols-outlined text-xs">location_on</span>
                             Belihuloya
                         </p>
@@ -29,41 +28,40 @@ const OrderSummary = ({ onConfirm }) => {
                 </div>
 
                 {/* Fees */}
-                <div className="space-y-3">
-                    <div className="flex justify-between text-slate-600">
-                        <span>Base Rent</span>
+                <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                        <span className="text-slate-600">Base Rent</span>
                         <span className="font-medium text-slate-900">LKR 18,000.00</span>
                     </div>
-                    <div className="flex justify-between text-slate-600">
-                        <span>Service Fee (2.5%)</span>
+                    <div className="flex justify-between text-xs">
+                        <span className="text-slate-600">Service Fee (2.5%)</span>
                         <span className="font-medium text-slate-900">LKR 450.00</span>
                     </div>
-                    <div className="flex justify-between text-slate-600">
-                        <span>Security Fee</span>
+                    <div className="flex justify-between text-xs">
+                        <span className="text-slate-600">Security Fee</span>
                         <span className="font-medium text-slate-900">LKR 50.00</span>
                     </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
-                    <span className="text-lg font-bold">Total Amount</span>
+                {/* Total */}
+                <div className="pt-3 border-t border-slate-100 flex justify-between items-center">
+                    <span className="text-sm font-bold text-slate-900">Total Amount</span>
                     <div className="text-right">
-                        <span className="text-2xl font-black text-primary">LKR 18,500</span>
-                        <p className="text-[10px] text-slate-400 uppercase font-bold">Includes all taxes</p>
+                        <span className="text-lg font-black text-primary">LKR 18,500</span>
+                        <p className="text-[9px] text-slate-400 uppercase font-medium tracking-wider mt-0.5">
+                            Includes all taxes
+                        </p>
                     </div>
                 </div>
 
                 {/* Stay Info */}
-                <div className="bg-blue-50 p-4 rounded-xl mb-6">
-                    <div className="flex gap-3">
-                        <span className="material-symbols-outlined text-primary">verified</span>
-                        <div className="flex flex-col gap-1">
-                            <p className="text-xs font-bold text-primary uppercase">Stay Info</p>
-                            <p className="text-xs text-slate-600">
-                                Stay From: 01 Oct 2023
-                            </p>
-                            <p className="text-xs text-slate-600">
-                                Guest Type: SUSL Student
-                            </p>
+                <div className="bg-primary/5 p-3 rounded-lg">
+                    <div className="flex gap-2">
+                        <span className="material-symbols-outlined text-primary text-base">verified</span>
+                        <div className="flex flex-col gap-0.5">
+                            <p className="text-[10px] font-bold text-primary uppercase tracking-wider">Stay Info</p>
+                            <p className="text-xs text-slate-600">Stay From: 01 Oct 2023</p>
+                            <p className="text-xs text-slate-600">Guest Type: SUSL Student</p>
                         </div>
                     </div>
                 </div>
@@ -71,17 +69,18 @@ const OrderSummary = ({ onConfirm }) => {
                 {/* Confirm Button */}
                 <PrimaryButton
                     onClick={onConfirm}
-                    className="w-full py-4 flex items-center justify-center gap-2 group"
+                    className="w-full py-3.5 flex items-center justify-center gap-2 group text-sm"
                 >
                     Confirm and Pay
-                    <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">
+                    <span className="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">
                         arrow_forward
                     </span>
                 </PrimaryButton>
 
-                <p className="text-center text-xs text-slate-500 mt-4">
+                {/* Agreement Text */}
+                <p className="text-center text-[10px] text-slate-500 leading-relaxed">
                     By clicking "Confirm and Pay" you agree to the{" "}
-                    <a className="text-primary hover:underline">Hostel Tenancy Agreement</a>.
+                    <a className="text-primary hover:underline font-medium">Hostel Tenancy Agreement</a>.
                 </p>
             </div>
         </div>
