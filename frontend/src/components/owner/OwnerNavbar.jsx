@@ -11,11 +11,12 @@ const OwnerNavbar = () => {
 
     const activeKey = location.pathname.split("/")[2] || "";
 
+    console.log(currentUser)
     const [isOpen, setIsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
     const first_name = currentUser ? `${currentUser.first_name} `.trim() : "";
-    const avatar = buildPhotoUrl(currentUser?.photo.filename, "user_photo",currentUser.first_name);
+    const avatar = buildPhotoUrl(currentUser?.photo?.filename, "user_photo", first_name);
     const role = currentUser?.role || "Owner";
     const email = currentUser?.email || "";
 

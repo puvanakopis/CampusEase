@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Navigate } from "react-router-dom";
 import ApplicationPopup from "../../containers/owner/application/ApplicationPopup";
+import InactiveAccountPopup from "../../containers/owner/application/InactiveAccountPopup";
 import { AuthContext } from "../../context/AuthContext";
 
 const OwnerApplication = () => {
@@ -19,14 +20,28 @@ const OwnerApplication = () => {
 
     const [currentStep, setCurrentStep] = useState(1);
     const [showApplicationPopup, setShowApplicationPopup] = useState(false);
+    const [showInactivePopup, setShowInactivePopup] = useState(false);
     const [currentStatus, setCurrentStatus] = useState(null);
     const [declineReason, setDeclineReason] = useState(null);
+    const [inactiveDetails, setInactiveDetails] = useState(null);
 
     // ---------------- FETCH STATUS ----------------
     useEffect(() => {
         if (currentUser && currentUser.role === "owner") {
             setCurrentStatus(currentUser.status);
             setDeclineReason(currentUser.decline_reason || null);
+
+            // Collect all inactive-related details
+            if (currentUser.status === "Inactive") {
+                setInactiveDetails({
+                    decline_reason: currentUser.decline_reason,
+                    deactivation_details: currentUser.deactivation_details,
+                    policy_violation: currentUser.policy_violation,
+                    deactivated_at: currentUser.deactivated_at,
+                    owner_since: currentUser.owner_since,
+                    deactivated_by: currentUser.deactivated_by
+                });
+            }
         }
     }, [currentUser]);
 
@@ -105,6 +120,18 @@ const OwnerApplication = () => {
         if (res.success && res.data) {
             setCurrentStatus(res.data.status);
             setDeclineReason(res.data.decline_reason || null);
+
+            // Update inactive details if status is Inactive
+            if (res.data.status === "Inactive") {
+                setInactiveDetails({
+                    decline_reason: res.data.decline_reason,
+                    deactivation_details: res.data.deactivation_details,
+                    policy_violation: res.data.policy_violation,
+                    deactivated_at: res.data.deactivated_at,
+                    owner_since: res.data.owner_since,
+                    deactivated_by: res.data.deactivated_by
+                });
+            }
         }
 
         setFormData({
@@ -179,9 +206,14 @@ const OwnerApplication = () => {
                         </p>
 
                         {declineReason && (
-                            <p className="text-sm text-red-500 mt-1">
-                                Reason: {declineReason}
-                            </p>
+                            <div className="mt-2 bg-red-50 border border-red-100 rounded-lg p-3 max-w-md mx-auto">
+                                <p className="text-sm text-red-700 font-medium mb-1">
+                                    Reason:
+                                </p>
+                                <p className="text-sm text-red-600">
+                                    {declineReason}
+                                </p>
+                            </div>
                         )}
 
                         <button
@@ -204,14 +236,30 @@ const OwnerApplication = () => {
                             Your Owner Account is Inactive
                         </h3>
 
-                        <p className="text-sm text-red-600">
-                            Your owner account has been temporarily disabled by
-                            the administrator. Please contact support for
-                            assistance.
+                        <p className="text-sm text-red-600 mb-3">
+                            Your owner account has been temporarily disabled.
                         </p>
 
-                        <button className="mt-4 bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">
-                            Contact Support
+                        {/* Preview of deactivation reason */}
+                        {declineReason && (
+                            <div className="bg-white/50 rounded-lg p-3 mb-3 text-left">
+                                <p className="text-xs font-medium text-red-700 mb-1">
+                                    Deactivation Reason:
+                                </p>
+                                <p className="text-sm text-red-600">
+                                    {declineReason}
+                                </p>
+                            </div>
+                        )}
+
+                        <button
+                            onClick={() => setShowInactivePopup(true)}
+                            className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 inline-flex items-center gap-2"
+                        >
+                            <span className="material-symbols-outlined text-sm">
+                                support_agent
+                            </span>
+                            View Details & Contact Support
                         </button>
                     </div>
                 )}
@@ -230,6 +278,18 @@ const OwnerApplication = () => {
                     handleSubmitApplication={handleSubmitApplication}
                     validateStep={validateStep}
                     setShowApplicationPopup={setShowApplicationPopup}
+                />
+            )}
+
+            {/* ---------------- INACTIVE POPUP ---------------- */}
+            {showInactivePopup && (
+                <InactiveAccountPopup
+                    setShowInactivePopup={setShowInactivePopup}
+                    declineReason={declineReason}
+                    currentUser={{
+                        ...currentUser,
+                        ...inactiveDetails
+                    }}
                 />
             )}
         </main>
