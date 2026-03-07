@@ -13,6 +13,9 @@ from app.middlewares.auth_middleware import get_current_user
 
 router = APIRouter(prefix="/user/save", tags=["User Save"])
 
+@router.get("/")
+async def get_user_saved_items(current_user=Depends(get_current_user)):
+    return await get_saved_items(current_user.id)
 
 @router.post("/accommodation")
 async def save_accommodation(item: SaveItemRequest, current_user=Depends(get_current_user)):

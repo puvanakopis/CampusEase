@@ -4,6 +4,34 @@ from app.schemas.accommodation_schema import AccommodationResponse
 from fastapi import HTTPException
 from typing import List
 
+
+async def get_saved_items(user_id: str):
+    user_doc = await users_collection.find_one({"_id": user_id})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    accommodations = []
+    for acc_id in user_doc.get("save_accommodations", []):
+        acc_doc = await accommodations_collection.find_one({"_id": acc_id})
+        if acc_doc:
+            accommodations.append(AccommodationResponse(**acc_doc))
+
+    vehicles = []
+    for veh_id in user_doc.get("save_transports", []):
+        veh_doc = await vehicles_collection.find_one({"_id": veh_id})
+        if veh_doc:
+            vehicles.append(VehicleResponse(**veh_doc, owner=None, reviews=[])) 
+
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": "Saved items fetched successfully",
+        "data": {
+            "saved_accommodations": accommodations,
+            "saved_transports": vehicles
+        }
+    }
+
 async def add_saved_accommodation(user_id: str, accommodation_id: str):
     user_doc = await users_collection.find_one({"_id": user_id})
     if not user_doc:
