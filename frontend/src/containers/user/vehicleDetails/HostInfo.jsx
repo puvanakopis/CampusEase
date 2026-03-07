@@ -1,10 +1,9 @@
 import React from 'react';
 import { buildPhotoUrl } from '../../../utils/photoUtils';
-import useNavigateTo from '../../../hooks/useNavigateTo'; 
+import useNavigateTo from '../../../hooks/useNavigateTo';
 
 const HostInfo = ({ owner }) => {
   const navigateTo = useNavigateTo();
-  const ownerImage = owner.photo ? buildPhotoUrl(owner.photo.filename, "user_photo") : null;
 
   const handleContactHost = () => {
     navigateTo(`/owner/${owner._id}`);
@@ -17,7 +16,7 @@ const HostInfo = ({ owner }) => {
         <div className="flex flex-col gap-2 min-w-[200px]">
           <div
             className="bg-center bg-cover rounded-xl h-32 w-32 mb-2"
-            style={{ backgroundImage: `url("${ownerImage}")` }}
+            style={{ backgroundImage: `url("${buildPhotoUrl(owner.photo.filename, "user_photo", owner.first_name)}")` }}
           ></div>
           <h4 className="font-semibold text-lg">
             {owner.first_name} {owner.last_name}

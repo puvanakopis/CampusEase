@@ -1,4 +1,5 @@
 import React from "react";
+import { buildPhotoUrl } from '../../../utils/photoUtils'
 
 const AdminProfilePage = ({
     firstName,
@@ -39,11 +40,7 @@ const AdminProfilePage = ({
                             <img
                                 alt="Admin Avatar"
                                 className="h-full w-full rounded-full object-cover"
-                                src={
-                                    currentUser?.photo?.filename
-                                        ? `${import.meta.env.VITE_API_BASE}/uploads/${currentUser.photo.filename}`
-                                        : "https://i.pravatar.cc/300?img=12"
-                                }
+                                src={buildPhotoUrl(currentUser?.photo?.filename, "user_photo", currentUser.first_name)}
                             />
                         </div>
                         <button className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg border-2 border-white">

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import useNavigateTo from "../../hooks/useNavigateTo";
 import { AuthContext } from "../../context/AuthContext";
-import { getPhotoUrl } from "../../utils/photo";
+import { buildPhotoUrl } from "../../utils/photoUtils";
 
 const OwnerNavbar = () => {
     const navigateTo = useNavigateTo();
@@ -14,9 +14,8 @@ const OwnerNavbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
-
     const first_name = currentUser ? `${currentUser.first_name} `.trim() : "";
-    const avatar = getPhotoUrl(currentUser?.photo, "user_photo");
+    const avatar = buildPhotoUrl(currentUser?.photo.filename, "user_photo",currentUser.first_name);
     const role = currentUser?.role || "Owner";
     const email = currentUser?.email || "";
 

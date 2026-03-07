@@ -115,7 +115,7 @@ const AdminOwnerManagement = () => {
             toast.success("Owner approved successfully");
             await fetchOwners();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Approval failed");
         }
     };
@@ -141,7 +141,7 @@ const AdminOwnerManagement = () => {
             setRequestToReject(null);
             await fetchOwners();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Reject failed");
         }
     };

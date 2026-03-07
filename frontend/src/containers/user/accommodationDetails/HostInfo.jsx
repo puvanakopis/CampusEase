@@ -4,7 +4,8 @@ import useNavigateTo from '../../../hooks/useNavigateTo';
 
 const HostInfo = ({ owner }) => {
     const navigateTo = useNavigateTo();
-    const ownerImage = owner.photo ? buildPhotoUrl(owner.photo.filename, "user_photo") : null;
+
+    const ownerImage = owner.photo ? buildPhotoUrl(owner.photo.filename, "user_photo", owner.first_name) : null;
 
     const handleContactHost = () => {
         navigateTo(`/owner/${owner._id}`);

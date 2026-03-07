@@ -1,5 +1,5 @@
 import React from "react";
-import { getPhotoUrl } from "../../../utils/photo";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const ProfilePage = ({
     currentUser,
@@ -10,8 +10,9 @@ const ProfilePage = ({
 }) => {
 
     const [photoPreview, setPhotoPreview] = React.useState(
-        currentUser?.photo ? getPhotoUrl(currentUser.photo, "user_photo") : null
+        buildPhotoUrl(currentUser.photo.filename, "user_photo", currentUser.first_name)
     );
+
 
     const handleFileInputChange = (e) => {
         const { name, files } = e.target;
@@ -23,9 +24,6 @@ const ProfilePage = ({
             }
         }
     };
-
-    console.log(currentUser)
-    const avatar = photoPreview;
 
     return (
         <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col gap-8 px-4 md:px-10">
@@ -47,7 +45,7 @@ const ProfilePage = ({
                             <img
                                 alt="User Avatar"
                                 className="h-full w-full rounded-full object-cover"
-                                src={avatar}
+                                src={photoPreview}
                             />
                         </div>
 

@@ -10,11 +10,9 @@ const OwnerProfilePage = ({
     handleFileChange,
     handleSave,
 }) => {
-
-    console.log(currentUser.photo)
     
     const [preview, setPreview] = React.useState(
-        currentUser.photo ? buildPhotoUrl(currentUser.photo.filename, "user_photo") : null
+        currentUser.photo ? buildPhotoUrl(currentUser.photo.filename, "user_photo", currentUser.first_name) : null
     );
 
     React.useEffect(() => {

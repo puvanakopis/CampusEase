@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import useNavigateTo from "../../hooks/useNavigateTo";
 import { AuthContext } from "../../context/AuthContext";
-import { getPhotoUrl } from "../../utils/photo";
+import { buildPhotoUrl } from "../../utils/photoUtils";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +19,7 @@ const Navbar = () => {
     const isActive = (path) => location.pathname === path;
 
     const first_name = currentUser ? `${currentUser.first_name}`.trim() : "";
-    const avatar = getPhotoUrl(currentUser?.photo ?? null, "user_photo");
+    const avatar = buildPhotoUrl(currentUser?.photo.filename, "user_photo", first_name);
     const email = currentUser?.email || "";
     const role = currentUser?.role || "Student";
 

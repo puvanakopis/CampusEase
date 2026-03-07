@@ -133,7 +133,7 @@ const AdminUserManagement = () => {
             toast.success("User approved successfully");
             await fetchUsers();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Approval failed");
         }
     };
@@ -159,7 +159,7 @@ const AdminUserManagement = () => {
             setRequestToReject(null);
             await fetchUsers();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Reject failed");
         }
     };

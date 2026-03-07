@@ -215,7 +215,7 @@ const UserTable = ({
                                     <div className="flex items-center gap-3">
                                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={buildPhotoUrl(user.photo?.filename, "user_photo")}
+                                                src={buildPhotoUrl(user.photo?.filename, "user_photo", user.first_name)}
                                                 alt={`${user.first_name} ${user.last_name || ''}`}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {

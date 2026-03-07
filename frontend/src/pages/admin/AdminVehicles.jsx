@@ -131,7 +131,7 @@ const AdminVehicles = () => {
             toast.success("Vehicle approved and activated");
             await fetchVehicles();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Approval failed");
         }
     };
@@ -159,7 +159,7 @@ const AdminVehicles = () => {
             setRequestToReject(null);
             await fetchVehicles();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Reject failed");
         }
     };

@@ -142,7 +142,8 @@ const AdminAccommodation = () => {
 
             await fetchAccommodations();
         } catch (error) {
-            console.log(error);
+            console.error();
+            (error);
             toast.error(error.message || "Approval failed");
         }
     };
@@ -174,7 +175,7 @@ const AdminAccommodation = () => {
 
             await fetchAccommodations();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Reject failed");
         }
     };
