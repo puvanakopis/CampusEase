@@ -35,8 +35,10 @@ const Accommodations = () => {
     setSortOption(value);
   };
 
+
   const filteredAccommodations = accommodations
     .filter((acc) => acc.status === "available")
+    .filter((acc) => acc.owner?.status === "Active")
     .filter((acc) => {
       if (filters.types.length > 0 && !filters.types.includes(acc.accommodation_type)) {
         return false;

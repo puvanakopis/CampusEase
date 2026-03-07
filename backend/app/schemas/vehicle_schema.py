@@ -3,6 +3,11 @@ from typing import List, Optional
 from enum import Enum
 from datetime import datetime
 
+class OwnerStatus(str, Enum):
+    pending = "Pending Approval"
+    active = "Active"
+    inactive = "Inactive"
+    declined = "Declined Approval"
 
 class VehicleStatus(str, Enum):
     pending = "pending"
@@ -86,6 +91,7 @@ class OwnerResponse(BaseModel):
     photo: Optional[UserPhoto] = None
     verified: bool = False
     description: Optional[str] = None
+    status: Optional[OwnerStatus] = None
     created_at: datetime
     last_updated: datetime
 
