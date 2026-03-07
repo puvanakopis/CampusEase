@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import useNavigateTo from "../../hooks/useNavigateTo";
 import { AuthContext } from "../../context/AuthContext";
-import { getPhotoUrl } from "../../utils/photo";
+import { buildPhotoUrl } from "../../utils/photoUtils";
 
 const OwnerNavbar = () => {
     const navigateTo = useNavigateTo();
@@ -11,12 +11,12 @@ const OwnerNavbar = () => {
 
     const activeKey = location.pathname.split("/")[2] || "";
 
+    console.log(currentUser)
     const [isOpen, setIsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
-
     const first_name = currentUser ? `${currentUser.first_name} `.trim() : "";
-    const avatar = getPhotoUrl(currentUser?.photo, "user_photo");
+    const avatar = buildPhotoUrl(currentUser?.photo?.filename, "user_photo", first_name);
     const role = currentUser?.role || "Owner";
     const email = currentUser?.email || "";
 
@@ -110,15 +110,23 @@ const OwnerNavbar = () => {
                             </button>
 
                             {isProfileOpen && (
-                                <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50">
+                                <div className="absolute right-0 mt-3 w-64 bg-white rounded-xl border border-slate-200 shadow-md overflow-hidden z-50">
                                     {profileMenu.map((item, idx) => (
                                         <button
                                             key={idx}
                                             onClick={() => handleProfileAction(item)}
-                                            className={`flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors ${item.isLogout ? "text-red-600" : "text-slate-700"}`}
+                                            className="flex items-center gap-3 w-full px-4 py-3 text-left text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
                                         >
-                                            <span className="material-symbols-outlined">{item.icon}</span>
-                                            <span className="text-sm font-medium">{item.label}</span>
+                                            <span
+                                                className={`material-symbols-outlined text-[20px] ${item.isLogout ? "text-red-600" : "text-slate-500"
+                                                    }`}
+                                            >
+                                                {item.icon}
+                                            </span>
+
+                                            <span className={item.isLogout ? "text-red-600" : ""}>
+                                                {item.label}
+                                            </span>
                                         </button>
                                     ))}
                                 </div>

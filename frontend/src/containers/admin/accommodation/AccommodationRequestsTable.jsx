@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const AccommodationRequestsTable = ({
+    length,
     accommodationRequests,
     onViewRequest,
     onApproveRequest,
@@ -66,7 +67,7 @@ const AccommodationRequestsTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Accommodation Requests ({filteredRequests.length})
+                    Accommodation Requests ({length})
                 </h3>
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                     {/* Search */}

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import { OwnerContext } from "../../context/OwnerContext";
 import Heading from "../../containers/admin/common/Heading";
 import StatsCards from "../../containers/admin/common/StatsCards";
@@ -8,6 +8,8 @@ import OwnerRequestsTable from "../../containers/admin/owner/OwnerRequestsTable"
 import ViewOwnerPopup from "../../containers/admin/owner/ViewOwnerPopup";
 import StatusChangePopup from "../../containers/admin/owner/StatusChangePopup";
 import RejectPopup from "../../containers/admin/owner/RejectPopup";
+import Pagination from "../../components/common/Pagination";
+import { ADMIN_ITEMS_PER_PAGE } from "../../constants/pagination";
 import toast from "react-hot-toast";
 
 const AdminOwnerManagement = () => {
@@ -16,10 +18,19 @@ const AdminOwnerManagement = () => {
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedOwner, setSelectedOwner] = useState(null);
     const [activeTab, setActiveTab] = useState("all");
+    const [currentPage, setCurrentPage] = useState(1);
     const [showStatusPopup, setShowStatusPopup] = useState(false);
     const [ownerToChangeStatus, setOwnerToChangeStatus] = useState(null);
     const [showRejectPopup, setShowRejectPopup] = useState(false);
     const [requestToReject, setRequestToReject] = useState(null);
+
+    useEffect(() => {
+        fetchOwners();
+    }, []);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeTab]);
 
     // ------------------- FILTERS -------------------
 
@@ -40,6 +51,52 @@ const AdminOwnerManagement = () => {
     const declinedOwners = owners.filter(
         (o) => o.status === "Declined Approval"
     );
+
+    // Get current list based on active tab
+    const getCurrentList = () => {
+        switch (activeTab) {
+            case "Active":
+                return activeOwners;
+            case "Inactive":
+                return inactiveOwners;
+            case "Pending Approval":
+                return pendingOwners;
+            case "Declined Approval":
+                return declinedOwners;
+            default:
+                return allOwners;
+        }
+    };
+
+    const currentList = getCurrentList();
+    const totalPages = Math.ceil(currentList.length / ADMIN_ITEMS_PER_PAGE);
+
+    const paginatedList = useMemo(() => {
+        const startIndex = (currentPage - 1) * ADMIN_ITEMS_PER_PAGE;
+        const endIndex = startIndex + ADMIN_ITEMS_PER_PAGE;
+        return currentList.slice(startIndex, endIndex);
+    }, [currentList, currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Get item name for pagination based on active tab
+    const getItemName = () => {
+        switch (activeTab) {
+            case "Active":
+                return "active owners";
+            case "Inactive":
+                return "inactive owners";
+            case "Pending Approval":
+                return "pending owners";
+            case "Declined Approval":
+                return "declined owners";
+            default:
+                return "owners";
+        }
+    };
 
     // ------------------- TABS -------------------
 
@@ -115,7 +172,7 @@ const AdminOwnerManagement = () => {
             toast.success("Owner approved successfully");
             await fetchOwners();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Approval failed");
         }
     };
@@ -141,7 +198,7 @@ const AdminOwnerManagement = () => {
             setRequestToReject(null);
             await fetchOwners();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Reject failed");
         }
     };
@@ -175,10 +232,6 @@ const AdminOwnerManagement = () => {
             setOwnerToChangeStatus(null);
         }
     };
-
-    useEffect(() => {
-        fetchOwners();
-    }, []);
 
     if (loading && owners.length === 0) {
         return (
@@ -247,52 +300,117 @@ const AdminOwnerManagement = () => {
             />
 
             {activeTab === "all" && (
-                <OwnerTable
-                    title="All Owners"
-                    owners={allOwners}
-                    onView={handleViewOwner}
-                    onToggleStatus={handleToggleOwnerStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <OwnerTable
+                        length={owners.length}
+                        title="All Owners"
+                        owners={paginatedList}
+                        onView={handleViewOwner}
+                        onToggleStatus={handleToggleOwnerStatus}
+                        isAdmin={true}
+                    />
+                    {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={currentList.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
             {activeTab === "Active" && (
-                <OwnerTable
-                    title="Active Owners"
-                    owners={activeOwners}
-                    onView={handleViewOwner}
-                    onToggleStatus={handleToggleOwnerStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <OwnerTable
+                        length={activeOwners.length}
+                        title="Active Owners"
+                        owners={paginatedList}
+                        onView={handleViewOwner}
+                        onToggleStatus={handleToggleOwnerStatus}
+                        isAdmin={true}
+                    />
+                    {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={currentList.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
             {activeTab === "Inactive" && (
-                <OwnerTable
-                    title="Inactive Owners"
-                    owners={inactiveOwners}
-                    onView={handleViewOwner}
-                    onToggleStatus={handleToggleOwnerStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <OwnerTable
+                        length={inactiveOwners.length}
+                        title="Inactive Owners"
+                        owners={paginatedList}
+                        onView={handleViewOwner}
+                        onToggleStatus={handleToggleOwnerStatus}
+                        isAdmin={true}
+                    />
+                    {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={currentList.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
             {activeTab === "Declined Approval" && (
-                <OwnerTable
-                    title="Declined Owners"
-                    owners={declinedOwners}
-                    onView={handleViewOwner}
-                    onToggleStatus={handleToggleOwnerStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <OwnerTable
+                        length={declinedOwners.length}
+                        title="Declined Owners"
+                        owners={paginatedList}
+                        onView={handleViewOwner}
+                        onToggleStatus={handleToggleOwnerStatus}
+                        isAdmin={true}
+                    />
+                    {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={currentList.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
             {activeTab === "Pending Approval" && (
-                <OwnerRequestsTable
-                    ownerRequests={pendingOwners}
-                    onViewRequest={handleViewOwner}
-                    onApproveRequest={handleApproveRequest}
-                    onRejectRequest={handleRejectRequest}
-                />
+                <>
+                    <OwnerRequestsTable
+                        length={pendingOwners.length}
+                        ownerRequests={paginatedList}
+                        onViewRequest={handleViewOwner}
+                        onApproveRequest={handleApproveRequest}
+                        onRejectRequest={handleRejectRequest}
+                    />
+                    {pendingOwners.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={pendingOwners.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
         </main>

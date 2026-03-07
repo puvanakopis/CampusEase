@@ -35,8 +35,11 @@ const Vehicle = () => {
         setSortOption(value);
     };
 
+    console.log(vehicles)
+
     const filteredVehicles = vehicles
         .filter((vehicle) => vehicle.status === "available")
+        .filter((acc) => acc.owner?.status === "Active")
         .filter((vehicle) => {
             if (filters.types.length > 0 && !filters.types.includes(vehicle.vehicle_type)) {
                 return false;

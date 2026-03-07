@@ -52,7 +52,7 @@ const StatusChangePopup = ({ owner, currentStatus, onClose, onConfirm }) => {
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={buildPhotoUrl(owner?.photo?.filename, "user_photo")}
+                                src={buildPhotoUrl(owner?.photo?.filename, "user_photo", owner?.first_name)}
                                 alt={owner?.first_name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {

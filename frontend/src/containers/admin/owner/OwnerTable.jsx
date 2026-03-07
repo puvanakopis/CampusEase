@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const OwnerTable = ({
+    length,
     title,
     owners,
     onView,
@@ -78,7 +79,7 @@ const OwnerTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    {title} ({filteredOwners.length})
+                    {title} ({length})
                 </h3>
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto">
@@ -179,7 +180,7 @@ const OwnerTable = ({
                                     <div className="flex items-center gap-3">
                                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={buildPhotoUrl(owner.photo?.filename, "user_photo")}
+                                                src={buildPhotoUrl(owner.photo?.filename, "user_photo", owner.first_name)}
                                                 alt={`${owner.first_name} ${owner.last_name || ''}`}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {
@@ -295,15 +296,6 @@ const OwnerTable = ({
                     </tbody>
                 </table>
             </div>
-
-            {/* Footer with pagination info */}
-            {filteredOwners.length > 0 && (
-                <div className="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-between items-center">
-                    <p className="text-xs text-slate-500">
-                        Showing {filteredOwners.length} of {owners.length} owners
-                    </p>
-                </div>
-            )}
         </div>
     );
 };

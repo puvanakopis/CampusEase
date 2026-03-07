@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import Heading from "../../containers/admin/common/Heading";
 import StatsCards from "../../containers/admin/common/StatsCards";
 import Tabs from "../../containers/admin/common/Tabs";
@@ -10,11 +10,13 @@ import ViewAccommodationPopup from "../../containers/admin/accommodation/ViewAcc
 import StatusChangePopup from "../../containers/admin/accommodation/StatusChangePopup";
 import RejectPopup from "../../containers/admin/accommodation/RejectPopup";
 
+import Pagination from "../../components/common/Pagination";
+import { ADMIN_ITEMS_PER_PAGE } from "../../constants/pagination";
+
 import { AccommodationContext } from "../../context/AccommodationContext";
 import toast from "react-hot-toast";
 
 const AdminAccommodation = () => {
-
     const {
         accommodations,
         fetchAccommodations,
@@ -23,6 +25,7 @@ const AdminAccommodation = () => {
     } = useContext(AccommodationContext);
 
     const [activeTab, setActiveTab] = useState("all");
+    const [currentPage, setCurrentPage] = useState(1);
 
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedAccommodation, setSelectedAccommodation] = useState(null);
@@ -34,8 +37,15 @@ const AdminAccommodation = () => {
     const [showRejectPopup, setShowRejectPopup] = useState(false);
     const [requestToReject, setRequestToReject] = useState(null);
 
-    // ------------------- FILTERS -------------------
+    useEffect(() => {
+        fetchAccommodations();
+    }, []);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeTab]);
+
+    // ------------------- FILTERS -------------------
     const allAccommodations = accommodations;
 
     const availableAccommodations = accommodations.filter(
@@ -58,8 +68,45 @@ const AdminAccommodation = () => {
         (a) => a.status === "pending"
     );
 
-    // ------------------- TABS -------------------
+    // Get current list based on active tab
+    const getCurrentList = () => {
+        switch (activeTab) {
+            case "available": return availableAccommodations;
+            case "booked": return bookedAccommodations;
+            case "unavailable": return unavailableAccommodations;
+            case "rejected": return rejectedAccommodations;
+            case "requests": return accommodationRequests;
+            default: return allAccommodations;
+        }
+    };
 
+    const currentList = getCurrentList();
+    const totalPages = Math.ceil(currentList.length / ADMIN_ITEMS_PER_PAGE);
+
+    const paginatedList = useMemo(() => {
+        const startIndex = (currentPage - 1) * ADMIN_ITEMS_PER_PAGE;
+        const endIndex = startIndex + ADMIN_ITEMS_PER_PAGE;
+        return currentList.slice(startIndex, endIndex);
+    }, [currentList, currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Get item name for pagination based on active tab
+    const getItemName = () => {
+        switch (activeTab) {
+            case "available": return "available accommodations";
+            case "booked": return "booked accommodations";
+            case "unavailable": return "unavailable accommodations";
+            case "rejected": return "rejected accommodations";
+            case "requests": return "accommodation requests";
+            default: return "accommodations";
+        }
+    };
+
+    // ------------------- TABS -------------------
     const tabs = [
         {
             id: "all",
@@ -88,13 +135,12 @@ const AdminAccommodation = () => {
         },
         {
             id: "requests",
-            label: "Accommodation Requests",
+            label: "Requests",
             count: accommodationRequests.length,
         },
     ];
 
-    // ------------------- ADMIN STATS (MATCH VEHICLES) -------------------
-
+    // ------------------- ADMIN STATS -------------------
     const stats = [
         {
             label: "Total Accommodations",
@@ -119,7 +165,6 @@ const AdminAccommodation = () => {
     ];
 
     // ------------------- ACTION HANDLERS -------------------
-
     const handleViewAccommodation = (accommodation) => {
         setSelectedAccommodation(accommodation);
         setShowViewPopup(true);
@@ -127,7 +172,6 @@ const AdminAccommodation = () => {
 
     const handleApproveRequest = async (request) => {
         try {
-
             const updatePayload = {
                 accommodationData: {
                     status: "available",
@@ -137,12 +181,10 @@ const AdminAccommodation = () => {
             };
 
             await updateAccommodation(request._id, updatePayload);
-
             toast.success("Accommodation approved and activated");
-
             await fetchAccommodations();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Approval failed");
         }
     };
@@ -153,7 +195,6 @@ const AdminAccommodation = () => {
     };
 
     const handleConfirmReject = async (reason) => {
-
         if (!requestToReject) return;
 
         try {
@@ -166,15 +207,12 @@ const AdminAccommodation = () => {
             };
 
             await updateAccommodation(requestToReject._id, updatePayload);
-
             toast.success("Accommodation request rejected");
-
             setShowRejectPopup(false);
             setRequestToReject(null);
-
             await fetchAccommodations();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.message || "Reject failed");
         }
     };
@@ -185,7 +223,6 @@ const AdminAccommodation = () => {
     };
 
     const handleConfirmStatusChange = async (reason) => {
-
         if (!accommodationToChangeStatus) return;
 
         const newStatus =
@@ -194,24 +231,15 @@ const AdminAccommodation = () => {
                 : "available";
 
         try {
-
             const updatePayload = {
                 accommodationData: {
                     status: newStatus,
-                    reject_reason:
-                        newStatus === "unavailable" ? reason : null,
+                    reject_reason: newStatus === "unavailable" ? reason : null,
                 },
             };
 
-            await updateAccommodation(
-                accommodationToChangeStatus._id,
-                updatePayload
-            );
-
-            toast.success(
-                `Accommodation ${newStatus === "available" ? "activated" : "deactivated"}`
-            );
-
+            await updateAccommodation(accommodationToChangeStatus._id, updatePayload);
+            toast.success(`Accommodation ${newStatus === "available" ? "activated" : "deactivated"}`);
             await fetchAccommodations();
         } catch (error) {
             console.error(error);
@@ -221,10 +249,6 @@ const AdminAccommodation = () => {
             setAccommodationToChangeStatus(null);
         }
     };
-
-    useEffect(() => {
-        fetchAccommodations();
-    }, []);
 
     if (accoLoading && accommodations.length === 0) {
         return (
@@ -243,7 +267,6 @@ const AdminAccommodation = () => {
 
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-
             {showViewPopup && selectedAccommodation && (
                 <ViewAccommodationPopup
                     accommodation={selectedAccommodation}
@@ -292,65 +315,148 @@ const AdminAccommodation = () => {
                 onTabChange={setActiveTab}
             />
 
+            {/* All Accommodations Tab */}
             {activeTab === "all" && (
-                <AccommodationTable
-                    title="All Accommodations"
-                    accommodations={allAccommodations}
-                    onView={handleViewAccommodation}
-                    onToggleStatus={handleToggleAccommodationStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <AccommodationTable
+                        length={accommodations.length}
+                        title="All Accommodations"
+                        accommodations={paginatedList}
+                        onView={handleViewAccommodation}
+                        onToggleStatus={handleToggleAccommodationStatus}
+                        isAdmin={true}
+                    />
+                    {allAccommodations.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={allAccommodations.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
+            {/* Available Accommodations Tab */}
             {activeTab === "available" && (
-                <AccommodationTable
-                    title="Available Accommodations"
-                    accommodations={availableAccommodations}
-                    onView={handleViewAccommodation}
-                    onToggleStatus={handleToggleAccommodationStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <AccommodationTable
+                        length={availableAccommodations.length}
+                        title="Available Accommodations"
+                        accommodations={paginatedList}
+                        onView={handleViewAccommodation}
+                        onToggleStatus={handleToggleAccommodationStatus}
+                        isAdmin={true}
+                    />
+                    {availableAccommodations.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={availableAccommodations.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
+            {/* Booked Accommodations Tab */}
             {activeTab === "booked" && (
-                <AccommodationTable
-                    title="Booked Accommodations"
-                    accommodations={bookedAccommodations}
-                    onView={handleViewAccommodation}
-                    onToggleStatus={handleToggleAccommodationStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <AccommodationTable
+                        length={bookedAccommodations.length}
+                        title="Booked Accommodations"
+                        accommodations={paginatedList}
+                        onView={handleViewAccommodation}
+                        onToggleStatus={handleToggleAccommodationStatus}
+                        isAdmin={true}
+                    />
+                    {bookedAccommodations.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={bookedAccommodations.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
+            {/* Unavailable Accommodations Tab */}
             {activeTab === "unavailable" && (
-                <AccommodationTable
-                    title="Unavailable Accommodations"
-                    accommodations={unavailableAccommodations}
-                    onView={handleViewAccommodation}
-                    onToggleStatus={handleToggleAccommodationStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <AccommodationTable
+                        length={unavailableAccommodations.length}
+                        title="Unavailable Accommodations"
+                        accommodations={paginatedList}
+                        onView={handleViewAccommodation}
+                        onToggleStatus={handleToggleAccommodationStatus}
+                        isAdmin={true}
+                    />
+                    {unavailableAccommodations.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={unavailableAccommodations.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
+            {/* Rejected Accommodations Tab */}
             {activeTab === "rejected" && (
-                <AccommodationTable
-                    title="Rejected Accommodations"
-                    accommodations={rejectedAccommodations}
-                    onView={handleViewAccommodation}
-                    onToggleStatus={handleToggleAccommodationStatus}
-                    isAdmin={true}
-                />
+                <>
+                    <AccommodationTable
+                        length={rejectedAccommodations.length}
+                        title="Rejected Accommodations"
+                        accommodations={paginatedList}
+                        onView={handleViewAccommodation}
+                        onToggleStatus={handleToggleAccommodationStatus}
+                        isAdmin={true}
+                    />
+                    {rejectedAccommodations.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={rejectedAccommodations.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
+            {/* Accommodation Requests Tab */}
             {activeTab === "requests" && (
-                <AccommodationRequestsTable
-                    accommodationRequests={accommodationRequests}
-                    onViewRequest={handleViewAccommodation}
-                    onApproveRequest={handleApproveRequest}
-                    onRejectRequest={handleRejectRequest}
-                />
+                <>
+                    <AccommodationRequestsTable
+                        length={accommodationRequests.length}
+                        accommodationRequests={paginatedList}
+                        onViewRequest={handleViewAccommodation}
+                        onApproveRequest={handleApproveRequest}
+                        onRejectRequest={handleRejectRequest}
+                    />
+                    {accommodationRequests.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={accommodationRequests.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
-
         </main>
     );
 };

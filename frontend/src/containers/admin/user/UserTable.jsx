@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const UserTable = ({
+    length,
     title,
     users,
     onView,
@@ -94,7 +95,7 @@ const UserTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    {title} ({filteredUsers.length})
+                    {title} ({length})
                 </h3>
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto">
@@ -215,7 +216,7 @@ const UserTable = ({
                                     <div className="flex items-center gap-3">
                                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={buildPhotoUrl(user.photo?.filename, "user_photo")}
+                                                src={buildPhotoUrl(user.photo?.filename, "user_photo", user.first_name)}
                                                 alt={`${user.first_name} ${user.last_name || ''}`}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {
@@ -349,15 +350,6 @@ const UserTable = ({
                     </tbody>
                 </table>
             </div>
-
-            {/* Footer with pagination info */}
-            {filteredUsers.length > 0 && (
-                <div className="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-between items-center">
-                    <p className="text-xs text-slate-500">
-                        Showing {filteredUsers.length} of {users.length} users
-                    </p>
-                </div>
-            )}
         </div>
     );
 };

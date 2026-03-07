@@ -1,11 +1,10 @@
-// components/common/BookingPagination.jsx
 import React from 'react';
 
-const BookingPagination = ({ 
-    currentPage, 
-    totalPages, 
-    totalItems, 
-    itemsPerPage, 
+const Pagination = ({
+    currentPage,
+    totalPages,
+    totalItems,
+    itemsPerPage,
     onPageChange,
     showItemCount = true,
     itemName = "items"
@@ -14,7 +13,7 @@ const BookingPagination = ({
     const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
     const getPageNumbers = () => {
-        const delta = 2; // Number of pages to show on each side of current page
+        const delta = 2; 
         const range = [];
         const rangeWithDots = [];
         let l;
@@ -49,17 +48,18 @@ const BookingPagination = ({
                     Showing {startItem} to {endItem} of {totalItems} {itemName}
                 </p>
             )}
-            
+
             <div className="flex items-center gap-1 ml-auto">
                 {/* Previous Button */}
                 <button
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                     className={`size-8 rounded border border-slate-200 flex items-center justify-center transition-colors
-                        ${currentPage === 1 
-                            ? 'opacity-50 cursor-not-allowed bg-slate-50' 
-                            : 'hover:bg-slate-50'
+                        ${currentPage === 1
+                            ? 'opacity-50 cursor-not-allowed bg-slate-50'
+                            : 'hover:bg-slate-50 hover:border-slate-300'
                         }`}
+                    aria-label="Previous page"
                 >
                     <span className="material-symbols-outlined text-sm">chevron_left</span>
                 </button>
@@ -76,9 +76,11 @@ const BookingPagination = ({
                                 onClick={() => onPageChange(page)}
                                 className={`size-8 rounded flex items-center justify-center transition-colors
                                     ${currentPage === page
-                                        ? 'bg-primary text-white'
-                                        : 'border border-slate-200 hover:bg-slate-50'
+                                        ? 'bg-primary text-white hover:bg-primary/90'
+                                        : 'border border-slate-200 hover:bg-slate-50 hover:border-slate-300'
                                     }`}
+                                aria-label={`Page ${page}`}
+                                aria-current={currentPage === page ? 'page' : undefined}
                             >
                                 {page}
                             </button>
@@ -91,10 +93,11 @@ const BookingPagination = ({
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     className={`size-8 rounded border border-slate-200 flex items-center justify-center transition-colors
-                        ${currentPage === totalPages 
-                            ? 'opacity-50 cursor-not-allowed bg-slate-50' 
-                            : 'hover:bg-slate-50'
+                        ${currentPage === totalPages
+                            ? 'opacity-50 cursor-not-allowed bg-slate-50'
+                            : 'hover:bg-slate-50 hover:border-slate-300'
                         }`}
+                    aria-label="Next page"
                 >
                     <span className="material-symbols-outlined text-sm">chevron_right</span>
                 </button>
@@ -103,4 +106,4 @@ const BookingPagination = ({
     );
 };
 
-export default BookingPagination;
+export default Pagination;

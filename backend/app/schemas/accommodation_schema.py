@@ -8,6 +8,12 @@ class UserPhoto(BaseModel):
     content_type: str
     size: int
 
+class OwnerStatus(str, Enum):
+    pending = "Pending Approval"
+    active = "Active"
+    inactive = "Inactive"
+    declined = "Declined Approval"
+
 class AccommodationGender(str, Enum):
     male = "male"
     female = "female"
@@ -74,6 +80,7 @@ class OwnerResponse(BaseModel):
     photo: Optional[UserPhoto] = None
     verified: bool = False
     description: Optional[str] = None
+    status: Optional[OwnerStatus] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 
