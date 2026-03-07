@@ -8,6 +8,7 @@ import RejectedVehicleTable from "../../containers/owner/vehicle/RejectedVehicle
 import AddVehiclePopup from "../../containers/owner/vehicle/AddVehiclePopup";
 import EditVehiclePopup from "../../containers/owner/vehicle/EditVehiclePopup";
 import ViewVehiclePopup from "../../containers/owner/vehicle/ViewVehiclePopup";
+import DeleteVehiclePopup from "../../containers/owner/vehicle/DeleteVehiclePopup";
 import LoadingSpinner from "../../components/common/Loading";
 
 import { VehicleContext } from "../../context/VehicleContext";
@@ -29,6 +30,7 @@ const OwnerVehicle = () => {
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [resubmitMode, setResubmitMode] = useState(false);
 
@@ -140,13 +142,18 @@ const OwnerVehicle = () => {
     };
 
     const handleDeleteVehicle = async (id) => {
-        if (window.confirm("Are you sure you want to delete this vehicle?")) {
-            try {
-                await deleteVehicle(id);
-            } catch (error) {
-                console.error("Failed to delete vehicle:", error);
-            }
+        try {
+            await deleteVehicle(id);
+            setShowDeletePopup(false);
+            setSelectedVehicle(null);
+        } catch (error) {
+            console.error("Failed to delete vehicle:", error);
         }
+    };
+
+    const handleDeleteClick = (vehicle) => {
+        setSelectedVehicle(vehicle);
+        setShowDeletePopup(true);
     };
 
     const handleViewVehicle = (vehicle) => {
@@ -227,6 +234,17 @@ const OwnerVehicle = () => {
                 />
             )}
 
+            {showDeletePopup && selectedVehicle && (
+                <DeleteVehiclePopup
+                    vehicle={selectedVehicle}
+                    onClose={() => {
+                        setShowDeletePopup(false);
+                        setSelectedVehicle(null);
+                    }}
+                    onConfirm={handleDeleteVehicle}
+                />
+            )}
+
             {/* Header */}
             <Heading
                 title="Vehicle Management"
@@ -247,7 +265,7 @@ const OwnerVehicle = () => {
                     vehicles={pendingList}
                     onView={handleViewVehicle}
                     onEdit={handleEditClick}
-                    onDelete={handleDeleteVehicle}
+                    onDelete={handleDeleteClick}
                 />
             )}
 
@@ -256,7 +274,7 @@ const OwnerVehicle = () => {
                     vehicles={rejectedList}
                     onView={handleViewVehicle}
                     onEditBeforeResubmit={handleEditBeforeResubmit}
-                    onDelete={handleDeleteVehicle}
+                    onDelete={handleDeleteClick}
                 />
             )}
 
@@ -276,7 +294,7 @@ const OwnerVehicle = () => {
                         }
                         onView={handleViewVehicle}
                         onEdit={handleEditClick}
-                        onDelete={handleDeleteVehicle}
+                        onDelete={handleDeleteClick}
                         onToggleAvailability={handleToggleAvailability}
                         showEditDelete={true}
                     />

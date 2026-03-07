@@ -8,6 +8,7 @@ import EditAccommodationPopup from "../../containers/owner/accommodation/EditAcc
 import PendingAccommodationTable from "../../containers/owner/accommodation/PendingAccommodationTable";
 import RejectedAccommodationTable from "../../containers/owner/accommodation/RejectedAccommodationTable";
 import ViewAccommodationPopup from "../../containers/owner/accommodation/ViewAccommodationPopup";
+import DeleteAccommodationPopup from "../../containers/owner/accommodation/DeleteAccommodationPopup";
 import LoadingSpinner from "../../components/common/Loading";
 
 import { AccommodationContext } from "../../context/AccommodationContext";
@@ -29,6 +30,7 @@ const OwnerAccommodation = () => {
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [selectedAccommodation, setSelectedAccommodation] = useState(null);
     const [resubmitMode, setResubmitMode] = useState(false);
 
@@ -146,13 +148,18 @@ const OwnerAccommodation = () => {
     };
 
     const handleDeleteAccommodation = async (id) => {
-        if (window.confirm("Are you sure you want to delete this accommodation?")) {
-            try {
-                await deleteAccommodation(id);
-            } catch (error) {
-                console.error("Failed to delete accommodation:", error);
-            }
+        try {
+            await deleteAccommodation(id);
+            setShowDeletePopup(false);
+            setSelectedAccommodation(null);
+        } catch (error) {
+            console.error("Failed to delete accommodation:", error);
         }
+    };
+
+    const handleDeleteClick = (acc) => {
+        setSelectedAccommodation(acc);
+        setShowDeletePopup(true);
     };
 
     const handleViewAccommodation = (acc) => {
@@ -233,6 +240,17 @@ const OwnerAccommodation = () => {
                 />
             )}
 
+            {showDeletePopup && selectedAccommodation && (
+                <DeleteAccommodationPopup
+                    accommodation={selectedAccommodation}
+                    onClose={() => {
+                        setShowDeletePopup(false);
+                        setSelectedAccommodation(null);
+                    }}
+                    onConfirm={handleDeleteAccommodation}
+                />
+            )}
+
             {/* Header */}
             <Heading
                 title="Accommodation Management"
@@ -253,7 +271,7 @@ const OwnerAccommodation = () => {
                     accommodations={pendingList}
                     onView={handleViewAccommodation}
                     onEdit={handleEditClick}
-                    onDelete={handleDeleteAccommodation}
+                    onDelete={handleDeleteClick}
                 />
             )}
 
@@ -262,7 +280,7 @@ const OwnerAccommodation = () => {
                     accommodations={rejectedList}
                     onView={handleViewAccommodation}
                     onEditBeforeResubmit={handleEditBeforeResubmit}
-                    onDelete={handleDeleteAccommodation}
+                    onDelete={handleDeleteClick}
                 />
             )}
 
@@ -282,7 +300,7 @@ const OwnerAccommodation = () => {
                         }
                         onView={handleViewAccommodation}
                         onEdit={handleEditClick}
-                        onDelete={handleDeleteAccommodation}
+                        onDelete={handleDeleteClick}
                         onToggleAvailability={handleToggleAvailability}
                         showEditDelete={true}
                     />
