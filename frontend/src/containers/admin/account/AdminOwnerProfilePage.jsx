@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { buildPhotoUrl } from '../../../utils/photoUtils'
 
 const AdminProfilePage = ({
@@ -16,140 +16,249 @@ const AdminProfilePage = ({
     currentUser,
     authLoading,
 }) => {
+    const [photoPreview, setPhotoPreview] = useState(
+        buildPhotoUrl(currentUser?.photo?.filename, "user_photo", currentUser?.first_name)
+    );
+
+    const handleFileInputChange = (e) => {
+        const { name, files } = e.target;
+        if (files && files[0]) {
+            // Handle file change if you have a handler
+
+            if (name === "photo") {
+                const previewUrl = URL.createObjectURL(files[0]);
+                setPhotoPreview(previewUrl);
+            }
+        }
+    };
+
     if (authLoading) {
-        return <div className="text-center mt-10">Loading profile...</div>;
+        return (
+            <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 flex items-center justify-center">
+                <p className="text-slate-500">Loading...</p>
+            </div>
+        );
     }
 
     return (
-        <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col gap-8">
-            {/* Header */}
-            <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-bold text-slate-900">
-                    Welcome, {firstName}!
-                </h1>
-                <p className="text-slate-500">
-                    Manage users, view platform stats, and update your admin settings.
-                </p>
-            </div>
-
-            {/* Profile Header */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <div className="flex flex-col md:flex-row items-center gap-8">
-                    <div className="relative">
-                        <div className="h-32 w-32 rounded-full border-4 border-primary/20 p-1">
-                            <img
-                                alt="Admin Avatar"
-                                className="h-full w-full rounded-full object-cover"
-                                src={buildPhotoUrl(currentUser?.photo?.filename, "user_photo", currentUser.first_name)}
-                            />
-                        </div>
-                        <button className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg border-2 border-white">
-                            <span className="material-symbols-outlined text-sm">
-                                edit
-                            </span>
-                        </button>
+        <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10">
+            <div className="space-y-6">
+                {/* Header Section */}
+                <div className="">
+                    <div className="flex flex-col gap-1">
+                        <h1 className="text-3xl font-bold text-slate-900">
+                            Welcome, {firstName}!
+                        </h1>
+                        <p className="text-sm text-slate-500">
+                            Manage users, view platform stats, and update your admin settings.
+                        </p>
                     </div>
+                </div>
 
-                    <div className="text-center md:text-left flex-1">
-                        <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
-                            <h1 className="text-2xl font-black text-slate-900">
-                                {firstName} {lastName}
-                            </h1>
-                            <div className="flex items-center gap-2">
-                                <span className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
+                {/* Profile Header Card */}
+                <div className="bg-white rounded-xl border border-slate-200 p-6">
+                    <div className="flex flex-col md:flex-row items-center gap-6">
+                        {/* Profile Photo Section */}
+                        <div className="relative">
+                            <div className="w-28 h-28 rounded-full border-4 border-primary/20 overflow-hidden bg-slate-100">
+                                <img
+                                    alt="Admin Avatar"
+                                    className="w-full h-full object-cover"
+                                    src={photoPreview}
+                                />
+                            </div>
+                            <label className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg border-2 border-white cursor-pointer hover:bg-primary/90 transition-colors">
+                                <input
+                                    type="file"
+                                    name="photo"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleFileInputChange}
+                                />
+                                <span className="material-symbols-outlined text-sm">edit</span>
+                            </label>
+                        </div>
+
+                        {/* Admin Info Section */}
+                        <div className="flex-1 text-center md:text-left">
+                            <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
+                                <h2 className="text-xl font-bold text-slate-900">
+                                    {firstName} {lastName}
+                                </h2>
+                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium bg-green-100 text-green-700">
                                     <span className="material-symbols-outlined text-sm">
                                         verified
                                     </span>
                                     Super Admin
                                 </span>
                             </div>
+                            <p className="text-sm text-slate-500">
+                                Admin ID: {currentUser?._id || "N/A"} • Joined:{" "}
+                                {currentUser?.created_at
+                                    ? new Date(currentUser.created_at).toLocaleDateString()
+                                    : "N/A"}
+                            </p>
                         </div>
-                        <p className="text-slate-500 font-medium mb-4">
-                            Admin ID: {currentUser?._id || "N/A"} • Joined:{" "}
-                            {currentUser?.created_at
-                                ? new Date(currentUser.created_at).toLocaleDateString()
-                                : "N/A"}
-                        </p>
                     </div>
                 </div>
-            </div>
 
-            {/* Admin Settings Form */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-bold text-slate-900">Admin Settings</h3>
-                    <span className="text-xs font-bold bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
-                        PLATFORM ADMIN
-                    </span>
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Total Users */}
+                    <div className="bg-white rounded-xl border border-slate-200 p-5">
+                        <div className="flex flex-col gap-1">
+                            <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                Total Users
+                            </span>
+                            <span className="text-2xl font-bold text-slate-900">
+                                {currentUser?.totalUsers || 0}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Total Properties */}
+                    <div className="bg-white rounded-xl border border-slate-200 p-5">
+                        <div className="flex flex-col gap-1">
+                            <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                Total Properties
+                            </span>
+                            <span className="text-2xl font-bold text-slate-900">
+                                {currentUser?.totalProperties || 0}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Platform Age */}
+                    <div className="bg-white rounded-xl border border-slate-200 p-5">
+                        <div className="flex flex-col gap-1">
+                            <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                Platform Since
+                            </span>
+                            <span className="text-2xl font-bold text-slate-900">
+                                {currentUser?.created_at ? new Date(currentUser.created_at).getFullYear() : "-"}
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Admin Name</label>
-                        <input
-                            className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            type="text"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                        />
-                    </div>
+                {/* Admin Details Form */}
+                <div className="bg-white rounded-xl border border-slate-200 p-6">
+                    <h3 className="text-lg font-bold text-slate-900 mb-4">Admin Settings</h3>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Last Name</label>
-                        <input
-                            className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            type="text"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                        />
-                    </div>
+                    <div className="space-y-4">
+                        {/* First Row: First Name and Last Name */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    First Name
+                                </label>
+                                <input
+                                    type="text"
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    Last Name
+                                </label>
+                                <input
+                                    type="text"
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                />
+                            </div>
+                        </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Admin Email</label>
-                        <input
-                            className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
+                        {/* Second Row: Email and Phone */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    Phone
+                                </label>
+                                <input
+                                    type="tel"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                />
+                            </div>
+                        </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Phone Number</label>
-                        <div className="flex gap-2">
-                            <input
-                                className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                                type="tel"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
+                        {/* Third Row: Role and Status */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    Role
+                                </label>
+                                <input
+                                    type="text"
+                                    value="Super Admin"
+                                    readOnly
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-sm cursor-not-allowed focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    Status
+                                </label>
+                                <input
+                                    type="text"
+                                    value="Active"
+                                    readOnly
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-sm cursor-not-allowed focus:outline-none"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Fourth Row: Role Description - Full Width */}
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                                Role Description
+                            </label>
+                            <textarea
+                                value={roleDescription}
+                                onChange={(e) => setRoleDescription(e.target.value)}
+                                rows="3"
+                                className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                placeholder="Describe your role and responsibilities..."
                             />
                         </div>
                     </div>
 
-                    <div className="md:col-span-2 flex flex-col gap-2">
-                        <label className="text-sm font-bold text-slate-600">Role Description</label>
-                        <textarea
-                            rows={5}
-                            className="w-full px-3 py-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                            value={roleDescription}
-                            onChange={(e) => setRoleDescription(e.target.value)}
-                        />
+                    {/* Form Actions */}
+                    <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
+                        <button
+                            type="button"
+                            className="border border-slate-200 text-slate-700 py-2 px-6 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleSaveChanges}
+                            className="bg-primary text-white py-2 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center gap-1"
+                        >
+                            <span className="material-symbols-outlined text-sm">save</span>
+                            Save Changes
+                        </button>
                     </div>
                 </div>
-
-                <div className="mt-8 flex justify-end gap-4">
-                    <button className="px-8 py-3 border border-slate-300 text-slate-700 rounded-lg font-bold hover:bg-slate-50 transition-colors">
-                        Cancel
-                    </button>
-                    <button
-                        className="px-8 py-3 bg-primary text-white rounded-lg font-bold shadow-lg hover:bg-primary/90 transition-colors"
-                        onClick={handleSaveChanges}
-                    >
-                        Save Changes
-                    </button>
-                </div>
             </div>
-        </main>
+        </div>
     );
 };
 

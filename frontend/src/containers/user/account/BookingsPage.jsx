@@ -22,7 +22,7 @@ const MyBookingsPage = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Accommodation Card - Matching popup card style */}
+            {/* Accommodation Card  */}
             <div className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col md:flex-row">
               <div className="md:w-48 h-48 md:h-auto shrink-0 relative">
                 <img
@@ -61,7 +61,7 @@ const MyBookingsPage = () => {
               </div>
             </div>
 
-            {/* Vehicle Card - Matching popup card style */}
+            {/* Vehicle Card */}
             <div className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col md:flex-row">
               <div className="md:w-48 h-48 md:h-auto shrink-0 relative">
                 <img
@@ -145,7 +145,6 @@ const MyBookingsPage = () => {
                       </div>
                     </td>
                   </tr>
-                  {/* Add more rows as needed */}
                 </tbody>
               </table>
             </div>

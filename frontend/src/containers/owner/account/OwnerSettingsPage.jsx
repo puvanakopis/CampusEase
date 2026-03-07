@@ -38,178 +38,205 @@ const OwnerSettingsPage = ({
     ];
 
     return (
-        <main className="flex-1 w-full max-w-7xl mx-auto flex flex-col gap-8 px-4 md:px-10">
-            {/* Header */}
-            <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
-                <p className="text-slate-500">
-                    Manage your account preferences, security, and business notifications.
-                </p>
-            </div>
+        <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10">
+            <div className="space-y-6">
+                {/* Header */}
+                <div>
+                    <div className="flex flex-col gap-1">
+                        <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
+                        <p className="text-sm text-slate-500">
+                            Manage your account preferences, security, and business notifications.
+                        </p>
+                    </div>
+                </div>
 
-            {/* Change Password Section */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">lock</span>
-                    Change Password
-                </h2>
-
-                <form
-                    className="p-6 flex flex-col gap-4 w-full"
-                    onSubmit={handlePasswordUpdate}
-                >
-                    <div className="flex flex-wrap gap-4">
-                        {/* Current Password */}
-                        <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
-                            <label className="text-sm font-medium text-slate-700">Current Password</label>
-                            <div className="relative">
-                                <input
-                                    type={showCurrentPassword ? "text" : "password"}
-                                    value={currentPassword}
-                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                    className="w-full px-3 py-2 border rounded-md border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary pr-10"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={toggleCurrentPassword}
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-700"
-                                >
-                                    <span className="material-symbols-outlined text-base">
-                                        {showCurrentPassword ? "visibility_off" : "visibility"}
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* New Password */}
-                        <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
-                            <label className="text-sm font-medium text-slate-700">New Password</label>
-                            <div className="relative">
-                                <input
-                                    type={showNewPassword ? "text" : "password"}
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    className="w-full px-3 py-2 border rounded-md border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary pr-10"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={toggleNewPassword}
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-700"
-                                >
-                                    <span className="material-symbols-outlined text-base">
-                                        {showNewPassword ? "visibility_off" : "visibility"}
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Confirm Password */}
-                        <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
-                            <label className="text-sm font-medium text-slate-700">Confirm Password</label>
-                            <div className="relative">
-                                <input
-                                    type={showConfirmPassword ? "text" : "password"}
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="w-full px-3 py-2 border rounded-md border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary pr-10"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={toggleConfirmPassword}
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-700"
-                                >
-                                    <span className="material-symbols-outlined text-base">
-                                        {showConfirmPassword ? "visibility_off" : "visibility"}
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
+                {/* Change Password Section */}
+                <section className="space-y-4">
+                    <div className="flex items-center gap-2 px-1">
+                        <span className="material-symbols-outlined text-primary text-lg">lock</span>
+                        <h2 className="text-lg font-bold text-slate-900">Change Password</h2>
                     </div>
 
-                    <button
-                        type="submit"
-                        className="mt-4 px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 w-1/3"
+                    <form
+                        className="bg-white rounded-xl border border-slate-200 p-6 space-y-4"
+                        onSubmit={handlePasswordUpdate}
                     >
-                        Update Password
-                    </button>
-                </form>
-            </div>
-
-            {/* Notification Preferences */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">notifications_active</span>
-                    Notification Preferences
-                </h2>
-
-                <div className="overflow-hidden">
-                    {notifications.map((notif, idx) => (
-                        <div
-                            key={idx}
-                            className={`p-4 flex items-center justify-between border-b border-slate-100 ${idx === notifications.length - 1 ? "border-b-0" : ""
-                                }`}
-                        >
-                            <div className="flex flex-col">
-                                <span className="text-sm font-bold">{notif.title}</span>
-                                <span className="text-xs text-slate-500">{notif.description}</span>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {/* Current Password Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    Current Password
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type={showCurrentPassword ? "text" : "password"}
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out pr-10"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={toggleCurrentPassword}
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                                    >
+                                        <span className="material-symbols-outlined text-base">
+                                            {showCurrentPassword ? "visibility_off" : "visibility"}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
-                            <div className="flex gap-6">
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        className="w-4 h-4 rounded text-primary focus:ring-primary"
-                                        defaultChecked={notif.email}
-                                    />
-                                    <span className="text-xs font-medium">Email</span>
+
+                            {/* New Password Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    New Password
                                 </label>
-                                <label className="flex items-center gap-2 cursor-pointer">
+                                <div className="relative">
                                     <input
-                                        type="checkbox"
-                                        className="w-4 h-4 rounded text-primary focus:ring-primary"
-                                        defaultChecked={notif.sms}
+                                        type={showNewPassword ? "text" : "password"}
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out pr-10"
+                                        required
                                     />
-                                    <span className="text-xs font-medium">SMS</span>
+                                    <button
+                                        type="button"
+                                        onClick={toggleNewPassword}
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                                    >
+                                        <span className="material-symbols-outlined text-base">
+                                            {showNewPassword ? "visibility_off" : "visibility"}
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Confirm Password Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                    Confirm Password
                                 </label>
+                                <div className="relative">
+                                    <input
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out pr-10"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={toggleConfirmPassword}
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                                    >
+                                        <span className="material-symbols-outlined text-base">
+                                            {showConfirmPassword ? "visibility_off" : "visibility"}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    ))}
-                </div>
-            </div>
 
-            {/* Payment Settings */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <h3 className="text-xl font-bold text-slate-900 mb-6">Payment Settings</h3>
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-5 flex justify-between items-center">
-                    <div className="flex items-center gap-4">
-                        <div className="bg-blue-100 p-3 rounded-lg">
-                            <span className="material-symbols-outlined text-blue-600">account_balance</span>
+                        <div className="flex justify-end pt-2">
+                            <button
+                                type="submit"
+                                className="bg-primary text-white py-2 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm"
+                            >
+                                Update Password
+                            </button>
                         </div>
-                        <div>
-                            <p className="font-bold text-slate-900">Commercial Bank</p>
-                            <p className="text-sm text-slate-500">Account No: 123456789</p>
+                    </form>
+                </section>
+
+                {/* Notification Preferences Section */}
+                <section className="space-y-4">
+                    <div className="flex items-center gap-2 px-1">
+                        <span className="material-symbols-outlined text-primary text-lg">notifications_active</span>
+                        <h2 className="text-lg font-bold text-slate-900">Notification Preferences</h2>
+                    </div>
+
+                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                        {notifications.map((notif, idx) => (
+                            <div
+                                key={idx}
+                                className={`p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 last:border-b-0`}
+                            >
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-medium text-slate-900">{notif.title}</span>
+                                    <span className="text-xs text-slate-500">{notif.description}</span>
+                                </div>
+                                <div className="flex gap-4">
+                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                            defaultChecked={notif.email}
+                                        />
+                                        <span className="text-xs font-medium text-slate-600">Email</span>
+                                    </label>
+                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0"
+                                            defaultChecked={notif.sms}
+                                        />
+                                        <span className="text-xs font-medium text-slate-600">SMS</span>
+                                    </label>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                {/* Payment Settings Section */}
+                <section className="space-y-4">
+                    <div className="flex items-center gap-2 px-1">
+                        <span className="material-symbols-outlined text-primary text-lg">account_balance</span>
+                        <h2 className="text-lg font-bold text-slate-900">Payment Settings</h2>
+                    </div>
+
+                    <div className="bg-white rounded-xl border border-slate-200 p-6">
+                        <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-blue-100 p-2 rounded-lg">
+                                    <span className="material-symbols-outlined text-blue-600 text-2xl">account_balance</span>
+                                </div>
+                                <div>
+                                    <p className="font-medium text-slate-900">Commercial Bank</p>
+                                    <p className="text-xs text-slate-500">Account No: 123456789</p>
+                                </div>
+                            </div>
+                            <button className="text-primary text-sm font-medium hover:text-primary/80 px-3 py-1 rounded-md hover:bg-primary/5 transition-colors">
+                                Edit
+                            </button>
                         </div>
                     </div>
-                    <button className="text-primary text-sm font-bold hover:text-primary/80">Edit</button>
-                </div>
-            </div>
+                </section>
 
-            {/* Danger Zone */}
-            <div className="bg-white rounded-2xl shadow-sm border border-red-300 p-8">
-                <h3 className="text-xl font-bold text-red-600 mb-6">Danger Zone</h3>
-                <div className="flex flex-col gap-3">
-                    <p className="text-slate-600 text-sm">
-                        Deleting your owner account will remove all properties, bookings, and payment data.
-                        This action cannot be undone.
-                    </p>
-                    <button className="px-8 py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-colors w-fit">
-                        Delete Account
-                    </button>
-                </div>
+                {/* Danger Zone Section */}
+                <section className="space-y-4">
+                    <div className="flex items-center gap-2 px-1">
+                        <span className="material-symbols-outlined text-red-500 text-lg">warning</span>
+                        <h2 className="text-lg font-bold text-red-600">Danger Zone</h2>
+                    </div>
+
+                    <div className="bg-white rounded-xl border border-red-200 p-6">
+                        <div className="flex flex-col gap-4">
+                            <p className="text-sm text-slate-600">
+                                Deleting your owner account will remove all properties, bookings, and payment data.
+                                This action cannot be undone.
+                            </p>
+                            <div>
+                                <button className="bg-red-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-red-700 transition-colors text-sm">
+                                    Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
-        </main>
+        </div>
     );
 };
 
