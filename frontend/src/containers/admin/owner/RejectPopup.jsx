@@ -44,7 +44,7 @@ const RejectPopup = ({ request, onClose, onConfirm }) => {
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={buildPhotoUrl(request?.photo?.filename, "user_photo")}
+                                src={buildPhotoUrl(request?.photo?.filename, "user_photo", request?.first_name)}
                                 alt={`${request?.first_name} ${request?.last_name || ''}`}
                                 className="w-full h-full object-cover"
                             />

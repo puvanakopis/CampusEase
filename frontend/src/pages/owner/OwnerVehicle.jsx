@@ -11,11 +11,10 @@ import ViewVehiclePopup from "../../containers/owner/vehicle/ViewVehiclePopup";
 import DeleteVehiclePopup from "../../containers/owner/vehicle/DeleteVehiclePopup";
 import LoadingSpinner from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
+import { OWNER_ITEMS_PER_PAGE } from "../../constants/pagination";
 
 import { VehicleContext } from "../../context/VehicleContext";
 import { AuthContext } from "../../context/AuthContext";
-
-const ITEMS_PER_PAGE = 5;
 
 const OwnerVehicle = () => {
     const {
@@ -90,11 +89,11 @@ const OwnerVehicle = () => {
     };
 
     const currentList = getCurrentList();
-    const totalPages = Math.ceil(currentList.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(currentList.length / OWNER_ITEMS_PER_PAGE);
 
     const paginatedList = useMemo(() => {
-        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-        const endIndex = startIndex + ITEMS_PER_PAGE;
+        const startIndex = (currentPage - 1) * OWNER_ITEMS_PER_PAGE;
+        const endIndex = startIndex + OWNER_ITEMS_PER_PAGE;
         return currentList.slice(startIndex, endIndex);
     }, [currentList, currentPage]);
 
@@ -316,22 +315,128 @@ const OwnerVehicle = () => {
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
             {/* Tab Content */}
+
+            {activeTab === "all" && (
+                <>
+                    <VehicleTable
+                        length={allList.length}
+                        vehicles={paginatedList}
+                        heading="All Vehicles"
+                        onView={handleViewVehicle}
+                        onEdit={handleEditClick}
+                        onDelete={handleDeleteClick}
+                        onToggleAvailability={handleToggleAvailability}
+                        showEditDelete={true}
+                    />
+
+                    {allList.length > OWNER_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={allList.length}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName="vehicles"
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab === "available" && (
+                <>
+                    <VehicleTable
+                        length={availableList.length}
+                        vehicles={paginatedList}
+                        heading="Available Vehicles"
+                        onView={handleViewVehicle}
+                        onEdit={handleEditClick}
+                        onDelete={handleDeleteClick}
+                        onToggleAvailability={handleToggleAvailability}
+                        showEditDelete={true}
+                    />
+
+                    {availableList.length > OWNER_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={availableList.length}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName="available vehicles"
+                        />
+                    )}
+                </>
+            )}
+
             {activeTab === "pending" && (
                 <>
                     <PendingVehicleTable
+                        length={pendingList.length}
                         vehicles={paginatedList}
                         onView={handleViewVehicle}
                         onEdit={handleEditClick}
                         onDelete={handleDeleteClick}
                     />
-                    {pendingList.length > ITEMS_PER_PAGE && (
+                    {pendingList.length > OWNER_ITEMS_PER_PAGE && (
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}
                             totalItems={pendingList.length}
-                            itemsPerPage={ITEMS_PER_PAGE}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
                             onPageChange={handlePageChange}
                             itemName={getItemName()}
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab === "booked" && (
+                <>
+                    <VehicleTable
+                        length={bookedList.length}
+                        vehicles={paginatedList}
+                        heading="Booked Vehicles"
+                        onView={handleViewVehicle}
+                        onEdit={handleEditClick}
+                        onDelete={handleDeleteClick}
+                        onToggleAvailability={handleToggleAvailability}
+                        showEditDelete={true}
+                    />
+
+                    {bookedList.length > OWNER_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={bookedList.length}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName="booked vehicles"
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab === "unavailable" && (
+                <>
+                    <VehicleTable
+                        length={unavailableList.length}
+                        vehicles={paginatedList}
+                        heading="Unavailable Vehicles"
+                        onView={handleViewVehicle}
+                        onEdit={handleEditClick}
+                        onDelete={handleDeleteClick}
+                        onToggleAvailability={handleToggleAvailability}
+                        showEditDelete={true}
+                    />
+
+                    {unavailableList.length > OWNER_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={unavailableList.length}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName="unavailable vehicles"
                         />
                     )}
                 </>
@@ -340,58 +445,24 @@ const OwnerVehicle = () => {
             {activeTab === "rejected" && (
                 <>
                     <RejectedVehicleTable
+                        length={rejectedList.length}
                         vehicles={paginatedList}
                         onView={handleViewVehicle}
                         onEditBeforeResubmit={handleEditBeforeResubmit}
                         onDelete={handleDeleteClick}
                     />
-                    {rejectedList.length > ITEMS_PER_PAGE && (
+                    {rejectedList.length > OWNER_ITEMS_PER_PAGE && (
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}
                             totalItems={rejectedList.length}
-                            itemsPerPage={ITEMS_PER_PAGE}
+                            itemsPerPage={OWNER_ITEMS_PER_PAGE}
                             onPageChange={handlePageChange}
                             itemName={getItemName()}
                         />
                     )}
                 </>
             )}
-
-            {(activeTab === "all" ||
-                activeTab === "available" ||
-                activeTab === "booked" ||
-                activeTab === "unavailable") && (
-                    <>
-                        <VehicleTable
-                            vehicles={paginatedList}
-                            heading={
-                                activeTab === "available"
-                                    ? "Available Vehicles"
-                                    : activeTab === "booked"
-                                        ? "Booked Vehicles"
-                                        : activeTab === "unavailable"
-                                            ? "Unavailable Vehicles"
-                                            : "All Vehicles"
-                            }
-                            onView={handleViewVehicle}
-                            onEdit={handleEditClick}
-                            onDelete={handleDeleteClick}
-                            onToggleAvailability={handleToggleAvailability}
-                            showEditDelete={true}
-                        />
-                        {currentList.length > ITEMS_PER_PAGE && (
-                            <Pagination
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                totalItems={currentList.length}
-                                itemsPerPage={ITEMS_PER_PAGE}
-                                onPageChange={handlePageChange}
-                                itemName={getItemName()}
-                            />
-                        )}
-                    </>
-                )}
         </main>
     );
 };

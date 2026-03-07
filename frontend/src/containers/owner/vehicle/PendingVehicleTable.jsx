@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const PendingVehicleTable = ({ vehicles, onView, onEdit, onDelete }) => {
+const PendingVehicleTable = ({ vehicles, onView, onEdit, onDelete, length }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [filterType, setFilterType] = useState("All");
 
@@ -34,7 +34,7 @@ const PendingVehicleTable = ({ vehicles, onView, onEdit, onDelete }) => {
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Pending Vehicles ({filteredVehicles.length})
+                    Pending Vehicles ({length})
                 </h3>
                 <div className="flex items-center gap-3 flex-wrap">
                     {/* Search */}

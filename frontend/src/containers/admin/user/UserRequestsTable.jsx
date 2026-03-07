@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const UserRequestsTable = ({
+    length,
     userRequests,
     onViewRequest,
     onApproveRequest,
@@ -68,7 +69,7 @@ const UserRequestsTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    User Registration Requests ({filteredRequests.length})
+                    User Registration Requests ({length})
                 </h3>
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                     {/* Role Filter */}
@@ -117,7 +118,7 @@ const UserRequestsTable = ({
                                     <div className="flex items-start gap-3">
                                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={buildPhotoUrl(request.photo?.filename, "user_photo")}
+                                                src={buildPhotoUrl(request.photo?.filename, "user_photo", request.first_name)}
                                                 alt={`${request.first_name} ${request.last_name || ''}`}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {

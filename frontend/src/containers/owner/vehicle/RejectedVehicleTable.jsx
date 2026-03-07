@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const RejectedVehicleTable = ({
+    length,
     vehicles,
     onView,
     onEditBeforeResubmit,
@@ -39,7 +40,7 @@ const RejectedVehicleTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Rejected Vehicles ({filteredVehicles.length})
+                    Rejected Vehicles ({length})
                 </h3>
                 <div className="flex items-center gap-3 flex-wrap">
                     {/* Search */}

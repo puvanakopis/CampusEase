@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import { UserContext } from "../../context/UserContext";
 import Heading from "../../containers/admin/common/Heading";
 import StatsCards from "../../containers/admin/common/StatsCards";
@@ -8,6 +8,8 @@ import UserRequestsTable from "../../containers/admin/user/UserRequestsTable";
 import ViewUserPopup from "../../containers/admin/user/ViewUserPopup";
 import StatusChangePopup from "../../containers/admin/user/StatusChangePopup";
 import RejectPopup from "../../containers/admin/user/RejectPopup";
+import Pagination from "../../components/common/Pagination";
+import { ADMIN_ITEMS_PER_PAGE } from "../../constants/pagination";
 import toast from "react-hot-toast";
 
 const AdminUserManagement = () => {
@@ -16,13 +18,21 @@ const AdminUserManagement = () => {
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [activeTab, setActiveTab] = useState("all");
+    const [currentPage, setCurrentPage] = useState(1);
     const [showStatusPopup, setShowStatusPopup] = useState(false);
     const [userToChangeStatus, setUserToChangeStatus] = useState(null);
     const [showRejectPopup, setShowRejectPopup] = useState(false);
     const [requestToReject, setRequestToReject] = useState(null);
 
-    // ------------------- FILTERS -------------------
+    useEffect(() => {
+        fetchUsers();
+    }, []);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeTab]);
+
+    // ------------------- FILTERS -------------------
     const allUsers = users;
 
     const activeUsers = users.filter(
@@ -49,8 +59,61 @@ const AdminUserManagement = () => {
         (u) => u.role === "staff"
     );
 
-    // ------------------- TABS -------------------
+    // Get current list based on active tab
+    const getCurrentList = () => {
+        switch (activeTab) {
+            case "Active":
+                return activeUsers;
+            case "Inactive":
+                return inactiveUsers;
+            case "Pending Approval":
+                return pendingUsers;
+            case "Declined Approval":
+                return declinedUsers;
+            case "students":
+                return studentUsers;
+            case "staff":
+                return staffUsers;
+            default:
+                return allUsers;
+        }
+    };
 
+    const currentList = getCurrentList();
+    const totalPages = Math.ceil(currentList.length / ADMIN_ITEMS_PER_PAGE);
+
+    const paginatedList = useMemo(() => {
+        const startIndex = (currentPage - 1) * ADMIN_ITEMS_PER_PAGE;
+        const endIndex = startIndex + ADMIN_ITEMS_PER_PAGE;
+        return currentList.slice(startIndex, endIndex);
+    }, [currentList, currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Get item name for pagination based on active tab
+    const getItemName = () => {
+        switch (activeTab) {
+            case "Active":
+                return "active users";
+            case "Inactive":
+                return "inactive users";
+            case "Pending Approval":
+                return "pending users";
+            case "Declined Approval":
+                return "declined users";
+            case "students":
+                return "students";
+            case "staff":
+                return "staff";
+            default:
+                return "users";
+        }
+    };
+
+    // ------------------- TABS -------------------
     const tabs = [
         {
             id: "all",
@@ -90,7 +153,6 @@ const AdminUserManagement = () => {
     ];
 
     // ------------------- STATS -------------------
-
     const stats = [
         {
             label: "Total Users",
@@ -115,7 +177,6 @@ const AdminUserManagement = () => {
     ];
 
     // ------------------- ACTION HANDLERS -------------------
-
     const handleViewUser = (user) => {
         setSelectedUser(user);
         setShowViewPopup(true);
@@ -194,10 +255,6 @@ const AdminUserManagement = () => {
         }
     };
 
-    useEffect(() => {
-        fetchUsers();
-    }, []);
-
     if (loading && users.length === 0) {
         return (
             <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
@@ -213,28 +270,8 @@ const AdminUserManagement = () => {
         );
     }
 
-    const getDisplayUsers = () => {
-        switch (activeTab) {
-            case "Active":
-                return activeUsers;
-            case "Inactive":
-                return inactiveUsers;
-            case "Pending Approval":
-                return pendingUsers;
-            case "Declined Approval":
-                return declinedUsers;
-            case "students":
-                return studentUsers;
-            case "staff":
-                return staffUsers;
-            default:
-                return allUsers;
-        }
-    };
-
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-
             {showViewPopup && selectedUser && (
                 <ViewUserPopup
                     user={selectedUser}
@@ -283,23 +320,166 @@ const AdminUserManagement = () => {
                 onTabChange={setActiveTab}
             />
 
-            {activeTab === "Pending Approval" ? (
-                <UserRequestsTable
-                    userRequests={pendingUsers}
-                    onViewRequest={handleViewUser}
-                    onApproveRequest={handleApproveRequest}
-                    onRejectRequest={handleRejectRequest}
-                />
-            ) : (
-                <UserTable
-                    title={tabs.find(t => t.id === activeTab)?.label + " Users" || "All Users"}
-                    users={getDisplayUsers()}
-                    onView={handleViewUser}
-                    onToggleStatus={handleToggleUserStatus}
-                    isAdmin={true}
-                />
+
+            {activeTab == "all" && (
+                <>
+                    <UserTable
+                        length={users.length}
+                        title={"All Users"}
+                        users={paginatedList}
+                        onView={handleViewUser}
+                        onToggleStatus={handleToggleUserStatus}
+                        isAdmin={true}
+                    />
+                    {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={currentList.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
             )}
 
+            {activeTab == "Active" && (
+                <>
+                    <UserTable
+                        length={activeUsers.length}
+                        title={"Active Users"}
+                        users={paginatedList}
+                        onView={handleViewUser}
+                        onToggleStatus={handleToggleUserStatus}
+                        isAdmin={true}
+                    />
+                    {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={currentList.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab == "Inactive" && (
+                <>
+                    <UserTable
+                        length={inactiveUsers.length}
+                        title={"Inactive Users"}
+                        users={paginatedList}
+                        onView={handleViewUser}
+                        onToggleStatus={handleToggleUserStatus}
+                        isAdmin={true}
+                    />
+                    {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={currentList.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab === "Pending Approval" && (
+                <>
+                    <UserRequestsTable
+                        length={pendingUsers.length}
+                        userRequests={paginatedList}
+                        onViewRequest={handleViewUser}
+                        onApproveRequest={handleApproveRequest}
+                        onRejectRequest={handleRejectRequest}
+                    />
+                    {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={pendingUsers.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab == "Declined Approval" && (
+                <>
+                    <UserTable
+                        length={declinedUsers.length}
+                        title={"Declined Users"}
+                        users={paginatedList}
+                        onView={handleViewUser}
+                        onToggleStatus={handleToggleUserStatus}
+                        isAdmin={true}
+                    />
+                    {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={currentList.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
+            )}
+
+            {activeTab == "students" && (
+                <>
+                    <UserTable
+                        length={studentUsers.length}
+                        title={"Student Users"}
+                        users={paginatedList}
+                        onView={handleViewUser}
+                        onToggleStatus={handleToggleUserStatus}
+                        isAdmin={true}
+                    />
+                    {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={currentList.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
+            )}
+      
+            {activeTab == "staff" && (
+                <>
+                    <UserTable
+                        length={staffUsers.length}
+                        title={"Staff Users"}
+                        users={paginatedList}
+                        onView={handleViewUser}
+                        onToggleStatus={handleToggleUserStatus}
+                        isAdmin={true}
+                    />
+                    {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={currentList.length}
+                            itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                            onPageChange={handlePageChange}
+                            itemName={getItemName()}
+                        />
+                    )}
+                </>
+            )}
         </main>
     );
 };

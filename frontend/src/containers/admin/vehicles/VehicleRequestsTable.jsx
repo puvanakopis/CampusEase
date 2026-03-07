@@ -2,7 +2,8 @@ import React, { useState, useMemo } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const VehicleRequestsTable = ({
-    vehicleRequests,
+    length,
+    requestVehicles,
     onViewRequest,
     onApproveRequest,
     onRejectRequest
@@ -10,8 +11,8 @@ const VehicleRequestsTable = ({
     const [searchQuery, setSearchQuery] = useState("");
 
     const filteredRequests = useMemo(() => {
-        if (!searchQuery) return vehicleRequests;
-        return vehicleRequests.filter((request) => {
+        if (!searchQuery) return requestVehicles;
+        return requestVehicles.filter((request) => {
             const nameMatch = request.name?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
             const ownerNameMatch = request.owner?.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 request.owner?.last_name?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
@@ -19,7 +20,7 @@ const VehicleRequestsTable = ({
             const modelMatch = request.model?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
             return nameMatch || ownerNameMatch || brandMatch || modelMatch;
         });
-    }, [searchQuery, vehicleRequests]);
+    }, [searchQuery, requestVehicles]);
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
@@ -61,7 +62,7 @@ const VehicleRequestsTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    Vehicle Requests ({filteredRequests.length})
+                    Vehicle Requests ({length})
                 </h3>
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                     {/* Search */}
