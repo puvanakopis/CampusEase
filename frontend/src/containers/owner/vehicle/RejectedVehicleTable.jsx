@@ -8,20 +8,21 @@ const RejectedVehicleTable = ({
     onDelete,
 }) => {
     const [searchQuery, setSearchQuery] = useState("");
+    const [filterType, setFilterType] = useState("All");
 
     const filteredVehicles = useMemo(() => {
-        if (!searchQuery.trim()) return vehicles;
-
         return vehicles.filter((item) => {
-            const searchLower = searchQuery.toLowerCase();
-            return (
-                item.name.toLowerCase().includes(searchLower) ||
-                item.brand?.toLowerCase().includes(searchLower) ||
-                item.model?.toLowerCase().includes(searchLower) ||
-                item.reject_reason?.toLowerCase().includes(searchLower)
-            );
+            const matchesSearch = !searchQuery.trim() ||
+                item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.model?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.reject_reason?.toLowerCase().includes(searchQuery.toLowerCase());
+
+            const matchesType = filterType === "All" || item.vehicle_type === filterType.toLowerCase();
+
+            return matchesSearch && matchesType;
         });
-    }, [vehicles, searchQuery]);
+    }, [vehicles, searchQuery, filterType]);
 
     const formatAddress = (address) => {
         if (!address) return "Location not specified";
@@ -40,7 +41,7 @@ const RejectedVehicleTable = ({
                 <h3 className="text-lg font-bold text-slate-900">
                     Rejected Vehicles ({filteredVehicles.length})
                 </h3>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
                     {/* Search */}
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
@@ -54,6 +55,21 @@ const RejectedVehicleTable = ({
                             className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
+
+                    {/* Type Filter */}
+                    <select
+                        value={filterType}
+                        onChange={(e) => setFilterType(e.target.value)}
+                        className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                    >
+                        <option value="All">Type: All</option>
+                        <option value="car">Car</option>
+                        <option value="van">Van</option>
+                        <option value="bike">Bike</option>
+                        <option value="three_wheel">Three Wheel</option>
+                        <option value="bus">Bus</option>
+                        <option value="other">Other</option>
+                    </select>
                 </div>
             </div>
 
@@ -93,6 +109,9 @@ const RejectedVehicleTable = ({
                                                 }
                                                 alt={vehicle.name}
                                                 className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    e.target.src = "https://via.placeholder.com/100x100?text=Error";
+                                                }}
                                             />
                                         </div>
                                         <div>
@@ -161,13 +180,17 @@ const RejectedVehicleTable = ({
                                 <td colSpan="5" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
                                         <span className="material-symbols-outlined text-4xl mb-2">
-                                            {searchQuery ? "search_off" : "check_circle"}
+                                            {searchQuery || filterType !== "All" ? "search_off" : "check_circle"}
                                         </span>
                                         <p className="text-sm">
-                                            {searchQuery ? "No results match your search" : "No rejected vehicles"}
+                                            {searchQuery || filterType !== "All"
+                                                ? "No vehicles match your filters"
+                                                : "No rejected vehicles"}
                                         </p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            {searchQuery ? "Try adjusting your search terms" : "All submissions have been approved"}
+                                            {searchQuery || filterType !== "All"
+                                                ? "Try adjusting search or filters"
+                                                : "All submissions have been approved"}
                                         </p>
                                     </div>
                                 </td>

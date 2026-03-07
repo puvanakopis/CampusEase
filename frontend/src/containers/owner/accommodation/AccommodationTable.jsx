@@ -88,18 +88,20 @@ const AccommodationTable = ({
                     </select>
 
                     {/* Status Filter */}
-                    <select
-                        value={filterStatus}
-                        onChange={(e) => setFilterStatus(e.target.value)}
-                        className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                    >
-                        <option value="All">Status: All</option>
-                        <option value="pending">Pending</option>
-                        <option value="available">Available</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="booked">Booked</option>
-                        <option value="unavailable">Unavailable</option>
-                    </select>
+                    {heading === "All Accommodations" && (
+                        <select
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value)}
+                            className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        >
+                            <option value="All">Status: All</option>
+                            <option value="pending">Pending</option>
+                            <option value="available">Available</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="booked">Booked</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+                    )}
                 </div>
             </div>
 

@@ -1,24 +1,22 @@
 import React, { useState, useMemo } from "react";
-import Pagination from "../common/Pagination";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete }) => {
-    const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
-    const itemsPerPage = 10;
+    const [filterType, setFilterType] = useState("All"); 
 
     const filteredAccommodations = useMemo(() => {
-        if (!searchQuery.trim()) return accommodations;
-        
         return accommodations.filter((item) => {
-            const searchLower = searchQuery.toLowerCase();
-            return (
-                item.name.toLowerCase().includes(searchLower) ||
-                item.address?.street?.toLowerCase().includes(searchLower) ||
-                item.accommodation_type?.toLowerCase().includes(searchLower)
-            );
+            const matchesSearch = !searchQuery.trim() ||
+                item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.address?.street?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.accommodation_type?.toLowerCase().includes(searchQuery.toLowerCase());
+
+            const matchesType = filterType === "All" || item.accommodation_type?.toLowerCase() === filterType.toLowerCase();
+
+            return matchesSearch && matchesType;
         });
-    }, [accommodations, searchQuery]);
+    }, [accommodations, searchQuery, filterType]);
 
     const formatAddress = (address) => {
         if (!address) return "Location not specified";
@@ -30,17 +28,6 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
         return new Date(dateString).toLocaleDateString();
     };
 
-    // Pagination logic
-    const totalPages = Math.ceil(filteredAccommodations.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedAccommodations = filteredAccommodations.slice(startIndex, endIndex);
-
-    const handlePageChange = (page) => {
-        if (page < 1 || page > totalPages) return;
-        setCurrentPage(page);
-    };
-
     return (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Header */}
@@ -48,7 +35,8 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                 <h3 className="text-lg font-bold text-slate-900">
                     Pending Accommodations ({filteredAccommodations.length})
                 </h3>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
+                    {/* Search */}
                     <div className="relative">
                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
                             search
@@ -61,6 +49,20 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                             className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
+
+                    {/* Type Filter */}
+                    <select
+                        value={filterType}
+                        onChange={(e) => setFilterType(e.target.value)}
+                        className="bg-white border border-slate-200 rounded-lg text-sm py-2 px-4 text-slate-900 focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                    >
+                        <option value="All">Type: All</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="house">House</option>
+                        <option value="hostel">Hostel</option>
+                        <option value="villa">Villa</option>
+                        <option value="other">Other</option>
+                    </select>
                 </div>
             </div>
 
@@ -88,13 +90,13 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                     </thead>
 
                     <tbody className="divide-y divide-slate-100">
-                        {paginatedAccommodations.map((accommodation) => (
+                        {filteredAccommodations.map((accommodation) => (
                             <tr key={accommodation._id} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={accommodation.images?.[0]?.filename 
+                                                src={accommodation.images?.[0]?.filename
                                                     ? buildPhotoUrl(accommodation.images[0].filename, "accommodation")
                                                     : "https://via.placeholder.com/100x100?text=No+Image"
                                                 }
@@ -171,13 +173,17 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                                 <td colSpan="5" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
                                         <span className="material-symbols-outlined text-4xl mb-2">
-                                            {searchQuery ? "search_off" : "pending_actions"}
+                                            {searchQuery || filterType !== "All" ? "search_off" : "pending_actions"}
                                         </span>
                                         <p className="text-sm">
-                                            {searchQuery ? "No results match your search" : "No pending accommodations"}
+                                            {searchQuery || filterType !== "All"
+                                                ? "No accommodations match your filters"
+                                                : "No pending accommodations"}
                                         </p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            {searchQuery ? "Try adjusting your search terms" : "All submissions have been processed"}
+                                            {searchQuery || filterType !== "All"
+                                                ? "Try adjusting search or filters"
+                                                : "All submissions have been processed"}
                                         </p>
                                     </div>
                                 </td>
@@ -186,17 +192,6 @@ const PendingAccommodationTable = ({ accommodations, onView, onEdit, onDelete })
                     </tbody>
                 </table>
             </div>
-
-            {/* Pagination */}
-            {filteredAccommodations.length > itemsPerPage && (
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                    currentCount={paginatedAccommodations.length}
-                    totalCount={filteredAccommodations.length}
-                />
-            )}
         </div>
     );
 };

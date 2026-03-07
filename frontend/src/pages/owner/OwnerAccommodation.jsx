@@ -241,12 +241,10 @@ const OwnerAccommodation = () => {
         }
     };
 
-    // ------------ Loading ------------
     if (accoLoading && ownerAccommodations.length === 0) {
         return <LoadingSpinner />;
     }
 
-    // ------------ Render ------------
     return (
         <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto">
             {/* Popups */}
