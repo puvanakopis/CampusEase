@@ -7,7 +7,7 @@ import { VehicleProvider } from "./context/VehicleContext";
 import { OwnerProvider } from "./context/OwnerContext";
 import { UserProvider } from "./context/UserContext";
 import { SaveItemProvider } from "./context/SaveItemContext";
-import { AccommodationBookingProvider } from "./context/AccommodationBookingContext";
+import { BookingProvider } from "./context/BookingContext";
 import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -19,9 +19,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <OwnerProvider>
               <UserProvider>
                 <SaveItemProvider>
-                  <AccommodationBookingProvider>
+                  <BookingProvider>
                     <App />
-                  </AccommodationBookingProvider >
+                  </BookingProvider >
                 </SaveItemProvider >
               </UserProvider >
             </OwnerProvider >
