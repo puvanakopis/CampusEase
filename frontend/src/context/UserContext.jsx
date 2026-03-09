@@ -33,20 +33,17 @@ export const UserProvider = ({ children }) => {
 
     // ------------------ GET USER BY ID ------------------
     const getUserById = async (id) => {
-        const toastId = toast.loading("Loading user...");
         try {
             const res = await userApi.getUserById(id);
 
             if (!res.success) {
-                toast.error(res.message, { id: toastId });
+                toast.error(res.message);
                 throw new Error(res.message);
             }
-
-            toast.success("User loaded", { id: toastId });
             return res.data;
 
         } catch (err) {
-            toast.error(err.message || "Failed to load user", { id: toastId });
+            toast.error(err.message || "Failed to load user");
             throw err;
         }
     };

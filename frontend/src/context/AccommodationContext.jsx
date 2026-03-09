@@ -85,19 +85,16 @@ export const AccommodationProvider = ({ children }) => {
 
   // ------------------ GET BY ID ------------------
   const getAccommodationById = async (id) => {
-    const toastId = toast.loading("Loading accommodation...");
     try {
       const res = await accommodationApi.getById(id);
 
       if (!res.success) {
-        toast.error(res.message, { id: toastId });
+        toast.error(res.message);
         throw new Error(res.message);
       }
-
-      toast.success("Loaded", { id: toastId });
       return res.data;
     } catch (err) {
-      toast.error(err.message || "Failed to load accommodation", { id: toastId });
+      toast.error(err.message || "Failed to load accommodation");
       throw err;
     }
   };

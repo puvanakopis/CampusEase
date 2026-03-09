@@ -144,18 +144,6 @@ const SecureCheckout = () => {
                             </div>
                         </div>
 
-                        {/* Save Card Checkbox */}
-                        <div className="flex items-center gap-2">
-                            <input
-                                className="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4"
-                                id="save_card"
-                                type="checkbox"
-                            />
-                            <label className="text-xs text-slate-600" htmlFor="save_card">
-                                Save this card for future SUSL bookings
-                            </label>
-                        </div>
-
                         {/* Pay Button */}
                         <button
                             className="w-full h-14 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center justify-center gap-2"

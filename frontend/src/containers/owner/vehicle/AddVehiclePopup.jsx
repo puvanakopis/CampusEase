@@ -30,11 +30,13 @@ const AddVehiclePopup = ({ onClose, onSave }) => {
             susl_main_gate: "",
             pambahinna_junction: ""
         },
-        year: ""
+        year: "",
+        amenities: [] // Added amenities array
     });
 
     const [step, setStep] = useState(1);
     const [imageFiles, setImageFiles] = useState([]);
+    const [amenityInput, setAmenityInput] = useState(""); // Added amenity input state
 
     const vehicleTypes = [
         { value: "car", label: "Car" },
@@ -57,6 +59,24 @@ const AddVehiclePopup = ({ onClose, onSave }) => {
         { value: "manual", label: "Manual" },
         { value: "automatic", label: "Automatic" },
         { value: "semi_automatic", label: "Semi-Automatic" }
+    ];
+
+    const popularAmenities = [
+        "GPS Navigation",
+        "Bluetooth",
+        "USB Charger",
+        "Child Seat",
+        "Roof Rack",
+        "Dash Cam",
+        "Rear Camera",
+        "Parking Sensors",
+        "Cruise Control",
+        "Push Button Start",
+        "Keyless Entry",
+        "Sunroof",
+        "Leather Seats",
+        "Heated Seats",
+        "Tinted Windows"
     ];
 
     const handleChange = (e) => {
@@ -98,8 +118,59 @@ const AddVehiclePopup = ({ onClose, onSave }) => {
         setImageFiles(prev => prev.filter((_, i) => i !== index));
     };
 
+    // New amenity handlers
+    const handleAddAmenity = () => {
+        if (amenityInput.trim() && !formData.amenities.includes(amenityInput.trim())) {
+            setFormData(prev => ({
+                ...prev,
+                amenities: [...prev.amenities, amenityInput.trim()]
+            }));
+            setAmenityInput("");
+        }
+    };
+
+    const handleRemoveAmenity = (amenity) => {
+        setFormData(prev => ({
+            ...prev,
+            amenities: prev.amenities.filter(a => a !== amenity)
+        }));
+    };
+
+    const handleSelectPopularAmenity = (amenity) => {
+        if (!formData.amenities.includes(amenity)) {
+            setFormData(prev => ({
+                ...prev,
+                amenities: [...prev.amenities, amenity]
+            }));
+        }
+    };
+
+    const handleNext = (e) => {
+        e.preventDefault();
+
+        const requiredFields = [
+            'name', 'brand', 'model', 'year', 'no_of_seats',
+            'registration_number', 'day_rent'
+        ];
+
+        const missingFields = requiredFields.filter(field => !formData[field]);
+
+        if (missingFields.length > 0) {
+            toast.error("Please fill in all required fields");
+            return;
+        }
+
+        setStep(2);
+    };
+
+    const handlePrevious = (e) => {
+        e.preventDefault();
+        setStep(1);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
         if (imageFiles.length === 0) {
             toast.error("Please upload at least one image");
             return;
@@ -134,7 +205,8 @@ const AddVehiclePopup = ({ onClose, onSave }) => {
                 susl_main_gate: formData.time_from_uni.susl_main_gate || null,
                 pambahinna_junction: formData.time_from_uni.pambahinna_junction || null
             },
-            status: "pending"
+            status: "pending",
+            amenities: formData.amenities // Added amenities to submission data
         };
 
         onSave({
@@ -258,17 +330,22 @@ const AddVehiclePopup = ({ onClose, onSave }) => {
                             ))}
                         </select>
                     </div>
-                    <div className="flex items-center">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                name="air_conditioning"
-                                checked={formData.air_conditioning}
-                                onChange={handleChange}
-                                className="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary"
-                            />
-                            <span className="text-sm font-medium text-slate-700">Air Conditioning</span>
-                        </label>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Air Conditioning</label>
+                        <select
+                            name="air_conditioning"
+                            value={formData.air_conditioning ? "true" : "false"}
+                            onChange={(e) => {
+                                setFormData(prev => ({
+                                    ...prev,
+                                    air_conditioning: e.target.value === "true"
+                                }));
+                            }}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                        >
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">Daily Rent (LKR) *</label>
@@ -445,6 +522,75 @@ const AddVehiclePopup = ({ onClose, onSave }) => {
                 </div>
             </div>
 
+            {/* Amenities Section - Added from EditVehiclePopup */}
+            <div className="p-3 bg-slate-50 rounded-lg">
+                <h4 className="font-bold text-slate-900 mb-3">Amenities</h4>
+
+                {/* Popular Amenities Quick Select */}
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Popular Amenities</label>
+                    <div className="flex flex-wrap gap-2">
+                        {popularAmenities.map(amenity => (
+                            <button
+                                key={amenity}
+                                type="button"
+                                onClick={() => handleSelectPopularAmenity(amenity)}
+                                className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${formData.amenities.includes(amenity)
+                                    ? 'bg-primary text-white border-primary'
+                                    : 'border-slate-300 text-slate-700 hover:border-primary hover:text-primary bg-white'
+                                    }`}
+                                disabled={formData.amenities.includes(amenity)}
+                            >
+                                {amenity}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Add Custom Amenity */}
+                <div className="mb-3">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Add Custom Amenity</label>
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={amenityInput}
+                            onChange={(e) => setAmenityInput(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddAmenity())}
+                            className="flex-1 px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            placeholder="e.g., WiFi, Music System, etc."
+                        />
+                        <button
+                            type="button"
+                            onClick={handleAddAmenity}
+                            className="border border-slate-200 text-slate-700 py-2 px-6 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm"
+                        >
+                            Add
+                        </button>
+                    </div>
+                </div>
+
+                {/* Selected Amenities */}
+                {formData.amenities.length > 0 && (
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">Selected Amenities</label>
+                        <div className="flex flex-wrap gap-2">
+                            {formData.amenities.map((amenity, index) => (
+                                <span key={index} className="inline-flex items-center gap-1 bg-white px-3 py-1.5 rounded-lg text-sm text-slate-700 border border-slate-200">
+                                    {amenity}
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveAmenity(amenity)}
+                                        className="text-slate-500 hover:text-slate-700"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">close</span>
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+
             {/* Images Section */}
             <div className="p-3 bg-slate-50 rounded-lg">
                 <h4 className="font-bold text-slate-900 mb-3">Vehicle Images *</h4>
@@ -546,7 +692,7 @@ const AddVehiclePopup = ({ onClose, onSave }) => {
                                 {step > 1 && (
                                     <button
                                         type="button"
-                                        onClick={() => setStep(step - 1)}
+                                        onClick={handlePrevious}
                                         className="border border-slate-200 text-slate-700 py-2 px-6 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm flex items-center gap-1"
                                     >
                                         <span className="material-symbols-outlined text-sm">arrow_back</span>
@@ -567,7 +713,7 @@ const AddVehiclePopup = ({ onClose, onSave }) => {
                                 {step < 2 ? (
                                     <button
                                         type="button"
-                                        onClick={() => setStep(step + 1)}
+                                        onClick={handleNext}
                                         className="bg-primary text-white py-2 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center gap-1"
                                     >
                                         Next

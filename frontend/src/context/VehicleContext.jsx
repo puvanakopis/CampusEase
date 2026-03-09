@@ -90,23 +90,17 @@ export const VehicleProvider = ({ children }) => {
 
     // ------------------ GET VEHICLE BY ID ------------------
     const getVehicleById = async (id) => {
-        const toastId = toast.loading("Loading vehicle...");
-
         try {
             const res = await vehicleApi.getById(id);
 
             if (!res.success) {
-                toast.error(res.message, { id: toastId });
+                toast.error(res.message);
                 throw new Error(res.message);
             }
 
-            toast.success("Vehicle loaded", { id: toastId });
-
             return res.data;
         } catch (err) {
-            toast.error(err.message || "Failed to load vehicle", {
-                id: toastId,
-            });
+            toast.error(err.message || "Failed to load vehicle");
             throw err;
         }
     };
