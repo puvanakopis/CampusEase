@@ -16,7 +16,7 @@ async def list_owners():
     return await get_all_owners()
 
 
-@router.get("/{owner_id}", dependencies=[Depends(role_required(["admin"]))])
+@router.get("/{owner_id}")
 async def get_owner(owner_id: str):
     return await get_owner_by_id(owner_id)
 

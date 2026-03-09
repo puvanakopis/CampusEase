@@ -1,7 +1,9 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from enum import Enum
+from app.schemas.accommodation_schema import AccommodationResponse
+from app.schemas.vehicle_schema import VehicleResponse
 
 
 class OwnerStatus(str, Enum):
@@ -30,6 +32,11 @@ class OwnerResponse(BaseModel):
     verified: Optional[bool] = None
     decline_reason: Optional[str] = None
     description: Optional[str] = None
+
+    # NEW RELATIONS
+    accommodations: Optional[List["AccommodationResponse"]] = []
+    vehicles: Optional[List["VehicleResponse"]] = []
+
     created_at: datetime
     last_updated: datetime
 
@@ -50,4 +57,3 @@ class OwnerUpdateRequest(BaseModel):
     decline_reason: Optional[str] = None
     description: Optional[str] = None
     last_updated: datetime = Field(default_factory=datetime.utcnow)
-    
