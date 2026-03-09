@@ -27,3 +27,15 @@ async def create_booking_endpoint(
 @router.get("/")
 async def get_all_bookings_endpoint():
     return await get_all_bookings()
+
+@router.get("/{acc_booking_id}")
+async def get_booking_endpoint(acc_booking_id: str):
+    return await get_booking_by_id(acc_booking_id)
+
+@router.get("/user/{user_id}", dependencies=[Depends(role_required(["owner", "admin"]))])
+async def get_bookings_by_user_endpoint(user_id: str):
+    return await get_bookings_by_user(user_id)
+
+@router.get("/owner/{owner_id}", dependencies=[Depends(role_required(["owner", "admin"]))])
+async def get_bookings_by_owner_endpoint(owner_id: str):
+    return await get_bookings_by_owner(owner_id)

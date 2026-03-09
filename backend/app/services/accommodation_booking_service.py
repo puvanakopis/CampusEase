@@ -44,3 +44,42 @@ async def get_all_bookings() -> dict:
         "data": bookings
     }
 
+
+async def get_booking_by_id(acc_booking_id: str) -> dict:
+    doc = await accommodations_booking_collection.find_one({"_id": acc_booking_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    booking_obj = AccommodationBookingResponse(**doc)
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": "Booking fetched successfully",
+        "data": booking_obj.dict(by_alias=True)
+    }
+
+
+async def get_bookings_by_user(user_id: str) -> dict:
+    bookings = []
+    cursor = accommodations_booking_collection.find({"user_id": user_id})
+    async for doc in cursor:
+        bookings.append(AccommodationBookingResponse(**doc).dict(by_alias=True))
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": f"Bookings for user {user_id} fetched successfully",
+        "data": bookings
+    }
+
+
+async def get_bookings_by_owner(owner_id: str) -> dict:
+    bookings = []
+    cursor = accommodations_booking_collection.find({"owner_id": owner_id})
+    async for doc in cursor:
+        bookings.append(AccommodationBookingResponse(**doc).dict(by_alias=True))
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": f"Bookings for owner {owner_id} fetched successfully",
+        "data": bookings
+    }
+
