@@ -39,3 +39,14 @@ async def get_bookings_by_user_endpoint(user_id: str):
 @router.get("/owner/{owner_id}", dependencies=[Depends(role_required(["owner", "admin"]))])
 async def get_bookings_by_owner_endpoint(owner_id: str):
     return await get_bookings_by_owner(owner_id)
+
+@router.patch("/{acc_booking_id}", dependencies=[Depends(role_required(["owner", "admin"]))])
+async def update_booking_endpoint(
+    acc_booking_id: str,
+    update_request: AccommodationBookingUpdateRequest
+):
+    return await update_booking(acc_booking_id, update_request)
+
+@router.delete("/{acc_booking_id}", dependencies=[Depends(role_required(["owner", "admin"]))])
+async def delete_booking_endpoint(acc_booking_id: str):
+    return await delete_booking(acc_booking_id)

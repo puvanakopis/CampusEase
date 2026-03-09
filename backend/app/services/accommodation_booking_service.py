@@ -83,3 +83,31 @@ async def get_bookings_by_owner(owner_id: str) -> dict:
         "data": bookings
     }
 
+
+async def update_booking(acc_booking_id: str, update_request: AccommodationBookingUpdateRequest) -> dict:
+    update_data = update_request.dict(exclude_unset=True)
+    update_data["last_updated"] = datetime.utcnow()
+
+    result = await accommodations_booking_collection.update_one({"_id": acc_booking_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Booking not found")
+
+    updated_doc = await accommodations_booking_collection.find_one({"_id": acc_booking_id})
+    booking_obj = AccommodationBookingResponse(**updated_doc)
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": "Booking updated successfully",
+        "data": booking_obj.dict(by_alias=True)
+    }
+
+
+async def delete_booking(acc_booking_id: str) -> dict:
+    result = await accommodations_booking_collection.delete_one({"_id": acc_booking_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    return {
+        "success": True,
+        "status_code": 200,
+        "message": "Booking deleted successfully"
+    }
