@@ -2,12 +2,12 @@ import { axiosAuth } from "./authService";
 
 export const bookingApi = {
     createBooking: async (payload) => {
-        const res = await axiosAuth.post("/booking", payload);
+        const res = await axiosAuth.post("/booking/", payload);
         return res.data;
     },
 
     getAll: async () => {
-        const res = await axiosAuth.get("/booking");
+        const res = await axiosAuth.get("/booking/");
         return res.data;
     },
 

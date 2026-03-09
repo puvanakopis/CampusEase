@@ -45,6 +45,7 @@ class BookingCreateRequest(BaseModel):
     end_date: datetime
     duration: int
     total_price: float
+    status: Optional[BookingStatus] = None
     payment: Optional[BookingPayment] = None
 
 

@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import PrimaryButton from '../../../components/common/PrimaryButton';
 import DatePicker from 'react-datepicker';
+import useNavigateTo from "../../../hooks/useNavigateTo";
+
 import 'react-datepicker/dist/react-datepicker.css';
 
 const BookingCard = ({ day_rent, rating, owner }) => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-    const [withDriver, setWithDriver] = useState(false);
-
+    const navigateTo = useNavigateTo();
     const currency = "LKR";
 
     const getTotalDays = () => {
         if (!startDate || !endDate) return 0;
         const diffTime = Math.abs(endDate - startDate);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays + 1; 
+        return diffDays + 1;
     };
 
     const calculateDuration = () => {
@@ -31,13 +32,9 @@ const BookingCard = ({ day_rent, rating, owner }) => {
         return days * day_rent;
     };
 
-    const calculateDriverFee = () => {
-        if (!withDriver) return 0;
-        const days = getTotalDays();
-        return days * 1500;
+    const handleBooking = () => {
+        navigateTo("/payment");
     };
-
-    const totalWithDriver = calculateTotal() + calculateDriverFee();
 
     return (
         <div className="lg:col-span-1">
@@ -104,29 +101,12 @@ const BookingCard = ({ day_rent, rating, owner }) => {
                             {calculateDuration()}
                         </div>
                     </div>
-
-                    {/* Driver Option */}
-                    <div className="p-3">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={withDriver}
-                                onChange={(e) => setWithDriver(e.target.checked)}
-                                className="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary"
-                            />
-                            <span className="text-sm font-medium text-slate-700">
-                                Hire driver (LKR 1,500/day)
-                            </span>
-                        </label>
-                        <p className="text-xs text-slate-500 mt-1 ml-6">
-                            Professional driver familiar with the area
-                        </p>
-                    </div>
                 </div>
 
                 {/* Booking Button */}
                 <PrimaryButton
                     disabled={!startDate || !endDate}
+                    onClick={handleBooking}
                     className="w-full py-3.5 text-lg mb-4"
                 >
                     Request Booking
@@ -142,13 +122,6 @@ const BookingCard = ({ day_rent, rating, owner }) => {
                         <span className="underline decoration-slate-300">Daily rate</span>
                         <span>{currency} {day_rent.toLocaleString()} × {getTotalDays()} days</span>
                     </div>
-
-                    {withDriver && getTotalDays() > 0 && (
-                        <div className="flex justify-between">
-                            <span className="underline decoration-slate-300">Driver fee</span>
-                            <span>{currency} 1,500 × {getTotalDays()} days</span>
-                        </div>
-                    )}
                 </div>
 
                 <div className="my-4 border-t border-slate-200"></div>
@@ -156,7 +129,7 @@ const BookingCard = ({ day_rent, rating, owner }) => {
                 {/* Total */}
                 <div className="flex justify-between text-base font-semibold text-slate-900">
                     <span>Total</span>
-                    <span>{currency} {(withDriver ? totalWithDriver : calculateTotal()).toLocaleString()}</span>
+                    <span>{currency} {calculateTotal().toLocaleString()}</span>
                 </div>
 
                 {/* Promotion */}

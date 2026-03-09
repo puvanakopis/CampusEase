@@ -117,6 +117,7 @@ const AccommodationDetails = () => {
 
                         <HostInfo owner={accommodationData.owner} />
                     </div>
+                    
 
                     <BookingCard
                         month_rent={accommodationData.month_rent}

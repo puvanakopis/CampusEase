@@ -4,10 +4,9 @@ import DatePicker from 'react-datepicker';
 import useNavigateTo from "../../../hooks/useNavigateTo";
 import 'react-datepicker/dist/react-datepicker.css';
 
-const BookingCard = ({ month_rent, rating, owner, available_users, total_users }) => {
+const BookingCard = ({ month_rent, rating, owner }) => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-    const [bookingUsers, setBookingUsers] = useState(1);
     const navigateTo = useNavigateTo();
     const currency = "LKR";
 
@@ -34,15 +33,14 @@ const BookingCard = ({ month_rent, rating, owner, available_users, total_users }
 
     const calculateTotal = () => {
         const months = getTotalMonths();
-
         if (months === 0) return 0;
-
-        return months * month_rent * bookingUsers;
+        return months * month_rent;
     };
 
     const handleBooking = () => {
-        navigateTo("/booking");
+        navigateTo("/payment");
     };
+
     return (
         <div className="lg:col-span-1">
             <div className="sticky top-28 bg-white border border-slate-200 rounded-xl shadow-sm p-6">
@@ -115,29 +113,6 @@ const BookingCard = ({ month_rent, rating, owner, available_users, total_users }
                         </div>
                     </div>
 
-                    {/* Tenant Selection */}
-                    <div className="p-3">
-                        <label className="block text-[10px] uppercase font-bold text-slate-800 tracking-wider">
-                            Tenants
-                        </label>
-
-                        <select
-                            value={bookingUsers}
-                            onChange={(e) => setBookingUsers(Number(e.target.value))}
-                            className="mt-1 w-full text-sm text-slate-600 border-none p-0 bg-transparent focus:outline-none cursor-pointer"
-                        >
-                            {Array.from({ length: available_users }, (_, i) => i + 1).map((num) => (
-                                <option key={num} value={num}>
-                                    {num} Tenant{num > 1 ? "s" : ""}
-                                </option>
-                            ))}
-                        </select>
-
-                        <div className="text-xs text-slate-500 mt-1">
-                            {available_users} of {total_users} spots available
-                        </div>
-                    </div>
-
                 </div>
 
                 <PrimaryButton
@@ -147,7 +122,6 @@ const BookingCard = ({ month_rent, rating, owner, available_users, total_users }
                 >
                     Request Booking
                 </PrimaryButton>
-
 
                 <p className="text-center text-xs text-slate-500 mb-6 font-medium">
                     Your request will be sent to {owner.first_name}
@@ -164,11 +138,6 @@ const BookingCard = ({ month_rent, rating, owner, available_users, total_users }
                     <div className="flex justify-between">
                         <span className="underline decoration-slate-300">Duration</span>
                         <span>{getTotalMonths()} months</span>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <span className="underline decoration-slate-300">Tenants</span>
-                        <span>{bookingUsers}</span>
                     </div>
 
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SecureCheckout from "../../containers/user/payment/SecureCheckout";
-import OrderSummary from "../../containers/user/payment/OrderSummary";
+import PaymentSummary from "../../containers/user/payment/PaymentSummary";
 import BookingSuccess from "../../containers/user/payment/BookingSuccess";
 
 const Payment = () => {
@@ -30,7 +30,7 @@ const Payment = () => {
                 </div>
 
                 <div className="lg:col-span-1">
-                    <OrderSummary onConfirm={handleConfirm} />
+                    <PaymentSummary onConfirm={handleConfirm} />
                 </div>
 
             </div>
