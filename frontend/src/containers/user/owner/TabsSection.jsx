@@ -1,127 +1,182 @@
 import React, { useState } from "react";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const accommodations = [
-    {
-        title: "Modern Student Annex - Wing A",
-        price: "LKR 18,000",
-        location: "Pambahinna Junction, Belihuloya",
-        features: [
-            { icon: "bed", label: "2 Beds" },
-            { icon: "shower", label: "Private Bath" },
-            { icon: "wifi", label: "Wifi" },
-        ],
-        badge: "Main Gate - 10 Min Walk",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB1Y1oFNQkG1We2L0MNF7Kt1-7KiMRzBb3t9JnjoNr3aWMa9dMbmCuFpLtHKOJFVMG5ez9Egv45yDa_K3aMKhzr_NAYiDgp0GVfDlTc_3BYnD36XT5gZrrAnpdJIMCSubQ43rnHSNjSgDGSpB9rKAA06iFl7ODaXHqcRJmZBIR2Mhf0GhndjcxGi9JUcPh4CY_tYYQCUyP03JuU9ybDvGtFLL2Ux7_NEwQljcYtm6XNbfeBx_7FIX4Okf85f4-L9scD8D-A1HwOZDQ",
-    },
-    {
-        title: "Deluxe Single Room - Wing B",
-        price: "LKR 12,500",
-        location: "Near SUSL Main Entrance, Belihuloya",
-        features: [
-            { icon: "person", label: "1 Student" },
-            { icon: "desk", label: "Study Desk" },
-            { icon: "bolt", label: "Utilities Incl." },
-        ],
-        badge: "Quiet Study Zone",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDCsA04Rw25lyomrpZ5y3d6TVjuP_85_gu75HhL6boGsnqDsYBENScpjg5UC-lO1Z6K8M1Qs31FqeOyF1sbq3Q-CIDnLs1AHM-mJrpI1b7shDgC1MZdmnsTEkTAhrtPCYLsP6AYbHUXwB-QkJX-8VDsvbS-kped1X-Pw-0dbpi29pJf7JUJeGyvuUiyj22x9on4KEhaYPH4xziXrY3kl8ypqgNqM97XgCLiSAZsZONozQq45Ihy1XMS7Z7w7qKtMvk_xf8t5Bqo64I",
-    },
-];
-
-const transportServices = [
-    {
-        title: "Premium Airport Shuttle",
-        price: "LKR 3,500",
-        description: "Direct service from SUSL to Colombo Airport",
-        features: [
-            { icon: "directions_bus", label: "12-Seater Van" },
-            { icon: "schedule", label: "24/7 Service" },
-            { icon: "luggage", label: "Baggage Incl." },
-        ],
-        badge: "Air-Conditioned",
-        image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80",
-    },
-    {
-        title: "Daily Local Transport",
-        price: "LKR 500",
-        description: "Regular service to nearby towns and facilities",
-        features: [
-            { icon: "directions_car", label: "4-Seater Car" },
-            { icon: "schedule", label: "Hourly Trips" },
-            { icon: "payments", label: "Cash/Card" },
-        ],
-        badge: "Scheduled Trips",
-        image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80",
-    },
-    // Add remaining transport cards similarly
-];
-
-const Card = ({ item }) => (
-    <div className="group bg-white rounded-xl overflow-hidden border border-slate-200 hover:border-primary/50 transition-all">
-        <div
-            className="h-48 bg-cover bg-center overflow-hidden"
-            style={{ backgroundImage: `url(${item.image})` }}
-        >
-            <div className="p-3">
-                <span className="bg-white/90 text-primary text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest">
-                    {item.badge}
-                </span>
-            </div>
-        </div>
-        <div className="p-5">
-            <div className="flex justify-between items-start mb-2">
-                <h4 className="font-bold text-lg leading-tight">{item.title}</h4>
-                <span className="text-primary font-black">{item.price}</span>
-            </div>
-            {item.description && (
-                <p className="text-sm text-slate-500 mb-4 line-clamp-1">{item.description}</p>
-            )}
-            {item.location && (
-                <p className="text-sm text-slate-500 mb-4 line-clamp-1">{item.location}</p>
-            )}
-            <div className="flex items-center gap-4 text-xs text-slate-600">
-                {item.features.map((f, i) => (
-                    <span key={i} className="flex items-center gap-1">
-                        <span className="material-symbols-outlined text-sm">{f.icon}</span> {f.label}
-                    </span>
-                ))}
-            </div>
-        </div>
-    </div>
-);
-
-const TabsSection = () => {
-    const [activeTab, setActiveTab] = useState("accommodations");
-
-    const items = activeTab === "accommodations" ? accommodations : transportServices;
+const AccommodationCard = ({ item }) => {
+    const image = buildPhotoUrl(item.images?.[0]?.filename, "accommodation", item.name);
 
     return (
-        <div className="lg:col-span-9 space-y-10">
-            <div className="flex border-b border-slate-200 mb-8 overflow-x-auto hide-scrollbar">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:border-primary/50 transition">
+            <div
+                className="h-48 bg-cover bg-center"
+                style={{ backgroundImage: `url(${image || "https://via.placeholder.com/400x300"})` }}
+            />
+
+            <div className="p-5">
+                <div className="flex justify-between items-start">
+                    <h3 className="font-bold text-lg">{item.name}</h3>
+                    <span className="text-primary font-bold">
+                        Rs {item.month_rent}
+                    </span>
+                </div>
+
+                {item.address && (
+                    <p className="text-sm text-slate-500 mt-1">
+                        {item.address.street}, {item.address.city}
+                    </p>
+                )}
+
+                {item.description && (
+                    <p className="text-sm text-slate-600 mt-2 line-clamp-2">
+                        {item.description}
+                    </p>
+                )}
+
+                <div className="flex gap-4 mt-4 text-sm text-slate-600">
+                    {item.no_of_rooms && <span>🏠 {item.no_of_rooms} Rooms</span>}
+                    {item.no_of_beds && <span>🛏 {item.no_of_beds} Beds</span>}
+                    {item.no_of_bathrooms && <span>🚿 {item.no_of_bathrooms} Bathrooms</span>}
+                    {item.available_users !== undefined && item.total_users !== undefined && (
+                        <span>👥 {item.available_users}/{item.total_users} Available</span>
+                    )}
+                </div>
+
+                {item.amenities?.length > 0 && (
+                    <div className="flex gap-2 flex-wrap mt-2 text-xs text-slate-500">
+                        {item.amenities.map((amenity, idx) => (
+                            <span
+                                key={idx}
+                                className="bg-slate-100 px-2 py-1 rounded"
+                            >
+                                {amenity.name}
+                            </span>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+const VehicleCard = ({ item }) => {
+    const image = buildPhotoUrl(item.images?.[0]?.filename, "vehicle", item.brand);
+
+    return (
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:border-primary/50 transition">
+            <div
+                className="h-48 bg-cover bg-center"
+                style={{ backgroundImage: `url(${image || "https://via.placeholder.com/400x300"})` }}
+            />
+
+            <div className="p-5">
+                <div className="flex justify-between items-start">
+                    <h3 className="font-bold text-lg">{item.brand} {item.model}</h3>
+                    <span className="text-primary font-bold">Rs {item.day_rent}</span>
+                </div>
+
+                {item.address && (
+                    <p className="text-sm text-slate-500 mt-1">
+                        {item.address.street}, {item.address.city}
+                    </p>
+                )}
+
+                {item.description && (
+                    <p className="text-sm text-slate-600 mt-2 line-clamp-2">
+                        {item.description}
+                    </p>
+                )}
+
+                <div className="flex gap-4 mt-4 text-sm text-slate-600">
+                    {item.no_of_seats && <span>👥 {item.no_of_seats} Seats</span>}
+                    {item.transmission && <span>⚙ {item.transmission}</span>}
+                    {item.fuel_type && <span>⛽ {item.fuel_type}</span>}
+                    {item.vehicle_type && <span>🚗 {item.vehicle_type}</span>}
+                    {item.air_conditioning !== undefined && <span>❄ AC: {item.air_conditioning ? "Yes" : "No"}</span>}
+                </div>
+
+                {item.amenities?.length > 0 && (
+                    <div className="flex gap-2 flex-wrap mt-2 text-xs text-slate-500">
+                        {item.amenities.map((amenity, idx) => (
+                            <span key={idx} className="bg-slate-100 px-2 py-1 rounded">
+                                {amenity}
+                            </span>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+
+const TabsSection = ({ owner }) => {
+
+    const [activeTab, setActiveTab] = useState("accommodations");
+
+    const accommodations = owner?.accommodations || [];
+    const vehicles = owner?.vehicles || [];
+
+    return (
+        <div className="space-y-10">
+            {/* Tabs */}
+
+            <div className="flex border-b border-slate-200 overflow-x-auto">
+
                 <button
                     onClick={() => setActiveTab("accommodations")}
-                    className={`px-6 py-4 text-sm flex items-center gap-2 whitespace-nowrap ${activeTab === "accommodations"
-                        ? "tab-active font-bold text-primary border-b-2 border-primary"
-                        : "tab-inactive text-slate-500"
+                    className={`px-6 py-4 flex items-center gap-2 text-sm whitespace-nowrap
+          ${activeTab === "accommodations"
+                            ? "font-bold text-primary border-b-2 border-primary"
+                            : "text-slate-500"
                         }`}
                 >
-                    <span className="material-symbols-outlined text-lg">home</span> Accommodations
+                    <span className="material-symbols-outlined">home</span>
+                    Accommodations
                 </button>
+
                 <button
-                    onClick={() => setActiveTab("transport")}
-                    className={`px-6 py-4 text-sm flex items-center gap-2 whitespace-nowrap ${activeTab === "transport"
-                        ? "tab-active font-bold text-primary border-b-2 border-primary"
-                        : "tab-inactive text-slate-500"
+                    onClick={() => setActiveTab("vehicles")}
+                    className={`px-6 py-4 flex items-center gap-2 text-sm whitespace-nowrap
+          ${activeTab === "vehicles"
+                            ? "font-bold text-primary border-b-2 border-primary"
+                            : "text-slate-500"
                         }`}
                 >
-                    <span className="material-symbols-outlined text-lg">airport_shuttle</span> Transport
+                    <span className="material-symbols-outlined">airport_shuttle</span>
+                    Vehicles
                 </button>
+
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {items.map((item, idx) => (
-                    <Card key={idx} item={item} />
-                ))}
-            </div>
+            {/* Content */}
+
+            {activeTab === "accommodations" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {accommodations.length ? (
+                        accommodations.map((item) => (
+                            <AccommodationCard key={item.id} item={item} />
+                        ))
+                    ) : (
+                        <p className="col-span-2 text-center text-slate-500">
+                            No accommodations available
+                        </p>
+                    )}
+                </div>
+            )}
+
+            {activeTab === "vehicles" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {vehicles.length ? (
+                        vehicles.map((item) => (
+                            <VehicleCard key={item.id} item={item} />
+                        ))
+                    ) : (
+                        <p className="col-span-2 text-center text-slate-500">
+                            No vehicles available
+                        </p>
+                    )}
+                </div>
+            )}
+
         </div>
     );
 };

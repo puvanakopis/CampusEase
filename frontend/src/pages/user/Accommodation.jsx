@@ -26,7 +26,7 @@ const Accommodations = () => {
 
   useEffect(() => {
     fetchAccommodations();
-    fetchSavedItems(); // Fetch saved items when component mounts
+    fetchSavedItems(); 
   }, []);
 
   const handleFilterChange = (newFilters) => {

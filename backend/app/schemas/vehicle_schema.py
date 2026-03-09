@@ -114,7 +114,7 @@ class VehicleCreateRequest(BaseModel):
     day_rent: float
     status: VehicleStatus = VehicleStatus.pending
     images: List[VehicleImageSchema] = []
-    amenities: List[str] 
+    amenities: Optional[List[str]] = []
     address: Optional[VehicleAddressSchema] = None
     location: Optional[VehicleLocationSchema] = None
     time_from_uni: Optional[VehicleDistance] = None
@@ -172,7 +172,7 @@ class VehicleUpdateRequest(BaseModel):
     status: Optional[VehicleStatus] = None
     reject_reason: Optional[str] = None
     images: Optional[List[VehicleImageSchema]] = None
-    amenities: List[str] 
+    amenities: Optional[List[str]] = None
     address: Optional[VehicleAddressSchema] = None
     location: Optional[VehicleLocationSchema] = None
     time_from_uni: Optional[VehicleDistance] = None

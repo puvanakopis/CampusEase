@@ -32,11 +32,8 @@ class OwnerResponse(BaseModel):
     verified: Optional[bool] = None
     decline_reason: Optional[str] = None
     description: Optional[str] = None
-
-    # NEW RELATIONS
     accommodations: Optional[List["AccommodationResponse"]] = []
     vehicles: Optional[List["VehicleResponse"]] = []
-
     created_at: datetime
     last_updated: datetime
 
