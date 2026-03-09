@@ -1,7 +1,13 @@
-from typing import List, Optional
+from typing import Optional
 from pydantic import BaseModel, Field
 from enum import Enum
 from datetime import datetime
+
+
+class BookingType(str, Enum):
+    vehicle = "vehicle"
+    accommodation = "accommodation"
+
 
 class BookingStatus(str, Enum):
     pending = "pending"
@@ -9,9 +15,11 @@ class BookingStatus(str, Enum):
     canceled = "canceled"
     completed = "completed"
 
+
 class PaymentMethod(str, Enum):
     credit_card = "credit_card"
     pay_on_hand = "pay_on_hand"
+
 
 class BookingPayment(BaseModel):
     method: PaymentMethod
@@ -23,17 +31,18 @@ class BookingPayment(BaseModel):
     paid: bool = False
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-class AccommodationBooking(BaseModel):
+
+class Booking(BaseModel):
     id: str = Field(..., alias="_id")
-    accommodation_id: str
+    booking_type: BookingType
+    resource_id: str   
     owner_id: str
     user_id: str
-    total_user: int
-    monthly_rent: float
-    start_month: datetime
-    end_month: datetime
-    duration_months: int
-    total_rent: float
+    unit_price: float  
+    start_date: datetime
+    end_date: datetime
+    duration: int     
+    total_price: float
     status: BookingStatus = BookingStatus.pending
     payment: Optional[BookingPayment] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)

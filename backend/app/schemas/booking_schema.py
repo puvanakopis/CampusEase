@@ -2,6 +2,15 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from enum import Enum
 from datetime import datetime
+from app.schemas.vehicle_schema import VehicleResponse
+from app.schemas.accommodation_schema import AccommodationResponse
+from app.schemas.owner_schema import OwnerResponse
+
+
+class BookingType(str, Enum):
+    vehicle = "vehicle"
+    accommodation = "accommodation"
+
 
 class BookingStatus(str, Enum):
     pending = "pending"
@@ -9,9 +18,11 @@ class BookingStatus(str, Enum):
     canceled = "canceled"
     completed = "completed"
 
+
 class PaymentMethod(str, Enum):
     credit_card = "credit_card"
     pay_on_hand = "pay_on_hand"
+
 
 class BookingPayment(BaseModel):
     method: PaymentMethod
@@ -23,38 +34,44 @@ class BookingPayment(BaseModel):
     paid: bool = False
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-class AccommodationBookingCreateRequest(BaseModel):
-    accommodation_id: str
+
+class BookingCreateRequest(BaseModel):
+    booking_type: BookingType
+    resource_id: str
     owner_id: str
     user_id: str
-    total_user: int
-    monthly_rent: float
-    start_month: datetime
-    end_month: datetime
-    duration_months: int
-    total_rent: float
+    unit_price: float
+    start_date: datetime
+    end_date: datetime
+    duration: int
+    total_price: float
     payment: Optional[BookingPayment] = None
 
-class AccommodationBookingUpdateRequest(BaseModel):
+
+class BookingUpdateRequest(BaseModel):
     status: Optional[BookingStatus] = None
     payment: Optional[BookingPayment] = None
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 
-class AccommodationBookingResponse(BaseModel):
+
+class BookingResponse(BaseModel):
     id: str = Field(..., alias="_id")
-    accommodation_id: str
+    booking_type: BookingType
+    resource_id: str
     owner_id: str
     user_id: str
-    total_user: int
-    monthly_rent: float
-    start_month: datetime
-    end_month: datetime
-    duration_months: int
-    total_rent: float
+    unit_price: float
+    start_date: datetime
+    end_date: datetime
+    duration: int
+    total_price: float
     status: BookingStatus
     payment: Optional[BookingPayment] = None
     created_at: datetime
     last_updated: datetime
+    vehicle: Optional[VehicleResponse] = None
+    accommodation: Optional[AccommodationResponse] = None
+    owner: Optional[OwnerResponse] = None
 
     class Config:
         orm_mode = True
