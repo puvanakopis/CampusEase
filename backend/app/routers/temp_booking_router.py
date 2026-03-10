@@ -19,3 +19,12 @@ async def save_temp_booking(
     temp_booking = await create_or_update_temp_booking(data.dict())
     return temp_booking
 
+
+@router.get("/", response_model=TempBookingResponse)
+async def get_temp_booking(current_user=Depends(get_current_user)):
+    return await get_temp_booking_by_user(current_user.id)
+
+
+@router.delete("/")
+async def remove_temp_booking(current_user=Depends(get_current_user)):
+    return await delete_temp_booking(current_user.id)

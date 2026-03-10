@@ -32,3 +32,16 @@ async def create_or_update_temp_booking(data: dict):
     new_doc = await temp_booking_collection.find_one({"_id": user_id})
     return fix_objectid(new_doc)
 
+
+async def get_temp_booking_by_user(user_id: str):
+    booking = await temp_booking_collection.find_one({"_id": user_id})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Temp booking not found")
+    return fix_objectid(booking)
+
+
+async def delete_temp_booking(user_id: str):
+    result = await temp_booking_collection.delete_one({"_id": user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Temp booking not found")
+    return {"message": "Temp booking removed"}
