@@ -1,11 +1,12 @@
 import React from "react";
+import { CURRENCY, PAYMENT } from "../../../constants/constants";
 
 const PaymentSummary = ({ tempBooking }) => {
     if (!tempBooking) return null;
 
-    const currency = "LKR";
-    const serviceFee = tempBooking.total_price * 0.025;
-    const securityFee = 50;
+    const currency = CURRENCY;
+    const serviceFee = tempBooking.total_price * PAYMENT.SERVICE_FEE_RATE;
+    const securityFee = PAYMENT.SECURITY_FEE;
     const totalWithFees = tempBooking.total_price + serviceFee + securityFee;
 
     const formatDate = (dateString) => {
@@ -46,7 +47,7 @@ const PaymentSummary = ({ tempBooking }) => {
                     </div>
                     <div className="flex flex-col">
                         <h4 className="text-sm font-bold text-slate-900">{getPropertyName()}</h4>
-                        <p className="text-xs text-slate-500 mt-0.5">{getDetailText()}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">{getDetailText()} </p>
                     </div>
                 </div>
 
@@ -73,7 +74,7 @@ const PaymentSummary = ({ tempBooking }) => {
                         </span>
                     </div>
                     <div className="flex justify-between text-xs">
-                        <span className="text-slate-600">Service Fee (2.5%)</span>
+                        <span className="text-slate-600">Service Fee ({PAYMENT.SERVICE_FEE_RATE * 100}%)</span>
                         <span className="font-medium text-slate-900">
                             {currency} {serviceFee.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                         </span>
@@ -116,8 +117,6 @@ const PaymentSummary = ({ tempBooking }) => {
                         </div>
                     </div>
                 </div>
-
-
 
                 {/* Agreement Text */}
                 <p className="text-center text-[10px] text-slate-500 leading-relaxed">

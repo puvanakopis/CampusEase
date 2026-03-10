@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { CURRENCY, PAYMENT } from "../../../constants/constants";
 
 const SecureCheckout = ({ tempBooking, onConfirm, processing }) => {
     const [paymentType, setPaymentType] = useState("card");
@@ -36,6 +37,12 @@ const SecureCheckout = ({ tempBooking, onConfirm, processing }) => {
         }
     };
 
+    const maskCardNumber = (cardNumber) => {
+        const cleaned = cardNumber.replace(/\s/g, "");
+        const last4 = cleaned.slice(-4);
+        return `**** **** **** ${last4}`;
+    };
+
     const handleCardSubmit = (e) => {
         e.preventDefault();
 
@@ -68,16 +75,11 @@ const SecureCheckout = ({ tempBooking, onConfirm, processing }) => {
         onConfirm(paymentData);
     };
 
-    const maskCardNumber = (cardNumber) => {
-        const cleaned = cardNumber.replace(/\s/g, "");
-        const last4 = cleaned.slice(-4);
-        return `**** **** **** ${last4}`;
-    };
-
     if (!tempBooking) return null;
 
     const totalWithFees = tempBooking.total_price +
-        (tempBooking.total_price * 0.025) + 50;
+        (tempBooking.total_price * PAYMENT.SERVICE_FEE_RATE) +
+        PAYMENT.SECURITY_FEE;
 
     return (
         <div className="space-y-6">
@@ -144,6 +146,7 @@ const SecureCheckout = ({ tempBooking, onConfirm, processing }) => {
 
             {paymentType === "card" && (
                 <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-6">
+                    {/* Card Details Form */}
                     <div className="flex items-center justify-between">
                         <h3 className="text-base font-bold text-slate-900">Card Details</h3>
                         <div className="flex items-center gap-1.5">
@@ -243,8 +246,7 @@ const SecureCheckout = ({ tempBooking, onConfirm, processing }) => {
                         <button
                             type="submit"
                             disabled={processing}
-                            className={`w-full h-14 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center justify-center gap-2 ${processing ? "opacity-50 cursor-not-allowed" : ""
-                                }`}
+                            className={`w-full h-14 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center justify-center gap-2 ${processing ? "opacity-50 cursor-not-allowed" : ""}`}
                         >
                             {processing ? (
                                 <>
@@ -254,42 +256,11 @@ const SecureCheckout = ({ tempBooking, onConfirm, processing }) => {
                             ) : (
                                 <>
                                     <span className="material-symbols-outlined text-base">verified</span>
-                                    Pay LKR {totalWithFees.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                                    Pay {CURRENCY} {totalWithFees.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                                 </>
                             )}
                         </button>
                     </form>
-
-                    {/* Security Info */}
-                    <div className="pt-4 border-t border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-primary text-2xl">verified</span>
-                            <div className="flex flex-col">
-                                <span className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
-                                    Verified Provider
-                                </span>
-                                <span className="text-[10px] text-slate-400">Sabaragamuwa Univ.</span>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-green-500 text-2xl">security</span>
-                            <div className="flex flex-col">
-                                <span className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
-                                    256-bit AES
-                                </span>
-                                <span className="text-[10px] text-slate-400">SSL Encryption</span>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-orange-500 text-2xl">shield_person</span>
-                            <div className="flex flex-col">
-                                <span className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
-                                    Safe Payments
-                                </span>
-                                <span className="text-[10px] text-slate-400">PCI-DSS Compliant</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             )}
 
@@ -307,33 +278,10 @@ const SecureCheckout = ({ tempBooking, onConfirm, processing }) => {
                         </div>
                     </div>
 
-                    <div className="bg-slate-50 p-4 rounded-lg mb-4">
-                        <h4 className="text-xs font-bold text-slate-700 mb-2">Important Information:</h4>
-                        <ul className="space-y-2 text-xs text-slate-600">
-                            <li className="flex items-start gap-2">
-                                <span className="material-symbols-outlined text-primary text-sm">location_on</span>
-                                <span>Visit the Sabaragamuwa University cashier's office</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <span className="material-symbols-outlined text-primary text-sm">schedule</span>
-                                <span>Payment hours: Monday-Friday, 9:00 AM - 3:00 PM</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <span className="material-symbols-outlined text-primary text-sm">receipt</span>
-                                <span>Bring your student ID and booking reference</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <span className="material-symbols-outlined text-primary text-sm">info</span>
-                                <span>Your booking will be confirmed after payment verification</span>
-                            </li>
-                        </ul>
-                    </div>
-
                     <button
                         onClick={handleCashPayment}
                         disabled={processing}
-                        className={`w-full h-14 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center justify-center gap-2 ${processing ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
+                        className={`w-full h-14 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center justify-center gap-2 ${processing ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                         {processing ? (
                             <>

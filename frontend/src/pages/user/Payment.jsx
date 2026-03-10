@@ -7,7 +7,7 @@ import { TempBookingContext } from "../../context/TempBookingContext";
 import { BookingContext } from "../../context/BookingContext";
 import { AuthContext } from "../../context/AuthContext";
 import Loading from "../../components/user/Loading";
-import toast from "react-hot-toast";
+import { CURRENCY, PAYMENT } from "../../constants/constants"; 
 
 const Payment = () => {
     const [showSuccess, setShowSuccess] = useState(false);
@@ -27,14 +27,14 @@ const Payment = () => {
 
     useEffect(() => {
         if (!tempLoading && !tempBooking && currentUser) {
-            toast.error("No active booking found. Please select a property first.");
+            console.error("No active booking found. Please select a property first.");
             navigate("/");
         }
     }, [tempBooking, tempLoading, currentUser, navigate]);
 
     const handleConfirm = async (paymentData) => {
         if (!tempBooking) {
-            toast.error("No booking data found");
+            console.error("No booking data found");
             return;
         }
 
@@ -63,7 +63,6 @@ const Payment = () => {
             }
         } catch (error) {
             console.error("Payment confirmation error:", error);
-            toast.error(error.message || "Failed to complete booking");
         } finally {
             setProcessing(false);
         }
@@ -93,6 +92,8 @@ const Payment = () => {
         );
     }
 
+
+
     return (
         <div className="bg-[#f6f7f8] min-h-screen px-4 py-10 md:px-24 max-w-8xl mx-auto">
             <div className="mb-6">
@@ -107,6 +108,8 @@ const Payment = () => {
                         tempBooking={tempBooking}
                         onConfirm={handleConfirm}
                         processing={processing}
+                        currency={CURRENCY}        
+                        paymentConstants={PAYMENT} 
                     />
                 </div>
 
@@ -115,6 +118,8 @@ const Payment = () => {
                         tempBooking={tempBooking}
                         onConfirm={handleConfirm}
                         processing={processing}
+                        currency={CURRENCY}
+                        paymentConstants={PAYMENT}
                     />
                 </div>
             </div>
@@ -144,6 +149,8 @@ const Payment = () => {
                         <div className="px-6 py-4">
                             <BookingSuccess
                                 booking={createdBooking || tempBooking}
+                                currency={CURRENCY}         
+                                paymentConstants={PAYMENT}  
                             />
                         </div>
 
