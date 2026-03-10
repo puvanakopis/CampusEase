@@ -30,10 +30,8 @@ async def enrich_booking_response(booking_data: dict) -> BookingResponse:
     accom_obj = None
     owner_obj = None
 
-    # Fetch owner
     owner_obj = await get_owner_by_id(booking_data["owner_id"])
 
-    # Fetch resource
     if booking_data["booking_type"] == "vehicle":
         doc = await vehicles_collection.find_one({"_id": booking_data["resource_id"]})
         if doc:
