@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect ,useContext} from "react";
 import toast from "react-hot-toast";
 import { saveItemApi } from "../service/saveItemService";
+import { AuthContext } from "./AuthContext";
 
 export const SaveItemContext = createContext();
 
@@ -8,6 +9,8 @@ export const SaveItemProvider = ({ children }) => {
     const [savedAccommodations, setSavedAccommodations] = useState([]);
     const [savedTransports, setSavedTransports] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    const { currentUser, authLoading } = useContext(AuthContext);
 
     // ------------------ FETCH ALL ------------------
     const fetchSavedItems = async () => {
@@ -17,8 +20,8 @@ export const SaveItemProvider = ({ children }) => {
             if (res.success) {
                 setSavedAccommodations(res.data.saved_accommodations);
                 setSavedTransports(res.data.saved_transports);
-                console.log("Accommodations",res.data.saved_accommodations)
-                console.log("Transports",res.data.saved_transports)
+                console.log("Accommodations", res.data.saved_accommodations)
+                console.log("Transports", res.data.saved_transports)
             } else {
                 toast.error(res.message || "Failed to fetch saved items");
             }
@@ -30,8 +33,15 @@ export const SaveItemProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        fetchSavedItems();
-    }, []);
+        if (!authLoading && currentUser) {
+            const role = currentUser.role;
+            if (role === "student" || role === "staff") {
+                fetchSavedItems();
+            }
+        }
+    }, [authLoading, currentUser]);
+
+
 
     // ------------------ SAVE / UNSAVE ACCOMMODATION ------------------
     const saveAccommodation = async (itemId) => {
