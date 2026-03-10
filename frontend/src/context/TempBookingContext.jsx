@@ -37,14 +37,12 @@ export const TempBookingProvider = ({ children }) => {
 
     // ------------------ CREATE / UPDATE TEMP BOOKING ------------------
     const saveTempBooking = async (payload) => {
-        const toastId = toast.loading("Saving temporary booking...");
         try {
             const data = await tempBookingApi.createTempBooking(payload);
-            toast.success("Temporary booking saved!", { id: toastId });
             setTempBooking(data);
             return data;
         } catch (err) {
-            toast.error(err.message || "Failed to save temp booking", { id: toastId });
+            toast.error(err.message || "Failed to save booking");
             throw err;
         }
     };

@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { AccommodationContext } from "../../context/AccommodationContext";
 import { SaveItemContext } from "../../context/SaveItemContext";
+import { TempBookingContext } from "../../context/TempBookingContext";
+import { AuthContext } from "../../context/AuthContext";
 
 import Breadcrumbs from "../../containers/user/accommodationDetails/Breadcrumbs";
 import HeaderInfo from "../../containers/user/accommodationDetails/HeaderInfo";
@@ -18,6 +20,8 @@ const AccommodationDetails = () => {
     const { id } = useParams();
     const { getAccommodationById } = useContext(AccommodationContext);
     const { savedAccommodations, saveAccommodation, unsaveAccommodation } = useContext(SaveItemContext);
+    const { tempBooking, saveTempBooking } = useContext(TempBookingContext);
+    const { currentUser } = useContext(AuthContext);
 
     const [accommodationData, setAccommodationData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -117,14 +121,13 @@ const AccommodationDetails = () => {
 
                         <HostInfo owner={accommodationData.owner} />
                     </div>
-                    
 
                     <BookingCard
-                        month_rent={accommodationData.month_rent}
-                        rating={averageRating}
-                        owner={accommodationData.owner}
-                        available_users={accommodationData.available_users}
-                        total_users={accommodationData.total_users}
+                        currentUser={currentUser}
+                        accommodation={accommodationData}
+                        averageRating={averageRating}
+                        tempBooking={tempBooking}
+                        saveTempBooking={saveTempBooking}
                     />
                 </div>
             </div>
