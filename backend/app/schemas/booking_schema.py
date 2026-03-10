@@ -25,13 +25,13 @@ class PaymentMethod(str, Enum):
 
 
 class BookingPayment(BaseModel):
-    method: PaymentMethod
-    amount: float
+    method: Optional[PaymentMethod]
+    amount: Optional[float]
     cardholder_name: Optional[str] = None
     card_number_masked: Optional[str] = None
     expiry_date: Optional[str] = None
     cvv_masked: Optional[str] = None
-    paid: bool = False
+    paid: Optional[bool] = False
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 

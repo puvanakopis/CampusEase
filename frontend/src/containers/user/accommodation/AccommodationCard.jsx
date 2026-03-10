@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import useNavigateTo from "../../../hooks/useNavigateTo";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 import { SaveItemContext } from "../../../context/SaveItemContext";
+import { CURRENCY } from "../../../constants/constants";
 
 const AccommodationCard = ({ data }) => {
     const navigateTo = useNavigateTo();
@@ -42,7 +43,7 @@ const AccommodationCard = ({ data }) => {
         ...amenities.map((a) => a.name)
     ].filter(Boolean);
 
-    const price = `LKR ${month_rent?.toLocaleString()}`;
+    const price = `${CURRENCY} ${month_rent?.toLocaleString()}`;
     const priceLabel = "Per Month";
 
     const badge = {

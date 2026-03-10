@@ -25,7 +25,6 @@ async def get_owner_by_id(owner_id: str) -> OwnerResponse | None:
 
 
 async def enrich_booking_response(booking_data: dict) -> BookingResponse:
-    """Fetch vehicle, accommodation, and owner data."""
     vehicle_obj = None
     accom_obj = None
     owner_obj = None
@@ -54,7 +53,7 @@ async def create_booking(booking_request: BookingCreateRequest) -> dict:
     booking_data = booking_request.dict()
     booking_data.update({
         "_id": new_id,
-        "status": booking_data.get("status", "pending"),
+        "status": "confirmed",
         "created_at": datetime.utcnow(),
         "last_updated": datetime.utcnow()
     })

@@ -1,12 +1,15 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import { bookingApi } from "../service/bookingService";
+import { AuthContext } from "./AuthContext";
 
 export const BookingContext = createContext();
 
 export const BookingProvider = ({ children }) => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    const { currentUser, authLoading } = useContext(AuthContext);
 
     // ------------------ FETCH ALL BOOKINGS ------------------
     const fetchBookings = async () => {
@@ -81,9 +84,16 @@ export const BookingProvider = ({ children }) => {
         }
     };
 
+  
     useEffect(() => {
-        fetchBookings();
-    }, []);
+        if (!authLoading && currentUser) {
+            const role = currentUser.role;
+            if (role === "student" || role === "staff") {
+                fetchBookings();
+            }
+        }
+    }, [authLoading, currentUser]);
+
 
     return (
         <BookingContext.Provider

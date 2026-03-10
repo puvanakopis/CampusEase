@@ -17,7 +17,6 @@ export const TempBookingProvider = ({ children }) => {
         try {
             const data = await tempBookingApi.getTempBooking();
             setTempBooking(data);
-            console.log(data);
         } catch (err) {
             toast.error(err.message || "Failed to load temp booking");
         } finally {

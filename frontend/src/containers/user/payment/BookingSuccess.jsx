@@ -169,7 +169,7 @@ const BookingSuccessPopup = ({ booking }) => {
                     </button>
 
                     <button
-                        onClick={() => navigate("/dashboard")}
+                        onClick={() => navigate("/")}
                         className="flex-1 bg-primary text-white py-2 rounded-lg text-sm"
                     >
                         Go Dashboard

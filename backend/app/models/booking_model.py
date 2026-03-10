@@ -43,7 +43,7 @@ class Booking(BaseModel):
     end_date: datetime
     duration: int     
     total_price: float
-    status: BookingStatus = BookingStatus.pending
+    status: Optional[BookingStatus] = None
     payment: Optional[BookingPayment] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_updated: datetime = Field(default_factory=datetime.utcnow)
