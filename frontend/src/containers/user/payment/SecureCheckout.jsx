@@ -1,7 +1,83 @@
 import React, { useState } from "react";
 
-const SecureCheckout = () => {
+const SecureCheckout = ({ tempBooking, onConfirm, processing }) => {
     const [paymentType, setPaymentType] = useState("card");
+    const [cardDetails, setCardDetails] = useState({
+        cardholderName: "",
+        cardNumber: "",
+        expiryDate: "",
+        cvv: ""
+    });
+
+    const handleCardInputChange = (e) => {
+        const { name, value } = e.target;
+
+        if (name === "cardNumber") {
+            const formatted = value
+                .replace(/\s/g, "")
+                .replace(/(\d{4})/g, "$1 ")
+                .trim()
+                .slice(0, 19);
+            setCardDetails(prev => ({ ...prev, [name]: formatted }));
+        }
+        else if (name === "expiryDate") {
+            const formatted = value
+                .replace(/\s/g, "")
+                .replace(/(\d{2})(\d{0,2})/, "$1/$2")
+                .slice(0, 5);
+            setCardDetails(prev => ({ ...prev, [name]: formatted }));
+        }
+        else if (name === "cvv") {
+            const formatted = value.replace(/\D/g, "").slice(0, 4);
+            setCardDetails(prev => ({ ...prev, [name]: formatted }));
+        }
+        else {
+            setCardDetails(prev => ({ ...prev, [name]: value }));
+        }
+    };
+
+    const handleCardSubmit = (e) => {
+        e.preventDefault();
+
+        if (!cardDetails.cardholderName || !cardDetails.cardNumber ||
+            !cardDetails.expiryDate || !cardDetails.cvv) {
+            return;
+        }
+
+        const paymentData = {
+            method: "credit_card",
+            amount: tempBooking?.total_price || 0,
+            cardholder_name: cardDetails.cardholderName,
+            card_number_masked: maskCardNumber(cardDetails.cardNumber),
+            expiry_date: cardDetails.expiryDate,
+            cvv_masked: "***",
+            paid: true,
+            created_at: new Date().toISOString()
+        };
+
+        onConfirm(paymentData);
+    };
+
+    const handleCashPayment = () => {
+        const paymentData = {
+            method: "pay_on_hand",
+            amount: tempBooking?.total_price || 0,
+            paid: false,
+            created_at: new Date().toISOString()
+        };
+        onConfirm(paymentData);
+    };
+
+    const maskCardNumber = (cardNumber) => {
+        const cleaned = cardNumber.replace(/\s/g, "");
+        const last4 = cleaned.slice(-4);
+        return `**** **** **** ${last4}`;
+    };
+
+    if (!tempBooking) return null;
+
+    const totalWithFees = tempBooking.total_price +
+        (tempBooking.total_price * 0.025) + 50;
 
     return (
         <div className="space-y-6">
@@ -34,8 +110,8 @@ const SecureCheckout = () => {
                             </span>
                             <span className="font-medium text-xs text-slate-700">Credit/Debit Card</span>
                             <div className="flex gap-1 mt-2">
-                                <div className="w-6 h-4 bg-slate-200 rounded-sm"></div>
-                                <div className="w-6 h-4 bg-slate-300 rounded-sm"></div>
+                                <span className="text-xs font-bold text-slate-400">VISA</span>
+                                <span className="text-xs font-bold text-slate-400">MC</span>
                             </div>
                         </label>
                     </div>
@@ -80,16 +156,20 @@ const SecureCheckout = () => {
                         </div>
                     </div>
 
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleCardSubmit}>
                         {/* Cardholder Name */}
                         <div>
                             <label className="block text-xs font-medium text-slate-600 mb-1 uppercase tracking-wider">
                                 Cardholder Name
                             </label>
                             <input
+                                name="cardholderName"
+                                value={cardDetails.cardholderName}
+                                onChange={handleCardInputChange}
                                 className="w-full h-12 px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 placeholder="As printed on card"
                                 type="text"
+                                required
                             />
                         </div>
 
@@ -100,9 +180,14 @@ const SecureCheckout = () => {
                             </label>
                             <div className="relative">
                                 <input
+                                    name="cardNumber"
+                                    value={cardDetails.cardNumber}
+                                    onChange={handleCardInputChange}
                                     className="w-full h-12 px-4 py-3 pr-12 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                     placeholder="0000 0000 0000 0000"
                                     type="text"
+                                    inputMode="numeric"
+                                    required
                                 />
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
                                     <span className="material-symbols-outlined text-slate-400 text-lg">
@@ -119,9 +204,14 @@ const SecureCheckout = () => {
                                     Expiry Date
                                 </label>
                                 <input
+                                    name="expiryDate"
+                                    value={cardDetails.expiryDate}
+                                    onChange={handleCardInputChange}
                                     className="w-full h-12 px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                                    placeholder="MM / YY"
+                                    placeholder="MM/YY"
                                     type="text"
+                                    inputMode="numeric"
+                                    required
                                 />
                             </div>
                             <div>
@@ -130,9 +220,14 @@ const SecureCheckout = () => {
                                 </label>
                                 <div className="relative">
                                     <input
+                                        name="cvv"
+                                        value={cardDetails.cvv}
+                                        onChange={handleCardInputChange}
                                         className="w-full h-12 px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                         placeholder="***"
                                         type="password"
+                                        inputMode="numeric"
+                                        required
                                     />
                                     <span
                                         className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg cursor-help"
@@ -146,11 +241,22 @@ const SecureCheckout = () => {
 
                         {/* Pay Button */}
                         <button
-                            className="w-full h-14 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center justify-center gap-2"
                             type="submit"
+                            disabled={processing}
+                            className={`w-full h-14 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center justify-center gap-2 ${processing ? "opacity-50 cursor-not-allowed" : ""
+                                }`}
                         >
-                            <span className="material-symbols-outlined text-base">verified</span>
-                            Pay LKR 18,500.00
+                            {processing ? (
+                                <>
+                                    <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+                                    Processing...
+                                </>
+                            ) : (
+                                <>
+                                    <span className="material-symbols-outlined text-base">verified</span>
+                                    Pay LKR {totalWithFees.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                                </>
+                            )}
                         </button>
                     </form>
 
@@ -184,6 +290,63 @@ const SecureCheckout = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {paymentType === "cash" && (
+                <div className="bg-white border border-slate-200 rounded-xl p-6">
+                    <div className="flex items-center gap-4 mb-4">
+                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span className="material-symbols-outlined text-primary text-2xl">
+                                payments
+                            </span>
+                        </div>
+                        <div>
+                            <h3 className="text-base font-bold text-slate-900">Payment on Hand</h3>
+                            <p className="text-xs text-slate-500">Pay at the university cashier</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-slate-50 p-4 rounded-lg mb-4">
+                        <h4 className="text-xs font-bold text-slate-700 mb-2">Important Information:</h4>
+                        <ul className="space-y-2 text-xs text-slate-600">
+                            <li className="flex items-start gap-2">
+                                <span className="material-symbols-outlined text-primary text-sm">location_on</span>
+                                <span>Visit the Sabaragamuwa University cashier's office</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="material-symbols-outlined text-primary text-sm">schedule</span>
+                                <span>Payment hours: Monday-Friday, 9:00 AM - 3:00 PM</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="material-symbols-outlined text-primary text-sm">receipt</span>
+                                <span>Bring your student ID and booking reference</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="material-symbols-outlined text-primary text-sm">info</span>
+                                <span>Your booking will be confirmed after payment verification</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button
+                        onClick={handleCashPayment}
+                        disabled={processing}
+                        className={`w-full h-14 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center justify-center gap-2 ${processing ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
+                    >
+                        {processing ? (
+                            <>
+                                <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+                                Processing...
+                            </>
+                        ) : (
+                            <>
+                                <span className="material-symbols-outlined text-base">check_circle</span>
+                                Confirm Cash Payment
+                            </>
+                        )}
+                    </button>
                 </div>
             )}
         </div>
