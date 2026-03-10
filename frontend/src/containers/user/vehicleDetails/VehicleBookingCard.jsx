@@ -1,39 +1,83 @@
-import React, { useState } from 'react';
-import PrimaryButton from '../../../components/common/PrimaryButton';
-import DatePicker from 'react-datepicker';
+import React, { useState, useEffect } from "react";
+import PrimaryButton from "../../../components/common/PrimaryButton";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import toast from "react-hot-toast";
 import useNavigateTo from "../../../hooks/useNavigateTo";
 
-import 'react-datepicker/dist/react-datepicker.css';
+const VehicleBookingCard = ({
+    currentUser,
+    vehicle,
+    rating,
+    tempBooking,
+    saveTempBooking
+}) => {
 
-const BookingCard = ({ day_rent, rating, owner }) => {
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+    const [startDate, setStartDate] = useState(
+        tempBooking?.start_date ? new Date(tempBooking.start_date) : null
+    );
+
+    const [endDate, setEndDate] = useState(
+        tempBooking?.end_date ? new Date(tempBooking.end_date) : null
+    );
+
     const navigateTo = useNavigateTo();
     const currency = "LKR";
 
+    useEffect(() => {
+        if (tempBooking?.start_date)
+            setStartDate(new Date(tempBooking.start_date));
+
+        if (tempBooking?.end_date)
+            setEndDate(new Date(tempBooking.end_date));
+    }, [tempBooking]);
+
     const getTotalDays = () => {
         if (!startDate || !endDate) return 0;
+
         const diffTime = Math.abs(endDate - startDate);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
         return diffDays + 1;
     };
 
     const calculateDuration = () => {
         const days = getTotalDays();
+
         if (days > 0) {
             return `${days} day${days > 1 ? "s" : ""}`;
         }
+
         return "Select dates";
     };
 
     const calculateTotal = () => {
         const days = getTotalDays();
-        if (days === 0) return 0;
-        return days * day_rent;
+        return days * vehicle.day_rent;
     };
 
-    const handleBooking = () => {
-        navigateTo("/payment");
+    const handleBooking = async () => {
+
+        if (!startDate || !endDate) return;
+
+        const payload = {
+            user_id: currentUser._id,
+            booking_type: "vehicle",
+            resource_id: vehicle._id,
+            owner_id: vehicle.owner?._id,
+            unit_price: vehicle.day_rent,
+            start_date: startDate.toISOString(),
+            end_date: endDate.toISOString(),
+            duration: getTotalDays(),
+            total_price: calculateTotal()
+        };
+
+        try {
+            await saveTempBooking(payload);
+            navigateTo("/payment");
+        } catch (err) {
+            toast.error(err.message || "Failed to save booking");
+        }
     };
 
     return (
@@ -44,7 +88,7 @@ const BookingCard = ({ day_rent, rating, owner }) => {
                 <div className="flex items-baseline justify-between mb-6">
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl font-bold text-slate-900">
-                            {currency} {day_rent.toLocaleString()}
+                            {currency} {vehicle.day_rent.toLocaleString()}
                         </span>
                         <span className="text-slate-500">/ day</span>
                     </div>
@@ -59,12 +103,14 @@ const BookingCard = ({ day_rent, rating, owner }) => {
 
                 <div className="border border-slate-300 rounded-lg mb-4 overflow-hidden">
 
-                    {/* Start & End Date */}
+                    {/* Dates */}
                     <div className="flex border-b border-slate-300">
+
                         <div className="w-1/2 p-3 border-r border-slate-300 hover:bg-slate-50">
                             <label className="block text-[10px] uppercase font-bold text-slate-800 tracking-wider">
                                 Pickup Date
                             </label>
+
                             <DatePicker
                                 selected={startDate}
                                 onChange={(date) => setStartDate(date)}
@@ -72,7 +118,6 @@ const BookingCard = ({ day_rent, rating, owner }) => {
                                 placeholderText="Select date"
                                 minDate={new Date()}
                                 className="mt-0.5 text-sm text-slate-600 w-full border-none p-0 focus:ring-0 focus:outline-none bg-transparent cursor-pointer"
-                                calendarClassName="rounded-lg border border-slate-200 shadow-lg"
                             />
                         </div>
 
@@ -80,6 +125,7 @@ const BookingCard = ({ day_rent, rating, owner }) => {
                             <label className="block text-[10px] uppercase font-bold text-slate-800 tracking-wider">
                                 Return Date
                             </label>
+
                             <DatePicker
                                 selected={endDate}
                                 onChange={(date) => setEndDate(date)}
@@ -87,7 +133,6 @@ const BookingCard = ({ day_rent, rating, owner }) => {
                                 placeholderText="Select date"
                                 minDate={startDate || new Date()}
                                 className="mt-0.5 text-sm text-slate-600 w-full border-none p-0 focus:ring-0 focus:outline-none bg-transparent cursor-pointer"
-                                calendarClassName="rounded-lg border border-slate-200 shadow-lg"
                             />
                         </div>
                     </div>
@@ -97,13 +142,13 @@ const BookingCard = ({ day_rent, rating, owner }) => {
                         <label className="block text-[10px] uppercase font-bold text-slate-800 tracking-wider">
                             Duration
                         </label>
+
                         <div className="text-sm text-slate-600 mt-0.5">
                             {calculateDuration()}
                         </div>
                     </div>
                 </div>
 
-                {/* Booking Button */}
                 <PrimaryButton
                     disabled={!startDate || !endDate}
                     onClick={handleBooking}
@@ -113,53 +158,34 @@ const BookingCard = ({ day_rent, rating, owner }) => {
                 </PrimaryButton>
 
                 <p className="text-center text-xs text-slate-500 mb-6 font-medium">
-                    Your request will be sent to {owner?.first_name || 'the owner'}
+                    Your request will be sent to {vehicle.owner?.first_name}
                 </p>
 
-                {/* Price Breakdown */}
+                {/* Breakdown */}
                 <div className="space-y-3 text-sm text-slate-600">
                     <div className="flex justify-between">
-                        <span className="underline decoration-slate-300">Daily rate</span>
-                        <span>{currency} {day_rent.toLocaleString()} × {getTotalDays()} days</span>
+                        <span className="underline decoration-slate-300">
+                            Daily rate
+                        </span>
+
+                        <span>
+                            {currency} {vehicle.day_rent.toLocaleString()} × {getTotalDays()} days
+                        </span>
                     </div>
                 </div>
 
                 <div className="my-4 border-t border-slate-200"></div>
 
-                {/* Total */}
                 <div className="flex justify-between text-base font-semibold text-slate-900">
                     <span>Total</span>
-                    <span>{currency} {calculateTotal().toLocaleString()}</span>
+                    <span>
+                        {currency} {calculateTotal().toLocaleString()}
+                    </span>
                 </div>
 
-                {/* Promotion */}
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                    <div className="flex items-start gap-3">
-                        <span className="material-symbols-outlined text-primary">
-                            local_gas_station
-                        </span>
-                        <div>
-                            <h4 className="font-semibold text-sm mb-1 text-primary">
-                                Need fuel delivery?
-                            </h4>
-                            <p className="text-xs text-slate-600 mb-2">
-                                Get fuel delivered to your vehicle location through CampusEase.
-                            </p>
-                            <a
-                                className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
-                                href="#"
-                            >
-                                Learn More
-                                <span className="material-symbols-outlined text-xs">
-                                    arrow_forward
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     );
 };
 
-export default BookingCard;
+export default VehicleBookingCard;

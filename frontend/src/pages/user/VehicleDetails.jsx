@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { VehicleContext } from "../../context/VehicleContext";
 import { SaveItemContext } from "../../context/SaveItemContext";
+import { TempBookingContext } from "../../context/TempBookingContext";
+import { AuthContext } from "../../context/AuthContext";
 
 import Breadcrumbs from "../../containers/user/vehicleDetails/Breadcrumbs";
 import HeaderInfo from "../../containers/user/vehicleDetails/HeaderInfo";
@@ -11,19 +13,21 @@ import AmenitiesList from "../../containers/user/vehicleDetails/AmenitiesList";
 import LocationMap from "../../containers/user/vehicleDetails/LocationMap";
 import ReviewsSection from "../../containers/user/vehicleDetails/ReviewsSection";
 import HostInfo from "../../containers/user/vehicleDetails/HostInfo";
-import BookingCard from "../../containers/user/vehicleDetails/BookingCard";
+import VehicleBookingCard from "../../containers/user/vehicleDetails/VehicleBookingCard";
 import Loading from "../../components/user/Loading";
 
 const VehicleDetails = () => {
     const { id } = useParams();
+
     const { getVehicleById } = useContext(VehicleContext);
     const { savedTransports, saveTransport, unsaveTransport } = useContext(SaveItemContext);
+    const { tempBooking, saveTempBooking } = useContext(TempBookingContext);
+    const { currentUser } = useContext(AuthContext);
 
     const [vehicleData, setVehicleData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
 
-    // Fetch vehicle details
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -40,38 +44,49 @@ const VehicleDetails = () => {
                 setLoading(false);
             }
         };
+
         fetchData();
     }, [id, getVehicleById]);
 
-    // Breadcrumbs
     const generateBreadcrumbs = (data) => [
         { label: "Home", link: "/" },
         { label: "Vehicles", link: "/vehicles" },
-        { label: data?.name || "Details", link: `/vehicles/${data?._id || data?.id}` }
+        { label: data?.brand || "Details", link: `/vehicles/${data?._id || data?.id}` }
     ];
+
     const breadcrumbs = generateBreadcrumbs(vehicleData);
 
-    if (loading) return <Loading mainText="Loading vehicle details..." subText="Please wait" />;
+    if (loading)
+        return <Loading mainText="Loading vehicle details..." subText="Please wait" />;
 
     if (notFound || !vehicleData)
         return (
             <div className="py-20 text-center">
                 <h2 className="text-3xl font-semibold text-gray-700">Vehicle Not Found</h2>
-                <p className="text-gray-500 mt-2">The vehicle listing you are looking for does not exist.</p>
+                <p className="text-gray-500 mt-2">
+                    The vehicle listing you are looking for does not exist.
+                </p>
             </div>
         );
 
     const averageRating =
         vehicleData.reviews?.length > 0
-            ? (vehicleData.reviews.reduce((acc, r) => acc + Number(r.rating || 0), 0) / vehicleData.reviews.length).toFixed(2)
+            ? (
+                vehicleData.reviews.reduce(
+                    (acc, r) => acc + Number(r.rating || 0),
+                    0
+                ) / vehicleData.reviews.length
+            ).toFixed(2)
             : 0;
 
     const vehicleTitle = `${vehicleData.brand} ${vehicleData.model} ${vehicleData.year}`;
+
     const vehicleSubtitle = `${vehicleData.fuel_type} • ${vehicleData.no_of_seats} Seats • ${vehicleData.transmission} • ${vehicleData.air_conditioning ? "AC" : "Non-AC"
         }`;
 
-    // Check if this vehicle is already saved
-    const isSaved = savedTransports.some((item) => item._id === vehicleData._id);
+    const isSaved = savedTransports.some(
+        (item) => item._id === vehicleData._id
+    );
 
     return (
         <div className="bg-background-light">
@@ -81,11 +96,18 @@ const VehicleDetails = () => {
                 <HeaderInfo
                     title={vehicleTitle}
                     location={vehicleData.address?.city || "Belihuloya"}
-                    walkDistance={vehicleData.time_from_uni?.susl_main_gate || "Available for pickup"}
+                    walkDistance={
+                        vehicleData.time_from_uni?.susl_main_gate ||
+                        "Available for pickup"
+                    }
                     rating={averageRating}
                     reviewsCount={vehicleData.reviews?.length || 0}
                     isSaved={isSaved}
-                    onSaveToggle={() => (isSaved ? unsaveTransport(vehicleData._id) : saveTransport(vehicleData._id))}
+                    onSaveToggle={() =>
+                        isSaved
+                            ? unsaveTransport(vehicleData._id)
+                            : saveTransport(vehicleData._id)
+                    }
                 />
 
                 <PhotoGrid images={vehicleData.images || []} />
@@ -122,7 +144,13 @@ const VehicleDetails = () => {
                         <HostInfo owner={vehicleData.owner} />
                     </div>
 
-                    <BookingCard day_rent={vehicleData.day_rent} rating={averageRating} owner={vehicleData.owner} vehicle_name={vehicleTitle} />
+                    <VehicleBookingCard
+                        currentUser={currentUser}
+                        vehicle={vehicleData}
+                        rating={averageRating}
+                        tempBooking={tempBooking}
+                        saveTempBooking={saveTempBooking}
+                    />
                 </div>
             </div>
         </div>
