@@ -1,6 +1,7 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useContext,useEffect } from "react";
 import toast from "react-hot-toast";
 import { bookingApi } from "../service/bookingService";
+import { AuthContext } from "./AuthContext"; 
 
 export const BookingContext = createContext();
 
@@ -9,6 +10,7 @@ export const BookingProvider = ({ children }) => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const { currentUser } = useContext(AuthContext); 
 
     // ------------------ GET ALL BOOKINGS (ADMIN) ------------------
     const getAllBookings = async () => {
@@ -152,8 +154,17 @@ export const BookingProvider = ({ children }) => {
         }
     };
 
-    
+    useEffect(() => {
+        if (!currentUser) return;
 
+        if (currentUser.role === "admin") {
+            getAllBookings();
+        } else if (currentUser.role === "staff") {
+            getUserBookings(currentUser._id);
+        } else if (currentUser.role === "student") {
+            getUserBookings(currentUser._id);
+        }
+    }, [currentUser]);
 
     return (
         <BookingContext.Provider
