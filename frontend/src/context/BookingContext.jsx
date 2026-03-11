@@ -10,7 +10,7 @@ export const BookingProvider = ({ children }) => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const { currentUser, authLoading } = useContext(AuthContext);
+    const { currentUser } = useContext(AuthContext);
 
     // ------------------ GET ALL BOOKINGS (ADMIN) ------------------
     const getAllBookings = async () => {
@@ -179,12 +179,6 @@ export const BookingProvider = ({ children }) => {
             await getUserBookings(currentUser._id);
         }
     };
-
-    useEffect(() => {
-        if (currentUser) {
-            refreshBookings();
-        }
-    }, [currentUser]);
 
 
     return (

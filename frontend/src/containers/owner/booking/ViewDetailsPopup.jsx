@@ -1,8 +1,6 @@
 import React from "react";
 
-const ViewDetailsPopup = ({ selectedBooking, onClose, onEdit }) => {
-    if (!selectedBooking) return null;
-
+const ViewDetailsPopup = ({ booking, onClose, onEdit }) => {
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -13,387 +11,189 @@ const ViewDetailsPopup = ({ selectedBooking, onClose, onEdit }) => {
     };
 
     const formatCurrency = (amount) => {
-        if (amount === undefined || amount === null) return 'N/A';
+        if (!amount) return 'N/A';
         return `LKR ${amount.toLocaleString()}`;
     };
 
-    // Get booking ID (using _id as per MongoDB convention)
-    const getBookingId = () => {
-        return selectedBooking._id || 'N/A';
-    };
-
-    // Get user information
-    const getUserInfo = () => {
-        const user = selectedBooking.user_id || selectedBooking.user || {};
-        if (typeof user === 'string') {
-            return {
-                id: user,
-                name: `User ${user.slice(-4)}`,
-                initials: user.slice(0, 2).toUpperCase()
-            };
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "pending": return "bg-yellow-100 text-yellow-800";
+            case "confirmed": return "bg-green-100 text-green-800";
+            case "completed": return "bg-blue-100 text-blue-800";
+            case "canceled": return "bg-red-100 text-red-800";
+            default: return "bg-gray-100 text-gray-800";
         }
-        return {
-            id: user._id || user.id || 'N/A',
-            name: user.first_name ? `${user.first_name} ${user.last_name || ''}`.trim() : 'N/A',
-            initials: user.first_name ? user.first_name.slice(0, 2).toUpperCase() : 'U'
-        };
     };
 
-    // Get owner information
-    const getOwnerInfo = () => {
-        const owner = selectedBooking.owner_id || selectedBooking.owner || {};
-        if (typeof owner === 'string') {
-            return {
-                id: owner,
-                name: `Owner ${owner.slice(-4)}`
-            };
-        }
-        return {
-            id: owner._id || owner.id || 'N/A',
-            name: owner.first_name ? `${owner.first_name} ${owner.last_name || ''}`.trim() : 'N/A'
-        };
-    };
-
-    // Get resource details based on booking type
-    const getResourceDetails = () => {
-        if (selectedBooking.booking_type === "vehicle") {
-            const vehicle = selectedBooking.vehicle_id || selectedBooking.vehicle || {};
-
-            // If vehicle is just an ID string
-            if (typeof vehicle === 'string') {
-                return {
-                    id: vehicle,
-                    title: `Vehicle ${vehicle.slice(-4)}`,
-                    type: 'N/A',
-                    brand: 'N/A',
-                    model: 'N/A'
-                };
-            }
-
-            // If vehicle is an object with details
-            return {
-                id: vehicle._id || vehicle.id || 'N/A',
-                title: vehicle.name || 'N/A',
-                type: vehicle.vehicle_type || 'N/A',
-                brand: vehicle.brand || 'N/A',
-                model: vehicle.model || 'N/A',
-                year: vehicle.year || 'N/A',
-                registration: vehicle.registration_number || 'N/A'
-            };
-        }
-        else if (selectedBooking.booking_type === "accommodation") {
-            const accommodation = selectedBooking.accommodation_id || selectedBooking.accommodation || {};
-
-            // If accommodation is just an ID string
-            if (typeof accommodation === 'string') {
-                return {
-                    id: accommodation,
-                    title: `Accommodation ${accommodation.slice(-4)}`,
-                    type: 'N/A',
-                    address: 'N/A',
-                    city: 'N/A'
-                };
-            }
-
-            // If accommodation is an object with details
-            return {
-                id: accommodation._id || accommodation.id || 'N/A',
-                title: accommodation.name || 'N/A',
-                type: accommodation.accommodation_type || 'N/A',
-                address: accommodation.address?.street || 'N/A',
-                city: accommodation.address?.city || accommodation.city || 'N/A',
-                rooms: accommodation.no_of_rooms || 'N/A',
-                beds: accommodation.no_of_beds || 'N/A'
-            };
-        }
-        return {};
-    };
-
-    // Get dates (using snake_case as per your models)
-    const getStartDate = () => {
-        return selectedBooking.start_date || selectedBooking.startDate;
-    };
-
-    const getEndDate = () => {
-        return selectedBooking.end_date || selectedBooking.endDate;
-    };
-
-    const getCreatedAt = () => {
-        return selectedBooking.created_at || selectedBooking.createdAt;
-    };
-
-    const getUpdatedAt = () => {
-        return selectedBooking.last_updated || selectedBooking.updated_at || selectedBooking.updatedAt;
-    };
-
-    // Get prices (using snake_case as per your models)
-    const getTotalPrice = () => {
-        return selectedBooking.total_price || selectedBooking.totalPrice;
-    };
-
-    const getUnitPrice = () => {
-        return selectedBooking.unit_price || selectedBooking.unitPrice;
-    };
-
-    const userInfo = getUserInfo();
-    const ownerInfo = getOwnerInfo();
-    const resourceDetails = getResourceDetails();
+    const getBookingId = () => booking._id || booking.id || 'N/A';
+    const getStartDate = () => booking.start_date || booking.startDate;
+    const getEndDate = () => booking.end_date || booking.endDate;
+    const getCreatedAt = () => booking.created_at || booking.createdAt;
+    const getUpdatedAt = () => booking.updated_at || booking.updatedAt || booking.last_updated;
+    const getTotalPrice = () => booking.total_price || booking.totalPrice;
+    const getUnitPrice = () => booking.unit_price || booking.unitPrice;
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl p-6 max-w-3xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-                <div className="flex justify-between items-start mb-6">
+            <div className="bg-white rounded-xl w-full max-w-2xl shadow-lg overflow-y-auto max-h-[90vh]">
+                {/* Header */}
+                <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
                     <div>
-                        <h3 className="text-2xl font-bold text-slate-900">Booking Details</h3>
-                        <p className="text-slate-500">Complete information about this booking</p>
+                        <h3 className="text-lg font-bold text-slate-900">Booking Details</h3>
+                        <p className="text-xs text-slate-500 mt-1">ID: {getBookingId()}</p>
                     </div>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-                        <span className="material-symbols-outlined">close</span>
+                    <button
+                        onClick={onClose}
+                        className="text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                        <span className="material-symbols-outlined text-xl">close</span>
                     </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    {/* Customer Information */}
-                    <div className="bg-slate-50 rounded-lg p-5">
-                        <div className="flex items-center gap-3 mb-4">
+                {/* Content */}
+                <div className="px-6 py-4">
+                    {/* Customer Info */}
+                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                        <h4 className="font-bold text-slate-900 mb-3">Customer Information</h4>
+                        <div className="flex items-center gap-3">
                             <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
                                 <span className="material-symbols-outlined text-primary">person</span>
                             </div>
                             <div>
-                                <h4 className="font-bold text-slate-900">Customer Information</h4>
-                                <p className="text-sm text-slate-500">Student details</p>
-                            </div>
-                        </div>
-                        <div className="space-y-3">
-                            <div className="flex justify-between">
-                                <span className="text-slate-600">Booking ID:</span>
-                                <span className="font-medium text-primary">{getBookingId()}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-slate-600">User ID:</span>
-                                <span className="font-medium">{userInfo.id}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-slate-600">User Name:</span>
-                                <span className="font-medium">{userInfo.name}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-slate-600">Booking Type:</span>
-                                <span className="font-medium capitalize">{selectedBooking.booking_type || 'N/A'}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-slate-600">Resource ID:</span>
-                                <span className="font-medium">{resourceDetails.id}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-slate-600">Owner ID:</span>
-                                <span className="font-medium">{ownerInfo.id}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-slate-600">Owner Name:</span>
-                                <span className="font-medium">{ownerInfo.name}</span>
+                                <p className="text-sm font-medium text-slate-900">
+                                    User {booking.user_id?.slice(-4) || 'N/A'}
+                                </p>
+                                <p className="text-xs text-slate-500">ID: {booking.user_id || 'N/A'}</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Service Information */}
-                    <div className="bg-slate-50 rounded-lg p-5">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
-                                <span className="material-symbols-outlined text-primary">
-                                    {selectedBooking.booking_type === "vehicle" ? "directions_car" : "apartment"}
+                    {/* Service Info */}
+                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                        <h4 className="font-bold text-slate-900 mb-3">Service Information</h4>
+                        <div className="flex items-start gap-3">
+                            <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <span className="material-symbols-outlined text-primary text-lg">
+                                    {booking.booking_type === "vehicle" ? "directions_car" : "apartment"}
                                 </span>
                             </div>
-                            <div>
-                                <h4 className="font-bold text-slate-900">Service Information</h4>
-                                <p className="text-sm text-slate-500 capitalize">{selectedBooking.booking_type}</p>
+                            <div className="flex-1">
+                                <p className="text-sm font-medium text-slate-900 capitalize">
+                                    {booking.booking_type}
+                                </p>
+                                {booking.vehicle && (
+                                    <div className="text-xs text-slate-600 space-y-1">
+                                        <p>Name: {booking.vehicle.vehicle_name || booking.vehicle.name}</p>
+                                        <p>Type: {booking.vehicle.vehicle_type}</p>
+                                    </div>
+                                )}
+                                {booking.accommodation && (
+                                    <div className="text-xs text-slate-600 space-y-1">
+                                        <p>Name: {booking.accommodation.name || booking.accommodation.title}</p>
+                                        <p>Type: {booking.accommodation.accommodation_type}</p>
+                                    </div>
+                                )}
                             </div>
-                        </div>
-                        <div className="space-y-3">
-                            <div className="flex justify-between">
-                                <span className="text-slate-600">Name/Title:</span>
-                                <span className="font-medium">{resourceDetails.title}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-slate-600">Type:</span>
-                                <span className="font-medium capitalize">{resourceDetails.type}</span>
-                            </div>
-
-                            {selectedBooking.booking_type === "vehicle" && (
-                                <>
-                                    <div className="flex justify-between">
-                                        <span className="text-slate-600">Brand:</span>
-                                        <span className="font-medium">{resourceDetails.brand}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-slate-600">Model:</span>
-                                        <span className="font-medium">{resourceDetails.model}</span>
-                                    </div>
-                                    {resourceDetails.year !== 'N/A' && (
-                                        <div className="flex justify-between">
-                                            <span className="text-slate-600">Year:</span>
-                                            <span className="font-medium">{resourceDetails.year}</span>
-                                        </div>
-                                    )}
-                                </>
-                            )}
-
-                            {selectedBooking.booking_type === "accommodation" && (
-                                <>
-                                    <div className="flex justify-between">
-                                        <span className="text-slate-600">Address:</span>
-                                        <span className="font-medium">{resourceDetails.address}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-slate-600">City:</span>
-                                        <span className="font-medium">{resourceDetails.city}</span>
-                                    </div>
-                                    {resourceDetails.rooms !== 'N/A' && (
-                                        <div className="flex justify-between">
-                                            <span className="text-slate-600">Rooms:</span>
-                                            <span className="font-medium">{resourceDetails.rooms}</span>
-                                        </div>
-                                    )}
-                                </>
-                            )}
                         </div>
                     </div>
-                </div>
 
-                {/* Booking Timeline */}
-                <div className="bg-slate-50 rounded-lg p-5 mb-8">
-                    <h4 className="font-bold text-slate-900 mb-4">Booking Timeline</h4>
-                    <div className="space-y-4">
-                        <div className="flex justify-between items-center">
+                    {/* Booking Timeline */}
+                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                        <h4 className="font-bold text-slate-900 mb-3">Booking Timeline</h4>
+                        <div className="space-y-3">
                             <div className="flex items-center gap-3">
                                 <div className="size-8 rounded-full bg-green-100 flex items-center justify-center">
                                     <span className="material-symbols-outlined text-green-600 text-sm">check</span>
                                 </div>
                                 <div>
-                                    <p className="font-medium">Booking Submitted</p>
-                                    <p className="text-sm text-slate-500">{formatDate(getCreatedAt())}</p>
+                                    <p className="text-sm font-medium">Submitted</p>
+                                    <p className="text-xs text-slate-500">{formatDate(getCreatedAt())}</p>
                                 </div>
                             </div>
-                        </div>
 
-                        {selectedBooking.status !== "pending" && (
-                            <>
-                                <div className="flex justify-between items-center">
+                            {booking.status !== "pending" && (
+                                <>
                                     <div className="flex items-center gap-3">
                                         <div className="size-8 rounded-full bg-green-100 flex items-center justify-center">
-                                            <span className="material-symbols-outlined text-green-600 text-sm">
-                                                play_arrow
-                                            </span>
+                                            <span className="material-symbols-outlined text-green-600 text-sm">play_arrow</span>
                                         </div>
                                         <div>
-                                            <p className="font-medium">Start Date</p>
-                                            <p className="text-sm text-slate-500">{formatDate(getStartDate())}</p>
+                                            <p className="text-sm font-medium">Start Date</p>
+                                            <p className="text-xs text-slate-500">{formatDate(getStartDate())}</p>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3">
                                         <div className="size-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                            <span className="material-symbols-outlined text-blue-600 text-sm">
-                                                schedule
-                                            </span>
+                                            <span className="material-symbols-outlined text-blue-600 text-sm">schedule</span>
                                         </div>
                                         <div>
-                                            <p className="font-medium">End Date</p>
-                                            <p className="text-sm text-slate-500">{formatDate(getEndDate())}</p>
+                                            <p className="text-sm font-medium">End Date</p>
+                                            <p className="text-xs text-slate-500">{formatDate(getEndDate())}</p>
                                         </div>
                                     </div>
-                                </div>
-                            </>
-                        )}
-
-                        {selectedBooking.status === "completed" && (
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center gap-3">
-                                    <div className="size-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                        <span className="material-symbols-outlined text-blue-600 text-sm">
-                                            check_circle
-                                        </span>
+                                    <div className="flex items-center gap-3">
+                                        <div className="size-8 rounded-full bg-slate-100 flex items-center justify-center">
+                                            <span className="material-symbols-outlined text-slate-600 text-sm">timelapse</span>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-medium">Duration</p>
+                                            <p className="text-xs text-slate-500">{booking.duration || 0} days</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="font-medium">Last Updated</p>
-                                        <p className="text-sm text-slate-500">{formatDate(getUpdatedAt())}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                                </>
+                            )}
+                        </div>
                     </div>
+
+                    {/* Payment Summary */}
+                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                        <h4 className="font-bold text-slate-900 mb-3">Payment Summary</h4>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-xs text-slate-500">Unit Price</p>
+                                <p className="text-sm font-medium text-slate-900">{formatCurrency(getUnitPrice())}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-slate-500">Total Price</p>
+                                <p className="text-sm font-bold text-primary">{formatCurrency(getTotalPrice())}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-slate-500">Payment Status</p>
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${booking.payment?.paid ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                    {booking.payment?.paid ? 'Paid' : 'Pending'}
+                                </span>
+                            </div>
+                            <div>
+                                <p className="text-xs text-slate-500">Booking Status</p>
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${getStatusColor(booking.status)}`}>
+                                    {booking.status}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Additional Info */}
+                    {booking.notes && (
+                        <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                            <h4 className="font-bold text-slate-900 mb-2">Additional Notes</h4>
+                            <p className="text-sm text-slate-600">{booking.notes}</p>
+                        </div>
+                    )}
                 </div>
 
-                {/* Payment Summary */}
-                <div className="bg-slate-50 rounded-lg p-5 mb-8">
-                    <h4 className="font-bold text-slate-900 mb-4">Payment Summary</h4>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <p className="text-sm text-slate-600">Unit Price</p>
-                            <p className="font-medium">{formatCurrency(getUnitPrice())}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-600">Duration</p>
-                            <p className="font-medium">{selectedBooking.duration || 0} days</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-600">Total Price</p>
-                            <p className="font-bold text-primary">{formatCurrency(getTotalPrice())}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-slate-600">Payment Status</p>
-                            <p className={`font-medium ${selectedBooking.payment?.paid ? 'text-green-600' : 'text-orange-600'}`}>
-                                {selectedBooking.payment?.paid ? 'Paid' : 'Pending'}
-                            </p>
-                        </div>
-
-                        {/* Additional payment details if available */}
-                        {selectedBooking.payment?.method && (
-                            <div className="col-span-2">
-                                <p className="text-sm text-slate-600">Payment Method</p>
-                                <p className="font-medium capitalize">
-                                    {selectedBooking.payment.method.replace(/_/g, ' ')}
-                                </p>
-                            </div>
-                        )}
-
-                        {selectedBooking.payment?.transaction_id && (
-                            <div className="col-span-2">
-                                <p className="text-sm text-slate-600">Transaction ID</p>
-                                <p className="font-medium">{selectedBooking.payment.transaction_id}</p>
-                            </div>
-                        )}
-
-                        {selectedBooking.payment?.paid_at && (
-                            <div className="col-span-2">
-                                <p className="text-sm text-slate-600">Paid On</p>
-                                <p className="font-medium">{formatDate(selectedBooking.payment.paid_at)}</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Additional Notes if available */}
-                {selectedBooking.notes && (
-                    <div className="bg-slate-50 rounded-lg p-5 mb-8">
-                        <h4 className="font-bold text-slate-900 mb-2">Additional Notes</h4>
-                        <p className="text-slate-600">{selectedBooking.notes}</p>
-                    </div>
-                )}
-
-                {/* Action Buttons */}
-                <div className="flex gap-3 justify-end">
+                {/* Footer */}
+                <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
                     <button
                         onClick={onClose}
-                        className="border border-slate-200 text-slate-700 py-2.5 px-6 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+                        className="border border-slate-200 text-slate-700 py-2 px-6 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm"
                     >
                         Close
                     </button>
                     <button
                         onClick={onEdit}
-                        className="bg-primary text-white py-2.5 px-6 rounded-lg font-medium hover:bg-primary/80 transition-colors"
+                        className="bg-primary text-white py-2 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center gap-1"
                     >
+                        <span className="material-symbols-outlined text-sm">edit</span>
                         Edit Booking
                     </button>
                 </div>
