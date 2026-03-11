@@ -1,7 +1,6 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState } from "react";
 import toast from "react-hot-toast";
 import { bookingApi } from "../service/bookingService";
-import { AuthContext } from "./AuthContext";
 
 export const BookingContext = createContext();
 
@@ -10,7 +9,6 @@ export const BookingProvider = ({ children }) => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const { currentUser } = useContext(AuthContext);
 
     // ------------------ GET ALL BOOKINGS (ADMIN) ------------------
     const getAllBookings = async () => {
@@ -97,8 +95,6 @@ export const BookingProvider = ({ children }) => {
 
             toast.success("Booking created successfully!", { id: toastId });
 
-            await refreshBookings();
-
             return res.data;
 
         } catch (err) {
@@ -122,8 +118,6 @@ export const BookingProvider = ({ children }) => {
             if (!res.success) throw new Error(res.message);
 
             toast.success("Booking updated successfully!", { id: toastId });
-
-            await refreshBookings();
 
             return res.data;
 
@@ -149,8 +143,6 @@ export const BookingProvider = ({ children }) => {
 
             toast.success("Booking deleted successfully!", { id: toastId });
 
-            await refreshBookings();
-
         } catch (err) {
 
             toast.error(err.message || "Failed to delete booking", { id: toastId });
@@ -160,25 +152,7 @@ export const BookingProvider = ({ children }) => {
         }
     };
 
-    // ------------------ REFRESH BOOKINGS BASED ON ROLE ------------------
-    const refreshBookings = async () => {
-
-        if (!currentUser) return;
-
-        const role = currentUser.role;
-
-        if (role === "admin") {
-            await getAllBookings();
-        }
-
-        else if (role === "owner") {
-            await getOwnerBookings(currentUser._id);
-        }
-
-        else if (role === "student" || role === "staff") {
-            await getUserBookings(currentUser._id);
-        }
-    };
+    
 
 
     return (
@@ -193,7 +167,6 @@ export const BookingProvider = ({ children }) => {
                 createBooking,
                 updateBooking,
                 deleteBooking,
-                refreshBookings
             }}
         >
             {children}

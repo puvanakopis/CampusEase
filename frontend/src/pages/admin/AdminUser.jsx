@@ -271,7 +271,7 @@ const AdminUserManagement = () => {
     }
 
     return (
-        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
+        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto">
             {showViewPopup && selectedUser && (
                 <ViewUserPopup
                     user={selectedUser}
@@ -457,7 +457,7 @@ const AdminUserManagement = () => {
                     )}
                 </>
             )}
-      
+
             {activeTab == "staff" && (
                 <>
                     <UserTable

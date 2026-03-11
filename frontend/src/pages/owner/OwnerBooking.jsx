@@ -29,7 +29,7 @@ const OwnerBooking = () => {
         if (currentUser && currentUser.role === "owner") {
             getOwnerBookings(currentUser._id);
         }
-    }, [currentUser, getOwnerBookings]);
+    }, []);
 
     useEffect(() => {
         setCurrentPage(1);

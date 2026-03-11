@@ -1,427 +1,167 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import Heading from "../../containers/admin/common/Heading";
 import StatsCards from "../../containers/admin/common/StatsCards";
 import Tabs from "../../containers/admin/common/Tabs";
 import BookingTable from "../../containers/admin/booking/BookingTable";
 import ViewBookingPopup from "../../containers/admin/booking/ViewBookingPopup";
-import StatusChangePopup from "../../containers/admin/booking/StatusChangePopup";
 import EditBookingPopup from "../../containers/admin/booking/EditBookingPopup";
+import Pagination from "../../components/common/Pagination";
+import { ADMIN_ITEMS_PER_PAGE } from "../../constants/pagination";
+import { BookingContext } from "../../context/BookingContext";
+import { AuthContext } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 const AdminBookingManagement = () => {
-    const [showViewPopup, setShowViewPopup] = useState(false);
-    const [selectedBooking, setSelectedBooking] = useState(null);
+    const { bookings, loading, getAllBookings, updateBooking, deleteBooking } = useContext(BookingContext);
+    const { currentUser } = useContext(AuthContext);
+
     const [activeTab, setActiveTab] = useState("all");
-    const [showStatusPopup, setShowStatusPopup] = useState(false);
-    const [bookingToChangeStatus, setBookingToChangeStatus] = useState(null);
-    const [showEditBooking, setShowEditBooking] = useState(false);
-    const [bookingToEdit, setBookingToEdit] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    const [allBookings, setAllBookings] = useState([
-        {
-            id: "ORD-001",
-            bookingNumber: "#ORD-8821",
-            customer: {
-                name: "Kasun Madushanka",
-                studentId: "19/AS/042",
-                email: "kasun.m@example.com",
-                phone: "+94 77 123 4567",
-                faculty: "Applied Sciences",
-                year: "3rd Year",
-                profileImage: "https://randomuser.me/api/portraits/men/32.jpg"
-            },
-            owner: {
-                name: "John Properties Ltd",
-                email: "john@properties.com",
-                phone: "+94 11 234 5678",
-                rating: 4.2
-            },
-            service: {
-                type: "Accommodation",
-                title: "Lakeside Villa - Single Room",
-                details: "Pambahinna, Belihuloya",
-                category: "Hostel",
-                amenities: ["WiFi", "Laundry", "24/7 Security", "Study Room"]
-            },
-            period: {
-                main: "Aug 15 - Dec 15",
-                sub: "1 Semester",
-                startDate: "2024-08-15",
-                endDate: "2024-12-15",
-                duration: "4 months"
-            },
-            amount: 45000,
-            totalAmount: "LKR 180,000",
-            paymentStatus: "Paid",
-            paymentMethod: "Bank Transfer",
-            bookingStatus: "Confirmed",
-            submitted: "2024-08-01 14:30",
-            priority: "High",
-            commission: 2250,
-            studentDocuments: {
-                studentIdVerified: true,
-                nicVerified: true,
-                addressVerified: true
-            },
-            notes: "Student requires early check-in"
-        },
-        {
-            id: "ORD-002",
-            bookingNumber: "#ORD-8819",
-            customer: {
-                name: "S. Nirmala",
-                studentId: "20/BS/015",
-                email: "nirmala.s@example.com",
-                phone: "+94 76 234 5678",
-                faculty: "Biological Sciences",
-                year: "2nd Year",
-                profileImage: "https://randomuser.me/api/portraits/women/44.jpg"
-            },
-            owner: {
-                name: "UniShuttle Services",
-                email: "info@unishuttle.com",
-                phone: "+94 11 345 6789",
-                rating: 4.5
-            },
-            service: {
-                type: "Transport",
-                title: "Campus Shuttle - Monthly Pass",
-                details: "Route A: Hostel to Uni",
-                category: "Transport",
-                amenities: ["AC Bus", "WiFi", "GPS Tracking", "Student Discount"]
-            },
-            period: {
-                main: "Sept 01 - Sept 30",
-                sub: "Daily 7:30 AM",
-                startDate: "2024-09-01",
-                endDate: "2024-09-30",
-                duration: "1 month"
-            },
-            amount: 3500,
-            totalAmount: "LKR 3,500",
-            paymentStatus: "Pending",
-            paymentMethod: "Credit Card",
-            bookingStatus: "Pending",
-            submitted: "2024-08-02 09:15",
-            priority: "Medium",
-            commission: 175,
-            studentDocuments: {
-                studentIdVerified: true,
-                nicVerified: true,
-                addressVerified: false
-            },
-            notes: "Payment verification required"
-        },
-        {
-            id: "ORD-003",
-            bookingNumber: "#ORD-8815",
-            customer: {
-                name: "Roshini Perera",
-                studentId: "21/SS/112",
-                email: "roshini.p@example.com",
-                phone: "+94 71 345 6789",
-                faculty: "Social Sciences",
-                year: "1st Year",
-                profileImage: "https://randomuser.me/api/portraits/women/33.jpg"
-            },
-            owner: {
-                name: "Greenwood Hostels",
-                email: "contact@greenwood.com",
-                phone: "+94 11 456 7890",
-                rating: 4.0
-            },
-            service: {
-                type: "Accommodation",
-                title: "Greenwood Annexe",
-                details: "Non-AC Double Room",
-                category: "Hostel",
-                amenities: ["Shared Kitchen", "Study Area", "Security", "Cleaning Service"]
-            },
-            period: {
-                main: "Aug 20 - Nov 20",
-                sub: "3 Months",
-                startDate: "2024-08-20",
-                endDate: "2024-11-20",
-                duration: "3 months"
-            },
-            amount: 12000,
-            totalAmount: "LKR 36,000",
-            paymentStatus: "Paid",
-            paymentMethod: "Online Banking",
-            bookingStatus: "Active",
-            submitted: "2024-07-25 11:45",
-            priority: "Low",
-            commission: 1800,
-            studentDocuments: {
-                studentIdVerified: true,
-                nicVerified: true,
-                addressVerified: true
-            },
-            progress: 40,
-            nextPayment: "2024-09-20",
-            manager: "Mr. Perera"
-        },
-        {
-            id: "ORD-004",
-            bookingNumber: "#ORD-8813",
-            customer: {
-                name: "Dinesh Jayasuriya",
-                studentId: "22/CS/078",
-                email: "dinesh.j@example.com",
-                phone: "+94 72 456 7890",
-                faculty: "Computer Science",
-                year: "1st Year",
-                profileImage: "https://randomuser.me/api/portraits/men/55.jpg"
-            },
-            owner: {
-                name: "Hilltop Accommodation",
-                email: "hilltop@accommodation.com",
-                phone: "+94 11 567 8901",
-                rating: 3.8
-            },
-            service: {
-                type: "Accommodation",
-                title: "Hilltop Hostel - Triple",
-                details: "Belihuloya Town",
-                category: "Hostel",
-                amenities: ["WiFi", "Common Room", "Laundry", "24/7 Reception"]
-            },
-            period: {
-                main: "Sep 01 - Jan 31",
-                sub: "5 Months",
-                startDate: "2024-09-01",
-                endDate: "2025-01-31",
-                duration: "5 months"
-            },
-            amount: 25000,
-            totalAmount: "LKR 125,000",
-            paymentStatus: "Partial",
-            paymentMethod: "Cash",
-            bookingStatus: "Cancelled",
-            submitted: "2024-07-20 16:20",
-            priority: "Medium",
-            commission: 6250,
-            studentDocuments: {
-                studentIdVerified: true,
-                nicVerified: true,
-                addressVerified: false
-            },
-            cancellationReason: "Student found alternative accommodation"
-        },
-        {
-            id: "ORD-005",
-            bookingNumber: "#ORD-8805",
-            customer: {
-                name: "Amal Silva",
-                studentId: "19/ENG/045",
-                email: "amal.s@example.com",
-                phone: "+94 77 567 8901",
-                faculty: "Engineering",
-                year: "4th Year",
-                profileImage: "https://randomuser.me/api/portraits/men/67.jpg"
-            },
-            owner: {
-                name: "University Housing",
-                email: "housing@university.edu",
-                phone: "+94 11 678 9012",
-                rating: 4.7
-            },
-            service: {
-                type: "Accommodation",
-                title: "University Hostel - Block B",
-                details: "Single Room with AC",
-                category: "Hostel",
-                amenities: ["AC", "Private Bathroom", "Study Desk", "Wardrobe"]
-            },
-            period: {
-                main: "Jul 15 - Dec 15",
-                sub: "5 Months",
-                startDate: "2024-07-15",
-                endDate: "2024-12-15",
-                duration: "5 months"
-            },
-            amount: 40000,
-            totalAmount: "LKR 200,000",
-            paymentStatus: "Paid",
-            paymentMethod: "Bank Transfer",
-            bookingStatus: "Completed",
-            submitted: "2024-06-10 08:10",
-            priority: "High",
-            commission: 10000,
-            studentDocuments: {
-                studentIdVerified: true,
-                nicVerified: true,
-                addressVerified: true
-            },
-            completionDate: "2024-12-15",
-            rating: 4.5,
-            feedback: "Excellent service, very responsive management."
-        },
-        {
-            id: "ORD-006",
-            bookingNumber: "#ORD-8798",
-            customer: {
-                name: "Nadeesha Kumari",
-                studentId: "20/MED/112",
-                email: "nadeesha.k@example.com",
-                phone: "+94 76 678 9012",
-                faculty: "Medicine",
-                year: "3rd Year",
-                profileImage: "https://randomuser.me/api/portraits/women/28.jpg"
-            },
-            owner: {
-                name: "City Transit",
-                email: "transit@city.com",
-                phone: "+94 11 789 0123",
-                rating: 4.3
-            },
-            service: {
-                type: "Transport",
-                title: "Student Bus Pass",
-                details: "Route B: City to Campus",
-                category: "Transport",
-                amenities: ["Monthly Pass", "Student ID Required", "Route Flexibility"]
-            },
-            period: {
-                main: "Aug 01 - Aug 31",
-                sub: "Monthly",
-                startDate: "2024-08-01",
-                endDate: "2024-08-31",
-                duration: "1 month"
-            },
-            amount: 4500,
-            totalAmount: "LKR 4,500",
-            paymentStatus: "Paid",
-            paymentMethod: "Credit Card",
-            bookingStatus: "Active",
-            submitted: "2024-07-28 19:30",
-            priority: "Medium",
-            commission: 225,
-            studentDocuments: {
-                studentIdVerified: true,
-                nicVerified: true,
-                addressVerified: true
-            },
-            progress: 30,
-            nextPayment: "2024-09-01",
-            manager: "Ms. Fernando"
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [showViewPopup, setShowViewPopup] = useState(false);
+    const [showEditPopup, setShowEditPopup] = useState(false);
+
+    useEffect(() => {
+        if (currentUser?.role === "admin") {
+            getAllBookings();
         }
-    ]);
+    }, [currentUser]);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeTab]);
+
+    // ------------------- FILTER BOOKINGS -------------------
+    const allList = useMemo(() => bookings, [bookings]);
+    const pendingList = useMemo(() => bookings.filter(b => b.status === "pending"), [bookings]);
+    const confirmedList = useMemo(() => bookings.filter(b => b.status === "confirmed"), [bookings]);
+    const activeList = useMemo(() => bookings.filter(b => b.status === "active"), [bookings]);
+    const completedList = useMemo(() => bookings.filter(b => b.status === "completed"), [bookings]);
+    const canceledList = useMemo(() => bookings.filter(b => b.status === "canceled"), [bookings]);
+
+    const getCurrentList = () => {
+        switch (activeTab) {
+            case "pending": return pendingList;
+            case "confirmed": return confirmedList;
+            case "active": return activeList;
+            case "completed": return completedList;
+            case "canceled": return canceledList;
+            default: return allList;
+        }
+    };
+
+    const currentList = getCurrentList();
+    const totalPages = Math.ceil(currentList.length / ADMIN_ITEMS_PER_PAGE);
+
+    const paginatedList = useMemo(() => {
+        const startIndex = (currentPage - 1) * ADMIN_ITEMS_PER_PAGE;
+        const endIndex = startIndex + ADMIN_ITEMS_PER_PAGE;
+        return currentList.slice(startIndex, endIndex);
+    }, [currentList, currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    // ------------------- TABS -------------------
     const tabs = [
-        { id: "all", label: "All Bookings", count: allBookings.length },
-        { id: "pending", label: "Pending", count: allBookings.filter(b => b.bookingStatus === "Pending").length },
-        { id: "confirmed", label: "Confirmed", count: allBookings.filter(b => b.bookingStatus === "Confirmed").length },
-        { id: "active", label: "Active", count: allBookings.filter(b => b.bookingStatus === "Active").length },
-        { id: "completed", label: "Completed", count: allBookings.filter(b => b.bookingStatus === "Completed").length },
-        { id: "cancelled", label: "Cancelled", count: allBookings.filter(b => b.bookingStatus === "Cancelled").length }
+        { id: "all", label: "All", count: allList.length },
+        { id: "pending", label: "Pending", count: pendingList.length },
+        { id: "confirmed", label: "Confirmed", count: confirmedList.length },
+        { id: "active", label: "Active", count: activeList.length },
+        { id: "completed", label: "Completed", count: completedList.length },
+        { id: "canceled", label: "Canceled", count: canceledList.length },
     ];
 
+    // ------------------- STATS -------------------
     const stats = [
         {
             label: "Total Bookings",
             icon: "receipt_long",
-            value: allBookings.length,
-            subtext: `${allBookings.filter(b => b.bookingStatus === "Active").length} active`,
-            trendIcon: "trending_up",
-            subtextColor: "text-green-500"
+            value: allList.length,
+            subtext: `${activeList.length} active, ${pendingList.length} pending`,
+            subtextColor: "text-green-600",
         },
         {
-            label: "Total Revenue",
-            icon: "payments",
-            value: `LKR ${allBookings.reduce((sum, booking) => sum + booking.amount, 0).toLocaleString()}`,
-            subtext: `${allBookings.reduce((sum, booking) => sum + booking.commission, 0).toLocaleString()} commission`,
-            subtextColor: "text-blue-500"
+            label: "Completed Bookings",
+            icon: "check_circle",
+            value: completedList.length,
+            subtext: `${completedList.length} bookings completed`,
+            subtextColor: "text-blue-500",
         },
         {
             label: "Pending Actions",
             icon: "hourglass_bottom",
-            value: allBookings.filter(b => b.bookingStatus === "Pending").length,
-            subtext: `${allBookings.filter(b => b.paymentStatus === "Pending").length} pending payments`,
-            subtextColor: "text-orange-500"
-        }
+            value: pendingList.length,
+            subtext: `${pendingList.filter(b => {
+                const created = new Date(b.created_at || b.createdAt);
+                return created.toDateString() === new Date().toDateString();
+            }).length} new today`,
+            subtextColor: "text-orange-500",
+        },
     ];
 
+    // ------------------- ACTION HANDLERS -------------------
     const handleViewBooking = (booking) => {
         setSelectedBooking(booking);
         setShowViewPopup(true);
     };
 
-    const handleDeleteBooking = (bookingId) => {
-        if (window.confirm("Are you sure you want to delete this booking? This action cannot be undone.")) {
-            setAllBookings(allBookings.filter(booking => booking.id !== bookingId));
-        }
-    };
-
     const handleEditBooking = (booking) => {
-        setBookingToEdit(booking);
-        setShowEditBooking(true);
+        setSelectedBooking(booking);
+        setShowEditPopup(true);
     };
 
-    const handleUpdateBooking = (updatedBooking) => {
-        setAllBookings(allBookings.map(booking =>
-            booking.id === updatedBooking.id ? updatedBooking : booking
-        ));
-        setShowEditBooking(false);
-        setBookingToEdit(null);
-        alert("Booking updated successfully!");
-    };
-
-    const handleToggleBookingStatus = (bookingId, currentStatus) => {
-        const booking = allBookings.find(b => b.id === bookingId);
-        if (!booking) return;
-
-        setBookingToChangeStatus({ ...booking, currentStatus });
-        setShowStatusPopup(true);
-    };
-
-    const handleConfirmStatusChange = async (reason) => {
-        if (!bookingToChangeStatus) return;
-
-        const statusOptions = ["Pending", "Confirmed", "Active", "Completed", "Cancelled"];
-        const currentIndex = statusOptions.indexOf(bookingToChangeStatus.currentStatus);
-        const newStatus = statusOptions[(currentIndex + 1) % statusOptions.length];
-
-        setAllBookings(allBookings.map(booking =>
-            booking.id === bookingToChangeStatus.id ? {
-                ...booking,
-                bookingStatus: newStatus,
-                ...(newStatus === "Cancelled" ? { cancellationReason: reason } : {}),
-                ...(newStatus === "Active" ? {
-                    progress: 0,
-                    activatedDate: new Date().toISOString().split('T')[0],
-                    manager: "Admin"
-                } : {}),
-                ...(newStatus === "Completed" ? {
-                    completionDate: new Date().toISOString().split('T')[0]
-                } : {})
-            } : booking
-        ));
-
-        alert(`Booking "${bookingToChangeStatus.bookingNumber}" status changed to ${newStatus}.`);
-
-        setShowStatusPopup(false);
-        setBookingToChangeStatus(null);
-    };
-
-    const getFilteredBookings = () => {
-        switch (activeTab) {
-            case "pending":
-                return allBookings.filter(booking => booking.bookingStatus === "Pending");
-            case "confirmed":
-                return allBookings.filter(booking => booking.bookingStatus === "Confirmed");
-            case "active":
-                return allBookings.filter(booking => booking.bookingStatus === "Active");
-            case "completed":
-                return allBookings.filter(booking => booking.bookingStatus === "Completed");
-            case "cancelled":
-                return allBookings.filter(booking => booking.bookingStatus === "Cancelled");
-            default:
-                return allBookings;
+    const handleDeleteBooking = async (bookingId) => {
+        if (!window.confirm("Are you sure you want to delete this booking?")) return;
+        try {
+            await deleteBooking(bookingId);
+            toast.success("Booking deleted successfully");
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to delete booking");
         }
     };
+
+    const handleConfirmEdit = async (updatedData) => {
+        if (!selectedBooking) return;
+        try {
+            await updateBooking(selectedBooking._id, updatedData);
+            toast.success("Booking updated successfully");
+            setShowEditPopup(false);
+            setSelectedBooking(null);
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to update booking");
+        }
+    };
+
+    const getItemName = () => {
+        switch (activeTab) {
+            case "pending": return "pending bookings";
+            case "confirmed": return "confirmed bookings";
+            case "active": return "active bookings";
+            case "completed": return "completed bookings";
+            case "canceled": return "canceled bookings";
+            default: return "bookings";
+        }
+    };
+
+    if (loading && bookings.length === 0) {
+        return (
+            <main className="flex justify-center items-center min-h-screen bg-[#f6f7f8]">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                    <p className="mt-4 text-slate-600">Loading bookings...</p>
+                </div>
+            </main>
+        );
+    }
 
     return (
-        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
+        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto">
             {/* Popups */}
             {showViewPopup && selectedBooking && (
                 <ViewBookingPopup
@@ -430,52 +170,57 @@ const AdminBookingManagement = () => {
                         setShowViewPopup(false);
                         setSelectedBooking(null);
                     }}
-                />
-            )}
-
-            {showStatusPopup && bookingToChangeStatus && (
-                <StatusChangePopup
-                    booking={bookingToChangeStatus}
-                    currentStatus={bookingToChangeStatus.currentStatus}
-                    onClose={() => {
-                        setShowStatusPopup(false);
-                        setBookingToChangeStatus(null);
+                    onEdit={() => {
+                        setShowViewPopup(false);
+                        setShowEditPopup(true);
                     }}
-                    onConfirm={handleConfirmStatusChange}
                 />
             )}
 
-            {showEditBooking && bookingToEdit && (
+            {showEditPopup && selectedBooking && (
                 <EditBookingPopup
-                    booking={bookingToEdit}
+                    booking={selectedBooking}
                     onClose={() => {
-                        setShowEditBooking(false);
-                        setBookingToEdit(null);
+                        setShowEditPopup(false);
+                        setSelectedBooking(null);
                     }}
-                    onUpdate={handleUpdateBooking}
+                    onSave={handleConfirmEdit}
                 />
             )}
 
+            {/* Header */}
             <Heading
                 title="Admin Booking Management"
                 subtitle="Manage all bookings, review requests, and handle booking statuses."
             />
 
+            {/* Stats */}
             <StatsCards stats={stats} />
 
-            <Tabs
-                tabs={tabs}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-            />
+            {/* Tabs */}
+            <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
+            {/* Booking Table */}
             <BookingTable
-                bookings={getFilteredBookings()}
+                length={currentList.length}
+                bookings={paginatedList}
+                activeTab={activeTab}
                 onView={handleViewBooking}
                 onEdit={handleEditBooking}
                 onDelete={handleDeleteBooking}
-                onToggleStatus={handleToggleBookingStatus}
             />
+
+            {/* Pagination */}
+            {currentList.length > ADMIN_ITEMS_PER_PAGE && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={currentList.length}
+                    itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+                    onPageChange={handlePageChange}
+                    itemName={getItemName()}
+                />
+            )}
         </main>
     );
 };
