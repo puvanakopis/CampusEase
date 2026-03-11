@@ -6,8 +6,7 @@ import VehicleGrid from "../../containers/user/vehicle/VehicleGrid";
 import Pagination from "../../components/user/Pagination";
 import { VehicleContext } from "../../context/VehicleContext";
 import { SaveItemContext } from "../../context/SaveItemContext";
-import { USER_ITEMS_PER_PAGE } from "../../constants/pagination";
-
+import { PAGINATION } from "../../constants/constants";
 
 const Vehicle = () => {
     const { vehicles, loading, fetchVehicles } = useContext(VehicleContext);
@@ -79,13 +78,13 @@ const Vehicle = () => {
         return 0;
     });
 
-    const totalPages = Math.ceil(sortedVehicles.length / USER_ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(sortedVehicles.length / PAGINATION.USER_ITEMS_PER_PAGE);
 
-    const startIndex = (currentPage - 1) * USER_ITEMS_PER_PAGE;
+    const startIndex = (currentPage - 1) * PAGINATION.USER_ITEMS_PER_PAGE;
 
     const currentVehicles = sortedVehicles.slice(
         startIndex,
-        startIndex + USER_ITEMS_PER_PAGE
+        startIndex + PAGINATION.USER_ITEMS_PER_PAGE
     );
 
     const handlePageChange = (page) => {

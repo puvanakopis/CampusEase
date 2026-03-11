@@ -9,7 +9,6 @@ export const VehicleProvider = ({ children }) => {
     const [ownerVehicles, setOwnerVehicles] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // ------------------ FETCH ALL VEHICLES ------------------
     const fetchVehicles = async () => {
         setLoading(true);
         try {
@@ -31,7 +30,6 @@ export const VehicleProvider = ({ children }) => {
         fetchVehicles();
     }, []);
 
-    // ------------------ FETCH OWNER VEHICLES ------------------
     const fetchMyVehicles = async () => {
         setLoading(true);
         try {
@@ -49,7 +47,6 @@ export const VehicleProvider = ({ children }) => {
         }
     };
 
-    // ------------------ CREATE VEHICLE ------------------
     const createVehicle = async (payload) => {
         const toastId = toast.loading("Creating vehicle...");
 
@@ -88,30 +85,22 @@ export const VehicleProvider = ({ children }) => {
         }
     };
 
-    // ------------------ GET VEHICLE BY ID ------------------
     const getVehicleById = async (id) => {
-        const toastId = toast.loading("Loading vehicle...");
-
         try {
             const res = await vehicleApi.getById(id);
 
             if (!res.success) {
-                toast.error(res.message, { id: toastId });
+                toast.error(res.message);
                 throw new Error(res.message);
             }
 
-            toast.success("Vehicle loaded", { id: toastId });
-
             return res.data;
         } catch (err) {
-            toast.error(err.message || "Failed to load vehicle", {
-                id: toastId,
-            });
+            toast.error(err.message || "Failed to load vehicle");
             throw err;
         }
     };
 
-    // ------------------ UPDATE VEHICLE ------------------
     const updateVehicle = async (id, payload) => {
         const toastId = toast.loading("Updating vehicle...");
 
@@ -148,7 +137,6 @@ export const VehicleProvider = ({ children }) => {
         }
     };
 
-    // ------------------ DELETE VEHICLE ------------------
     const deleteVehicle = async (id) => {
         const toastId = toast.loading("Deleting vehicle...");
 

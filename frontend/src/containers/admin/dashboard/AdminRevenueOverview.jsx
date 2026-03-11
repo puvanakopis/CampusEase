@@ -10,10 +10,6 @@ const AdminRevenueOverview = ({ revenueData }) => {
                     <h3 className="text-lg font-bold text-slate-900">{title}</h3>
                     <p className="text-sm text-slate-500 font-medium">{subtitle}</p>
                 </div>
-                <select className="text-sm border-slate-200 rounded-lg focus:ring-primary focus:border-primary">
-                    <option>Last 6 Months</option>
-                    <option>Last Year</option>
-                </select>
             </div>
 
             <div className="relative h-[240px] w-full flex items-end gap-4 px-2">

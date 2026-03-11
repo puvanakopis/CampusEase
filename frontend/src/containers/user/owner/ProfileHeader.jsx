@@ -1,10 +1,22 @@
 import React, { useState } from "react";
 import ShareSheet from "../../../components/common/ShareSheet";
+import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const OwnerProfile = () => {
+const ProfileHeader = ({ owner }) => {
     const [showShareSheet, setShowShareSheet] = useState(false);
     const currentUrl = typeof window !== "undefined" ? window.location.href : "";
-    const title = "Mrs. Priyani Silva";
+    const title = `${owner.first_name} ${owner.last_name || ""}`;
+    const userPhotoUrl = buildPhotoUrl(owner.photo?.filename, "user_photo", owner.first_name);
+
+    const vehicleReviews = owner.vehicles?.flatMap(v => v.reviews || []) || [];
+    const accommodationReviews = owner.accommodations?.flatMap(a => a.reviews || []) || [];
+    const totalReviews = vehicleReviews.length + accommodationReviews.length;
+
+    const allRatings = [...vehicleReviews, ...accommodationReviews].map(r => r.rating || 5);
+    const averageRating =
+        allRatings.length > 0
+            ? allRatings.reduce((acc, r) => acc + r, 0) / allRatings.length
+            : 0;
 
     return (
         <>
@@ -12,38 +24,49 @@ const OwnerProfile = () => {
                 <div className="relative flex flex-col md:flex-row items-end gap-6 pb-6 border-b border-slate-200">
                     {/* Profile Image */}
                     <div className="relative group">
-                        <div className="h-32 w-32 md:h-44 md:w-44 rounded-full border-4 border-white bg-white overflow-hidden shadow-xl">
+                        <div className="h-32 w-32 md:h-44 md:w-44 rounded-full border-4 border-white bg-white overflow-hidden shadow-lg">
                             <img
                                 alt={title}
                                 className="h-full w-full object-cover"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3M3mC_UxCwJLXqKkced1WNJD1I4jNvXIriInvwWLxVuPWctEGW4olEC4UqUAAkT3DIrgFvWBb5e0N32uzyfPDVmKU-U78B6NndkIuiVDp8IEfsxxg-00hCiBaeg3I2ztV3OTZ8fsmHhB-v778CIdiFjmCq5UwfnTtV7ALeCozMKeGGzpVsEeZF62CDyvtGFl9Ze7qinUrKDa03zzbQwoCG-FbBxVHnp4-0k2lLluhVwLenVsWudlkxe6ZQYBttZWoOjVJsNvfrGk"
+                                src={userPhotoUrl || "https://via.placeholder.com/150"}
                             />
                         </div>
-                        <div
-                            className="absolute bottom-2 right-2 bg-green-500 text-white p-1 rounded-full border-2 border-white shadow-lg"
-                            title="Verified Owner"
-                        >
-                            <span className="material-symbols-outlined text-sm font-bold block">check</span>
-                        </div>
+                        {owner.verified && (
+                            <div
+                                className="absolute bottom-2 right-2 bg-green-500 text-white p-1 rounded-full border-2 border-white shadow-lg"
+                                title="Verified Owner"
+                            >
+                                <span className="material-symbols-outlined text-sm font-bold block">
+                                    check
+                                </span>
+                            </div>
+                        )}
                     </div>
 
                     {/* Profile Info */}
                     <div className="flex-1 pb-2">
                         <div className="flex flex-wrap items-center gap-3 mb-1">
                             <h1 className="text-3xl md:text-4xl font-black text-slate-900">{title}</h1>
-                            <span className="inline-flex items-center gap-1 bg-blue-100 text-primary text-xs font-bold px-2 py-1 rounded-full border border-blue-200">
-                                <span className="material-symbols-outlined text-sm">verified</span> Verified Owner
-                            </span>
+                            {owner.verified && (
+                                <span className="inline-flex items-center gap-1 bg-blue-100 text-primary text-xs font-bold px-2 py-1 rounded-full border border-blue-200">
+                                    <span className="material-symbols-outlined text-sm">verified</span> Verified Owner
+                                </span>
+                            )}
                         </div>
                         <div className="flex flex-wrap items-center gap-4 text-slate-600 text-sm">
                             <span className="flex items-center gap-1">
-                                <span className="material-symbols-outlined text-base">calendar_today</span> Member since 2018
+                                <span className="material-symbols-outlined text-base">calendar_today</span>{" "}
+                                Member since {new Date(owner.created_at).getFullYear()}
                             </span>
-                            <span className="flex items-center gap-1">
-                                <span className="material-symbols-outlined text-base">location_on</span> Pambahinna, Belihuloya
-                            </span>
+                            {owner.address && (
+                                <span className="flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-base">location_on</span> {owner.address}
+                                </span>
+                            )}
+                            {/* Total Reviews */}
                             <span className="flex items-center gap-1 font-semibold text-slate-900">
-                                <span className="material-symbols-outlined text-base text-yellow-400 fill-current">star</span> 4.9/5 Rating
+                                <span className="material-symbols-outlined text-base text-yellow-400 fill-current">star</span>{" "}
+                                {averageRating.toFixed(1)}/5 ({totalReviews} Reviews)
                             </span>
                         </div>
                     </div>
@@ -68,4 +91,4 @@ const OwnerProfile = () => {
     );
 };
 
-export default OwnerProfile;
+export default ProfileHeader;

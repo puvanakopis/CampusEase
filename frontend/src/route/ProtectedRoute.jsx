@@ -1,5 +1,6 @@
-import React from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import useNavigateTo from "../hooks/useNavigateTo";
 
 const ALLOWED_PATHS = {
   admin: [
@@ -74,37 +75,38 @@ const ALLOWED_PATHS = {
 
 const ProtectedRoute = ({ role, user }) => {
   const location = useLocation();
+  const navigateTo = useNavigateTo();
 
-  if (role === "owner") {
-    const notActive = user.status !== "Active";
+  useEffect(() => {
+    if (role === "owner") {
+      const notActive = user?.status !== "Active";
 
-    if (notActive) {
-      if (location.pathname !== "/owner") {
-        return <Navigate to="/owner" replace />;
+      if (notActive && location.pathname !== "/owner") {
+        navigateTo("/owner");
+        return;
       }
-      return <Outlet />;
+
+      if (!notActive && location.pathname === "/owner") {
+        navigateTo("/owner/dashboard");
+        return;
+      }
     }
 
-    if (location.pathname === "/owner") {
-      return <Navigate to="/owner/dashboard" replace />;
+    const allowedPaths = ALLOWED_PATHS[role] || [];
+
+    const isAllowed = allowedPaths.some((path) => {
+      const regexPath = new RegExp("^" + path.replace(/:\w+/g, "\\w+") + "$");
+      return regexPath.test(location.pathname);
+    });
+
+    if (!isAllowed) {
+      if (role === "owner") navigateTo("/owner/dashboard");
+      else if (role === "admin") navigateTo("/admin/dashboard");
+      else navigateTo("/");
     }
-  }
+  }, [role, user, location.pathname]);
 
-  const allowedPaths = ALLOWED_PATHS[role] || [];
-
-  const isAllowed = allowedPaths.some((path) => {
-    const regexPath = new RegExp("^" + path.replace(/:\w+/g, "\\w+") + "$");
-    return regexPath.test(location.pathname);
-  });
-
-  if (isAllowed) {
-    return <Outlet />;
-  } else {
-    if (role === "owner") return <Navigate to="/owner/dashboard" replace />;
-    if (role === "admin") return <Navigate to="/admin/dashboard" replace />;
-    if (role === "student" || role === "staff") return <Navigate to="/" replace />;
-    return <Navigate to="/" replace />;
-  }
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

@@ -6,7 +6,7 @@ import AccommodationGrid from "../../containers/user/accommodation/Accommodation
 import Pagination from "../../components/user/Pagination";
 import { AccommodationContext } from "../../context/AccommodationContext";
 import { SaveItemContext } from "../../context/SaveItemContext";
-import { USER_ITEMS_PER_PAGE } from "../../constants/pagination";
+import { PAGINATION } from "../../constants/constants";
 
 
 const Accommodations = () => {
@@ -26,7 +26,7 @@ const Accommodations = () => {
 
   useEffect(() => {
     fetchAccommodations();
-    fetchSavedItems(); // Fetch saved items when component mounts
+    fetchSavedItems(); 
   }, []);
 
   const handleFilterChange = (newFilters) => {
@@ -79,13 +79,13 @@ const Accommodations = () => {
     return 0;
   });
 
-  const totalPages = Math.ceil(sortedAccommodations.length / USER_ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(sortedAccommodations.length / PAGINATION.USER_ITEMS_PER_PAGE);
 
-  const startIndex = (currentPage - 1) * USER_ITEMS_PER_PAGE;
+  const startIndex = (currentPage - 1) * PAGINATION.USER_ITEMS_PER_PAGE;
 
   const currentAccommodations = sortedAccommodations.slice(
     startIndex,
-    startIndex + USER_ITEMS_PER_PAGE
+    startIndex + PAGINATION.USER_ITEMS_PER_PAGE
   );
 
   const handlePageChange = (page) => {

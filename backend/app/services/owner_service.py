@@ -1,16 +1,52 @@
 from datetime import datetime
 from fastapi import HTTPException
-from typing import List, Optional
-from app.db.mongodb import owners_collection
+from typing import List
+
+from app.db.mongodb import (
+    owners_collection,
+    accommodations_collection,
+    vehicles_collection
+)
+
 from app.schemas.owner_schema import OwnerResponse, OwnerUpdateRequest
+from app.schemas.accommodation_schema import AccommodationResponse
+from app.schemas.vehicle_schema import VehicleResponse
 
 
-async def get_all_owners() -> List[OwnerResponse]:
+async def get_all_owners():
+
     owners = []
+
     cursor = owners_collection.find()
+
     async for doc in cursor:
-        owner_obj = OwnerResponse(**doc)
+
+        owner_id = doc["_id"]
+
+        # GET ACCOMMODATIONS
+        accommodations = []
+        accom_cursor = accommodations_collection.find({"owner_id": owner_id})
+
+        async for accom in accom_cursor:
+            accom_obj = AccommodationResponse(**accom, owner=None, reviews=[])
+            accommodations.append(accom_obj.dict(by_alias=True))
+
+        # GET VEHICLES
+        vehicles = []
+        vehicle_cursor = vehicles_collection.find({"owner_id": owner_id})
+
+        async for vehicle in vehicle_cursor:
+            vehicle_obj = VehicleResponse(**vehicle, owner=None, reviews=[])
+            vehicles.append(vehicle_obj.dict(by_alias=True))
+
+        owner_obj = OwnerResponse(
+            **doc,
+            accommodations=accommodations,
+            vehicles=vehicles
+        )
+
         owners.append(owner_obj.dict(by_alias=True))
+
     return {
         "success": True,
         "status_code": 200,
@@ -19,11 +55,35 @@ async def get_all_owners() -> List[OwnerResponse]:
     }
 
 
-async def get_owner_by_id(owner_id: str) -> OwnerResponse:
+async def get_owner_by_id(owner_id: str):
+
     doc = await owners_collection.find_one({"_id": owner_id})
+
     if not doc:
         raise HTTPException(status_code=404, detail="Owner not found")
-    owner_obj = OwnerResponse(**doc)
+
+    # ACCOMMODATIONS
+    accommodations = []
+    accom_cursor = accommodations_collection.find({"owner_id": owner_id})
+
+    async for accom in accom_cursor:
+        accom_obj = AccommodationResponse(**accom, owner=None, reviews=[])
+        accommodations.append(accom_obj.dict(by_alias=True))
+
+    # VEHICLES
+    vehicles = []
+    vehicle_cursor = vehicles_collection.find({"owner_id": owner_id})
+
+    async for vehicle in vehicle_cursor:
+        vehicle_obj = VehicleResponse(**vehicle, owner=None, reviews=[])
+        vehicles.append(vehicle_obj.dict(by_alias=True))
+
+    owner_obj = OwnerResponse(
+        **doc,
+        accommodations=accommodations,
+        vehicles=vehicles
+    )
+
     return {
         "success": True,
         "status_code": 200,
@@ -33,6 +93,7 @@ async def get_owner_by_id(owner_id: str) -> OwnerResponse:
 
 
 async def update_owner(owner_id: str, update_request: OwnerUpdateRequest):
+
     doc = await owners_collection.find_one({"_id": owner_id})
     if not doc:
         raise HTTPException(status_code=404, detail="Owner not found")
@@ -52,9 +113,12 @@ async def update_owner(owner_id: str, update_request: OwnerUpdateRequest):
 
 
 async def delete_owner(owner_id: str):
+
     result = await owners_collection.delete_one({"_id": owner_id})
+
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Owner not found")
+
     return {
         "success": True,
         "status_code": 200,

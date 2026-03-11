@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import { saveItemApi } from "../service/saveItemService";
+import { AuthContext } from "./AuthContext";
 
 export const SaveItemContext = createContext();
 
@@ -9,16 +10,16 @@ export const SaveItemProvider = ({ children }) => {
     const [savedTransports, setSavedTransports] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // ------------------ FETCH ALL ------------------
+    const { currentUser, authLoading } = useContext(AuthContext);
+
     const fetchSavedItems = async () => {
+        if (!currentUser) return; 
         setLoading(true);
         try {
             const res = await saveItemApi.getAll();
             if (res.success) {
                 setSavedAccommodations(res.data.saved_accommodations);
                 setSavedTransports(res.data.saved_transports);
-                console.log("Accommodations",res.data.saved_accommodations)
-                console.log("Transports",res.data.saved_transports)
             } else {
                 toast.error(res.message || "Failed to fetch saved items");
             }
@@ -29,12 +30,16 @@ export const SaveItemProvider = ({ children }) => {
         }
     };
 
-    useEffect(() => {
-        fetchSavedItems();
-    }, []);
+    const isUserAuthorized = () => {
+        if (!currentUser) return false;
+        return currentUser.role === "student" || currentUser.role === "staff";
+    };
 
-    // ------------------ SAVE / UNSAVE ACCOMMODATION ------------------
     const saveAccommodation = async (itemId) => {
+        if (!isUserAuthorized()) {
+            return;
+        }
+
         const toastId = toast.loading("Saving accommodation...");
         try {
             const res = await saveItemApi.saveAccommodation(itemId);
@@ -49,6 +54,10 @@ export const SaveItemProvider = ({ children }) => {
     };
 
     const unsaveAccommodation = async (itemId) => {
+        if (!isUserAuthorized()) {
+            return;
+        }
+
         const toastId = toast.loading("Removing saved accommodation...");
         try {
             const res = await saveItemApi.unsaveAccommodation(itemId);
@@ -62,8 +71,11 @@ export const SaveItemProvider = ({ children }) => {
         }
     };
 
-    // ------------------ SAVE / UNSAVE TRANSPORT ------------------
     const saveTransport = async (itemId) => {
+        if (!isUserAuthorized()) {
+            return;
+        }
+
         const toastId = toast.loading("Saving transport...");
         try {
             const res = await saveItemApi.saveTransport(itemId);
@@ -78,6 +90,10 @@ export const SaveItemProvider = ({ children }) => {
     };
 
     const unsaveTransport = async (itemId) => {
+        if (!isUserAuthorized()) {
+            return;
+        }
+
         const toastId = toast.loading("Removing saved transport...");
         try {
             const res = await saveItemApi.unsaveTransport(itemId);
@@ -90,6 +106,12 @@ export const SaveItemProvider = ({ children }) => {
             throw err;
         }
     };
+
+    useEffect(() => {
+        if (!authLoading && currentUser && isUserAuthorized()) {
+            fetchSavedItems();
+        }
+    }, [authLoading, currentUser]);
 
     return (
         <SaveItemContext.Provider

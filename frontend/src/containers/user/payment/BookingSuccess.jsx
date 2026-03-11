@@ -1,122 +1,177 @@
 import React, { useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { CURRENCY, PAYMENT } from "../../../constants/constants";
+import useNavigateTo from "../../../hooks/useNavigateTo";
 
-const BookingSuccess = () => {
+const BookingSuccessPopup = ({ booking }) => {
     const receiptRef = useRef();
-    const navigate = useNavigate();
+    const navigateTo = useNavigateTo();
 
-    const bookingReference = "SUSL-7829-XQ";
+    const bookingReference = booking?._id;
+    const bookingType = booking?.booking_type;
+    const resource = bookingType === "vehicle" ? booking?.vehicle : booking?.accommodation;
+
+    const resourceName =
+        bookingType === "vehicle"
+            ? `${resource?.brand || ""} ${resource?.model || ""}`
+            : resource?.name || "Accommodation";
+
+    const ownerName = `${booking?.owner?.first_name || ""} ${booking?.owner?.last_name || ""}`;
+
+    const formatDate = (dateString) => {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        });
+    };
+
+    const formatCurrency = (amount) => {
+        return `${CURRENCY} ${amount?.toLocaleString() || "0"}`;
+    };
+
+    const calculateTotalWithFees = () => {
+        if (!booking?.total_price) return 0;
+        const serviceFee = booking.total_price * PAYMENT.SERVICE_FEE_RATE;
+        const securityFee = PAYMENT.SECURITY_FEE;
+        return booking.total_price + serviceFee + securityFee;
+    };
 
     const handleDownload = async () => {
-        const element = receiptRef.current;
-
         try {
+            toast.loading("Generating PDF...", { id: "pdf" });
+
+            const element = receiptRef.current;
+            if (!element) return;
+
             const canvas = await html2canvas(element, {
                 scale: 2,
-                backgroundColor: '#ffffff',
-                logging: false,
-                allowTaint: false,
-                useCORS: true
+                useCORS: true,
+                backgroundColor: "#ffffff",
             });
 
             const imgData = canvas.toDataURL("image/png");
+            const divWidth = canvas.width;
+            const divHeight = canvas.height;
 
             const pdf = new jsPDF({
-                orientation: "portrait",
+                orientation: divWidth > divHeight ? "landscape" : "portrait",
                 unit: "px",
-                format: "a4"
+                format: [divWidth, divHeight],
             });
 
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
-
-            const imgWidth = pdfWidth - 80; // 40px margin on each side
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-            // Center vertically
-            const yOffset = (pdfHeight - imgHeight) / 2;
-
-            pdf.addImage(imgData, "PNG", 40, yOffset, imgWidth, imgHeight);
+            pdf.addImage(imgData, "PNG", 0, 0, divWidth, divHeight);
             pdf.save(`receipt-${bookingReference}.pdf`);
-        } catch (error) {
-            console.error("Error generating PDF:", error);
+
+            toast.success("Receipt downloaded", { id: "pdf" });
+        } catch (err) {
+            console.error(err);
+            toast.error("PDF generation failed", { id: "pdf" });
         }
     };
 
-    const goDashboard = () => {
-        navigate("/dashboard");
-    };
-
     return (
-        <div className="flex flex-col items-center text-center">
-
-            {/* RECEIPT AREA (PDF captures this) */}
-            <div ref={receiptRef} className="w-full bg-white p-6 rounded-xl">
-
-                {/* Success Icon */}
-                <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="material-symbols-outlined text-green-600 text-5xl">
-                        check_circle
-                    </span>
-                </div>
-
-                {/* Title */}
-                <h2 className="text-xl font-bold text-slate-900 mb-1">
-                    Booking Confirmed!
-                </h2>
-
-                {/* Subtitle */}
-                <p className="text-sm text-slate-500 mb-5">
-                    Your reservation at Sabaragamuwa University is all set.
-                </p>
-
-                {/* Booking Details */}
-                <div className="w-full bg-white border border-slate-200 rounded-xl p-5 mb-5">
-                    <p className="text-[10px] uppercase tracking-wider font-medium text-slate-400 mb-1">
-                        Booking Reference
-                    </p>
-                    <p className="text-base font-bold text-slate-900 font-mono">
-                        {bookingReference}
-                    </p>
-
-                    {/* Additional booking details can be added here */}
-                    <div className="mt-4 text-left">
-                        <p className="text-xs text-slate-600">Check-in: May 15, 2024</p>
-                        <p className="text-xs text-slate-600">Check-out: May 17, 2024</p>
-                        <p className="text-xs text-slate-600">Guests: 2 Adults</p>
-                        <p className="text-xs text-slate-600 font-medium mt-2">Total: $299.00</p>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl w-full max-w-2xl shadow-lg overflow-y-auto max-h-[90vh]">
+                {/* Header */}
+                <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                    <div>
+                        <h3 className="text-lg font-bold text-slate-900">Booking Successful</h3>
+                        <p className="text-xs text-slate-500 mt-1">Your booking has been confirmed</p>
                     </div>
                 </div>
-            </div>
 
-            {/* ACTION BUTTONS */}
-            <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">
+                {/* Receipt Content */}
+                <div ref={receiptRef} className="px-6 py-4 space-y-4">
+                    <div className="flex flex-col items-center text-center">
+                        <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-2">
+                            <span className="material-symbols-outlined text-green-600 text-5xl">check_circle</span>
+                        </div>
+                        <h2 className="text-xl font-bold">Booking Confirmed</h2>
+                        <p className="text-sm text-slate-500">
+                            Your {bookingType} reservation is successful
+                        </p>
+                    </div>
 
-                <button
-                    onClick={handleDownload}
-                    className="flex-1 border border-slate-200 text-slate-700 py-2.5 px-4 rounded-lg font-medium hover:bg-slate-50 transition-colors text-xs flex items-center justify-center gap-1.5"
-                >
-                    <span className="material-symbols-outlined text-sm">
-                        download
-                    </span>
-                    Download Receipt
-                </button>
+                    <div className="border rounded-xl p-5 text-left space-y-2">
+                        <div>
+                            <p className="text-[10px] text-slate-400 uppercase">Booking Reference</p>
+                            <p className="font-mono font-bold">{bookingReference}</p>
+                        </div>
 
-                <button
-                    onClick={goDashboard}
-                    className="flex-1 bg-primary text-white py-2.5 px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors text-xs flex items-center justify-center gap-1.5"
-                >
-                    Go to Dashboard
-                    <span className="material-symbols-outlined text-sm">
-                        arrow_forward
-                    </span>
-                </button>
+                        <div className="flex justify-between">
+                            <span>Resource</span>
+                            <span className="font-medium">{resourceName}</span>
+                        </div>
 
+                        <div className="flex justify-between">
+                            <span>Owner</span>
+                            <span className="font-medium">{ownerName}</span>
+                        </div>
+
+                        <div className="flex justify-between">
+                            <span>Start Date</span>
+                            <span>{formatDate(booking?.start_date)}</span>
+                        </div>
+
+                        <div className="flex justify-between">
+                            <span>End Date</span>
+                            <span>{formatDate(booking?.end_date)}</span>
+                        </div>
+
+                        <div className="flex justify-between">
+                            <span>Duration</span>
+                            <span>
+                                {booking?.duration} {bookingType === "vehicle" ? "days" : "months"}
+                            </span>
+                        </div>
+
+                        <div className="flex justify-between">
+                            <span>Status</span>
+                            <span className="capitalize">{booking?.status}</span>
+                        </div>
+
+                        <div className="flex justify-between">
+                            <span>Payment Method</span>
+                            <span className="capitalize">
+                                {booking?.payment?.method?.replace("_", " ")}
+                            </span>
+                        </div>
+
+                        <div className="flex justify-between font-bold pt-2 border-t">
+                            <span>Total Price</span>
+                            <span className="text-primary">{formatCurrency(calculateTotalWithFees())}</span>
+                        </div>
+                    </div>
+
+                    <p className="text-[9px] text-slate-400 mt-2 text-center">
+                        This is an electronically generated receipt.
+                    </p>
+                </div>
+
+                {/* Footer Actions */}
+                <div className="flex gap-3 px-6 py-4 border-t border-slate-200">
+                    <button
+                        onClick={handleDownload}
+                        className="flex-1 border py-2 rounded-lg text-sm"
+                    >
+                        Download Receipt
+                    </button>
+
+                    <button
+                        onClick={() => navigateTo("/")}
+                        className="flex-1 bg-primary text-white py-2 rounded-lg text-sm"
+                    >
+                        Go Dashboard
+                    </button>
+                </div>
             </div>
         </div>
     );
 };
 
-export default BookingSuccess;
+export default BookingSuccessPopup;

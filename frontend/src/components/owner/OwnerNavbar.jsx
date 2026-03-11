@@ -11,7 +11,6 @@ const OwnerNavbar = () => {
 
     const activeKey = location.pathname.split("/")[2] || "";
 
-    console.log(currentUser)
     const [isOpen, setIsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
