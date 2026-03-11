@@ -9,7 +9,6 @@ export const AccommodationProvider = ({ children }) => {
   const [ownerAccommodations, setOwnerAccommodations] = useState([]);
   const [accoLoading, setAccoLoading] = useState(false);
 
-  // ------------------ FETCH ALL ------------------
   const fetchAccommodations = async () => {
     setAccoLoading(true);
     try {
@@ -27,7 +26,6 @@ export const AccommodationProvider = ({ children }) => {
     }
   };
 
-  // ------------------ FETCH OWNER ACCOMMODATIONS ------------------
   const fetchMyAccommodations = async () => {
     setAccoLoading(true);
     try {
@@ -45,12 +43,10 @@ export const AccommodationProvider = ({ children }) => {
     }
   };
 
-  // Load once
   useEffect(() => {
     fetchAccommodations();
   }, []);
 
-  // ------------------ CREATE ------------------
   const createAccommodation = async (payload) => {
     const toastId = toast.loading("Creating accommodation...");
     try {
@@ -83,7 +79,6 @@ export const AccommodationProvider = ({ children }) => {
     }
   };
 
-  // ------------------ GET BY ID ------------------
   const getAccommodationById = async (id) => {
     try {
       const res = await accommodationApi.getById(id);
@@ -99,7 +94,6 @@ export const AccommodationProvider = ({ children }) => {
     }
   };
 
-  // ------------------ UPDATE ------------------
   const updateAccommodation = async (id, payload) => {
     const toastId = toast.loading("Updating accommodation...");
     try {
@@ -135,7 +129,6 @@ export const AccommodationProvider = ({ children }) => {
     }
   };
 
-  // ------------------ DELETE ------------------
   const deleteAccommodation = async (id) => {
     const toastId = toast.loading("Deleting accommodation...");
     try {

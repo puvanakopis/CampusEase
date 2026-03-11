@@ -1,13 +1,13 @@
 import React, { useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { CURRENCY, PAYMENT } from "../../../constants/constants";
+import useNavigateTo from "../../../hooks/useNavigateTo";
 
 const BookingSuccessPopup = ({ booking }) => {
     const receiptRef = useRef();
-    const navigate = useNavigate();
+    const navigateTo = useNavigateTo();
 
     const bookingReference = booking?._id;
     const bookingType = booking?.booking_type;
@@ -48,7 +48,6 @@ const BookingSuccessPopup = ({ booking }) => {
             const element = receiptRef.current;
             if (!element) return;
 
-            // Use html2canvas to capture the div
             const canvas = await html2canvas(element, {
                 scale: 2,
                 useCORS: true,
@@ -56,16 +55,13 @@ const BookingSuccessPopup = ({ booking }) => {
             });
 
             const imgData = canvas.toDataURL("image/png");
-
-            // Get actual div dimensions in pixels
             const divWidth = canvas.width;
             const divHeight = canvas.height;
 
-            // Create a PDF using exact div width and height
             const pdf = new jsPDF({
                 orientation: divWidth > divHeight ? "landscape" : "portrait",
                 unit: "px",
-                format: [divWidth, divHeight], // set PDF size same as div
+                format: [divWidth, divHeight],
             });
 
             pdf.addImage(imgData, "PNG", 0, 0, divWidth, divHeight);
@@ -91,7 +87,6 @@ const BookingSuccessPopup = ({ booking }) => {
 
                 {/* Receipt Content */}
                 <div ref={receiptRef} className="px-6 py-4 space-y-4">
-                    {/* Icon & Status */}
                     <div className="flex flex-col items-center text-center">
                         <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-2">
                             <span className="material-symbols-outlined text-green-600 text-5xl">check_circle</span>
@@ -102,7 +97,6 @@ const BookingSuccessPopup = ({ booking }) => {
                         </p>
                     </div>
 
-                    {/* Details */}
                     <div className="border rounded-xl p-5 text-left space-y-2">
                         <div>
                             <p className="text-[10px] text-slate-400 uppercase">Booking Reference</p>
@@ -169,7 +163,7 @@ const BookingSuccessPopup = ({ booking }) => {
                     </button>
 
                     <button
-                        onClick={() => navigate("/")}
+                        onClick={() => navigateTo("/")}
                         className="flex-1 bg-primary text-white py-2 rounded-lg text-sm"
                     >
                         Go Dashboard

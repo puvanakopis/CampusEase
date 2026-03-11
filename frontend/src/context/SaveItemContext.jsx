@@ -12,8 +12,8 @@ export const SaveItemProvider = ({ children }) => {
 
     const { currentUser, authLoading } = useContext(AuthContext);
 
-    // ------------------ FETCH ALL ------------------
     const fetchSavedItems = async () => {
+        if (!currentUser) return; 
         setLoading(true);
         try {
             const res = await saveItemApi.getAll();
@@ -30,8 +30,16 @@ export const SaveItemProvider = ({ children }) => {
         }
     };
 
-    // ------------------ SAVE / UNSAVE ACCOMMODATION ------------------
+    const isUserAuthorized = () => {
+        if (!currentUser) return false;
+        return currentUser.role === "student" || currentUser.role === "staff";
+    };
+
     const saveAccommodation = async (itemId) => {
+        if (!isUserAuthorized()) {
+            return;
+        }
+
         const toastId = toast.loading("Saving accommodation...");
         try {
             const res = await saveItemApi.saveAccommodation(itemId);
@@ -46,6 +54,10 @@ export const SaveItemProvider = ({ children }) => {
     };
 
     const unsaveAccommodation = async (itemId) => {
+        if (!isUserAuthorized()) {
+            return;
+        }
+
         const toastId = toast.loading("Removing saved accommodation...");
         try {
             const res = await saveItemApi.unsaveAccommodation(itemId);
@@ -59,8 +71,11 @@ export const SaveItemProvider = ({ children }) => {
         }
     };
 
-    // ------------------ SAVE / UNSAVE TRANSPORT ------------------
     const saveTransport = async (itemId) => {
+        if (!isUserAuthorized()) {
+            return;
+        }
+
         const toastId = toast.loading("Saving transport...");
         try {
             const res = await saveItemApi.saveTransport(itemId);
@@ -75,6 +90,10 @@ export const SaveItemProvider = ({ children }) => {
     };
 
     const unsaveTransport = async (itemId) => {
+        if (!isUserAuthorized()) {
+            return;
+        }
+
         const toastId = toast.loading("Removing saved transport...");
         try {
             const res = await saveItemApi.unsaveTransport(itemId);
@@ -89,18 +108,10 @@ export const SaveItemProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        if (!authLoading && currentUser) {
-            const role = currentUser.role;
-            if (role === "student" || role === "staff") {
-                fetchSavedItems();
-                saveTransport();
-                unsaveTransport();
-                saveAccommodation();
-                unsaveAccommodation();
-            }
+        if (!authLoading && currentUser && isUserAuthorized()) {
+            fetchSavedItems();
         }
     }, [authLoading, currentUser]);
-
 
     return (
         <SaveItemContext.Provider
