@@ -81,6 +81,11 @@ class VehicleReview(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
+class VehicleReviewCreateRequest(BaseModel):
+    message: str
+    rating: float = Field(..., ge=0, le=5)
+    
+    
 class OwnerResponse(BaseModel):
     id: str = Field(..., alias="_id")
     first_name: str

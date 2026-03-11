@@ -4,18 +4,18 @@ from typing import List, Optional
 
 from app.schemas.vehicle_schema import (
     VehicleCreateRequest,
-    VehicleUpdateRequest
+    VehicleUpdateRequest,
+    VehicleReviewCreateRequest
 )
-
 from app.services.vehicle_service import (
     create_vehicle,
     get_vehicle_by_id,
     get_all_vehicles,
     update_vehicle,
     delete_vehicle,
-    get_vehicle_by_owner
+    get_vehicle_by_owner,
+    add_vehicle_review
 )
-
 from app.middlewares.auth_middleware import get_current_user, role_required
 
 router = APIRouter(prefix="/vehicle", tags=["Vehicle"])
@@ -43,6 +43,13 @@ async def get_my_vehicles(current_user=Depends(get_current_user)):
 async def get_vehicle_endpoint(vehicle_id: str):
     return await get_vehicle_by_id(vehicle_id)
 
+@router.post("/{vehicle_id}/review", dependencies=[Depends(role_required(["student","admin"]))])
+async def add_vehicle_review_endpoint(
+    vehicle_id: str,
+    review_request: VehicleReviewCreateRequest,
+    current_user=Depends(get_current_user)
+):
+    return await add_vehicle_review(vehicle_id, review_request, current_user)
 
 @router.patch("/{vehicle_id}", dependencies=[Depends(role_required(["owner","admin"]))])
 async def update_vehicle_endpoint(

@@ -42,7 +42,7 @@ const ReviewsSection = ({ reviews }) => {
                     <div key={index} className="space-y-3">
                         <div className="flex items-center gap-3">
                             <img
-                                src={getUserPhoto(review.user.photo)}
+                                src={getUserPhoto(review.user.photo.filename)}
                                 alt={review.user.first_name}
                                 className="w-10 h-10 rounded-full bg-slate-200 object-cover"
                             />

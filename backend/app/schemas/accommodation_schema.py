@@ -60,15 +60,15 @@ class UserResponse(BaseModel):
     role: str
     photo: Optional[UserPhoto] = None
 
-    class Config:
-        allow_population_by_field_name = True
-
 class AccommodationReview(BaseModel):
     user : UserResponse
     message: str
     rating: float = Field(..., ge=0, le=5)
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+class AccommodationReviewCreateRequest(BaseModel):
+    message: str
+    rating: float = Field(..., ge=0, le=5)
 
 class OwnerResponse(BaseModel):
     id: str = Field(..., alias="_id")

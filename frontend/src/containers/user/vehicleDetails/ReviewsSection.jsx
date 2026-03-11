@@ -43,7 +43,7 @@ const ReviewsSection = ({ reviews }) => {
                         <div className="flex items-center gap-3">
                             {review.user.photo ? (
                                 <img
-                                    src={getUserPhoto(review.user.photo)}
+                                    src={getUserPhoto(review.user.photo.filename)}
                                     alt={review.user.first_name}
                                     className="w-10 h-10 rounded-full bg-slate-200 object-cover"
                                 />
