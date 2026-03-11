@@ -53,7 +53,7 @@ async def create_booking(booking_request: BookingCreateRequest) -> dict:
     booking_data = booking_request.dict()
     booking_data.update({
         "_id": new_id,
-        "status": "confirmed",
+        "status": "pending",
         "created_at": datetime.utcnow(),
         "last_updated": datetime.utcnow()
     })

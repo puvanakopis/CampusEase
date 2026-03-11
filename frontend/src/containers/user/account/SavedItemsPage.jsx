@@ -1,17 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 import useNavigateTo from "../../../hooks/useNavigateTo";
 
 const SavedItemsPage = ({
-    accommodations,
-    vehicles,
+    accommodations = [],
+    vehicles = [],
     loading,
     onUnsaveAccommodation,
-    onUnsaveTransport
+    onUnsaveTransport,
 }) => {
-
     const navigateTo = useNavigateTo();
-    const [activeTab, setActiveTab] = useState("accommodations");
 
     const handleRemoveAccommodation = async (id, e) => {
         e.stopPropagation();
@@ -38,7 +36,7 @@ const SavedItemsPage = ({
 
     if (loading) {
         return (
-            <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 flex items-center justify-center">
+            <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 flex items-center justify-center py-12">
                 <div className="text-center">
                     <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
                     <p className="mt-2 text-slate-600">Loading saved items...</p>
@@ -48,121 +46,79 @@ const SavedItemsPage = ({
     }
 
     return (
-        <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10">
-            <div className="space-y-6">
-
-                {/* HEADER */}
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Saved Items</h1>
-                    <p className="text-sm text-slate-500">
-                        Keep track of your favorite accommodations and vehicles.
-                    </p>
-                </div>
-
-                {/* TABS */}
-                <div className="flex gap-6">
-
-                    <button
-                        onClick={() => setActiveTab("accommodations")}
-                        className={`flex items-center gap-2 pb-3 border-b-2 transition
-                        ${activeTab === "accommodations"
-                                ? "border-primary text-slate-900"
-                                : "border-transparent text-slate-500 hover:text-slate-700"
-                            }`}
-                    >
-                        <span className="material-symbols-outlined text-primary text-lg">
-                            bed
-                        </span>
-
-                        <h2 className="text-lg font-bold">
-                            Saved Accommodations ({accommodations?.length || 0})
-                        </h2>
-                    </button>
-
-                    <button
-                        onClick={() => setActiveTab("vehicles")}
-                        className={`flex items-center gap-2 pb-3 border-b-2 transition
-                        ${activeTab === "vehicles"
-                                ? "border-primary text-slate-900"
-                                : "border-transparent text-slate-500 hover:text-slate-700"
-                            }`}
-                    >
-                        <span className="material-symbols-outlined text-primary text-lg">
-                            directions_car
-                        </span>
-
-                        <h2 className="text-lg font-bold">
-                            Saved Vehicles ({vehicles?.length || 0})
-                        </h2>
-                    </button>
-
-                </div>
-
-                {/* TAB CONTENT */}
-
-                {activeTab === "accommodations" && (
-                    <section className="space-y-4">
-                        {accommodations?.length === 0 ? (
-                            <EmptyState
-                                icon="bed"
-                                message="No saved accommodations yet"
-                            />
-                        ) : (
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                {accommodations.map((item) => (
-                                    <AccommodationCard
-                                        key={item._id}
-                                        data={item}
-                                        onRemove={handleRemoveAccommodation}
-                                        onViewDetails={handleViewDetails}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </section>
-                )}
-
-                {activeTab === "vehicles" && (
-                    <section className="space-y-4">
-                        {vehicles?.length === 0 ? (
-                            <EmptyState
-                                icon="directions_car"
-                                message="No saved vehicles yet"
-                            />
-                        ) : (
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                {vehicles.map((vehicle) => (
-                                    <VehicleCard
-                                        key={vehicle._id}
-                                        data={vehicle}
-                                        onRemove={handleRemoveVehicle}
-                                        onViewDetails={handleViewDetails}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </section>
-                )}
-
+        <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 space-y-6">
+            {/* Header */}
+            <div className="flex flex-col gap-1">
+                <h1 className="text-2xl font-bold text-slate-900">Saved Items</h1>
+                <p className="text-sm text-slate-500">
+                    Keep track of your favorite accommodations and vehicles.
+                </p>
             </div>
+
+            {/* Saved Accommodations */}
+            <section className="space-y-4">
+                <div className="flex items-center gap-2 px-1">
+                    <span className="material-symbols-outlined text-primary text-lg">bed</span>
+                    <h2 className="text-lg font-bold text-slate-900">
+                        Saved Accommodations ({accommodations.length})
+                    </h2>
+                </div>
+
+                {accommodations.length === 0 ? (
+                    <EmptyState icon="bed" message="No saved accommodations yet" />
+                ) : (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {accommodations.map((item) => (
+                            <AccommodationCard
+                                key={item._id}
+                                data={item}
+                                onRemove={handleRemoveAccommodation}
+                                onViewDetails={handleViewDetails}
+                            />
+                        ))}
+                    </div>
+                )}
+            </section>
+
+            {/* Saved Vehicles */}
+            <section className="space-y-4">
+                <div className="flex items-center gap-2 px-1">
+                    <span className="material-symbols-outlined text-primary text-lg">directions_car</span>
+                    <h2 className="text-lg font-bold text-slate-900">
+                        Saved Vehicles ({vehicles.length})
+                    </h2>
+                </div>
+
+                {vehicles.length === 0 ? (
+                    <EmptyState icon="directions_car" message="No saved vehicles yet" />
+                ) : (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {vehicles.map((vehicle) => (
+                            <VehicleCard
+                                key={vehicle._id}
+                                data={vehicle}
+                                onRemove={handleRemoveVehicle}
+                                onViewDetails={handleViewDetails}
+                            />
+                        ))}
+                    </div>
+                )}
+            </section>
         </div>
     );
 };
 
+/* ---------------- EMPTY STATE ---------------- */
 const EmptyState = ({ icon, message }) => (
     <div className="bg-white border border-slate-200 rounded-xl p-8 text-center">
-        <span className="material-symbols-outlined text-4xl text-slate-300 mb-2">
-            {icon}
-        </span>
+        <span className="material-symbols-outlined text-4xl text-slate-300 mb-2">{icon}</span>
         <p className="text-slate-500">{message}</p>
-        <p className="text-sm text-slate-400 mt-1">
-            Items you save will appear here
-        </p>
+        <p className="text-sm text-slate-400 mt-1">Items you save will appear here</p>
     </div>
 );
 
-/* ---------------- ACCOMMODATION CARD ---------------- */
 
+/* ---------------- ACCOMMODATION CARD ---------------- */
 const AccommodationCard = ({ data, onRemove, onViewDetails }) => {
     if (!data) return null;
 

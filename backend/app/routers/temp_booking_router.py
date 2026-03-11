@@ -13,7 +13,7 @@ router = APIRouter(prefix="/temp-booking", tags=["Temp Booking"])
 @router.post("/", response_model=TempBookingResponse)
 async def save_temp_booking(
     data: TempBookingCreateRequest,
-    current_user=Depends(role_required(["student"]))
+    current_user=Depends(role_required(["student","staff"]))
 ):
     data.user_id = current_user.id
     temp_booking = await create_or_update_temp_booking(data.dict())

@@ -19,7 +19,8 @@ const Navbar = () => {
     const isActive = (path) => location.pathname === path;
 
     const first_name = currentUser ? `${currentUser.first_name}`.trim() : "";
-    const avatar = buildPhotoUrl(currentUser?.photo.filename, "user_photo", first_name);
+    const avatar = buildPhotoUrl(currentUser?.photo?.filename, "user_photo", first_name);
+
     const email = currentUser?.email || "";
     const role = currentUser?.role || "Student";
 
@@ -34,7 +35,7 @@ const Navbar = () => {
     const profileMenuItems = [
         { name: "Profile", path: "/profile", icon: "person" },
         { name: "Saved Items", path: "/saved-items", icon: "favorite" },
-                { name: "My Bookings", path: "/my-bookings", icon: "bookmarks" },
+        { name: "My Bookings", path: "/my-bookings", icon: "bookmarks" },
         { name: "Logout", icon: "logout", isLogout: true },
     ];
 

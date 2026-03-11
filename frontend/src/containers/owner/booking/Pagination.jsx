@@ -1,11 +1,10 @@
-// components/common/BookingPagination.jsx
 import React from 'react';
 
-const BookingPagination = ({ 
-    currentPage, 
-    totalPages, 
-    totalItems, 
-    itemsPerPage, 
+const BookingPagination = ({
+    currentPage,
+    totalPages,
+    totalItems,
+    itemsPerPage,
     onPageChange,
     showItemCount = true,
     itemName = "items"
@@ -44,20 +43,20 @@ const BookingPagination = ({
 
     return (
         <div className="mt-6 flex items-center justify-between text-xs font-medium text-slate-500">
-            {showItemCount && (
+            {showItemCount && totalItems > 0 && (
                 <p>
                     Showing {startItem} to {endItem} of {totalItems} {itemName}
                 </p>
             )}
-            
+
             <div className="flex items-center gap-1 ml-auto">
                 {/* Previous Button */}
                 <button
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                     className={`size-8 rounded border border-slate-200 flex items-center justify-center transition-colors
-                        ${currentPage === 1 
-                            ? 'opacity-50 cursor-not-allowed bg-slate-50' 
+                        ${currentPage === 1
+                            ? 'opacity-50 cursor-not-allowed bg-slate-50'
                             : 'hover:bg-slate-50'
                         }`}
                 >
@@ -91,8 +90,8 @@ const BookingPagination = ({
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     className={`size-8 rounded border border-slate-200 flex items-center justify-center transition-colors
-                        ${currentPage === totalPages 
-                            ? 'opacity-50 cursor-not-allowed bg-slate-50' 
+                        ${currentPage === totalPages
+                            ? 'opacity-50 cursor-not-allowed bg-slate-50'
                             : 'hover:bg-slate-50'
                         }`}
                 >

@@ -17,7 +17,7 @@ router = APIRouter(prefix="/booking", tags=["Booking"])
 @router.post("/")
 async def create_booking_endpoint(
     booking_request: BookingCreateRequest,
-    current_user=Depends(role_required(["student","staff"]))
+    current_user=Depends(role_required(["student","staff",]))
 ):
     booking_request.user_id = current_user.id
     return await create_booking(booking_request)
