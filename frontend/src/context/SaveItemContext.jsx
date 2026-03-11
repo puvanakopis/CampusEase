@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect ,useContext} from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import { saveItemApi } from "../service/saveItemService";
 import { AuthContext } from "./AuthContext";
@@ -29,17 +29,6 @@ export const SaveItemProvider = ({ children }) => {
             setLoading(false);
         }
     };
-
-    useEffect(() => {
-        if (!authLoading && currentUser) {
-            const role = currentUser.role;
-            if (role === "student" || role === "staff") {
-                fetchSavedItems();
-            }
-        }
-    }, [authLoading, currentUser]);
-
-
 
     // ------------------ SAVE / UNSAVE ACCOMMODATION ------------------
     const saveAccommodation = async (itemId) => {
@@ -98,6 +87,20 @@ export const SaveItemProvider = ({ children }) => {
             throw err;
         }
     };
+
+    useEffect(() => {
+        if (!authLoading && currentUser) {
+            const role = currentUser.role;
+            if (role === "student" || role === "staff") {
+                fetchSavedItems();
+                saveTransport();
+                unsaveTransport();
+                saveAccommodation();
+                unsaveAccommodation();
+            }
+        }
+    }, [authLoading, currentUser]);
+
 
     return (
         <SaveItemContext.Provider

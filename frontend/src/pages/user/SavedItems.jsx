@@ -1,27 +1,52 @@
 import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import SavedItemsPage from "../../containers/user/account/SavedItemsPage";
 import Sidebar from "../../components/user/Sidebar";
+import SavedItemsPage from "../../containers/user/account/SavedItemsPage";
 import { SaveItemContext } from "../../context/SaveItemContext";
 import { AuthContext } from "../../context/AuthContext";
+import useNavigateTo from "../../hooks/useNavigateTo";
 
 function SavedItems() {
+
     const {
         savedAccommodations,
         savedTransports,
         loading: saveItemsLoading,
         unsaveAccommodation,
-        unsaveTransport
+        unsaveTransport,
     } = useContext(SaveItemContext);
 
     const { currentUser, authLoading } = useContext(AuthContext);
+
+    const navigateTo = useNavigateTo();
+
+
+    // ---------------- VIEW DETAILS ----------------
+    const handleViewDetails = (id, type) => {
+        navigateTo(`/${type}/${id}`);
+    };
+
+
+    // ---------------- REMOVE ACCOMMODATION ----------------
+    const handleRemoveAccommodation = async (id, e) => {
+        e.stopPropagation();
+        await unsaveAccommodation(id);
+    };
+
+
+    // ---------------- REMOVE VEHICLE ----------------
+    const handleRemoveVehicle = async (id, e) => {
+        e.stopPropagation();
+        await unsaveTransport(id);
+    };
+
 
     if (authLoading) {
         return (
             <div className="bg-[#f6f7f8] min-h-screen flex items-center justify-center">
                 <div className="text-center">
-                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
-                    <p className="mt-2 text-slate-600">Loading...</p>
+                    <div className="h-8 w-8 border-4 border-primary border-r-transparent rounded-full animate-spin mx-auto"></div>
+                    <p className="text-slate-500 mt-2">Loading...</p>
                 </div>
             </div>
         );
@@ -33,16 +58,19 @@ function SavedItems() {
 
     return (
         <div className="bg-[#f6f7f8] min-h-screen">
-            <div className="px-4 py-10 md:px-24 max-w-8xl mx-auto gap-6 flex">
+            <div className="max-w-8xl mx-auto px-4 md:px-24 py-10 flex gap-6">
+
                 <Sidebar />
+
                 <SavedItemsPage
                     accommodations={savedAccommodations}
                     vehicles={savedTransports}
                     loading={saveItemsLoading}
-                    onUnsaveAccommodation={unsaveAccommodation}
-                    onUnsaveTransport={unsaveTransport}
-                    currentUser={currentUser}
+                    onView={handleViewDetails}
+                    onRemoveAccommodation={handleRemoveAccommodation}
+                    onRemoveVehicle={handleRemoveVehicle}
                 />
+
             </div>
         </div>
     );

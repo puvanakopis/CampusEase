@@ -6,7 +6,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 function MyBookings() {
 
-    const { bookings, loading, getUserBookings, updateBooking } = useContext(BookingContext);
+    const { bookings, getUserBookings, updateBooking } = useContext(BookingContext);
     const { currentUser } = useContext(AuthContext);
 
     useEffect(() => {
