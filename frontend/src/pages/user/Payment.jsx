@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import SecureCheckout from "../../containers/user/payment/SecureCheckout";
 import PaymentSummary from "../../containers/user/payment/PaymentSummary";
 import BookingSuccess from "../../containers/user/payment/BookingSuccess";
@@ -7,15 +6,19 @@ import { TempBookingContext } from "../../context/TempBookingContext";
 import { BookingContext } from "../../context/BookingContext";
 import { AuthContext } from "../../context/AuthContext";
 import Loading from "../../components/user/Loading";
-import { CURRENCY, PAYMENT } from "../../constants/constants"; 
+import { CURRENCY, PAYMENT } from "../../constants/constants";
+import useNavigateTo from "../../hooks/useNavigateTo";
 
 const Payment = () => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [processing, setProcessing] = useState(false);
     const [createdBooking, setCreatedBooking] = useState(null);
-    const navigate = useNavigate();
 
-    const { tempBooking, fetchTempBooking, loading: tempLoading } = useContext(TempBookingContext);
+    const navigateTo = useNavigateTo();
+
+    const { tempBooking, fetchTempBooking, loading: tempLoading } =
+        useContext(TempBookingContext);
+
     const { createBooking } = useContext(BookingContext);
     const { currentUser } = useContext(AuthContext);
 
@@ -27,10 +30,12 @@ const Payment = () => {
 
     useEffect(() => {
         if (!tempLoading && !tempBooking && currentUser) {
-            console.error("No active booking found. Please select a property first.");
-            navigate("/");
+            console.error(
+                "No active booking found. Please select a property first."
+            );
+            navigateTo("/");
         }
-    }, [tempBooking, tempLoading, currentUser, navigate]);
+    }, [tempBooking, tempLoading, currentUser]);
 
     const handleConfirm = async (paymentData) => {
         if (!tempBooking) {
@@ -52,7 +57,7 @@ const Payment = () => {
                 duration: tempBooking.duration,
                 total_price: tempBooking.total_price,
                 status: "pending",
-                payment: paymentData
+                payment: paymentData,
             };
 
             const newBooking = await createBooking(bookingPayload);
@@ -70,20 +75,30 @@ const Payment = () => {
 
     const handleCloseModal = () => {
         setShowSuccess(false);
-        navigate("/");
+        navigateTo("/");
     };
 
     if (tempLoading) {
-        return <Loading mainText="Loading booking details..." subText="Please wait" />;
+        return (
+            <Loading
+                mainText="Loading booking details..."
+                subText="Please wait"
+            />
+        );
     }
 
     if (!tempBooking && !tempLoading) {
         return (
             <div className="py-20 text-center">
-                <h2 className="text-2xl font-semibold text-gray-700">No Active Booking</h2>
-                <p className="text-gray-500 mt-2">Please select a property to book first.</p>
+                <h2 className="text-2xl font-semibold text-gray-700">
+                    No Active Booking
+                </h2>
+                <p className="text-gray-500 mt-2">
+                    Please select a property to book first.
+                </p>
+
                 <button
-                    onClick={() => navigate("/")}
+                    onClick={() => navigateTo("/")}
                     className="mt-4 bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90"
                 >
                     Browse Properties
@@ -91,8 +106,6 @@ const Payment = () => {
             </div>
         );
     }
-
-
 
     return (
         <div className="bg-[#f6f7f8] min-h-screen px-4 py-10 md:px-24 max-w-8xl mx-auto">
@@ -108,8 +121,8 @@ const Payment = () => {
                         tempBooking={tempBooking}
                         onConfirm={handleConfirm}
                         processing={processing}
-                        currency={CURRENCY}        
-                        paymentConstants={PAYMENT} 
+                        currency={CURRENCY}
+                        paymentConstants={PAYMENT}
                     />
                 </div>
 
@@ -134,6 +147,7 @@ const Payment = () => {
                                 <h3 className="text-lg font-bold text-slate-900">
                                     Booking Confirmed
                                 </h3>
+
                                 <button
                                     onClick={handleCloseModal}
                                     className="text-slate-400 hover:text-slate-600 transition-colors"
@@ -149,8 +163,8 @@ const Payment = () => {
                         <div className="px-6 py-4">
                             <BookingSuccess
                                 booking={createdBooking || tempBooking}
-                                currency={CURRENCY}         
-                                paymentConstants={PAYMENT}  
+                                currency={CURRENCY}
+                                paymentConstants={PAYMENT}
                             />
                         </div>
 
