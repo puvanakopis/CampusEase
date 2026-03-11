@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import Heading from "../../containers/owner/common/Heading";
 import StatsCards from "../../containers/owner/common/StatsCards";
 import BookingTabs from "../../containers/owner/common/Tabs";
@@ -13,7 +13,7 @@ import { BookingContext } from "../../context/BookingContext";
 import { AuthContext } from "../../context/AuthContext";
 
 const OwnerBooking = () => {
-    const [activeTab, setActiveTab] = useState("pending");
+    const [activeTab, setActiveTab] = useState("all");
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [showAcceptPopup, setShowAcceptPopup] = useState(false);
     const [showDeclinePopup, setShowDeclinePopup] = useState(false);
@@ -36,18 +36,20 @@ const OwnerBooking = () => {
     }, [activeTab]);
 
     // Filter bookings by status
-    const pendingList = bookings.filter(b => b.status === "pending");
-    const activeList = bookings.filter(b => b.status === "confirmed");
-    const completedList = bookings.filter(b => b.status === "completed");
-    const canceledList = bookings.filter(b => b.status === "canceled");
+    const allList = useMemo(() => bookings, [bookings]);
+    const pendingList = useMemo(() => bookings.filter(b => b.status === "pending"), [bookings]);
+    const activeList = useMemo(() => bookings.filter(b => b.status === "confirmed"), [bookings]);
+    const completedList = useMemo(() => bookings.filter(b => b.status === "completed"), [bookings]);
+    const canceledList = useMemo(() => bookings.filter(b => b.status === "canceled"), [bookings]);
 
     const getCurrentList = () => {
         switch (activeTab) {
+            case "all": return allList;
             case "pending": return pendingList;
             case "active": return activeList;
             case "completed": return completedList;
             case "canceled": return canceledList;
-            default: return pendingList;
+            default: return allList;
         }
     };
 
@@ -66,6 +68,7 @@ const OwnerBooking = () => {
     };
 
     const tabs = [
+        { id: "all", label: "All Bookings", count: allList.length },
         { id: "pending", label: "Pending Requests", count: pendingList.length },
         { id: "active", label: "Active Bookings", count: activeList.length },
         { id: "completed", label: "Completed Bookings", count: completedList.length },
@@ -176,6 +179,7 @@ const OwnerBooking = () => {
 
     const getItemName = () => {
         switch (activeTab) {
+            case "all": return "bookings";
             case "pending": return "pending bookings";
             case "active": return "active bookings";
             case "completed": return "completed bookings";

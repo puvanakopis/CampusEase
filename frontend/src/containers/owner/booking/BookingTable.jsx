@@ -57,6 +57,7 @@ const BookingTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
+                    {activeTab === "all" && "All Bookings"}
                     {activeTab === "pending" && "Pending Requests"}
                     {activeTab === "active" && "Active Bookings"}
                     {activeTab === "completed" && "Completed Bookings"}
@@ -125,6 +126,9 @@ const BookingTable = ({
                                         </div>
                                         <div>
                                             <p className="text-sm font-medium text-slate-900">
+                                                User {booking.user_id?.slice(-4) || 'N/A'}
+                                            </p>
+                                            <p className="text-[10px] text-slate-400">
                                                 ID: {booking.user_id || 'N/A'}
                                             </p>
                                         </div>
@@ -230,7 +234,7 @@ const BookingTable = ({
                                         <p className="text-sm">
                                             {searchQuery || filterType !== "All"
                                                 ? "No bookings match your filters"
-                                                : `No ${activeTab} bookings found`}
+                                                : `No ${activeTab === "all" ? "" : activeTab} bookings found`}
                                         </p>
                                         <p className="text-xs text-slate-500 mt-1">
                                             {searchQuery || filterType !== "All"
