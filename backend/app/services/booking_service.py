@@ -4,7 +4,8 @@ from app.db.mongodb import (
     booking_collection,
     vehicles_collection,
     accommodations_collection,
-    owners_collection
+    owners_collection,
+    users_collection
 )
 from app.services.counter_service import get_next_sequence
 from app.schemas.booking_schema import (
@@ -59,6 +60,24 @@ async def enrich_booking_response(booking_data: dict) -> BookingResponse:
     elif booking_data["booking_type"] == "accommodation":
         doc = await accommodations_collection.find_one({"_id": booking_data["resource_id"]})
         if doc:
+            # Enrich reviews for accommodations
+            reviews = []
+            for rev in doc.get("reviews", []):
+                user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
+                user_doc = await users_collection.find_one({"_id": str(user_id)}) if user_id else None
+                user_obj = None
+                if user_doc:
+                    user_obj = {
+                        "id": user_doc["_id"],
+                        "first_name": user_doc.get("first_name", ""),
+                        "role": user_doc.get("role", ""),
+                        "photo": user_doc.get("photo")
+                    }
+                rev_copy = rev.copy()
+                rev_copy["user"] = user_obj
+                reviews.append(rev_copy)
+            doc["reviews"] = reviews
+
             accom_obj = AccommodationResponse(**doc)
 
     return BookingResponse(

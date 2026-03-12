@@ -61,7 +61,7 @@ class UserResponse(BaseModel):
     photo: Optional[UserPhoto] = None
 
 class AccommodationReview(BaseModel):
-    user : UserResponse
+    user : Optional[UserResponse]
     message: str
     rating: float = Field(..., ge=0, le=5)
     created_at: datetime = Field(default_factory=datetime.utcnow)
