@@ -25,6 +25,11 @@ export const accommodationApi = {
         return res.data;
     },
 
+    addReview: async (accommodationId, reviewData) => {
+        const res = await axiosAuth.post(`/accommodation/${accommodationId}/review`, reviewData);
+        return res.data;
+    },
+
     updateAccommodation: async (id, formData) => {
         const res = await axiosAuth.patch(`/accommodation/${id}`, formData, {
             headers: {
