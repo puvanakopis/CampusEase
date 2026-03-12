@@ -125,7 +125,7 @@ class AccommodationResponse(BaseModel):
     status: AccommodationStatus
     reject_reason: Optional[str] = None
     images: List[AccommodationImageSchema] = []
-    reviews: List[AccommodationReview] = []
+    reviews: Optional[List[AccommodationReview]] = []
     amenities: List[AccommodationAmenitySchema] = []
     available_users: int
     total_users: int 

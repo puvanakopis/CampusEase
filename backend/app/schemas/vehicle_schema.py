@@ -75,7 +75,7 @@ class UserResponse(BaseModel):
 
 
 class VehicleReview(BaseModel):
-    user: UserResponse
+    user: Optional[UserResponse]
     message: str
     rating: float = Field(..., ge=0, le=5)
     created_at: datetime = Field(default_factory=datetime.utcnow)
@@ -148,7 +148,7 @@ class VehicleResponse(BaseModel):
     reject_reason: Optional[str]  = None
     images: List[VehicleImageSchema] = []
     amenities: Optional[List[str]] = []
-    reviews: List[VehicleReview] = []
+    reviews: Optional[List[VehicleReview]] = []
     address: Optional[VehicleAddressSchema]
     location: Optional[VehicleLocationSchema]
     time_from_uni: Optional[VehicleDistance]
