@@ -1,6 +1,5 @@
-from typing import List, Optional
+from typing import List
 from pydantic import BaseModel, Field
-from datetime import datetime
 from app.schemas.vehicle_schema import VehicleResponse
 from app.schemas.accommodation_schema import AccommodationResponse
 

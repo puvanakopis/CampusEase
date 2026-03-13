@@ -75,7 +75,6 @@ const AccommodationDetails = () => {
             ).toFixed(2)
             : 0;
 
-    // Check if this accommodation is already saved
     const isSaved = savedAccommodations.some((item) => item._id === accommodationData._id);
 
     return (

@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
-const MyBookingsPage = ({ bookings, loading, onStatusUpdate }) => {
+const MyBookingsPage = ({ bookings, loading, onStatusUpdate, onReviewSubmit }) => {
+
+  const [selectedBookingForAction, setSelectedBookingForAction] = useState(null);
+  const [actionType, setActionType] = useState(null); // 'cancel' or 'complete'
+
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const pendingBookings = bookings.filter(b => b.status === "pending");
   const activeBookings = bookings.filter(b => b.status === "confirmed");
@@ -59,6 +66,46 @@ const MyBookingsPage = ({ bookings, loading, onStatusUpdate }) => {
         return "bg-red-100 text-red-700";
       default:
         return "bg-slate-100 text-slate-600";
+    }
+  };
+
+  const handleActionClick = (bookingId, action) => {
+    const booking = bookings.find(b => b._id === bookingId);
+    if (!booking) return;
+    setSelectedBookingForAction(booking);
+    setActionType(action);
+    if (action === "complete") {
+      setReviewRating(5);
+      setReviewComment("");
+    }
+  };
+
+  const closeModals = () => {
+    setSelectedBookingForAction(null);
+    setActionType(null);
+    setReviewRating(5);
+    setReviewComment("");
+    setIsSubmitting(false);
+  };
+
+  const handleConfirmAction = async () => {
+    if (!selectedBookingForAction) return;
+
+    setIsSubmitting(true);
+    try {
+      if (actionType === "cancel") {
+        await onStatusUpdate(selectedBookingForAction._id, "canceled");
+      } else if (actionType === "complete") {
+        const reviewData = {
+          rating: reviewRating,
+          message: reviewComment
+        };
+        await onReviewSubmit(selectedBookingForAction, reviewData);
+      }
+      closeModals();
+    } catch (err) {
+      console.error("Action failed:", err);
+      setIsSubmitting(false);
     }
   };
 
@@ -172,10 +219,12 @@ const MyBookingsPage = ({ bookings, loading, onStatusUpdate }) => {
                 {booking.status === "pending" && (
                   <select
                     value={booking.status}
-                    onChange={(e) =>
-                      onStatusUpdate(booking._id, e.target.value)
-                    }
-                    className="border border-slate-200 rounded-lg px-2 py-1 text-sm"
+                    onChange={(e) => {
+                      if (e.target.value === "canceled") {
+                        handleActionClick(booking._id, "cancel");
+                      }
+                    }}
+                    className="border border-slate-200 rounded-lg px-2 py-1 text-sm bg-white"
                   >
                     <option value="pending">Pending</option>
                     <option value="canceled">Cancel</option>
@@ -185,10 +234,14 @@ const MyBookingsPage = ({ bookings, loading, onStatusUpdate }) => {
                 {booking.status === "confirmed" && (
                   <select
                     value=""
-                    onChange={(e) =>
-                      onStatusUpdate(booking._id, e.target.value)
-                    }
-                    className="border border-slate-200 rounded-lg px-2 py-1 text-sm"
+                    onChange={(e) => {
+                      if (e.target.value === "completed") {
+                        handleActionClick(booking._id, "complete");
+                      } else if (e.target.value === "canceled") {
+                        handleActionClick(booking._id, "cancel");
+                      }
+                    }}
+                    className="border border-slate-200 rounded-lg px-2 py-1 text-sm bg-white"
                   >
                     <option value="">Select Status</option>
                     <option value="completed">Completed</option>
@@ -217,14 +270,14 @@ const MyBookingsPage = ({ bookings, loading, onStatusUpdate }) => {
   );
 
   const renderSection = (title, icon, list) => (
-    <section className="space-y-4">
+    <section className="pt-8">
 
       <div className="flex items-center gap-2 px-1">
         <span className="material-symbols-outlined text-primary text-lg">
           {icon}
         </span>
 
-        <h2 className="text-lg font-bold text-slate-900">{title}</h2>
+        <h2 className="text-lg font-bold text-slate-900 pb-4">{title}</h2>
 
         <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
           {list.length}
@@ -245,7 +298,7 @@ const MyBookingsPage = ({ bookings, loading, onStatusUpdate }) => {
   );
 
   return (
-    <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 space-y-8">
+    <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10">
 
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold text-slate-900">
@@ -263,12 +316,103 @@ const MyBookingsPage = ({ bookings, loading, onStatusUpdate }) => {
       )}
 
       {!loading && (
-        <>
+        <div >
           {renderSection("Pending Bookings", "pending_actions", pendingBookings)}
           {renderSection("Active Bookings", "event_upcoming", activeBookings)}
           {renderSection("Completed Bookings", "history", completedBookings)}
           {renderSection("Canceled Bookings", "cancel", canceledBookings)}
-        </>
+        </div>
+      )}
+
+      {/* Action Modals */}
+      {selectedBookingForAction && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+
+            <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+              <h3 className="font-bold text-lg text-slate-800">
+                {actionType === "cancel" ? "Cancel Booking" : "Complete & Review"}
+              </h3>
+              <button onClick={closeModals} className="text-slate-400 hover:text-slate-600">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            <div className="p-6">
+              {actionType === "cancel" && (
+                <p className="text-slate-600">
+                  Are you sure you want to cancel the booking for <span className="font-semibold">{getResourceName(selectedBookingForAction)}</span>?
+                  This action cannot be undone.
+                </p>
+              )}
+
+              {actionType === "complete" && (
+                <div className="space-y-4">
+                  <p className="text-slate-600 text-sm">
+                    How was your experience with <span className="font-semibold">{getResourceName(selectedBookingForAction)}</span>? Please leave a review to complete this booking.
+                  </p>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Rating</label>
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setReviewRating(star)}
+                          className="focus:outline-none"
+                        >
+                          <span className={`material-symbols-outlined text-2xl ${star <= reviewRating ? "text-yellow-400 fill-current" : "text-slate-300"
+                            }`}
+                            style={{ fontVariationSettings: star <= reviewRating ? "'FILL' 1" : "'FILL' 0" }}
+                          >
+                            star
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="review-comment" className="block text-sm font-medium text-slate-700 mb-1">Comment</label>
+                    <textarea
+                      id="review-comment"
+                      rows={4}
+                      className="w-full border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                      placeholder="Share details of your experience..."
+                      value={reviewComment}
+                      onChange={(e) => setReviewComment(e.target.value)}
+                    ></textarea>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+              <button
+                onClick={closeModals}
+                disabled={isSubmitting}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors"
+              >
+                Go Back
+              </button>
+              <button
+                onClick={handleConfirmAction}
+                disabled={isSubmitting || (actionType === "complete" && !reviewComment.trim())}
+                className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors ${actionType === "cancel"
+                  ? "bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-600/20"
+                  : "bg-primary hover:bg-primary-dark focus:ring-2 focus:ring-primary/20"
+                  } disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
+              >
+                {isSubmitting && (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                )}
+                {actionType === "cancel" ? "Confirm Cancel" : "Submit & Complete"}
+              </button>
+            </div>
+
+          </div>
+        </div>
       )}
 
     </div>

@@ -94,6 +94,28 @@ export const AccommodationProvider = ({ children }) => {
     }
   };
 
+  const addAccommodationReview = async (accommodationId, reviewData) => {
+    const toastId = toast.loading("Submitting review...");
+    try {
+      const res = await accommodationApi.addReview(accommodationId, reviewData);
+
+      if (!res.success) {
+        toast.error(res.message, { id: toastId });
+        throw new Error(res.message);
+      }
+
+      toast.success("Review added successfully!", { id: toastId });
+
+      // Refresh the accommodation data to show the new review
+      await fetchAccommodations();
+      
+      return res.data;
+    } catch (err) {
+      toast.error(err.message || "Failed to add review", { id: toastId });
+      throw err;
+    }
+  };
+
   const updateAccommodation = async (id, payload) => {
     const toastId = toast.loading("Updating accommodation...");
     try {
@@ -161,6 +183,7 @@ export const AccommodationProvider = ({ children }) => {
 
         createAccommodation,
         getAccommodationById,
+        addAccommodationReview,
         updateAccommodation,
         deleteAccommodation,
       }}

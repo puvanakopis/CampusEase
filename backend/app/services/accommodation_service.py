@@ -152,6 +152,45 @@ async def get_accommodations_by_owner(owner_id: str) -> dict:
     }
 
 
+async def add_accommodation_review(
+    accom_id: str,
+    review_request,
+    current_user
+) -> dict:
+
+    accom = await accommodations_collection.find_one({"_id": accom_id})
+    if not accom:
+        raise HTTPException(status_code=404, detail="Accommodation not found")
+
+    review_data = {
+        "user_id": current_user.id,
+        "message": review_request.message,
+        "rating": review_request.rating,
+        "created_at": datetime.utcnow()
+    }
+
+    await accommodations_collection.update_one(
+        {"_id": accom_id},
+        {"$push": {"reviews": review_data}}
+    )
+
+    user_obj = await get_user_by_id(current_user.id)
+
+    review_obj = AccommodationReview(
+        user=user_obj,
+        message=review_request.message,
+        rating=review_request.rating,
+        created_at=review_data["created_at"]
+    )
+
+    return {
+        "success": True,
+        "status_code": 201,
+        "message": "Review added successfully",
+        "data": review_obj.dict()
+    }
+
+
 async def update_accommodation(accom_id: str, update_request: AccommodationUpdateRequest, files: Optional[List[UploadFile]] = None) -> dict:
     doc = await accommodations_collection.find_one({"_id": accom_id})
     if not doc:

@@ -101,6 +101,28 @@ export const VehicleProvider = ({ children }) => {
         }
     };
 
+    const addVehicleReview = async (vehicleId, reviewData) => {
+        const toastId = toast.loading("Submitting review...");
+        try {
+            const res = await vehicleApi.addReview(vehicleId, reviewData);
+
+            if (!res.success) {
+                toast.error(res.message, { id: toastId });
+                throw new Error(res.message);
+            }
+
+            toast.success("Review added successfully!", { id: toastId });
+
+            // Refresh the vehicle data to show the new review
+            await fetchVehicles();
+
+            return res.data;
+        } catch (err) {
+            toast.error(err.message || "Failed to add review", { id: toastId });
+            throw err;
+        }
+    };
+
     const updateVehicle = async (id, payload) => {
         const toastId = toast.loading("Updating vehicle...");
 
@@ -168,6 +190,7 @@ export const VehicleProvider = ({ children }) => {
                 fetchMyVehicles,
                 createVehicle,
                 getVehicleById,
+                addVehicleReview,
                 updateVehicle,
                 deleteVehicle,
             }}

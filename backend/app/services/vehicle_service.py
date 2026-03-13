@@ -162,6 +162,42 @@ async def get_vehicle_by_id(vehicle_id: str):
     }
 
 
+async def add_vehicle_review(vehicle_id: str, review_request, current_user):
+
+    vehicle = await vehicles_collection.find_one({"_id": vehicle_id})
+
+    if not vehicle:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+
+    review_data = {
+        "user_id": current_user.id,
+        "message": review_request.message,
+        "rating": review_request.rating,
+        "created_at": datetime.utcnow()
+    }
+
+    await vehicles_collection.update_one(
+        {"_id": vehicle_id},
+        {"$push": {"reviews": review_data}}
+    )
+
+    user_obj = await get_user_by_id(current_user.id)
+
+    review_obj = VehicleReview(
+        user=user_obj,
+        message=review_request.message,
+        rating=review_request.rating,
+        created_at=review_data["created_at"]
+    )
+
+    return {
+        "success": True,
+        "status_code": 201,
+        "message": "Vehicle review added successfully",
+        "data": review_obj.dict()
+    }
+
+
 async def update_vehicle(vehicle_id: str, update_request: VehicleUpdateRequest, files: Optional[List[UploadFile]] = None):
 
     doc = await vehicles_collection.find_one({"_id": vehicle_id})
