@@ -60,7 +60,9 @@ import AdminProfile from "./pages/admin/AdminProfile";
 import AdminSupport from "./pages/admin/Support";
 import AdminNotFound from "./pages/admin/AdminNotFound";
 
+// Components
 import Loading from "./components/user/Loading";
+import ChatBot from "./components/user/ChatBot"; // <-- Import your ChatBot
 
 function App() {
   const { currentUser, authLoading } = useContext(AuthContext);
@@ -104,6 +106,9 @@ function App() {
         return <Footer />;
     }
   };
+
+  // Only show ChatBot for student and staff
+  const showChatBot = role === "student" || role === "staff";
 
   return (
     <>
@@ -190,6 +195,13 @@ function App() {
           }
         />
       </Routes>
+
+      {/* ChatBot only for student and staff */}
+      {showChatBot && (
+        <div className="fixed bottom-5 right-5 z-50 w-[350px] md:w-[400px]">
+          <ChatBot />
+        </div>
+      )}
 
       {renderFooter()}
     </>

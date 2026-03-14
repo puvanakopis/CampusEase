@@ -123,5 +123,5 @@ def query_gemini(user_id: str, question: str, top_k: int = 3):
     answer = response.text.strip()
 
     memory.add_ai_message(user_id, answer)
-
+    print(f"User: {question}\nAI: {answer}\n---")
     return answer

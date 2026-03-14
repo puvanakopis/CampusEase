@@ -2,7 +2,7 @@ def accommodation_text(data: dict):
     amenities = " ".join([a["name"] for a in data.get("amenities", [])])
     address = data.get("address") or {}
     city = address.get("city", "")
-    
+
     return f"""
     Accommodation Name: {data.get("name")}
     Type: {data.get("accommodation_type")}
@@ -15,6 +15,7 @@ def accommodation_text(data: dict):
     Amenities: {amenities}
     City: {city}
     """
+
 
 def vehicle_text(data: dict):
     return f"""
@@ -29,6 +30,7 @@ def vehicle_text(data: dict):
     Rent Per Day: {data.get("day_rent")}
     Description: {data.get("description")}
     """
+
 
 def owner_text(data: dict):
     return f"""
