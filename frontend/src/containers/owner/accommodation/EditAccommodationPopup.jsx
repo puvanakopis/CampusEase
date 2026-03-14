@@ -72,10 +72,10 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
     };
 
     const handleAddAmenity = () => {
-        if (newAmenity.trim() && !formData.amenities.some(a => a.name === newAmenity.trim())) {
+        if (newAmenity.trim() && !formData.amenities.includes(newAmenity.trim())) {
             setFormData(prev => ({
                 ...prev,
-                amenities: [...prev.amenities, { name: newAmenity.trim() }]
+                amenities: [...prev.amenities, newAmenity.trim()]
             }));
             setNewAmenity("");
         }
@@ -84,7 +84,7 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
     const handleRemoveAmenity = (amenityName) => {
         setFormData(prev => ({
             ...prev,
-            amenities: prev.amenities.filter(a => a.name !== amenityName)
+            amenities: prev.amenities.filter(a => a !== amenityName)
         }));
     };
 
@@ -441,10 +441,10 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
                 <div className="flex flex-wrap gap-2">
                     {formData.amenities.map((amenity, index) => (
                         <span key={index} className="inline-flex items-center gap-1 bg-white px-3 py-1.5 rounded-lg text-sm text-slate-700 border border-slate-200">
-                            {amenity.name}
+                            {amenity}
                             <button
                                 type="button"
-                                onClick={() => handleRemoveAmenity(amenity.name)}
+                                onClick={() => handleRemoveAmenity(amenity)}
                                 className="text-slate-500 hover:text-slate-700"
                             >
                                 <span className="material-symbols-outlined text-sm">close</span>

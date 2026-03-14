@@ -45,7 +45,7 @@ const AccommodationCard = ({ item }) => {
                     <div className="flex gap-2 flex-wrap mt-2 text-xs text-slate-500">
                         {item.amenities.map((amenity, idx) => (
                             <span key={idx} className="bg-slate-100 px-2 py-1 rounded">
-                                {amenity.name}
+                                {amenity}
                             </span>
                         ))}
                     </div>

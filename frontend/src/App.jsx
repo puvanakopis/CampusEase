@@ -62,7 +62,7 @@ import AdminNotFound from "./pages/admin/AdminNotFound";
 
 // Components
 import Loading from "./components/user/Loading";
-import ChatBot from "./components/user/ChatBot"; // <-- Import your ChatBot
+import ChatBot from "./components/user/ChatBot"; 
 
 function App() {
   const { currentUser, authLoading } = useContext(AuthContext);

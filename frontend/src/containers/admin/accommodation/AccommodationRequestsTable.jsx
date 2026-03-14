@@ -105,7 +105,7 @@ const AccommodationRequestsTable = ({
                                     <div className="flex items-start gap-3">
                                         <div className="size-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={buildPhotoUrl(request.images[0]?.filename, "accommodation")}
+                                                src={buildPhotoUrl(request.images?.[0]?.filename, "accommodation")}
                                                 alt={request.name}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {
@@ -192,7 +192,7 @@ const AccommodationRequestsTable = ({
                                                         key={idx}
                                                         className="text-[10px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded"
                                                     >
-                                                        {amenity.name || amenity}
+                                                        {amenity}
                                                     </span>
                                                 ))}
                                                 {request.amenities?.length > 3 && (

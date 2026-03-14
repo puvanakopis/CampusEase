@@ -14,7 +14,7 @@ const AmenitiesList = ({ amenities }) => {
         {visibleAmenities.map((amenity, index) => (
           <div key={index} className="flex items-center gap-3 text-slate-700">
             <span className="material-symbols-outlined text-xl text-green-500">check_circle</span>
-            <span>{amenity.name}</span>
+            <span>{amenity}</span>
           </div>
         ))}
       </div>
@@ -48,7 +48,7 @@ const AmenitiesList = ({ amenities }) => {
                     <span className="material-symbols-outlined text-xl text-green-500">
                       check_circle
                     </span>
-                    <span>{amenity.name}</span>
+                    <span>{amenity}</span>
                   </div>
                 ))}
               </div>

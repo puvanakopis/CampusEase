@@ -1,5 +1,5 @@
 def accommodation_text(data: dict):
-    amenities = " ".join([a["name"] for a in data.get("amenities", [])])
+    amenities = " ".join(data.get("amenities", []))
     address = data.get("address") or {}
     city = address.get("city", "")
 
