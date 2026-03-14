@@ -40,9 +40,10 @@ class UserResponse(BaseModel):
     created_at: datetime
     last_updated: datetime
 
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+    model_config = {
+        "from_attributes": True,  
+        "validate_by_name": True 
+    }
 
 
 class UserUpdateRequest(BaseModel):

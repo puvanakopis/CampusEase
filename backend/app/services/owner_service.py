@@ -1,16 +1,15 @@
 from datetime import datetime
 from fastapi import HTTPException
 from typing import List
-
 from app.db.mongodb import (
     owners_collection,
     accommodations_collection,
     vehicles_collection
 )
-
 from app.schemas.owner_schema import OwnerResponse, OwnerUpdateRequest
 from app.schemas.accommodation_schema import AccommodationResponse
 from app.schemas.vehicle_schema import VehicleResponse
+from app.ai.chroma_service import add_owner_vector, update_owner_vector, delete_owner_vector
 
 
 async def get_all_owners():
@@ -23,7 +22,6 @@ async def get_all_owners():
 
         owner_id = doc["_id"]
 
-        # GET ACCOMMODATIONS
         accommodations = []
         accom_cursor = accommodations_collection.find({"owner_id": owner_id})
 
@@ -31,7 +29,6 @@ async def get_all_owners():
             accom_obj = AccommodationResponse(**accom, owner=None, reviews=[])
             accommodations.append(accom_obj.dict(by_alias=True))
 
-        # GET VEHICLES
         vehicles = []
         vehicle_cursor = vehicles_collection.find({"owner_id": owner_id})
 
@@ -62,7 +59,6 @@ async def get_owner_by_id(owner_id: str):
     if not doc:
         raise HTTPException(status_code=404, detail="Owner not found")
 
-    # ACCOMMODATIONS
     accommodations = []
     accom_cursor = accommodations_collection.find({"owner_id": owner_id})
 
@@ -70,7 +66,6 @@ async def get_owner_by_id(owner_id: str):
         accom_obj = AccommodationResponse(**accom, owner=None, reviews=[])
         accommodations.append(accom_obj.dict(by_alias=True))
 
-    # VEHICLES
     vehicles = []
     vehicle_cursor = vehicles_collection.find({"owner_id": owner_id})
 
@@ -109,6 +104,8 @@ async def update_owner(owner_id: str, update_request: OwnerUpdateRequest):
     if result.modified_count == 0:
         raise HTTPException(status_code=400, detail="No changes applied")
 
+    await update_owner_vector({"_id": owner_id, **update_data})
+
     return await get_owner_by_id(owner_id)
 
 
@@ -118,6 +115,8 @@ async def delete_owner(owner_id: str):
 
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Owner not found")
+
+    await delete_owner_vector(owner_id)
 
     return {
         "success": True,

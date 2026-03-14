@@ -12,6 +12,7 @@ from app.schemas.accommodation_schema import (
     AccommodationReview,
     UserResponse
 )
+from app.ai.chroma_service import add_accommodation_vector, update_accommodation_vector, delete_accommodation_vector
 
 
 async def get_owner_by_id(owner_id: str) -> Optional[dict]:
@@ -31,7 +32,6 @@ async def get_user_by_id(user_id: str) -> Optional[UserResponse]:
         role=user_doc.get("role", ""),
         photo=user_doc.get("photo")
     )
-
 
 
 async def create_accommodation(accom_request: AccommodationCreateRequest, files: Optional[List[UploadFile]] = None) -> dict:
@@ -58,6 +58,8 @@ async def create_accommodation(accom_request: AccommodationCreateRequest, files:
     result = await accommodations_collection.insert_one(accom_data)
     if not result.acknowledged:
         raise HTTPException(status_code=500, detail="Failed to create accommodation")
+
+    await add_accommodation_vector(accom_data)
 
     accom_obj = AccommodationResponse(**accom_data, owner=None, reviews=[])
     return {
@@ -218,6 +220,9 @@ async def update_accommodation(accom_id: str, update_request: AccommodationUpdat
         raise HTTPException(status_code=400, detail="No changes were applied")
 
     updated_doc = await accommodations_collection.find_one({"_id": accom_id})
+
+    await update_accommodation_vector(updated_doc)
+
     owner_data = await get_owner_by_id(updated_doc.get("owner_id"))
 
     reviews = []
@@ -242,6 +247,8 @@ async def delete_accommodation(accom_id: str) -> dict:
     result = await accommodations_collection.delete_one({"_id": accom_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Accommodation not found")
+
+    await delete_accommodation_vector(accom_id)
 
     return {
         "success": True,

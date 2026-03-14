@@ -181,6 +181,6 @@ class VehicleUpdateRequest(BaseModel):
     address: Optional[VehicleAddressSchema] = None
     location: Optional[VehicleLocationSchema] = None
     time_from_uni: Optional[VehicleDistance] = None
-    remove_images: Optional[List[str]] = None  # NEW
+    remove_images: Optional[List[str]] = None  
     last_updated: datetime = Field(default_factory=datetime.utcnow)
     

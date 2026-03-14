@@ -1,11 +1,9 @@
 from datetime import datetime
 from typing import List, Optional
 from fastapi import UploadFile, HTTPException
-
 from app.db.mongodb import vehicles_collection, owners_collection, users_collection
 from app.utils.file_utils import save_file
 from app.services.counter_service import get_next_sequence
-
 from app.schemas.vehicle_schema import (
     VehicleCreateRequest,
     VehicleUpdateRequest,
@@ -14,6 +12,7 @@ from app.schemas.vehicle_schema import (
     OwnerResponse,
     UserResponse
 )
+from app.ai.chroma_service import add_vehicle_vector, update_vehicle_vector, delete_vehicle_vector
 
 
 async def get_owner_by_id(owner_id: str):
@@ -64,6 +63,8 @@ async def create_vehicle(vehicle_request: VehicleCreateRequest, files: Optional[
 
     if not result.acknowledged:
         raise HTTPException(status_code=500, detail="Vehicle creation failed")
+
+    await add_vehicle_vector(vehicle_data)
 
     vehicle_obj = VehicleResponse(**vehicle_data, owner=None, reviews=[])
 
@@ -210,7 +211,8 @@ async def update_vehicle(vehicle_id: str, update_request: VehicleUpdateRequest, 
     existing_images = doc.get("images", [])
 
     if update_request.remove_images:
-        existing_images = [img for img in existing_images if img["filename"] not in update_request.remove_images]
+        existing_images = [
+            img for img in existing_images if img["filename"] not in update_request.remove_images]
 
     if files:
         for idx, file in enumerate(files, start=1):
@@ -228,6 +230,9 @@ async def update_vehicle(vehicle_id: str, update_request: VehicleUpdateRequest, 
     if result.modified_count == 0 and not files and not update_request.remove_images:
         raise HTTPException(status_code=400, detail="No changes applied")
 
+    updated_doc = {**doc, **update_data}
+    await update_vehicle_vector(updated_doc)
+
     return await get_vehicle_by_id(vehicle_id)
 
 
@@ -237,6 +242,8 @@ async def delete_vehicle(vehicle_id: str):
 
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Vehicle not found")
+
+    await delete_vehicle_vector(vehicle_id)
 
     return {
         "success": True,
