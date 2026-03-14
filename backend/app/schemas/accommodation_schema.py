@@ -3,12 +3,10 @@ from typing import List, Optional
 from enum import Enum
 from datetime import datetime
 
-
 class UserPhoto(BaseModel):
     filename: str
     content_type: str
     size: int
-
 
 class OwnerStatus(str, Enum):
     pending = "Pending Approval"
@@ -16,11 +14,9 @@ class OwnerStatus(str, Enum):
     inactive = "Inactive"
     declined = "Declined Approval"
 
-
 class AccommodationGender(str, Enum):
     male = "male"
     female = "female"
-
 
 class AccommodationStatus(str, Enum):
     pending = "pending"
@@ -29,7 +25,6 @@ class AccommodationStatus(str, Enum):
     booked = "booked"
     unavailable = "unavailable"
 
-
 class AccommodationType(str, Enum):
     apartment = "apartment"
     house = "house"
@@ -37,26 +32,22 @@ class AccommodationType(str, Enum):
     hostel = "hostel"
     other = "other"
 
-
+    
 class AccommodationDistance(BaseModel):
     susl_main_gate: Optional[str] = None
     pambahinna_junction: Optional[str] = None
 
-
 class AccommodationImageSchema(BaseModel):
     filename: str
 
-
 class AccommodationAmenitySchema(BaseModel):
     name: str
-
 
 class AccommodationAddressSchema(BaseModel):
     street: Optional[str] = None
     city: Optional[str] = None
     postal_code: Optional[str] = None
     country: Optional[str] = None
-
 
 class AccommodationLocationSchema(BaseModel):
     latitude: float
@@ -69,18 +60,15 @@ class UserResponse(BaseModel):
     role: str
     photo: Optional[UserPhoto] = None
 
-
 class AccommodationReview(BaseModel):
-    user: Optional[UserResponse]
+    user : Optional[UserResponse]
     message: str
     rating: float = Field(..., ge=0, le=5)
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-
 class AccommodationReviewCreateRequest(BaseModel):
     message: str
     rating: float = Field(..., ge=0, le=5)
-
 
 class OwnerResponse(BaseModel):
     id: str = Field(..., alias="_id")
@@ -95,6 +83,9 @@ class OwnerResponse(BaseModel):
     status: Optional[OwnerStatus] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_updated: datetime = Field(default_factory=datetime.utcnow)
+
+
+
 
 
 class AccommodationCreateRequest(BaseModel):
@@ -117,6 +108,8 @@ class AccommodationCreateRequest(BaseModel):
     gender: AccommodationGender = AccommodationGender.male
 
 
+
+
 class AccommodationResponse(BaseModel):
     id: str = Field(..., alias="_id")
     name: str
@@ -135,13 +128,14 @@ class AccommodationResponse(BaseModel):
     reviews: Optional[List[AccommodationReview]] = []
     amenities: List[AccommodationAmenitySchema] = []
     available_users: int
-    total_users: int
+    total_users: int 
     address: Optional[AccommodationAddressSchema] = None
     location: Optional[AccommodationLocationSchema] = None
     time_from_uni: Optional[AccommodationDistance] = None
-    gender: Optional[AccommodationGender] = None
+    gender: Optional[AccommodationGender]=None
     created_at: datetime
     last_updated: datetime
+
 
 
 class AccommodationUpdateRequest(BaseModel):
@@ -164,5 +158,5 @@ class AccommodationUpdateRequest(BaseModel):
     address: Optional[AccommodationAddressSchema] = None
     location: Optional[AccommodationLocationSchema] = None
     time_from_uni: Optional[AccommodationDistance] = None
-    gender: Optional[AccommodationGender] = None
+    gender: Optional[AccommodationGender]=None
     last_updated: datetime = Field(default_factory=datetime.utcnow)

@@ -1,4 +1,5 @@
 from app.db.chroma import accommodation_vectors, vehicle_vectors, owner_vectors, knowledge_vectors
+from app.db.mongodb import accommodations_collection, vehicles_collection, owners_collection
 from app.ai.embedding_model import create_embedding
 from app.utils.text_builder import accommodation_text, vehicle_text, owner_text
 from app.core.config import settings
@@ -6,6 +7,7 @@ from pathlib import Path
 
 CHUNK_SIZE = settings.CHUNK_SIZE
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 async def add_accommodation_vector(data: dict):
     text = accommodation_text(data)
@@ -64,7 +66,8 @@ async def search_accommodation_vectors(query: str, top_k: int = 5):
         n_results=top_k
     )
 
-    print(f"[Chroma Sync] Accommodation search completed. Query: '{query[:50]}...'")
+    print(
+        f"[Chroma Sync] Accommodation search completed. Query: '{query[:50]}...'")
 
     return results
 
@@ -195,7 +198,7 @@ async def search_owner_vectors(query: str, top_k: int = 5):
 
 async def load_static_knowledge():
     file_path = BASE_DIR / "data" / "campusease_static_info.txt"
-    
+
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             text = f.read()
@@ -211,4 +214,45 @@ async def load_static_knowledge():
             embeddings=[embedding]
         )
     print("[Chroma Sync] Static knowledge loaded.")
-    
+
+
+async def sync_accommodation_vectors():
+    existing = await get_all_accommodation_vectors()
+    if existing["ids"]:
+        accommodation_vectors.delete(ids=existing["ids"])
+
+    docs = await accommodations_collection.find().to_list(length=None)
+    for doc in docs:
+        await add_accommodation_vector(doc)
+
+    print("[Chroma Sync] Accommodation vectors synced with MongoDB.")
+
+
+async def sync_vehicle_vectors():
+    existing = await get_all_vehicle_vectors()
+    if existing["ids"]:
+        vehicle_vectors.delete(ids=existing["ids"])
+
+    docs = await vehicles_collection.find().to_list(length=None)
+    for doc in docs:
+        await add_vehicle_vector(doc)
+
+    print("[Chroma Sync] Vehicle vectors synced with MongoDB.")
+
+
+async def sync_owner_vectors():
+    existing = await get_all_owner_vectors()
+    if existing["ids"]:
+        owner_vectors.delete(ids=existing["ids"])
+
+    docs = await owners_collection.find().to_list(length=None)
+    for doc in docs:
+        await add_owner_vector(doc)
+
+    print("[Chroma Sync] Owner vectors synced with MongoDB.")
+
+
+async def sync_all_vectors():
+    await sync_accommodation_vectors()
+    await sync_vehicle_vectors()
+    await sync_owner_vectors()

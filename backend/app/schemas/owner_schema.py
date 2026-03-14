@@ -38,10 +38,9 @@ class OwnerResponse(BaseModel):
     last_updated: datetime
 
     model_config = {
-        "from_attributes": True,
-        "validate_by_name": True
+        "from_attributes": True,  
+        "validate_by_name": True 
     }
-
 
 class OwnerUpdateRequest(BaseModel):
     first_name: Optional[str] = None

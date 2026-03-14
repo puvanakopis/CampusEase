@@ -1,0 +1,26 @@
+# Booking Cancellation Policy
+
+## Policy Overview
+- **Cancellation Window:** Up to 24 hours before scheduled time
+- **Cancellation Method:** Student dashboard → My Bookings
+- **Refund Timeframe:** 5-7 working days for paid bookings
+
+## Cancellation Process
+1. Navigate to "My Bookings"
+2. Select booking (Accommodation/Vehicle)
+3. Click "Cancel Booking"
+4. Provide reason
+5. Confirm cancellation
+
+## Important Notes
+- Provider cancellations: Immediate student notification + full refund
+- No student action needed for provider-initiated cancellations
+- All cancellations must be done through the platform
+
+## Quick Facts
+| Topic | Details |
+|-------|---------|
+| ⏰ Cancellation Deadline | 24 hours before |
+| 💰 Refund Processing | 5-7 working days |
+| 📍 Where to Cancel | My Bookings section |
+| 🔔 Provider Cancellation | Auto-refund + notification |

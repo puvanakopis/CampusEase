@@ -211,8 +211,7 @@ async def update_vehicle(vehicle_id: str, update_request: VehicleUpdateRequest, 
     existing_images = doc.get("images", [])
 
     if update_request.remove_images:
-        existing_images = [
-            img for img in existing_images if img["filename"] not in update_request.remove_images]
+        existing_images = [img for img in existing_images if img["filename"] not in update_request.remove_images]
 
     if files:
         for idx, file in enumerate(files, start=1):
