@@ -18,7 +18,6 @@ const ChatBot = ({ title = "AI Assistant" }) => {
   }, [messages]);
 
   useEffect(() => {
-    console.log("New responses received:", responses);
     if (responses.length > 0) {
       const lastResponse = responses[responses.length - 1];
 
@@ -39,20 +38,31 @@ const ChatBot = ({ title = "AI Assistant" }) => {
     }
   }, [responses]);
 
+  /* ---------------- CLEAN RESPONSE ---------------- */
+
   const cleanResponse = (text) => {
     if (!text) return "";
 
     let cleaned = text;
+
+    // remove markdown stars
     cleaned = cleaned.replace(/\*\*/g, "");
     cleaned = cleaned.replace(/\*/g, "");
+
+    // normalize spaces
     cleaned = cleaned.replace(/\r/g, "");
+
+    // merge lines like "Type:\nHostel"
     cleaned = cleaned.replace(/:\s*\n\s*/g, ": ");
 
     return cleaned;
   };
 
+  /* ---------------- FORMAT RESPONSE ---------------- */
+
   const formatBotResponse = (text) => {
     const cleanedText = cleanResponse(text);
+
     const entries = cleanedText.split(/\n\s*\n/);
 
     return (
@@ -63,7 +73,7 @@ const ChatBot = ({ title = "AI Assistant" }) => {
           return (
             <div
               key={idx}
-              className="bg-white border border-[#e7edf3] rounded-xl p-3 text-sm"
+              className="bg-gray-50 border border-gray-200 rounded-lg p-3 space-y-1"
             >
               {lines.map((line, i) => {
                 if (line.includes(":")) {
@@ -72,10 +82,10 @@ const ChatBot = ({ title = "AI Assistant" }) => {
 
                   return (
                     <div key={i} className="flex">
-                      <span className="font-semibold min-w-[120px] text-slate-800">
+                      <span className="font-semibold min-w-[130px]">
                         {key.trim()}:
                       </span>
-                      <span className="ml-2 text-slate-600">{value}</span>
+                      <span className="ml-2">{value}</span>
                     </div>
                   );
                 }
@@ -88,6 +98,8 @@ const ChatBot = ({ title = "AI Assistant" }) => {
       </div>
     );
   };
+
+  /* ---------------- SEND MESSAGE ---------------- */
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
@@ -129,6 +141,8 @@ const ChatBot = ({ title = "AI Assistant" }) => {
     ]);
   };
 
+  /* ---------------- RENDER MESSAGE ---------------- */
+
   const renderMessage = (msg) => {
     if (msg.type === "user") {
       return <div className="whitespace-pre-wrap text-sm">{msg.text}</div>;
@@ -143,54 +157,51 @@ const ChatBot = ({ title = "AI Assistant" }) => {
 
   return (
     <div className="fixed bottom-8 right-8 z-50">
-
       {!isOpen && (
         <button
           onClick={toggleChat}
-          className="bg-primary text-white p-4 rounded-full shadow-lg hover:shadow-xl transition"
+          className="bg-primary text-white p-4 rounded-full shadow-lg"
         >
           <span className="material-symbols-outlined">chat</span>
         </button>
       )}
 
       {isOpen && (
-        <div className="bg-white rounded-2xl shadow-xl w-[400px] flex flex-col h-[600px] border border-[#e7edf3]">
+        <div className="bg-white rounded-2xl shadow-2xl w-[400px] flex flex-col h-[600px] border border-gray-200">
 
           {/* HEADER */}
 
-          <div className="bg-primary text-white px-5 py-3 flex justify-between items-center rounded-t-2xl">
+          <div className="bg-primary text-white px-4 py-3 flex justify-between">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined">smart_toy</span>
-              <h2 className="font-semibold">{title}</h2>
+              <h2>{title}</h2>
             </div>
 
-            <div className="flex gap-3">
-              <button className="hover:opacity-80" onClick={clearChat}>
-                <span className="material-symbols-outlined text-sm">refresh</span>
+            <div className="flex gap-2">
+              <button onClick={clearChat}>
+                <span className="material-symbols-outlined">refresh</span>
               </button>
 
-              <button className="hover:opacity-80" onClick={toggleChat}>
-                <span className="material-symbols-outlined text-sm">close</span>
+              <button onClick={toggleChat}>
+                <span className="material-symbols-outlined">close</span>
               </button>
             </div>
           </div>
 
           {/* MESSAGES */}
 
-          <div className="flex-1 overflow-y-auto p-4 bg-background-light">
+          <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`mb-4 flex ${
-                  msg.type === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`mb-4 flex ${msg.type === "user" ? "justify-end" : "justify-start"
+                  }`}
               >
                 <div
-                  className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm ${
-                    msg.type === "user"
+                  className={`max-w-[85%] px-4 py-2 rounded-2xl ${msg.type === "user"
                       ? "bg-primary text-white"
-                      : "bg-white border border-[#e7edf3] shadow-sm"
-                  }`}
+                      : "bg-white shadow-sm"
+                    }`}
                 >
                   {renderMessage(msg)}
 
@@ -208,7 +219,7 @@ const ChatBot = ({ title = "AI Assistant" }) => {
 
             {loading && (
               <div className="flex">
-                <div className="bg-white border border-[#e7edf3] px-4 py-3 rounded-xl shadow-sm text-sm">
+                <div className="bg-white px-4 py-3 rounded-xl shadow">
                   AI is typing...
                 </div>
               </div>
@@ -219,20 +230,20 @@ const ChatBot = ({ title = "AI Assistant" }) => {
 
           {/* INPUT */}
 
-          <div className="border-t border-[#e7edf3] p-3 bg-white rounded-b-2xl">
+          <div className="border-t p-3">
             <div className="flex gap-2">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message..."
-                className="flex-1 border border-[#e7edf3] rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40"
+                className="flex-1 border rounded-lg px-3 py-2 text-sm resize-none"
                 rows="1"
               />
 
               <button
                 onClick={sendMessage}
-                className="bg-primary text-white px-4 rounded-lg hover:opacity-90 transition"
+                className="bg-primary text-white px-4 rounded-lg"
               >
                 <span className="material-symbols-outlined text-sm">
                   send
@@ -240,13 +251,15 @@ const ChatBot = ({ title = "AI Assistant" }) => {
               </button>
             </div>
 
+            {/* QUICK BUTTONS */}
+
             {messages.length === 1 && (
               <div className="flex flex-wrap gap-2 mt-3">
                 <button
                   onClick={() =>
                     setInput("Show me available accommodations")
                   }
-                  className="text-xs bg-gray-100 px-3 py-1 rounded-full hover:bg-gray-200"
+                  className="text-xs bg-gray-100 px-3 py-1 rounded-full"
                 >
                   🏠 Available accommodations
                 </button>
@@ -255,7 +268,7 @@ const ChatBot = ({ title = "AI Assistant" }) => {
                   onClick={() =>
                     setInput("What vehicles are for rent?")
                   }
-                  className="text-xs bg-gray-100 px-3 py-1 rounded-full hover:bg-gray-200"
+                  className="text-xs bg-gray-100 px-3 py-1 rounded-full"
                 >
                   🚗 Vehicles
                 </button>

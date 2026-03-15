@@ -7,7 +7,6 @@ import { AuthContext } from "../../context/AuthContext";
 import useNavigateTo from "../../hooks/useNavigateTo";
 
 function SavedItems() {
-
     const {
         savedAccommodations,
         savedTransports,
@@ -20,26 +19,19 @@ function SavedItems() {
 
     const navigateTo = useNavigateTo();
 
-
-    // ---------------- VIEW DETAILS ----------------
     const handleViewDetails = (id, type) => {
         navigateTo(`/${type}/${id}`);
     };
 
-
-    // ---------------- REMOVE ACCOMMODATION ----------------
     const handleRemoveAccommodation = async (id, e) => {
         e.stopPropagation();
         await unsaveAccommodation(id);
     };
 
-
-    // ---------------- REMOVE VEHICLE ----------------
     const handleRemoveVehicle = async (id, e) => {
         e.stopPropagation();
         await unsaveTransport(id);
     };
-
 
     if (authLoading) {
         return (
@@ -58,19 +50,22 @@ function SavedItems() {
 
     return (
         <div className="bg-[#f6f7f8] min-h-screen">
-            <div className="max-w-8xl mx-auto px-4 md:px-24 py-10 flex gap-6">
+            <div className="px-4 py-16 md:px-24 max-w-8xl mx-auto">
+                <div className="flex flex-col lg:flex-row gap-6">
 
-                <Sidebar />
+                    <Sidebar />
 
-                <SavedItemsPage
-                    accommodations={savedAccommodations}
-                    vehicles={savedTransports}
-                    loading={saveItemsLoading}
-                    onView={handleViewDetails}
-                    onRemoveAccommodation={handleRemoveAccommodation}
-                    onRemoveVehicle={handleRemoveVehicle}
-                />
-
+                    <main className="flex-1">
+                        <SavedItemsPage
+                            accommodations={savedAccommodations}
+                            vehicles={savedTransports}
+                            loading={saveItemsLoading}
+                            onView={handleViewDetails}
+                            onRemoveAccommodation={handleRemoveAccommodation}
+                            onRemoveVehicle={handleRemoveVehicle}
+                        />
+                    </main>
+                </div>
             </div>
         </div>
     );

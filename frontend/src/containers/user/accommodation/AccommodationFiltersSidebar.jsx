@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const accommodationTypes = [
     { label: "Apartment", value: "apartment" },
@@ -14,8 +14,13 @@ const genders = [
 ];
 
 const AccommodationFiltersSidebar = ({ filters, onFilterChange }) => {
-
     const [localFilters, setLocalFilters] = useState(filters);
+    const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+
+    // Update local filters when prop changes
+    useEffect(() => {
+        setLocalFilters(filters);
+    }, [filters]);
 
     const handleTypeChange = (value) => {
         let updatedTypes = [...localFilters.types];
@@ -31,13 +36,33 @@ const AccommodationFiltersSidebar = ({ filters, onFilterChange }) => {
 
     const handleApply = () => {
         onFilterChange(localFilters);
+        setIsMobileFiltersOpen(false); // Close mobile sidebar after applying
     };
 
-    return (
-        <aside className="hidden lg:flex w-80 h-max flex-col gap-4 border border-[#e7edf3] rounded-xl bg-white p-6 sticky top-[65px]">
+    const handleClearAll = () => {
+        const clearedFilters = {
+            types: [],
+            gender: "",
+            minRent: "",
+            maxRent: "",
+        };
+        setLocalFilters(clearedFilters);
+        onFilterChange(clearedFilters);
+        setIsMobileFiltersOpen(false);
+    };
 
+    const FilterContent = () => (
+        <>
             <div className="flex flex-col gap-1 pb-4 border-b border-[#e7edf3]">
-                <h1 className="text-[#0d141b] text-lg font-bold leading-normal">Filters</h1>
+                <div className="flex items-center justify-between">
+                    <h1 className="text-[#0d141b] text-lg font-bold leading-normal">Filters</h1>
+                    <button
+                        onClick={handleClearAll}
+                        className="text-sm text-primary hover:text-primary/80 font-medium"
+                    >
+                        Clear All
+                    </button>
+                </div>
                 <p className="text-[#4c739a] text-sm font-normal leading-normal">
                     Find stays near Sabaragamuwa University.
                 </p>
@@ -134,8 +159,69 @@ const AccommodationFiltersSidebar = ({ filters, onFilterChange }) => {
                     Apply Filters
                 </button>
             </div>
+        </>
+    );
 
-        </aside>
+    return (
+        <>
+            {/* Desktop Sidebar */}
+            <aside className="hidden lg:flex w-80 h-max flex-col gap-4 border border-[#e7edf3] rounded-xl bg-white p-6 sticky top-[65px]">
+                <FilterContent />
+            </aside>
+
+            {/* Mobile Filter Button */}
+            <div className="lg:hidden mb-4 flex">
+                <button
+                    onClick={() => setIsMobileFiltersOpen(true)}
+                    className="flex items-center gap-2 w-full bg-white border border-[#e7edf3] rounded-lg px-4 py-3 text-sm font-medium text-[#0d141b] hover:bg-gray-50 transition-colors justify-between"
+                >
+                    <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary">filter_list</span>
+                        Filters
+                    </div>
+
+                    {(filters.types.length > 0 || filters.gender || filters.minRent || filters.maxRent) && (
+                        <span className="bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                            {(filters.types.length +
+                                (filters.gender ? 1 : 0) +
+                                (filters.minRent ? 1 : 0) +
+                                (filters.maxRent ? 1 : 0))}
+                        </span>
+                    )}
+                </button>
+            </div>
+
+            {/* Mobile Filter Drawer */}
+            {isMobileFiltersOpen && (
+                <>
+                    {/* Backdrop */}
+                    <div
+                        className="lg:hidden fixed inset-0 bg-black/50 z-40"
+                        onClick={() => setIsMobileFiltersOpen(false)}
+                    />
+
+                    {/* Drawer */}
+                    <div className="lg:hidden fixed inset-y-0 left-0 w-full max-w-sm bg-white z-50 overflow-y-auto shadow-xl animate-slide-right">
+                        <div className="p-6">
+                            {/* Drawer Header */}
+                            <div className="flex items-end justify-end mb-4 pb-4 border-b border-[#e7edf3]">
+                                <button
+                                    onClick={() => setIsMobileFiltersOpen(false)}
+                                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                >
+                                    <span className="material-symbols-outlined">close</span>
+                                </button>
+                            </div>
+
+                            {/* Filter Content */}
+                            <div className="flex flex-col gap-4">
+                                <FilterContent />
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+        </>
     );
 };
 

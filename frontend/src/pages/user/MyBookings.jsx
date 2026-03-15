@@ -7,9 +7,8 @@ import { AccommodationContext } from "../../context/AccommodationContext";
 import { VehicleContext } from "../../context/VehicleContext";
 
 function MyBookings() {
-
-    const { bookings, getUserBookings, updateBooking } = useContext(BookingContext);
-    const { currentUser } = useContext(AuthContext);
+    const { bookings, getUserBookings, updateBooking, loading } = useContext(BookingContext);
+    const { currentUser, authLoading } = useContext(AuthContext);
     const { addAccommodationReview } = useContext(AccommodationContext);
     const { addVehicleReview } = useContext(VehicleContext);
 
@@ -41,17 +40,33 @@ function MyBookings() {
         }
     };
 
-    return (
-        <div className="bg-[#f6f7f8]">
-            <div className="px-4 py-10 md:px-24 max-w-8xl mx-auto gap-6 min-h-screen flex">
-                <Sidebar />
+    if (authLoading) {
+        return (
+            <div className="bg-[#f6f7f8] min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="h-8 w-8 border-4 border-primary border-r-transparent rounded-full animate-spin mx-auto"></div>
+                    <p className="text-slate-500 mt-2">Loading... </p>
+                </div>
+            </div>
+        );
+    }
 
-                <MyBookingsPage
-                    bookings={bookings}
-                    // loading={loading}
-                    onStatusUpdate={handleStatusUpdate}
-                    onReviewSubmit={handleReviewSubmit}
-                />
+    return (
+        <div className="bg-[#f6f7f8] min-h-screen">
+            <div className="px-4 py-16 md:px-24 max-w-8xl mx-auto">
+                <div className="flex flex-col lg:flex-row gap-6">
+
+                    <Sidebar />
+
+                    <main className="flex-1">
+                        <MyBookingsPage
+                            bookings={bookings}
+                            loading={loading}
+                            onStatusUpdate={handleStatusUpdate}
+                            onReviewSubmit={handleReviewSubmit}
+                        />
+                    </main>
+                </div>
             </div>
         </div>
     );
