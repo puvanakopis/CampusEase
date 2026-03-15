@@ -1,21 +1,24 @@
-from fastapi import APIRouter, Query, HTTPException, Depends
-from app.ai.rag_client import query_gemini
-from app.middlewares.auth_middleware import login_required
 from app.models.user_model import User
+from app.middlewares.auth_middleware import login_required
+from app.ai.rag_client import query_ai
+from fastapi import APIRouter, Query, HTTPException, Depends
+
 
 router = APIRouter(prefix="/rag", tags=["RAG"])
 
 
 @router.get("/ask")
-async def ask_gemini(
-    prompt: str = Query(...,
-                        description="The question you want to ask CampusEase AI"),
+async def ask_ai(
+    prompt: str = Query(
+        ...,
+        description="The question you want to ask CampusEase AI"
+    ),
     current_user: User = Depends(login_required)
 ):
     try:
         user_id = current_user.id
 
-        answer = query_gemini(user_id, prompt)
+        answer = query_ai(user_id, prompt)
 
         return {
             "success": True,
@@ -26,4 +29,6 @@ async def ask_gemini(
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"AI Service Error: {str(e)}")
+            status_code=500,
+            detail=f"AI Service Error: {str(e)}"
+        )

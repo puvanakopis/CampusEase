@@ -38,7 +38,7 @@ def build_history_text(history):
     return history_text
 
 
-def query_gemini(user_id: str, question: str, top_k: int = 3):
+def query_ai(user_id: str, question: str, top_k: int = 3):
 
     memory.add_user_message(user_id, question)
 

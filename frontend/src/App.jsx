@@ -107,7 +107,6 @@ function App() {
     }
   };
 
-  // Only show ChatBot for student and staff
   const showChatBot = role === "student" || role === "staff";
 
   return (
