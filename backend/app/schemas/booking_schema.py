@@ -74,6 +74,7 @@ class BookingResponse(BaseModel):
     accommodation: Optional[AccommodationResponse] = None
     owner: Optional[OwnerResponse] = None
 
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+    model_config = {
+        "from_attributes": True,  
+        "validate_by_name": True 
+    }
