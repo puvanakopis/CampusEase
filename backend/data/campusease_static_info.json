@@ -1,0 +1,322 @@
+{
+    "platform_overview": {
+        "name": "CampusEase",
+        "description": "A comprehensive full-stack web application designed to facilitate accommodation and vehicle rentals specifically for university students and staff at Sabaragamuwa University of Sri Lanka.",
+        "purpose": "Connects verified university members with property and vehicle owners, creating a trusted marketplace within the university community."
+    },
+    "ai_assistant": {
+        "name": "CampusEase AI Assistant",
+        "capabilities": [
+            "Answering questions about platform policies and procedures",
+            "Explaining how to book accommodations or vehicles",
+            "Providing information about cancellation and refund policies",
+            "Guiding users through the verification process",
+            "Sharing contact information and office hours",
+            "Helping with troubleshooting common issues",
+            "Explaining user roles (Student, Staff, Owner, Admin)",
+            "Answering FAQs about the platform"
+        ],
+        "technology": "Uses Retrieval-Augmented Generation (RAG) with conversation memory to provide accurate, context-aware responses"
+    },
+    "booking_cancellation_policy": {
+        "policy_overview": {
+            "cancellation_window": "Up to 24 hours before scheduled time",
+            "cancellation_method": "Student dashboard → My Bookings",
+            "refund_timeframe": "5-7 working days for paid bookings"
+        },
+        "cancellation_process": [
+            "Navigate to 'My Bookings'",
+            "Select booking (Accommodation/Vehicle)",
+            "Click 'Cancel Booking'",
+            "Provide reason",
+            "Confirm cancellation"
+        ],
+        "important_notes": [
+            "Provider cancellations: Immediate student notification + full refund (no action needed from student)",
+            "All cancellations must be done through the platform",
+            "Cancellations within 24 hours may not be eligible for refund"
+        ],
+        "quick_facts": {
+            "cancellation_deadline": "24 hours before",
+            "refund_processing": "5-7 working days",
+            "where_to_cancel": "My Bookings section",
+            "provider_cancellation": "Auto-refund + notification"
+        }
+    },
+    "booking_guide": {
+        "for_students_staff": [
+            {
+                "step": 1,
+                "action": "Browse Listings",
+                "details": "Go to 'Accommodation' or 'Vehicle' page. Use filters to narrow down options (price, location, type, amenities). Click on listings to view detailed information and photos."
+            },
+            {
+                "step": 2,
+                "action": "Save Favorites",
+                "details": "Click the heart icon to save items to your favorites list. Access saved items from your dashboard.",
+                "optional": true
+            },
+            {
+                "step": 3,
+                "action": "Make a Booking",
+                "details": "Select your desired dates (for accommodations) or rental period (for vehicles). Click 'Book Now' on the listing. Review the total price (automatic calculation based on duration). Choose payment method: Credit Card or Pay-on-Hand. Confirm booking details."
+            },
+            {
+                "step": 4,
+                "action": "Payment Options",
+                "details": {
+                    "credit_card": "Immediate payment, refunds processed in 5-7 working days if canceled",
+                    "pay_on_hand": "Reserve now, pay later at the time of check-in/pickup"
+                }
+            },
+            {
+                "step": 5,
+                "action": "Booking Confirmation",
+                "details": "You'll receive email confirmation. View all bookings in 'My Bookings' section. Track booking status (Pending, Confirmed, Canceled, Completed)."
+            }
+        ],
+        "important_notes": [
+            "Date validation prevents double bookings",
+            "You must be a verified university member to book",
+            "Some listings may require owner approval before confirmation"
+        ]
+    },
+    "admin_booking_recovery": {
+        "automatic_actions": [
+            "Immediate email notification with booking details",
+            "Booking appears in 'My Bookings' dashboard automatically"
+        ],
+        "if_need_to_cancel_or_modify": [
+            "Check the booking in your dashboard",
+            "Cancel if needed: Follow standard cancellation process (24-hour window applies). Full refund if canceled within policy timeframe.",
+            "Contact Support for any discrepancies: email support@campusease.lk, phone +94 (45) 123-4567, or visit during office hours"
+        ],
+        "if_booking_is_incorrect": [
+            "Do not confirm or accept the booking",
+            "Contact support immediately with: your name and university email, booking reference number, description of the issue",
+            "Support team will resolve within 24-48 hours"
+        ]
+    },
+    "contact_information": {
+        "platform_owner": {
+            "name": "CampusEase SUSL",
+            "established": "2025",
+            "tagline": "Helping the Sabaragamuwa University community find the perfect home away from home"
+        },
+        "mission": "To revolutionize the student experience at SUSL by providing an integrated digital ecosystem that simplifies finding quality accommodation and reliable transport, allowing students to focus on what matters most: their education.",
+        "affiliations": [
+            "SUSL Faculty of Computing",
+            "Student Union",
+            "Belihuloya Transport",
+            "Local Housing Association"
+        ]
+    },
+    "office_hours": {
+        "monday_friday": "8:00 AM - 5:00 PM",
+        "saturday": "Closed",
+        "sunday": "Closed",
+        "public_holidays": "Closed"
+    },
+    "support_channels": {
+        "phone": {
+            "number": "+94 (45) 123-4567",
+            "availability": "During office hours only",
+            "purpose": "For urgent inquiries only"
+        },
+        "email": {
+            "general": "susl@campusease.lk",
+            "technical": "support@campusease.lk",
+            "response_time": "24-48 hours"
+        },
+        "physical_office": {
+            "address": "Faculty of Computing, Sabaragamuwa University of Sri Lanka, Pambahinna, Belihuloya, 70140",
+            "notes": "Visit during office hours for in-person assistance"
+        }
+    },
+    "contact_form": {
+        "required_fields": [
+            "Full Name",
+            "University Email (must be @std.sab.ac.lk or university domain)",
+            "Inquiry Subject",
+            "Your Message"
+        ],
+        "inquiry_subjects": [
+            "Technical Support",
+            "Booking Issues",
+            "Account Verification",
+            "Owner Application",
+            "General Inquiry",
+            "Feedback/Suggestions"
+        ],
+        "response_time": "Automated acknowledgment within 1 hour, support response within 24-48 hours"
+    },
+    "frequently_asked_questions": {
+        "general": [
+            {
+                "question": "How long does it take to receive a reply?",
+                "answer": "We aim to respond to all inquiries within 24-48 hours during business days. For urgent matters, please call our support line during office hours."
+            },
+            {
+                "question": "Can I update or delete my account?",
+                "answer": "Yes! You can update your profile information anytime from your dashboard. For account deletion, please contact support with your request and verification details."
+            },
+            {
+                "question": "What kind of technical issues do you handle?",
+                "answer": "We assist with login problems, booking errors, payment issues, profile updates, verification problems, and any platform navigation questions."
+            },
+            {
+                "question": "Do you provide support for accommodation and transport?",
+                "answer": "Absolutely! We can help with finding listings, understanding policies, resolving booking disputes, and connecting with owners."
+            }
+        ],
+        "booking": [
+            {
+                "question": "How do I cancel a booking?",
+                "answer": "Go to 'My Bookings' → Select the booking → Click 'Cancel Booking' → Provide reason → Confirm. Must be done at least 24 hours before scheduled time."
+            },
+            {
+                "question": "When will I get my refund?",
+                "answer": "Refunds for paid bookings are processed within 5-7 working days after cancellation."
+            },
+            {
+                "question": "What if the owner cancels my booking?",
+                "answer": "You'll receive immediate notification and automatic full refund. No action needed from your side."
+            },
+            {
+                "question": "Can I modify a booking after confirmation?",
+                "answer": "Modification depends on owner approval. Contact the owner directly through the platform or cancel and rebook if within policy."
+            }
+        ]
+    },
+    "user_roles": {
+        "types": [
+            {
+                "role": "Student",
+                "capabilities": [
+                    "Browse",
+                    "Save favorites",
+                    "Book",
+                    "Review"
+                ]
+            },
+            {
+                "role": "Staff",
+                "capabilities": [
+                    "Same as student, with staff privileges"
+                ]
+            },
+            {
+                "role": "Owner",
+                "capabilities": [
+                    "List and manage accommodations/vehicles"
+                ]
+            },
+            {
+                "role": "Admin",
+                "capabilities": [
+                    "Platform management",
+                    "User verification",
+                    "Listing moderation",
+                    "Booking oversight",
+                    "Support ticket management",
+                    "Platform analytics"
+                ]
+            }
+        ],
+        "verification_process": [
+            "Sign up with university email (@std.sab.ac.lk for students)",
+            "Receive OTP via email",
+            "Verify email address",
+            "Complete profile information",
+            "For owners: Additional verification required (approved by admin)"
+        ]
+    },
+    "why_choose_campusease": [
+        {
+            "feature": "Verified Listings",
+            "benefit": "All properties and vehicles pre-verified by our team"
+        },
+        {
+            "feature": "Student-Centric Design",
+            "benefit": "Built specifically for SUSL students with university email verification"
+        },
+        {
+            "feature": "Reliable Transport",
+            "benefit": "Access real-time schedules and private shuttle services"
+        },
+        {
+            "feature": "Safe Housing",
+            "benefit": "Affordable and secure living spaces near Pambahinna"
+        },
+        {
+            "feature": "No Hidden Fees",
+            "benefit": "Transparent pricing, always student-friendly"
+        }
+    ],
+    "platform_features": {
+        "for_all_users": [
+            "Advanced filtering and search",
+            "Save favorite items",
+            "Leave reviews and ratings",
+            "AI chatbot assistance",
+            "View booking history"
+        ],
+        "for_owners": [
+            "Owner application and verification",
+            "Dashboard with analytics",
+            "Manage accommodations (CRUD)",
+            "Manage vehicles (CRUD)",
+            "View and manage bookings",
+            "Support ticket system"
+        ],
+        "for_admins": [
+            "User management (approve/reject)",
+            "Owner verification",
+            "Listing moderation",
+            "Booking oversight",
+            "Support ticket management",
+            "Platform analytics"
+        ]
+    },
+    "privacy_security": [
+        "JWT-based authentication for secure access",
+        "Email OTP verification for all signups",
+        "Password reset via secure email links",
+        "Role-based access control to protect sensitive data",
+        "All personal information encrypted and stored securely"
+    ],
+    "quick_navigation": [
+        {
+            "page": "Home",
+            "purpose": "Platform overview and featured listings"
+        },
+        {
+            "page": "Accommodation",
+            "purpose": "Browse and book housing"
+        },
+        {
+            "page": "Vehicle",
+            "purpose": "Browse and book vehicles"
+        },
+        {
+            "page": "My Bookings",
+            "purpose": "View and manage all bookings"
+        },
+        {
+            "page": "Support",
+            "purpose": "Contact form and FAQs"
+        },
+        {
+            "page": "About Us",
+            "purpose": "Platform mission and team"
+        }
+    ],
+    "emergency_contact": {
+        "email": "support@campusease.lk (monitored for emergencies)",
+        "note": "For life-threatening emergencies, always contact university security or local authorities first."
+    },
+    "footer": {
+        "tagline": "CampusEase - Making University Life Easier 🎓",
+        "subtagline": "Empowering the Sabaragamuwa University Community since 2023"
+    }
+}

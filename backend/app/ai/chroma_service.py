@@ -197,7 +197,7 @@ async def search_owner_vectors(query: str, top_k: int = 5):
 
 
 async def load_static_knowledge():
-    file_path = BASE_DIR / "data" / "campusease_static_info.txt"
+    file_path = BASE_DIR / "data" / "campusease_static_info.json"
 
     try:
         with open(file_path, "r", encoding="utf-8") as f:

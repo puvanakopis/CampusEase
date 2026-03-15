@@ -18,6 +18,7 @@ const ChatBot = ({ title = "AI Assistant" }) => {
   }, [messages]);
 
   useEffect(() => {
+    console.log("New responses received:", responses);
     if (responses.length > 0) {
       const lastResponse = responses[responses.length - 1];
 

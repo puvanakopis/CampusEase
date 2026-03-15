@@ -1,4 +1,5 @@
-import google.generativeai as genai
+import os
+from groq import Groq
 from app.core.config import settings
 from app.db.chroma import (
     knowledge_vectors,
@@ -9,7 +10,7 @@ from app.db.chroma import (
 from app.ai.embedding_model import create_embedding
 from app.ai.conversation_memory import ConversationBufferMemory
 
-genai.configure(api_key=settings.GEMINI_API_KEY)
+client = Groq(api_key=settings.GROQ_API_KEY)
 
 memory = ConversationBufferMemory()
 
@@ -117,10 +118,16 @@ def query_ai(user_id: str, question: str, top_k: int = 3):
     Answer:
     """
 
-    model = genai.GenerativeModel("gemini-2.5-flash")
-    response = model.generate_content(prompt)
+    completion = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0,
+        max_tokens=1024
+    )
 
-    answer = response.text.strip()
+    answer = completion.choices[0].message.content.strip()
 
     memory.add_ai_message(user_id, answer)
     print(f"User: {question}\nAI: {answer}\n---")
