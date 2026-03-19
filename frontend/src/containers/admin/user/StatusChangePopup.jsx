@@ -5,8 +5,8 @@ const StatusChangePopup = ({ user, currentStatus, onClose, onConfirm }) => {
     const [reason, setReason] = useState(user?.decline_reason || "");
     const [loading, setLoading] = useState(false);
 
-    const action = currentStatus === "Active" ? "deactivate" : "activate";
-    const title = currentStatus === "Active" ? "Deactivate User" : "Activate User";
+    const action = currentStatus === "Available" ? "deactivate" : "activate";
+    const title = currentStatus === "Available" ? "Deactivate User" : "Activate User";
 
     const handleSubmit = async () => {
         if (action === "deactivate" && !reason.trim()) {
@@ -56,7 +56,7 @@ const StatusChangePopup = ({ user, currentStatus, onClose, onConfirm }) => {
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={buildPhotoUrl(user?.photo?.filename, "user_photo",user?.first_name)}
+                                src={buildPhotoUrl(user?.photo?.filename, "user_photo", user?.first_name)}
                                 alt={user?.first_name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
@@ -71,18 +71,18 @@ const StatusChangePopup = ({ user, currentStatus, onClose, onConfirm }) => {
                             <p className="text-xs text-slate-500">ID: {user?._id || user?.id}</p>
                             <p className="text-xs text-slate-600 mt-1">{user?.email}</p>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Active"
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Available"
                                     ? "bg-green-100 text-green-800"
                                     : "bg-gray-100 text-gray-800"
                                     }`}>
                                     Current: {currentStatus}
                                 </span>
                                 <span className="text-xs text-slate-400">→</span>
-                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Active"
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Available"
                                     ? "bg-gray-100 text-gray-800"
                                     : "bg-green-100 text-green-800"
                                     }`}>
-                                    New: {currentStatus === "Active" ? "Inactive" : "Active"}
+                                    New: {currentStatus === "Available" ? "unavailable" : "Available"}
                                 </span>
                             </div>
                             <span className="text-xs text-slate-500 mt-1 inline-block">
@@ -92,7 +92,7 @@ const StatusChangePopup = ({ user, currentStatus, onClose, onConfirm }) => {
                     </div>
 
                     {/* Reason Input (for deactivation only) */}
-                    {currentStatus === "Active" && (
+                    {currentStatus === "Available" && (
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-slate-700 mb-2">
                                 Reason for Deactivation *
@@ -111,7 +111,7 @@ const StatusChangePopup = ({ user, currentStatus, onClose, onConfirm }) => {
                     )}
 
                     {/* Activation Note */}
-                    {currentStatus !== "Active" && user?.decline_reason && (
+                    {currentStatus !== "Available" && user?.decline_reason && (
                         <div className="mb-4 p-3 bg-blue-50 rounded-lg">
                             <div className="flex items-start gap-2">
                                 <span className="material-symbols-outlined text-blue-500 text-sm mt-0.5">
@@ -139,7 +139,7 @@ const StatusChangePopup = ({ user, currentStatus, onClose, onConfirm }) => {
                     </button>
                     <button
                         onClick={handleSubmit}
-                        disabled={loading || (currentStatus === "Active" && !reason.trim())}
+                        disabled={loading || (currentStatus === "Available" && !reason.trim())}
                         className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 bg-primary hover:bg-primary/90 disabled:bg-primary/50"
                     >
                         {loading ? (

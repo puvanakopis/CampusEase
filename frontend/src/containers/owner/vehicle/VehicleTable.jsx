@@ -96,7 +96,7 @@ const VehicleTable = ({
                             <option value="available">Available</option>
                             <option value="rejected">Rejected</option>
                             <option value="booked">Booked</option>
-                            <option value="unavailable">Unavailable</option>
+                            <option value="unavailable">unavailable</option>
                         </select>
                     )}
                 </div>
@@ -180,7 +180,7 @@ const VehicleTable = ({
                                                 : "bg-green-600 hover:bg-green-500"
                                                 } text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors`}
                                         >
-                                            {vehicle.status?.toLowerCase() === "available" ? "Mark Unavailable" : "Mark Available"}
+                                            {vehicle.status?.toLowerCase() === "available" ? "Mark unavailable" : "Mark Available"}
                                         </button>
                                     )}
                                 </td>

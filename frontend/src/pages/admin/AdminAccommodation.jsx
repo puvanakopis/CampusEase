@@ -24,7 +24,7 @@ const AdminAccommodation = () => {
         accoLoading
     } = useContext(AccommodationContext);
 
-    const [activeTab, setActiveTab] = useState("all");
+    const [availableTab, setAvailableTab] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
 
     const [showViewPopup, setShowViewPopup] = useState(false);
@@ -43,7 +43,7 @@ const AdminAccommodation = () => {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeTab]);
+    }, [availableTab]);
 
     // ------------------- FILTERS -------------------
     const allAccommodations = accommodations;
@@ -68,9 +68,9 @@ const AdminAccommodation = () => {
         (a) => a.status === "pending"
     );
 
-    // Get current list based on active tab
+    // Get current list based on available tab
     const getCurrentList = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "available": return availableAccommodations;
             case "booked": return bookedAccommodations;
             case "unavailable": return unavailableAccommodations;
@@ -94,9 +94,9 @@ const AdminAccommodation = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Get item name for pagination based on active tab
+    // Get item name for pagination based on available tab
     const getItemName = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "available": return "available accommodations";
             case "booked": return "booked accommodations";
             case "unavailable": return "unavailable accommodations";
@@ -125,7 +125,7 @@ const AdminAccommodation = () => {
         },
         {
             id: "unavailable",
-            label: "Unavailable",
+            label: "unavailable",
             count: unavailableAccommodations.length,
         },
         {
@@ -311,12 +311,12 @@ const AdminAccommodation = () => {
 
             <Tabs
                 tabs={tabs}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
+                availableTab={availableTab}
+                onTabChange={setAvailableTab}
             />
 
             {/* All Accommodations Tab */}
-            {activeTab === "all" && (
+            {availableTab === "all" && (
                 <>
                     <AccommodationTable
                         length={accommodations.length}
@@ -340,7 +340,7 @@ const AdminAccommodation = () => {
             )}
 
             {/* Available Accommodations Tab */}
-            {activeTab === "available" && (
+            {availableTab === "available" && (
                 <>
                     <AccommodationTable
                         length={availableAccommodations.length}
@@ -364,7 +364,7 @@ const AdminAccommodation = () => {
             )}
 
             {/* Booked Accommodations Tab */}
-            {activeTab === "booked" && (
+            {availableTab === "booked" && (
                 <>
                     <AccommodationTable
                         length={bookedAccommodations.length}
@@ -387,12 +387,12 @@ const AdminAccommodation = () => {
                 </>
             )}
 
-            {/* Unavailable Accommodations Tab */}
-            {activeTab === "unavailable" && (
+            {/* unavailable Accommodations Tab */}
+            {availableTab === "unavailable" && (
                 <>
                     <AccommodationTable
                         length={unavailableAccommodations.length}
-                        title="Unavailable Accommodations"
+                        title="unavailable Accommodations"
                         accommodations={paginatedList}
                         onView={handleViewAccommodation}
                         onToggleStatus={handleToggleAccommodationStatus}
@@ -412,7 +412,7 @@ const AdminAccommodation = () => {
             )}
 
             {/* Rejected Accommodations Tab */}
-            {activeTab === "rejected" && (
+            {availableTab === "rejected" && (
                 <>
                     <AccommodationTable
                         length={rejectedAccommodations.length}
@@ -436,7 +436,7 @@ const AdminAccommodation = () => {
             )}
 
             {/* Accommodation Requests Tab */}
-            {activeTab === "requests" && (
+            {availableTab === "requests" && (
                 <>
                     <AccommodationRequestsTable
                         length={accommodationRequests.length}

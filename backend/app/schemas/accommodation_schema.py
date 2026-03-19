@@ -1,69 +1,16 @@
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional
-from enum import Enum
 from datetime import datetime
-
-
-class UserPhoto(BaseModel):
-    filename: str
-    content_type: str
-    size: int
-
-
-class OwnerStatus(str, Enum):
-    pending = "Pending Approval"
-    active = "Active"
-    inactive = "Inactive"
-    declined = "Declined Approval"
-
-
-class AccommodationGender(str, Enum):
-    male = "male"
-    female = "female"
-
-
-class AccommodationStatus(str, Enum):
-    pending = "pending"
-    available = "available"
-    rejected = "rejected"
-    booked = "booked"
-    unavailable = "unavailable"
-
-
-class AccommodationType(str, Enum):
-    apartment = "apartment"
-    house = "house"
-    villa = "villa"
-    hostel = "hostel"
-    other = "other"
-
-
-class AccommodationDistance(BaseModel):
-    susl_main_gate: Optional[str] = None
-    pambahinna_junction: Optional[str] = None
-
-
-class AccommodationImageSchema(BaseModel):
-    filename: str
-
-
-class AccommodationAddressSchema(BaseModel):
-    street: Optional[str] = None
-    city: Optional[str] = None
-    postal_code: Optional[str] = None
-    country: Optional[str] = None
-
-
-class AccommodationLocationSchema(BaseModel):
-    latitude: float
-    longitude: float
+from app.models.accommodation_model import AccommodationStatus, AccommodationType,    AccommodationDistance,    AccommodationGender,    AccommodationImage,    AccommodationAddress,    AccommodationLocation
+from app.models.owner_model import OwnerPhoto,    OwnerStatus
+from app.models.user_model import Photo
 
 
 class UserResponse(BaseModel):
-    id: str = Field(..., alias="id")
+    id: str
     first_name: str
     role: str
-    photo: Optional[UserPhoto] = None
+    photo: Optional[Photo] = None
 
 
 class AccommodationReview(BaseModel):
@@ -73,11 +20,6 @@ class AccommodationReview(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-class AccommodationReviewCreateRequest(BaseModel):
-    message: str
-    rating: float = Field(..., ge=0, le=5)
-
-
 class OwnerResponse(BaseModel):
     id: str = Field(..., alias="_id")
     first_name: str
@@ -85,12 +27,17 @@ class OwnerResponse(BaseModel):
     email: EmailStr
     address: str
     phone: str
-    photo: Optional[UserPhoto] = None
+    photo: Optional[OwnerPhoto] = None
     verified: bool = False
     description: Optional[str] = None
     status: Optional[OwnerStatus] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    last_updated: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime
+    last_updated: datetime
+
+
+class AccommodationReviewCreateRequest(BaseModel):
+    message: str
+    rating: float = Field(..., ge=0, le=5)
 
 
 class AccommodationCreateRequest(BaseModel):
@@ -103,12 +50,12 @@ class AccommodationCreateRequest(BaseModel):
     owner_id: Optional[str] = None
     month_rent: float
     status: AccommodationStatus = AccommodationStatus.pending
-    images: List[AccommodationImageSchema] = []
+    images: List[AccommodationImage] = []
     amenities: List[str] = []
     available_users: int = 0
     total_users: int = 0
-    address: Optional[AccommodationAddressSchema] = None
-    location: Optional[AccommodationLocationSchema] = None
+    address: Optional[AccommodationAddress] = None
+    location: Optional[AccommodationLocation] = None
     time_from_uni: Optional[AccommodationDistance] = None
     gender: AccommodationGender = AccommodationGender.male
 
@@ -127,13 +74,13 @@ class AccommodationResponse(BaseModel):
     month_rent: float
     status: AccommodationStatus
     reject_reason: Optional[str] = None
-    images: List[AccommodationImageSchema] = []
+    images: List[AccommodationImage] = []
     reviews: Optional[List[AccommodationReview]] = []
     amenities: List[str] = []
     available_users: int
     total_users: int
-    address: Optional[AccommodationAddressSchema] = None
-    location: Optional[AccommodationLocationSchema] = None
+    address: Optional[AccommodationAddress] = None
+    location: Optional[AccommodationLocation] = None
     time_from_uni: Optional[AccommodationDistance] = None
     gender: Optional[AccommodationGender] = None
     created_at: datetime
@@ -153,12 +100,12 @@ class AccommodationUpdateRequest(BaseModel):
     month_rent: Optional[float] = None
     status: Optional[AccommodationStatus] = None
     reject_reason: Optional[str] = None
-    images: Optional[List[AccommodationImageSchema]] = None
+    images: Optional[List[AccommodationImage]] = None
     amenities: Optional[List[str]] = None
     available_users: Optional[int] = None
     total_users: Optional[int] = None
-    address: Optional[AccommodationAddressSchema] = None
-    location: Optional[AccommodationLocationSchema] = None
+    address: Optional[AccommodationAddress] = None
+    location: Optional[AccommodationLocation] = None
     time_from_uni: Optional[AccommodationDistance] = None
     gender: Optional[AccommodationGender] = None
     last_updated: datetime = Field(default_factory=datetime.utcnow)

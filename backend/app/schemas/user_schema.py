@@ -2,24 +2,7 @@ from typing import Optional, List
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from enum import Enum
-
-
-class UserStatus(str, Enum):
-    pending = "Pending Approval"
-    active = "Active"
-    inactive = "Inactive"
-    declined = "Declined Approval"
-
-
-class UserRole(str, Enum):
-    student = "student"
-    staff = "staff"
-
-
-class Photo(BaseModel):
-    filename: str
-    content_type: str
-    size: int
+from app.models.user_model import UserStatus, UserRole, Photo
 
 
 class UserResponse(BaseModel):
@@ -41,8 +24,8 @@ class UserResponse(BaseModel):
     last_updated: datetime
 
     model_config = {
-        "from_attributes": True,  
-        "validate_by_name": True 
+        "from_attributes": True,
+        "validate_by_name": True
     }
 
 
@@ -60,4 +43,3 @@ class UserUpdateRequest(BaseModel):
     save_accommodations: Optional[List[str]] = None
     save_transports: Optional[List[str]] = None
     last_updated: datetime = Field(default_factory=datetime.utcnow)
-    

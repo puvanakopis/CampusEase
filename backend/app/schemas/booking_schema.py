@@ -1,38 +1,10 @@
 from typing import Optional
 from pydantic import BaseModel, Field
-from enum import Enum
 from datetime import datetime
 from app.schemas.vehicle_schema import VehicleResponse
 from app.schemas.accommodation_schema import AccommodationResponse
 from app.schemas.owner_schema import OwnerResponse
-
-
-class BookingType(str, Enum):
-    vehicle = "vehicle"
-    accommodation = "accommodation"
-
-
-class BookingStatus(str, Enum):
-    pending = "pending"
-    confirmed = "confirmed"
-    canceled = "canceled"
-    completed = "completed"
-
-
-class PaymentMethod(str, Enum):
-    credit_card = "credit_card"
-    pay_on_hand = "pay_on_hand"
-
-
-class BookingPayment(BaseModel):
-    method: Optional[PaymentMethod]
-    amount: Optional[float]
-    cardholder_name: Optional[str] = None
-    card_number_masked: Optional[str] = None
-    expiry_date: Optional[str] = None
-    cvv_masked: Optional[str] = None
-    paid: Optional[bool] = False
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+from app.models.booking_model import BookingType, BookingStatus, BookingPayment
 
 
 class BookingCreateRequest(BaseModel):
@@ -75,6 +47,6 @@ class BookingResponse(BaseModel):
     owner: Optional[OwnerResponse] = None
 
     model_config = {
-        "from_attributes": True,  
-        "validate_by_name": True 
+        "from_attributes": True,
+        "validate_by_name": True
     }

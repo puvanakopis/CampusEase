@@ -28,7 +28,7 @@ const OwnerVehicle = () => {
 
     const { currentUser } = useContext(AuthContext);
 
-    const [activeTab, setActiveTab] = useState("all");
+    const [availableTab, setAvailableTab] = useState("all");
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
@@ -44,7 +44,7 @@ const OwnerVehicle = () => {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeTab]);
+    }, [availableTab]);
 
     const getStatus = (vehicle) => vehicle?.status?.toLowerCase() || "";
 
@@ -72,7 +72,7 @@ const OwnerVehicle = () => {
     );
 
     const getCurrentList = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "pending":
                 return pendingList;
             case "rejected":
@@ -108,7 +108,7 @@ const OwnerVehicle = () => {
         { id: "available", label: "Available", count: availableList.length },
         { id: "pending", label: "Pending", count: pendingList.length },
         { id: "booked", label: "Booked", count: bookedList.length },
-        { id: "unavailable", label: "Unavailable", count: unavailableList.length },
+        { id: "unavailable", label: "unavailable", count: unavailableList.length },
         { id: "rejected", label: "Rejected", count: rejectedList.length },
     ];
 
@@ -229,7 +229,7 @@ const OwnerVehicle = () => {
     };
 
     const getItemName = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "pending":
                 return "pending vehicles";
             case "rejected":
@@ -271,7 +271,7 @@ const OwnerVehicle = () => {
                         setShowViewPopup(false);
                         setShowEditPopup(true);
                     }}
-                    activeTab={activeTab}
+                    availableTab={availableTab}
                 />
             )}
 
@@ -284,7 +284,7 @@ const OwnerVehicle = () => {
                         setResubmitMode(false);
                     }}
                     onSave={handleEditVehicle}
-                    activeTab={activeTab}
+                    availableTab={availableTab}
                     resubmitMode={resubmitMode}
                 />
             )}
@@ -312,11 +312,11 @@ const OwnerVehicle = () => {
             <StatsCards stats={stats} />
 
             {/* Tabs */}
-            <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+            <Tabs tabs={tabs} availableTab={availableTab} onTabChange={setAvailableTab} />
 
             {/* Tab Content */}
 
-            {activeTab === "all" && (
+            {availableTab === "all" && (
                 <>
                     <VehicleTable
                         length={allList.length}
@@ -342,7 +342,7 @@ const OwnerVehicle = () => {
                 </>
             )}
 
-            {activeTab === "available" && (
+            {availableTab === "available" && (
                 <>
                     <VehicleTable
                         length={availableList.length}
@@ -368,7 +368,7 @@ const OwnerVehicle = () => {
                 </>
             )}
 
-            {activeTab === "pending" && (
+            {availableTab === "pending" && (
                 <>
                     <PendingVehicleTable
                         length={pendingList.length}
@@ -390,7 +390,7 @@ const OwnerVehicle = () => {
                 </>
             )}
 
-            {activeTab === "booked" && (
+            {availableTab === "booked" && (
                 <>
                     <VehicleTable
                         length={bookedList.length}
@@ -416,12 +416,12 @@ const OwnerVehicle = () => {
                 </>
             )}
 
-            {activeTab === "unavailable" && (
+            {availableTab === "unavailable" && (
                 <>
                     <VehicleTable
                         length={unavailableList.length}
                         vehicles={paginatedList}
-                        heading="Unavailable Vehicles"
+                        heading="unavailable Vehicles"
                         onView={handleViewVehicle}
                         onEdit={handleEditClick}
                         onDelete={handleDeleteClick}
@@ -442,7 +442,7 @@ const OwnerVehicle = () => {
                 </>
             )}
 
-            {activeTab === "rejected" && (
+            {availableTab === "rejected" && (
                 <>
                     <RejectedVehicleTable
                         length={rejectedList.length}

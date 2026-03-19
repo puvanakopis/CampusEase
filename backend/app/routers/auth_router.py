@@ -1,9 +1,6 @@
-from fastapi import APIRouter, Body, Depends , File, Form, UploadFile
+from fastapi import APIRouter, Body, Depends, File, Form, UploadFile
 from typing import Optional
-from app.services.auth_service import (
-    request_signup_otp, verify_signup_otp, login_user,
-    request_password_reset, reset_password , update_current_user, update_password
-)
+from app.services.auth_service import request_signup_otp, verify_signup_otp, login_user, request_password_reset, reset_password, update_current_user, update_password
 from app.middlewares.auth_middleware import get_current_user
 
 

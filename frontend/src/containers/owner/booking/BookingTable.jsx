@@ -3,7 +3,7 @@ import React, { useState, useMemo } from "react";
 const BookingTable = ({
     length,
     bookings,
-    activeTab,
+    availableTab,
     onView,
     onAccept,
     onDecline,
@@ -57,11 +57,11 @@ const BookingTable = ({
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-900">
-                    {activeTab === "all" && "All Bookings"}
-                    {activeTab === "pending" && "Pending Requests"}
-                    {activeTab === "active" && "Active Bookings"}
-                    {activeTab === "completed" && "Completed Bookings"}
-                    {activeTab === "canceled" && "Canceled Bookings"} ({length})
+                    {availableTab === "all" && "All Bookings"}
+                    {availableTab === "pending" && "Pending Requests"}
+                    {availableTab === "available" && "Available Bookings"}
+                    {availableTab === "completed" && "Completed Bookings"}
+                    {availableTab === "canceled" && "Canceled Bookings"} ({length})
                 </h3>
 
                 <div className="flex items-center gap-3 flex-wrap">
@@ -234,7 +234,7 @@ const BookingTable = ({
                                         <p className="text-sm">
                                             {searchQuery || filterType !== "All"
                                                 ? "No bookings match your filters"
-                                                : `No ${activeTab === "all" ? "" : activeTab} bookings found`}
+                                                : `No ${availableTab === "all" ? "" : availableTab} bookings found`}
                                         </p>
                                         <p className="text-xs text-slate-500 mt-1">
                                             {searchQuery || filterType !== "All"

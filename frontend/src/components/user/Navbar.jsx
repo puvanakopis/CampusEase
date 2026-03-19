@@ -16,7 +16,7 @@ const Navbar = () => {
     const authPages = ["/login", "/register", "/forgot-password"];
     if (authPages.includes(location.pathname)) return null;
 
-    const isActive = (path) => location.pathname === path;
+    const isAvailable = (path) => location.pathname === path;
 
     const first_name = currentUser ? `${currentUser.first_name}`.trim() : "";
     const avatar = buildPhotoUrl(currentUser?.photo?.filename, "user_photo", first_name);
@@ -82,7 +82,7 @@ const Navbar = () => {
                         <button
                             key={item.path}
                             onClick={() => navigateTo(item.path)}
-                            className={`text-sm font-medium transition-colors ${isActive(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
+                            className={`text-sm font-medium transition-colors ${isAvailable(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
                                 }`}
                         >
                             {item.name}
@@ -210,7 +210,7 @@ const Navbar = () => {
                                         }
                                         setIsOpen(false);
                                     }}
-                                    className={`w-full text-center text-sm font-medium transition-colors ${isActive(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
+                                    className={`w-full text-center text-sm font-medium transition-colors ${isAvailable(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
                                         } ${item.isLogout ? "text-red-600" : ""}`}
                                 >
                                     {item.name}

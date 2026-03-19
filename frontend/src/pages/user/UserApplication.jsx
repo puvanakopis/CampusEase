@@ -20,10 +20,10 @@ const UserApplication = () => {
 
     const [currentStep, setCurrentStep] = useState(1);
     const [showApplicationPopup, setShowApplicationPopup] = useState(false);
-    const [showInactivePopup, setShowInactivePopup] = useState(false);
+    const [showunavailablePopup, setShowunavailablePopup] = useState(false);
     const [currentStatus, setCurrentStatus] = useState(null);
     const [declineReason, setDeclineReason] = useState(null);
-    const [inactiveDetails, setInactiveDetails] = useState(null);
+    const [unavailableDetails, setunavailableDetails] = useState(null);
 
     // ---------------- FETCH STATUS ----------------
     useEffect(() => {
@@ -42,9 +42,9 @@ const UserApplication = () => {
                 address: currentUser.address || ""
             }));
 
-            // Collect all inactive-related details
-            if (currentUser.status === "Inactive") {
-                setInactiveDetails({
+            // Collect all unavailable-related details
+            if (currentUser.status === "unavailable") {
+                setunavailableDetails({
                     decline_reason: currentUser.decline_reason,
                     deactivation_details: currentUser.deactivation_details,
                     policy_violation: currentUser.policy_violation,
@@ -132,8 +132,8 @@ const UserApplication = () => {
             setCurrentStatus(res.data.status);
             setDeclineReason(res.data.decline_reason || null);
 
-            if (res.data.status === "Inactive") {
-                setInactiveDetails({
+            if (res.data.status === "unavailable") {
+                setunavailableDetails({
                     decline_reason: res.data.decline_reason,
                     deactivation_details: res.data.deactivation_details,
                     policy_violation: res.data.policy_violation,
@@ -160,7 +160,7 @@ const UserApplication = () => {
     };
 
     // ---------------- ACTIVE USER REDIRECT ----------------
-    if (currentStatus === "Active") {
+    if (currentStatus === "Available") {
         return <Navigate to="/" replace />;
     }
 
@@ -196,7 +196,7 @@ const UserApplication = () => {
                 )}
 
                 {/* ---------------- PENDING ---------------- */}
-                {currentStatus === "Pending Approval" && (
+                {currentStatus === "pending" && (
                     <div className="mt-6 text-yellow-600">
                         <p className="font-medium">
                             Your verification is currently under review.
@@ -208,10 +208,10 @@ const UserApplication = () => {
                 )}
 
                 {/* ---------------- DECLINED ---------------- */}
-                {currentStatus === "Declined Approval" && (
+                {currentStatus === "rejected" && (
                     <div className="mt-6 text-center">
                         <p className="text-red-600 font-medium">
-                            Your verification was declined.
+                            Your verification was rejected.
                         </p>
 
                         {declineReason && (
@@ -235,14 +235,14 @@ const UserApplication = () => {
                 )}
 
                 {/* ---------------- INACTIVE ---------------- */}
-                {currentStatus === "Inactive" && (
+                {currentStatus === "unavailable" && (
                     <div className="mt-6 bg-red-50 border border-red-200 p-6 rounded-lg text-center max-w-md">
                         <span className="material-symbols-outlined text-red-500 text-4xl mb-2">
                             block
                         </span>
 
                         <h3 className="text-lg font-semibold text-red-700 mb-2">
-                            Your Account is Inactive
+                            Your Account is unavailable
                         </h3>
 
                         <p className="text-sm text-red-600 mb-3">
@@ -262,7 +262,7 @@ const UserApplication = () => {
                         )}
 
                         <button
-                            onClick={() => setShowInactivePopup(true)}
+                            onClick={() => setShowunavailablePopup(true)}
                             className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 inline-flex items-center gap-2"
                         >
                             <span className="material-symbols-outlined text-sm">
@@ -291,13 +291,13 @@ const UserApplication = () => {
             )}
 
             {/* ---------------- INACTIVE POPUP ---------------- */}
-            {showInactivePopup && (
+            {showunavailablePopup && (
                 <InactiveAccountPopup
-                    setShowInactivePopup={setShowInactivePopup}
+                    setShowunavailablePopup={setShowunavailablePopup}
                     declineReason={declineReason}
                     currentUser={{
                         ...currentUser,
-                        ...inactiveDetails
+                        ...unavailableDetails
                     }}
                 />
             )}

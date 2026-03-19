@@ -8,7 +8,7 @@ const ViewVehiclePopup = ({ vehicle, onClose }) => {
             'available': 'Available',
             'rejected': 'Rejected',
             'booked': 'Booked',
-            'unavailable': 'Unavailable'
+            'unavailable': 'unavailable'
         };
         return statusMap[status] || status;
     };

@@ -2,16 +2,9 @@ from datetime import datetime
 from typing import List, Optional
 from fastapi import UploadFile, HTTPException
 from app.db.mongodb import vehicles_collection, owners_collection, users_collection
+from app.schemas.vehicle_schema import VehicleCreateRequest, VehicleUpdateRequest, VehicleResponse, VehicleReview, OwnerResponse, UserResponse
 from app.utils.file_utils import save_file
 from app.services.counter_service import get_next_sequence
-from app.schemas.vehicle_schema import (
-    VehicleCreateRequest,
-    VehicleUpdateRequest,
-    VehicleResponse,
-    VehicleReview,
-    OwnerResponse,
-    UserResponse
-)
 from app.ai.chroma_service import add_vehicle_vector, update_vehicle_vector, delete_vehicle_vector
 
 
@@ -211,7 +204,8 @@ async def update_vehicle(vehicle_id: str, update_request: VehicleUpdateRequest, 
     existing_images = doc.get("images", [])
 
     if update_request.remove_images:
-        existing_images = [img for img in existing_images if img["filename"] not in update_request.remove_images]
+        existing_images = [
+            img for img in existing_images if img["filename"] not in update_request.remove_images]
 
     if files:
         for idx, file in enumerate(files, start=1):

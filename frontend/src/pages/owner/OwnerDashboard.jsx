@@ -9,7 +9,7 @@ import RevenueOverview from "../../containers/owner/dashboard/RevenueOverview";
 import RecentBookings from "../../containers/owner/dashboard/RecentBookings";
 
 const OwnerDashboard = () => {
-  const { ownerAccommodations, fetchMyAccommodations,  } = useContext(AccommodationContext);
+  const { ownerAccommodations, fetchMyAccommodations, } = useContext(AccommodationContext);
   const { ownerVehicles, fetchMyVehicles } = useContext(VehicleContext);
   const { bookings, getOwnerBookings } = useContext(BookingContext);
   const { currentUser } = useContext(AuthContext);
@@ -56,7 +56,7 @@ const OwnerDashboard = () => {
   const calculateStats = () => {
     const totalProperties = ownerAccommodations.length + ownerVehicles.length;
 
-    const activeBookings = bookings.filter(b =>
+    const availableBookings = bookings.filter(b =>
       b.status === "confirmed" || b.status === "completed"
     ).length;
 
@@ -85,9 +85,9 @@ const OwnerDashboard = () => {
         icon: "book_online",
         iconBg: "bg-orange-50",
         iconColor: "text-orange-500",
-        label: "Active Bookings",
-        value: activeBookings.toString(),
-        badgeText: bookings.length > 0 ? `${((activeBookings / bookings.length) * 100).toFixed(0)}% of total` : "No bookings",
+        label: "Available Bookings",
+        value: availableBookings.toString(),
+        badgeText: bookings.length > 0 ? `${((availableBookings / bookings.length) * 100).toFixed(0)}% of total` : "No bookings",
         badgeColor: "text-orange-600",
         badgeBg: "bg-orange-50",
       },

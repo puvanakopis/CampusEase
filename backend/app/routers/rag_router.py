@@ -1,7 +1,7 @@
 from app.models.user_model import User
+from fastapi import APIRouter, Query, HTTPException, Depends
 from app.middlewares.auth_middleware import login_required
 from app.ai.rag_client import query_ai
-from fastapi import APIRouter, Query, HTTPException, Depends
 
 
 router = APIRouter(prefix="/rag", tags=["RAG"])

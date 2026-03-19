@@ -1,21 +1,11 @@
 from datetime import datetime
 from fastapi import HTTPException
-from app.db.mongodb import (
-    booking_collection,
-    vehicles_collection,
-    accommodations_collection,
-    owners_collection,
-    users_collection
-)
-from app.services.counter_service import get_next_sequence
-from app.schemas.booking_schema import (
-    BookingCreateRequest,
-    BookingUpdateRequest,
-    BookingResponse
-)
+from app.db.mongodb import booking_collection, vehicles_collection, accommodations_collection, owners_collection, users_collection
 from app.schemas.vehicle_schema import VehicleResponse
 from app.schemas.accommodation_schema import AccommodationResponse
 from app.schemas.owner_schema import OwnerResponse
+from app.schemas.booking_schema import BookingCreateRequest, BookingUpdateRequest, BookingResponse
+from app.services.counter_service import get_next_sequence
 
 
 async def get_owner_by_id(owner_id: str) -> OwnerResponse | None:
@@ -38,7 +28,8 @@ async def enrich_booking_response(booking_data: dict) -> BookingResponse:
             # Enrich reviews
             reviews = []
             for review in doc.get("reviews", []):
-                user_doc = await owners_collection.find_one({"_id": review["user_id"]})  # or users_collection
+                # or users_collection
+                user_doc = await owners_collection.find_one({"_id": review["user_id"]})
                 user_obj = None
                 if user_doc:
                     user_obj = {
@@ -63,7 +54,8 @@ async def enrich_booking_response(booking_data: dict) -> BookingResponse:
             # Enrich reviews for accommodations
             reviews = []
             for rev in doc.get("reviews", []):
-                user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
+                user_id = rev.get("user_id") or (
+                    rev.get("user") or {}).get("id")
                 user_doc = await users_collection.find_one({"_id": str(user_id)}) if user_id else None
                 user_obj = None
                 if user_doc:
@@ -86,6 +78,7 @@ async def enrich_booking_response(booking_data: dict) -> BookingResponse:
         accommodation=accom_obj,
         owner=owner_obj
     )
+
 
 async def create_booking(booking_request: BookingCreateRequest) -> dict:
     new_id = await get_next_sequence("booking")

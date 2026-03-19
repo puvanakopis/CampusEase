@@ -51,7 +51,7 @@ const DeclinePopup = ({ booking, declineReason, onDeclineReasonChange, onClose, 
                             onChange={(e) => onDeclineReasonChange(e.target.value)}
                             className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-red-500 focus:border-red-500 focus:outline-none transition duration-200 ease-in-out"
                             rows="4"
-                            placeholder="Please explain why this booking is being declined..."
+                            placeholder="Please explain why this booking is being rejected..."
                             required
                         />
                     </div>

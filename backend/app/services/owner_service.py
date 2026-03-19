@@ -1,15 +1,10 @@
 from datetime import datetime
 from fastapi import HTTPException
-from typing import List
-from app.db.mongodb import (
-    owners_collection,
-    accommodations_collection,
-    vehicles_collection
-)
+from app.db.mongodb import owners_collection, accommodations_collection, vehicles_collection
 from app.schemas.owner_schema import OwnerResponse, OwnerUpdateRequest
 from app.schemas.accommodation_schema import AccommodationResponse
 from app.schemas.vehicle_schema import VehicleResponse
-from app.ai.chroma_service import add_owner_vector, update_owner_vector, delete_owner_vector
+from app.ai.chroma_service import update_owner_vector, delete_owner_vector
 
 
 async def get_all_owners():

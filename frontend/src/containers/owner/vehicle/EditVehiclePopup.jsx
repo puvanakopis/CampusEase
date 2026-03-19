@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 import toast from "react-hot-toast";
 
-const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
+const EditVehiclePopup = ({ vehicle, onClose, onSave, availableTab }) => {
     const formatVehicleData = (veh) => {
         return {
             _id: veh._id,
@@ -222,13 +222,13 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                 susl_main_gate: formData.time_from_uni.susl_main_gate || null,
                 pambahinna_junction: formData.time_from_uni.pambahinna_junction || null
             },
-            status: activeTab === "pending" ? "pending" : formData.status,
+            status: availableTab === "pending" ? "pending" : formData.status,
             amenities: formData.amenities,
             existing_images: existingImages.map(img => img.filename),
             images_to_delete: imagesToDelete
         };
 
-        if (activeTab === "rejected") {
+        if (availableTab === "rejected") {
             vehicleData.reject_reason = null;
         }
 
@@ -441,7 +441,7 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                 </div>
             </div>
 
-            {activeTab === "active" && (
+            {availableTab === "available" && (
                 <div className="p-3 bg-slate-50 rounded-lg">
                     <h4 className="font-bold text-slate-900 mb-2">Status</h4>
                     <select
@@ -452,7 +452,7 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                     >
                         <option value="available">Available</option>
                         <option value="booked">Booked</option>
-                        <option value="unavailable">Unavailable</option>
+                        <option value="unavailable">unavailable</option>
                     </select>
                 </div>
             )}
@@ -576,8 +576,8 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                                 type="button"
                                 onClick={() => handleSelectPopularAmenity(amenity)}
                                 className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${formData.amenities.includes(amenity)
-                                        ? 'bg-primary text-white border-primary'
-                                        : 'border-slate-300 text-slate-700 hover:border-primary hover:text-primary bg-white'
+                                    ? 'bg-primary text-white border-primary'
+                                    : 'border-slate-300 text-slate-700 hover:border-primary hover:text-primary bg-white'
                                     }`}
                                 disabled={formData.amenities.includes(amenity)}
                             >
@@ -717,12 +717,12 @@ const EditVehiclePopup = ({ vehicle, onClose, onSave, activeTab }) => {
                     <div>
                         <h3 className="text-lg font-bold text-slate-900">Edit Vehicle</h3>
                         <p className="text-xs text-slate-500 mt-1">ID: {vehicle._id}</p>
-                        {activeTab === "pending" && (
+                        {availableTab === "pending" && (
                             <p className="text-xs text-yellow-600 mt-2">
                                 Note: Editing a pending vehicle will keep it in the pending queue for review.
                             </p>
                         )}
-                        {activeTab === "rejected" && (
+                        {availableTab === "rejected" && (
                             <p className="text-xs text-red-600 mt-2">
                                 Note: After editing, this vehicle will be resubmitted for review.
                             </p>

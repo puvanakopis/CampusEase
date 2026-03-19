@@ -9,7 +9,7 @@ const Sidebar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
     const { logout } = useContext(AuthContext);
 
-    const isActive = (path) => location.pathname === path;
+    const isAvailable = (path) => location.pathname === path;
 
     const handleNavigation = (path) => {
         navigateTo(path);
@@ -22,9 +22,9 @@ const Sidebar = () => {
                 <div className="py-1">
                     <button
                         onClick={() => navigateTo("/profile")}
-                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/profile")
-                                ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                : "text-slate-600"
+                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/profile")
+                            ? "bg-primary/5 text-primary border-l-4 border-primary"
+                            : "text-slate-600"
                             }`}
                     >
                         <span className="material-symbols-outlined text-lg">person</span>
@@ -33,9 +33,9 @@ const Sidebar = () => {
 
                     <button
                         onClick={() => navigateTo("/my-bookings")}
-                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/my-bookings")
-                                ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                : "text-slate-600"
+                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/my-bookings")
+                            ? "bg-primary/5 text-primary border-l-4 border-primary"
+                            : "text-slate-600"
                             }`}
                     >
                         <span className="material-symbols-outlined text-lg">calendar_month</span>
@@ -44,9 +44,9 @@ const Sidebar = () => {
 
                     <button
                         onClick={() => navigateTo("/saved-items")}
-                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/saved-items")
-                                ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                : "text-slate-600"
+                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/saved-items")
+                            ? "bg-primary/5 text-primary border-l-4 border-primary"
+                            : "text-slate-600"
                             }`}
                     >
                         <span className="material-symbols-outlined text-lg">favorite</span>
@@ -55,9 +55,9 @@ const Sidebar = () => {
 
                     <button
                         onClick={() => navigateTo("/settings")}
-                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/settings")
-                                ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                : "text-slate-600"
+                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/settings")
+                            ? "bg-primary/5 text-primary border-l-4 border-primary"
+                            : "text-slate-600"
                             }`}
                     >
                         <span className="material-symbols-outlined text-lg">settings</span>
@@ -66,9 +66,9 @@ const Sidebar = () => {
 
                     <button
                         onClick={() => navigateTo("/support")}
-                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/support")
-                                ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                : "text-slate-600"
+                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/support")
+                            ? "bg-primary/5 text-primary border-l-4 border-primary"
+                            : "text-slate-600"
                             }`}
                     >
                         <span className="material-symbols-outlined text-lg">help</span>
@@ -132,9 +132,9 @@ const Sidebar = () => {
                             <div className="py-1">
                                 <button
                                     onClick={() => handleNavigation("/profile")}
-                                    className={`flex items-center gap-3 px-6 py-4 text-base font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/profile")
-                                            ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                            : "text-slate-600"
+                                    className={`flex items-center gap-3 px-6 py-4 text-base font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/profile")
+                                        ? "bg-primary/5 text-primary border-l-4 border-primary"
+                                        : "text-slate-600"
                                         }`}
                                 >
                                     <span className="material-symbols-outlined text-xl">person</span>
@@ -143,9 +143,9 @@ const Sidebar = () => {
 
                                 <button
                                     onClick={() => handleNavigation("/my-bookings")}
-                                    className={`flex items-center gap-3 px-6 py-4 text-base font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/my-bookings")
-                                            ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                            : "text-slate-600"
+                                    className={`flex items-center gap-3 px-6 py-4 text-base font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/my-bookings")
+                                        ? "bg-primary/5 text-primary border-l-4 border-primary"
+                                        : "text-slate-600"
                                         }`}
                                 >
                                     <span className="material-symbols-outlined text-xl">calendar_month</span>
@@ -154,9 +154,9 @@ const Sidebar = () => {
 
                                 <button
                                     onClick={() => handleNavigation("/saved-items")}
-                                    className={`flex items-center gap-3 px-6 py-4 text-base font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/saved-items")
-                                            ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                            : "text-slate-600"
+                                    className={`flex items-center gap-3 px-6 py-4 text-base font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/saved-items")
+                                        ? "bg-primary/5 text-primary border-l-4 border-primary"
+                                        : "text-slate-600"
                                         }`}
                                 >
                                     <span className="material-symbols-outlined text-xl">favorite</span>
@@ -165,9 +165,9 @@ const Sidebar = () => {
 
                                 <button
                                     onClick={() => handleNavigation("/settings")}
-                                    className={`flex items-center gap-3 px-6 py-4 text-base font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/settings")
-                                            ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                            : "text-slate-600"
+                                    className={`flex items-center gap-3 px-6 py-4 text-base font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/settings")
+                                        ? "bg-primary/5 text-primary border-l-4 border-primary"
+                                        : "text-slate-600"
                                         }`}
                                 >
                                     <span className="material-symbols-outlined text-xl">settings</span>
@@ -176,9 +176,9 @@ const Sidebar = () => {
 
                                 <button
                                     onClick={() => handleNavigation("/support")}
-                                    className={`flex items-center gap-3 px-6 py-4 text-base font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/support")
-                                            ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                            : "text-slate-600"
+                                    className={`flex items-center gap-3 px-6 py-4 text-base font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/support")
+                                        ? "bg-primary/5 text-primary border-l-4 border-primary"
+                                        : "text-slate-600"
                                         }`}
                                 >
                                     <span className="material-symbols-outlined text-xl">help</span>

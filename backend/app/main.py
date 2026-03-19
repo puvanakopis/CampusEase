@@ -2,15 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
-from app.routers import (
-    auth_router, accommodation_router, vehicle_router,
-    owner_router, user_router, save_item_router,
-    booking_router, temp_booking_router, rag_router
-)
-from app.ai.chroma_service import (
-    load_static_knowledge,
-    sync_all_vectors
-)
+from app.routers import auth_router, accommodation_router, vehicle_router, owner_router, user_router, save_item_router, booking_router, temp_booking_router, rag_router
+from app.ai.chroma_service import load_static_knowledge, sync_all_vectors
 
 app = FastAPI(
     title="CampusEase API",

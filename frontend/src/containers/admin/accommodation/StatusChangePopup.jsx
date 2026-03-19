@@ -31,7 +31,7 @@ const StatusChangePopup = ({ accommodation, currentStatus, onClose, onConfirm })
             'Available': 'Available',
             'Rejected': 'Rejected',
             'booked': 'Booked',
-            'unavailable': 'Unavailable'
+            'unavailable': 'unavailable'
         };
         return statusMap[status] || status;
     };
@@ -81,7 +81,7 @@ const StatusChangePopup = ({ accommodation, currentStatus, onClose, onConfirm })
                                 </span>
                                 <span className="text-xs text-slate-400">→</span>
                                 <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "Available" ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}>
-                                    New: {currentStatus === "Available" ? "Unavailable" : "Available"}
+                                    New: {currentStatus === "Available" ? "unavailable" : "Available"}
                                 </span>
                             </div>
                         </div>

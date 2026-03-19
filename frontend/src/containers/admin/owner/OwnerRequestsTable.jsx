@@ -35,13 +35,13 @@ const OwnerRequestsTable = ({
 
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
-            case "pending approval":
+            case "pending":
                 return "bg-yellow-100 text-yellow-800";
-            case "active":
+            case "available":
                 return "bg-green-100 text-green-800";
-            case "declined approval":
+            case "rejected approval":
                 return "bg-red-100 text-red-800";
-            case "inactive":
+            case "unavailable":
                 return "bg-gray-100 text-gray-800";
             default:
                 return "bg-gray-100 text-gray-800";
@@ -106,7 +106,7 @@ const OwnerRequestsTable = ({
                                             <p className="text-[10px] text-slate-400">ID: {request._id || request.id}</p>
                                             <div className="flex items-center gap-2 mt-1">
                                                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${getStatusColor(request.status)}`}>
-                                                    {request.status || 'Pending Approval'}
+                                                    {request.status || 'pending'}
                                                 </span>
                                                 <p className="text-xs text-slate-600">Requested: {formatDate(request.created_at)}</p>
                                             </div>

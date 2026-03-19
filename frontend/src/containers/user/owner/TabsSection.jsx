@@ -108,7 +108,7 @@ const VehicleCard = ({ item }) => {
 };
 
 const TabsSection = ({ owner }) => {
-    const [activeTab, setActiveTab] = useState("accommodations");
+    const [availableTab, setAvailableTab] = useState("accommodations");
 
     const accommodations = owner?.accommodations || [];
     const vehicles = owner?.vehicles || [];
@@ -118,9 +118,9 @@ const TabsSection = ({ owner }) => {
             {/* Tabs */}
             <div className="flex border-b border-slate-200 overflow-x-auto">
                 <button
-                    onClick={() => setActiveTab("accommodations")}
+                    onClick={() => setAvailableTab("accommodations")}
                     className={`px-6 py-4 flex items-center gap-2 text-sm whitespace-nowrap
-            ${activeTab === "accommodations"
+            ${availableTab === "accommodations"
                             ? "font-bold text-primary border-b-2 border-primary"
                             : "text-slate-500"
                         }`}
@@ -130,9 +130,9 @@ const TabsSection = ({ owner }) => {
                 </button>
 
                 <button
-                    onClick={() => setActiveTab("vehicles")}
+                    onClick={() => setAvailableTab("vehicles")}
                     className={`px-6 py-4 flex items-center gap-2 text-sm whitespace-nowrap
-            ${activeTab === "vehicles"
+            ${availableTab === "vehicles"
                             ? "font-bold text-primary border-b-2 border-primary"
                             : "text-slate-500"
                         }`}
@@ -143,7 +143,7 @@ const TabsSection = ({ owner }) => {
             </div>
 
             {/* Content */}
-            {activeTab === "accommodations" && (
+            {availableTab === "accommodations" && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {accommodations.length ? (
                         accommodations.map((item) => <AccommodationCard key={item._id} item={item} />)
@@ -153,7 +153,7 @@ const TabsSection = ({ owner }) => {
                 </div>
             )}
 
-            {activeTab === "vehicles" && (
+            {availableTab === "vehicles" && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {vehicles.length ? (
                         vehicles.map((item) => <VehicleCard key={item._id} item={item} />)

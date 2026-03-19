@@ -1,22 +1,9 @@
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
-from enum import Enum
+from app.models.owner_model import OwnerStatus,    OwnerPhoto
 from app.schemas.accommodation_schema import AccommodationResponse
 from app.schemas.vehicle_schema import VehicleResponse
-
-
-class OwnerStatus(str, Enum):
-    pending = "Pending Approval"
-    active = "Active"
-    inactive = "Inactive"
-    declined = "Declined Approval"
-
-
-class OwnerPhoto(BaseModel):
-    filename: str
-    content_type: str
-    size: int
 
 
 class OwnerResponse(BaseModel):
@@ -38,9 +25,10 @@ class OwnerResponse(BaseModel):
     last_updated: datetime
 
     model_config = {
-        "from_attributes": True,  
-        "validate_by_name": True 
+        "from_attributes": True,
+        "validate_by_name": True
     }
+
 
 class OwnerUpdateRequest(BaseModel):
     first_name: Optional[str] = None

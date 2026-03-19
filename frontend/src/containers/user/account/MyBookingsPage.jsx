@@ -11,7 +11,7 @@ const MyBookingsPage = ({ bookings, loading, onStatusUpdate, onReviewSubmit }) =
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const pendingBookings = bookings.filter(b => b.status === "pending");
-  const activeBookings = bookings.filter(b => b.status === "confirmed");
+  const availableBookings = bookings.filter(b => b.status === "confirmed");
   const completedBookings = bookings.filter(b => b.status === "completed");
   const canceledBookings = bookings.filter(b => b.status === "canceled");
 
@@ -318,7 +318,7 @@ const MyBookingsPage = ({ bookings, loading, onStatusUpdate, onReviewSubmit }) =
       {!loading && (
         <div >
           {renderSection("Pending Bookings", "pending_actions", pendingBookings)}
-          {renderSection("Active Bookings", "event_upcoming", activeBookings)}
+          {renderSection("Available Bookings", "event_upcoming", availableBookings)}
           {renderSection("Completed Bookings", "history", completedBookings)}
           {renderSection("Canceled Bookings", "cancel", canceledBookings)}
         </div>

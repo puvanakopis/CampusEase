@@ -1,15 +1,14 @@
 from datetime import datetime
 from fastapi import HTTPException, UploadFile
 from app.db.mongodb import users_collection, admins_collection, owners_collection, otps_collection
+from app.models.user_model import User
+from app.models.owner_model import Owner
+from app.models.admin_model import Admin
 from app.utils.otp_utils import generate_otp, get_expiry
 from app.utils.email_utils import send_otp_email
 from app.utils.auth_utils import hash_password, verify_password, create_jwt_token
 from app.utils.file_utils import save_file
 from app.services.counter_service import get_next_sequence
-from app.models.user_model import User
-from app.models.owner_model import Owner
-from app.models.admin_model import Admin
-
 
 collections_map = {
     "admin": (admins_collection, Admin),
@@ -115,7 +114,7 @@ async def verify_signup_otp(role: str, email: str, otp: str):
         "email": otp_record["email"],
         "password": otp_record["temp_password"],
         "role": role,
-        "status": "Pending Approval",
+        "status": "pending",
         "created_at": datetime.utcnow(),
         "last_updated": datetime.utcnow(),
     }

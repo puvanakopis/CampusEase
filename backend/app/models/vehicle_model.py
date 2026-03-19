@@ -4,12 +4,18 @@ from enum import Enum
 from datetime import datetime
 
 
+class TransmissionType(str, Enum):
+    manual = "manual"
+    automatic = "automatic"
+    semi_automatic = "semi_automatic"
+
+
 class VehicleStatus(str, Enum):
     pending = "pending"
     available = "available"
-    booked = "booked"
-    rejected = "rejected"
     unavailable = "unavailable"
+    rejected = "rejected"
+    booked = "booked"
 
 
 class VehicleType(str, Enum):
@@ -27,12 +33,6 @@ class FuelType(str, Enum):
     electric = "electric"
     hybrid = "hybrid"
     other = "other"
-
-
-class TransmissionType(str, Enum):
-    manual = "manual"
-    automatic = "automatic"
-    semi_automatic = "semi_automatic"
 
 
 class VehicleDistance(BaseModel):
@@ -94,6 +94,6 @@ class Vehicle(BaseModel):
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 
     model_config = {
-        "from_attributes": True,  
-        "validate_by_name": True  
+        "from_attributes": True,
+        "validate_by_name": True
     }

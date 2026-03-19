@@ -8,13 +8,13 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case "Active":
+            case "Available":
                 return "bg-green-100 text-green-800";
-            case "Pending Approval":
+            case "pending":
                 return "bg-yellow-100 text-yellow-800";
-            case "Declined Approval":
+            case "rejected":
                 return "bg-red-100 text-red-800";
-            case "Inactive":
+            case "unavailable":
                 return "bg-gray-100 text-gray-800";
             default:
                 return "bg-gray-100 text-gray-800";
@@ -59,7 +59,7 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="size-20 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={buildPhotoUrl(owner.photo?.filename, "user_photo",owner.first_name)}
+                                src={buildPhotoUrl(owner.photo?.filename, "user_photo", owner.first_name)}
                                 alt={owner.first_name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {

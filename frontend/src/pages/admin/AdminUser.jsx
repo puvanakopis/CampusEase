@@ -17,7 +17,7 @@ const AdminUserManagement = () => {
 
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [activeTab, setActiveTab] = useState("all");
+    const [availableTab, setAvailableTab] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [showStatusPopup, setShowStatusPopup] = useState(false);
     const [userToChangeStatus, setUserToChangeStatus] = useState(null);
@@ -30,25 +30,25 @@ const AdminUserManagement = () => {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeTab]);
+    }, [availableTab]);
 
     // ------------------- FILTERS -------------------
     const allUsers = users;
 
-    const activeUsers = users.filter(
-        (u) => u.status === "Active"
+    const availableUsers = users.filter(
+        (u) => u.status === "Available"
     );
 
-    const inactiveUsers = users.filter(
-        (u) => u.status === "Inactive"
+    const unavailableUsers = users.filter(
+        (u) => u.status === "unavailable"
     );
 
     const pendingUsers = users.filter(
-        (u) => u.status === "Pending Approval"
+        (u) => u.status === "pending"
     );
 
-    const declinedUsers = users.filter(
-        (u) => u.status === "Declined Approval"
+    const rejectedUsers = users.filter(
+        (u) => u.status === "rejected"
     );
 
     const studentUsers = users.filter(
@@ -59,17 +59,17 @@ const AdminUserManagement = () => {
         (u) => u.role === "staff"
     );
 
-    // Get current list based on active tab
+    // Get current list based on available tab
     const getCurrentList = () => {
-        switch (activeTab) {
-            case "Active":
-                return activeUsers;
-            case "Inactive":
-                return inactiveUsers;
+        switch (availableTab) {
+            case "Available":
+                return availableUsers;
+            case "unavailable":
+                return unavailableUsers;
             case "Pending Approval":
                 return pendingUsers;
-            case "Declined Approval":
-                return declinedUsers;
+            case "rejected":
+                return rejectedUsers;
             case "students":
                 return studentUsers;
             case "staff":
@@ -93,17 +93,17 @@ const AdminUserManagement = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Get item name for pagination based on active tab
+    // Get item name for pagination based on available tab
     const getItemName = () => {
-        switch (activeTab) {
-            case "Active":
-                return "active users";
-            case "Inactive":
-                return "inactive users";
+        switch (availableTab) {
+            case "Available":
+                return "available users";
+            case "unavailable":
+                return "unavailable users";
             case "Pending Approval":
                 return "pending users";
-            case "Declined Approval":
-                return "declined users";
+            case "rejected":
+                return "rejected users";
             case "students":
                 return "students";
             case "staff":
@@ -121,14 +121,14 @@ const AdminUserManagement = () => {
             count: users.length,
         },
         {
-            id: "Active",
-            label: "Active",
-            count: activeUsers.length,
+            id: "Available",
+            label: "Available",
+            count: availableUsers.length,
         },
         {
-            id: "Inactive",
-            label: "Inactive",
-            count: inactiveUsers.length,
+            id: "unavailable",
+            label: "unavailable",
+            count: unavailableUsers.length,
         },
         {
             id: "Pending Approval",
@@ -136,9 +136,9 @@ const AdminUserManagement = () => {
             count: pendingUsers.length,
         },
         {
-            id: "Declined Approval",
+            id: "rejected",
             label: "Declined",
-            count: declinedUsers.length,
+            count: rejectedUsers.length,
         },
         {
             id: "students",
@@ -170,7 +170,7 @@ const AdminUserManagement = () => {
         {
             label: "Declined Users",
             icon: "cancel",
-            value: declinedUsers.length,
+            value: rejectedUsers.length,
             subtext: "Not approved",
             subtextColor: "text-red-500",
         }
@@ -185,7 +185,7 @@ const AdminUserManagement = () => {
     const handleApproveRequest = async (request) => {
         try {
             const updatePayload = {
-                status: "Active",
+                status: "Available",
                 verified: true,
                 decline_reason: null,
             };
@@ -209,7 +209,7 @@ const AdminUserManagement = () => {
 
         try {
             const updatePayload = {
-                status: "Declined Approval",
+                status: "rejected",
                 decline_reason: reason,
                 verified: false,
             };
@@ -233,17 +233,17 @@ const AdminUserManagement = () => {
     const handleConfirmStatusChange = async (reason) => {
         if (!userToChangeStatus) return;
 
-        const newStatus = userToChangeStatus.status === "Active" ? "Inactive" : "Active";
+        const newStatus = userToChangeStatus.status === "Available" ? "unavailable" : "Available";
 
         try {
             const updatePayload = {
                 status: newStatus,
-                decline_reason: newStatus === "Inactive" ? reason : null,
+                decline_reason: newStatus === "unavailable" ? reason : null,
             };
 
             await updateUser(userToChangeStatus._id, updatePayload);
             toast.success(
-                `User ${newStatus === "Active" ? "activated" : "deactivated"} successfully`
+                `User ${newStatus === "Available" ? "activated" : "deactivated"} successfully`
             );
             await fetchUsers();
         } catch (error) {
@@ -316,12 +316,12 @@ const AdminUserManagement = () => {
 
             <Tabs
                 tabs={tabs}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
+                availableTab={availableTab}
+                onTabChange={setAvailableTab}
             />
 
 
-            {activeTab == "all" && (
+            {availableTab == "all" && (
                 <>
                     <UserTable
                         length={users.length}
@@ -344,11 +344,11 @@ const AdminUserManagement = () => {
                 </>
             )}
 
-            {activeTab == "Active" && (
+            {availableTab == "Available" && (
                 <>
                     <UserTable
-                        length={activeUsers.length}
-                        title={"Active Users"}
+                        length={availableUsers.length}
+                        title={"Available Users"}
                         users={paginatedList}
                         onView={handleViewUser}
                         onToggleStatus={handleToggleUserStatus}
@@ -367,11 +367,11 @@ const AdminUserManagement = () => {
                 </>
             )}
 
-            {activeTab == "Inactive" && (
+            {availableTab == "unavailable" && (
                 <>
                     <UserTable
-                        length={inactiveUsers.length}
-                        title={"Inactive Users"}
+                        length={unavailableUsers.length}
+                        title={"unavailable Users"}
                         users={paginatedList}
                         onView={handleViewUser}
                         onToggleStatus={handleToggleUserStatus}
@@ -390,7 +390,7 @@ const AdminUserManagement = () => {
                 </>
             )}
 
-            {activeTab === "Pending Approval" && (
+            {availableTab === "Pending Approval" && (
                 <>
                     <UserRequestsTable
                         length={pendingUsers.length}
@@ -412,10 +412,10 @@ const AdminUserManagement = () => {
                 </>
             )}
 
-            {activeTab == "Declined Approval" && (
+            {availableTab == "rejected" && (
                 <>
                     <UserTable
-                        length={declinedUsers.length}
+                        length={rejectedUsers.length}
                         title={"Declined Users"}
                         users={paginatedList}
                         onView={handleViewUser}
@@ -435,7 +435,7 @@ const AdminUserManagement = () => {
                 </>
             )}
 
-            {activeTab == "students" && (
+            {availableTab == "students" && (
                 <>
                     <UserTable
                         length={studentUsers.length}
@@ -458,7 +458,7 @@ const AdminUserManagement = () => {
                 </>
             )}
 
-            {activeTab == "staff" && (
+            {availableTab == "staff" && (
                 <>
                     <UserTable
                         length={staffUsers.length}

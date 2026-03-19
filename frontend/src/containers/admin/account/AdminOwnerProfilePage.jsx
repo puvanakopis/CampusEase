@@ -217,7 +217,7 @@ const AdminProfilePage = ({
                                 </label>
                                 <input
                                     type="text"
-                                    value="Active"
+                                    value="Available"
                                     readOnly
                                     className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-sm cursor-not-allowed focus:outline-none"
                                 />

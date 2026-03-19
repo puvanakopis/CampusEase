@@ -3,19 +3,24 @@ from pydantic import BaseModel, EmailStr, Field
 from enum import Enum
 from datetime import datetime
 
+
 class OwnerStatus(str, Enum):
-    pending = "Pending Approval"
-    active = "Active"
-    inactive = "Inactive"
-    declined = "Declined Approval"
+    draft = "draft"
+    pending = "pending"
+    available = "available"
+    unavailable = "unavailable"
+    rejected = "rejected"
+
 
 class OwnerRole(str, Enum):
     owner = "owner"
+
 
 class OwnerPhoto(BaseModel):
     filename: str
     content_type: str
     size: int
+
 
 class Owner(BaseModel):
     id: str = Field(..., alias="_id")
@@ -37,6 +42,6 @@ class Owner(BaseModel):
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 
     model_config = {
-        "from_attributes": True,  
-        "validate_by_name": True 
+        "from_attributes": True,
+        "validate_by_name": True
     }

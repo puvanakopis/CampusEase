@@ -1,12 +1,7 @@
 import os
 from groq import Groq
 from app.core.config import settings
-from app.db.chroma import (
-    knowledge_vectors,
-    vehicle_vectors,
-    accommodation_vectors,
-    owner_vectors
-)
+from app.db.chroma import knowledge_vectors, vehicle_vectors, accommodation_vectors, owner_vectors
 from app.ai.embedding_model import create_embedding
 from app.ai.conversation_memory import ConversationBufferMemory
 

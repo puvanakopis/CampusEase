@@ -17,7 +17,7 @@ const AdminOwnerManagement = () => {
 
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedOwner, setSelectedOwner] = useState(null);
-    const [activeTab, setActiveTab] = useState("all");
+    const [availableTab, setAvailableTab] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [showStatusPopup, setShowStatusPopup] = useState(false);
     const [ownerToChangeStatus, setOwnerToChangeStatus] = useState(null);
@@ -30,39 +30,39 @@ const AdminOwnerManagement = () => {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeTab]);
+    }, [availableTab]);
 
     // ------------------- FILTERS -------------------
 
     const allOwners = owners;
 
-    const activeOwners = owners.filter(
-        (o) => o.status === "Active"
+    const availableOwners = owners.filter(
+        (o) => o.status === "Available"
     );
 
-    const inactiveOwners = owners.filter(
-        (o) => o.status === "Inactive"
+    const unavailableOwners = owners.filter(
+        (o) => o.status === "unavailable"
     );
 
     const pendingOwners = owners.filter(
-        (o) => o.status === "Pending Approval"
+        (o) => o.status === "pending"
     );
 
-    const declinedOwners = owners.filter(
-        (o) => o.status === "Declined Approval"
+    const rejectedOwners = owners.filter(
+        (o) => o.status === "rejected"
     );
 
-    // Get current list based on active tab
+    // Get current list based on available tab
     const getCurrentList = () => {
-        switch (activeTab) {
-            case "Active":
-                return activeOwners;
-            case "Inactive":
-                return inactiveOwners;
+        switch (availableTab) {
+            case "Available":
+                return availableOwners;
+            case "unavailable":
+                return unavailableOwners;
             case "Pending Approval":
                 return pendingOwners;
-            case "Declined Approval":
-                return declinedOwners;
+            case "rejected":
+                return rejectedOwners;
             default:
                 return allOwners;
         }
@@ -82,17 +82,17 @@ const AdminOwnerManagement = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Get item name for pagination based on active tab
+    // Get item name for pagination based on available tab
     const getItemName = () => {
-        switch (activeTab) {
-            case "Active":
-                return "active owners";
-            case "Inactive":
-                return "inactive owners";
+        switch (availableTab) {
+            case "Available":
+                return "available owners";
+            case "unavailable":
+                return "unavailable owners";
             case "Pending Approval":
                 return "pending owners";
-            case "Declined Approval":
-                return "declined owners";
+            case "rejected":
+                return "rejected owners";
             default:
                 return "owners";
         }
@@ -107,14 +107,14 @@ const AdminOwnerManagement = () => {
             count: owners.length,
         },
         {
-            id: "Active",
-            label: "Active",
-            count: activeOwners.length,
+            id: "Available",
+            label: "Available",
+            count: availableOwners.length,
         },
         {
-            id: "Inactive",
-            label: "Inactive",
-            count: inactiveOwners.length,
+            id: "unavailable",
+            label: "unavailable",
+            count: unavailableOwners.length,
         },
         {
             id: "Pending Approval",
@@ -122,9 +122,9 @@ const AdminOwnerManagement = () => {
             count: pendingOwners.length,
         },
         {
-            id: "Declined Approval",
+            id: "rejected",
             label: "Declined",
-            count: declinedOwners.length,
+            count: rejectedOwners.length,
         },
     ];
 
@@ -147,7 +147,7 @@ const AdminOwnerManagement = () => {
         {
             label: "Declined Owners",
             icon: "cancel",
-            value: declinedOwners.length,
+            value: rejectedOwners.length,
             subtext: "Not approved",
             subtextColor: "text-red-500",
         },
@@ -163,7 +163,7 @@ const AdminOwnerManagement = () => {
     const handleApproveRequest = async (request) => {
         try {
             const updatePayload = {
-                status: "Active",
+                status: "Available",
                 verified: true,
                 decline_reason: null,
             };
@@ -187,7 +187,7 @@ const AdminOwnerManagement = () => {
 
         try {
             const updatePayload = {
-                status: "Declined Approval",
+                status: "rejected",
                 decline_reason: reason,
                 verified: false,
             };
@@ -211,17 +211,17 @@ const AdminOwnerManagement = () => {
     const handleConfirmStatusChange = async (reason) => {
         if (!ownerToChangeStatus) return;
 
-        const newStatus = ownerToChangeStatus.status === "Active" ? "Inactive" : "Active";
+        const newStatus = ownerToChangeStatus.status === "Available" ? "unavailable" : "Available";
 
         try {
             const updatePayload = {
                 status: newStatus,
-                decline_reason: newStatus === "Inactive" ? reason : null,
+                decline_reason: newStatus === "unavailable" ? reason : null,
             };
 
             await updateOwner(ownerToChangeStatus._id, updatePayload);
             toast.success(
-                `Owner ${newStatus === "Active" ? "activated" : "deactivated"} successfully`
+                `Owner ${newStatus === "Available" ? "activated" : "deactivated"} successfully`
             );
             await fetchOwners();
         } catch (error) {
@@ -295,11 +295,11 @@ const AdminOwnerManagement = () => {
 
             <Tabs
                 tabs={tabs}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
+                availableTab={availableTab}
+                onTabChange={setAvailableTab}
             />
 
-            {activeTab === "all" && (
+            {availableTab === "all" && (
                 <>
                     <OwnerTable
                         length={owners.length}
@@ -322,11 +322,11 @@ const AdminOwnerManagement = () => {
                 </>
             )}
 
-            {activeTab === "Active" && (
+            {availableTab === "Available" && (
                 <>
                     <OwnerTable
-                        length={activeOwners.length}
-                        title="Active Owners"
+                        length={availableOwners.length}
+                        title="Available Owners"
                         owners={paginatedList}
                         onView={handleViewOwner}
                         onToggleStatus={handleToggleOwnerStatus}
@@ -345,11 +345,11 @@ const AdminOwnerManagement = () => {
                 </>
             )}
 
-            {activeTab === "Inactive" && (
+            {availableTab === "unavailable" && (
                 <>
                     <OwnerTable
-                        length={inactiveOwners.length}
-                        title="Inactive Owners"
+                        length={unavailableOwners.length}
+                        title="unavailable Owners"
                         owners={paginatedList}
                         onView={handleViewOwner}
                         onToggleStatus={handleToggleOwnerStatus}
@@ -368,10 +368,10 @@ const AdminOwnerManagement = () => {
                 </>
             )}
 
-            {activeTab === "Declined Approval" && (
+            {availableTab === "rejected" && (
                 <>
                     <OwnerTable
-                        length={declinedOwners.length}
+                        length={rejectedOwners.length}
                         title="Declined Owners"
                         owners={paginatedList}
                         onView={handleViewOwner}
@@ -391,7 +391,7 @@ const AdminOwnerManagement = () => {
                 </>
             )}
 
-            {activeTab === "Pending Approval" && (
+            {availableTab === "Pending Approval" && (
                 <>
                     <OwnerRequestsTable
                         length={pendingOwners.length}
