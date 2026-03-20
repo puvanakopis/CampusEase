@@ -16,6 +16,8 @@ class OwnerResponse(BaseModel):
     role: str = "owner"
     photo: Optional[OwnerPhoto] = None
     status: Optional[str] = None
+    id_number: Optional[str] = None
+    id_photo: Optional[OwnerPhoto] = None
     verified: Optional[bool] = None
     decline_reason: Optional[str] = None
     description: Optional[str] = None
@@ -37,6 +39,9 @@ class OwnerUpdateRequest(BaseModel):
     address: Optional[str] = None
     phone: Optional[str] = None
     photo: Optional[OwnerPhoto] = None
+    status: OwnerStatus = OwnerStatus.pending
+    id_number: Optional[str] = None
+    id_photo: Optional[OwnerPhoto] = None
     status: Optional[OwnerStatus] = None
     verified: Optional[bool] = None
     decline_reason: Optional[str] = None

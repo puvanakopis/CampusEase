@@ -6,11 +6,13 @@ import AccommodationGrid from "../../containers/user/accommodation/Accommodation
 import Pagination from "../../components/user/Pagination";
 import { AccommodationContext } from "../../context/AccommodationContext";
 import { SaveItemContext } from "../../context/SaveItemContext";
+import { AuthContext } from "../../context/AuthContext";
 import { PAGINATION } from "../../constants/constants";
 
 const Accommodations = () => {
   const { accommodations, accoLoading, fetchAccommodations } = useContext(AccommodationContext);
   const { fetchSavedItems } = useContext(SaveItemContext);
+  const { currentUser } = useContext(AuthContext);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -123,7 +125,10 @@ const Accommodations = () => {
                   No accommodations found matching your filters.
                 </div>
               ) : (
-                <AccommodationGrid accommodations={currentAccommodations} />
+                <AccommodationGrid
+                  currentUser={currentUser}
+                  accommodations={currentAccommodations}
+                />
               )}
             </>
           )}

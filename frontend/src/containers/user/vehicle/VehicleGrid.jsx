@@ -1,11 +1,11 @@
 import React from "react";
 import VehicleCard from "./VehicleCard";
 
-const VehicleGrid = ({ vehicles }) => {
+const VehicleGrid = ({currentUser, vehicles }) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {vehicles.map((vehicle, idx) => (
-                <VehicleCard key={vehicle._id || idx} data={vehicle} />
+                <VehicleCard key={vehicle._id || idx} data={vehicle} currentUser={currentUser} />
             ))}
         </div>
     );

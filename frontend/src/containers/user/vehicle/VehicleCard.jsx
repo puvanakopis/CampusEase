@@ -3,7 +3,7 @@ import useNavigateTo from "../../../hooks/useNavigateTo";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 import { SaveItemContext } from "../../../context/SaveItemContext";
 
-const VehicleCard = ({ data }) => {
+const VehicleCard = ({ currentUser, data }) => {
     const navigateTo = useNavigateTo();
     const { savedTransports, saveTransport, unsaveTransport } = useContext(SaveItemContext);
 
@@ -77,18 +77,20 @@ const VehicleCard = ({ data }) => {
             onClick={() => navigateTo(`/vehicle/${_id}`)}
         >
             <div className="relative h-48 w-full overflow-hidden">
-                <button
-                    onClick={handleSaveClick}
-                    className="absolute top-3 right-3 z-10 p-1.5 bg-white/80 rounded-full cursor-pointer hover:bg-white transition-colors"
-                >
-                    <span
-                        className={`material-symbols-outlined text-[20px] block ${isSaved ? 'text-red-500' : 'text-gray-600'
-                            }`}
-                        style={{ fontVariationSettings: isSaved ? '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20' : '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20' }}
+                {currentUser && (
+                    <button
+                        onClick={handleSaveClick}
+                        className="absolute top-3 right-3 z-10 p-1.5 bg-white/80 rounded-full cursor-pointer hover:bg-white transition-colors"
                     >
-                        favorite
-                    </span>
-                </button>
+                        <span
+                            className={`material-symbols-outlined text-[20px] block ${isSaved ? 'text-red-500' : 'text-gray-600'
+                                }`}
+                            style={{ fontVariationSettings: isSaved ? '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20' : '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20' }}
+                        >
+                            favorite
+                        </span>
+                    </button>
+                )}
                 {badge && (
                     <span className={`absolute top-3 left-3 z-10 px-2 py-1 text-xs font-bold rounded shadow-sm ${badge.color}`}>
                         {badge.text}

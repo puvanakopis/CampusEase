@@ -6,11 +6,13 @@ import VehicleGrid from "../../containers/user/vehicle/VehicleGrid";
 import Pagination from "../../components/user/Pagination";
 import { VehicleContext } from "../../context/VehicleContext";
 import { SaveItemContext } from "../../context/SaveItemContext";
+import { AuthContext } from "../../context/AuthContext";
 import { PAGINATION } from "../../constants/constants";
 
 const Vehicle = () => {
     const { vehicles, loading, fetchVehicles } = useContext(VehicleContext);
     const { fetchSavedItems } = useContext(SaveItemContext);
+    const { currentUser } = useContext(AuthContext);
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -96,7 +98,6 @@ const Vehicle = () => {
         <div className="bg-[#f6f7f8] min-h-screen">
             <div className="flex flex-col lg:flex-row px-4 py-6 md:px-24 max-w-8xl mx-auto gap-6">
 
-                {/* Filters Sidebar with mobile support */}
                 <VehicleFiltersSidebar filters={filters} onFilterChange={handleFilterChange} />
 
                 <main className="flex-1 flex flex-col gap-6">
@@ -123,7 +124,9 @@ const Vehicle = () => {
                                     No vehicles found matching your filters.
                                 </div>
                             ) : (
-                                <VehicleGrid vehicles={currentVehicles} />
+                                <VehicleGrid 
+                                currentUser={currentUser} 
+                                vehicles={currentVehicles} />
                             )}
                         </>
                     )}

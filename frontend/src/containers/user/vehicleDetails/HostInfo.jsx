@@ -2,11 +2,15 @@ import React from 'react';
 import { buildPhotoUrl } from '../../../utils/photoUtils';
 import useNavigateTo from '../../../hooks/useNavigateTo';
 
-const HostInfo = ({ owner }) => {
+const HostInfo = ({ currentUser, owner }) => {
   const navigateTo = useNavigateTo();
 
   const handleContactHost = () => {
-    navigateTo(`/owner/${owner._id}`);
+    if (currentUser) {
+      navigateTo(`/owner/${owner._id}`);
+    } else {
+      navigateTo('/login');
+    }
   };
 
   return (

@@ -2,11 +2,15 @@ import React from 'react';
 import { buildPhotoUrl } from '../../../utils/photoUtils';
 import useNavigateTo from '../../../hooks/useNavigateTo';
 
-const HostInfo = ({ owner }) => {
+const HostInfo = ({ currentUser, owner }) => {
     const navigateTo = useNavigateTo();
 
     const handleContactHost = () => {
-        navigateTo(`/owner/${owner._id}`);
+        if (currentUser) {
+            navigateTo(`/owner/${owner._id}`);
+        } else {
+            navigateTo('/login');
+        }
     };
 
     return (
@@ -15,7 +19,7 @@ const HostInfo = ({ owner }) => {
             <div className="flex flex-col md:flex-row gap-8">
                 <div className="flex flex-col gap-2 min-w-[200px]">
                     <img
-                        src={buildPhotoUrl(owner?.photo?.filename, "user_photo", owner.first_name)} 
+                        src={buildPhotoUrl(owner?.photo?.filename, "user_photo", owner.first_name)}
                         alt={`${owner.first_name} ${owner.last_name}`}
                         className="rounded-xl h-32 w-32 mb-2 object-cover object-center"
                     />
