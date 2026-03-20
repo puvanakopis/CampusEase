@@ -15,6 +15,8 @@ class UserResponse(BaseModel):
     role: UserRole
     photo: Optional[Photo] = None
     status: Optional[UserStatus] = None
+    id_number: Optional[str] = None
+    id_photo: Optional[Photo] = None
     verified: Optional[bool] = None
     decline_reason: Optional[str] = None
     description: Optional[str] = None
@@ -27,7 +29,6 @@ class UserResponse(BaseModel):
         "from_attributes": True,
         "validate_by_name": True
     }
-    
 
 
 class UserUpdateRequest(BaseModel):
@@ -37,8 +38,8 @@ class UserUpdateRequest(BaseModel):
     address: Optional[str] = None
     phone: Optional[str] = None
     photo: Optional[Photo] = None
-    id_number: Optional[str] = None  
-    id_photo: Optional[Photo] = None  
+    id_number: Optional[str] = None
+    id_photo: Optional[Photo] = None
     status: Optional[UserStatus] = None
     verified: Optional[bool] = None
     decline_reason: Optional[str] = None

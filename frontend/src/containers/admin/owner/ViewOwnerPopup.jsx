@@ -8,7 +8,7 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case "Available":
+            case "available":
                 return "bg-green-100 text-green-800";
             case "pending":
                 return "bg-yellow-100 text-yellow-800";
@@ -16,6 +16,8 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                 return "bg-red-100 text-red-800";
             case "unavailable":
                 return "bg-gray-100 text-gray-800";
+            case "draft":
+                return "bg-blue-100 text-blue-800";
             default:
                 return "bg-gray-100 text-gray-800";
         }
@@ -34,9 +36,18 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
         }
     };
 
+    const formatFileSize = (size) => {
+        if (!size) return 'N/A';
+        return size < 1024
+            ? `${size} B`
+            : size < 1024 * 1024
+            ? `${(size / 1024).toFixed(2)} KB`
+            : `${(size / 1024 / 1024).toFixed(2)} MB`;
+    };
+
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl w-full max-w-2xl shadow-lg overflow-y-auto max-h-[90vh]">
+            <div className="bg-white rounded-xl w-full max-w-3xl shadow-lg overflow-y-auto max-h-[90vh]">
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
                     <div>
@@ -44,6 +55,7 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                             {owner.first_name} {owner.last_name || ''}
                         </h3>
                         <p className="text-xs text-slate-500 mt-1">ID: {owner._id || owner.id}</p>
+                        <p className="text-xs text-slate-500 mt-1">Role: {owner.role}</p>
                     </div>
                     <button
                         onClick={onClose}
@@ -54,10 +66,11 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                 </div>
 
                 {/* Content */}
-                <div className="px-6 py-4">
+                <div className="px-6 py-4 space-y-4">
+
                     {/* Profile Summary */}
-                    <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
-                        <div className="size-20 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
+                    <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
+                        <div className="w-20 h-20 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
                                 src={buildPhotoUrl(owner.photo?.filename, "user_photo", owner.first_name)}
                                 alt={owner.first_name}
@@ -71,7 +84,6 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                             <p className="text-sm font-semibold text-slate-900">
                                 {owner.first_name} {owner.last_name || ''}
                             </p>
-                            <p className="text-xs text-slate-500">Role: {owner.role || 'owner'}</p>
                             <div className="flex items-center gap-2 mt-1">
                                 <span className={`px-2 py-0.5 rounded-full text-xs ${getStatusColor(owner.status)}`}>
                                     Status: {getStatusDisplay(owner.status)}
@@ -84,7 +96,7 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                     </div>
 
                     {/* Contact Information */}
-                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                    <div className="p-3 bg-slate-50 rounded-lg">
                         <h4 className="font-bold text-slate-900 mb-2">Contact Information</h4>
                         <div className="text-sm text-slate-600 space-y-1">
                             <div className="flex justify-between">
@@ -95,17 +107,19 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                                 <span>Phone:</span>
                                 <span className="font-medium">{owner.phone || 'Not provided'}</span>
                             </div>
-                            {owner.address && (
-                                <div className="flex justify-between">
-                                    <span>Address:</span>
-                                    <span className="font-medium">{owner.address}</span>
-                                </div>
-                            )}
+                            <div className="flex justify-between">
+                                <span>Address:</span>
+                                <span className="font-medium">{owner.address || 'Not provided'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>ID Number:</span>
+                                <span className="font-medium">{owner.id_number || 'Not provided'}</span>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Dates */}
-                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                    {/* Account Timeline */}
+                    <div className="p-3 bg-slate-50 rounded-lg">
                         <h4 className="font-bold text-slate-900 mb-2">Account Timeline</h4>
                         <div className="text-sm text-slate-600 space-y-1">
                             <div className="flex justify-between">
@@ -121,7 +135,7 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
 
                     {/* Description */}
                     {owner.description && (
-                        <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                        <div className="p-3 bg-slate-50 rounded-lg">
                             <h4 className="font-bold text-slate-900 mb-2">Description</h4>
                             <p className="text-sm text-slate-700 whitespace-pre-line">{owner.description}</p>
                         </div>
@@ -129,30 +143,54 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
 
                     {/* Decline Reason */}
                     {owner.decline_reason && (
-                        <div className="mb-4 p-3 bg-red-50 rounded-lg">
+                        <div className="p-3 bg-red-50 rounded-lg">
                             <h4 className="font-bold text-red-800 mb-2">Decline/Deactivation Reason</h4>
                             <p className="text-sm text-red-600">{owner.decline_reason}</p>
                         </div>
                     )}
 
-                    {/* Document Information */}
+                    {/* Profile Photo */}
                     {owner.photo && (
-                        <div className="mb-4 p-3 bg-slate-50 rounded-lg">
-                            <h4 className="font-bold text-slate-900 mb-2">Document Information</h4>
+                        <div className="p-3 bg-slate-50 rounded-lg">
+                            <h4 className="font-bold text-slate-900 mb-2">Profile Photo</h4>
                             <div className="text-sm text-slate-600 space-y-1">
                                 <div className="flex justify-between">
-                                    <span>Photo:</span>
+                                    <span>Filename:</span>
                                     <span className="font-medium">{owner.photo.filename}</span>
                                 </div>
-                                {owner.photo.size && (
-                                    <div className="flex justify-between">
-                                        <span>Size:</span>
-                                        <span className="font-medium">{(owner.photo.size / 1024).toFixed(2)} KB</span>
-                                    </div>
-                                )}
+                                <div className="flex justify-between">
+                                    <span>Type:</span>
+                                    <span className="font-medium">{owner.photo.content_type}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Size:</span>
+                                    <span className="font-medium">{formatFileSize(owner.photo.size)}</span>
+                                </div>
                             </div>
                         </div>
                     )}
+
+                    {/* ID Photo */}
+                    {owner.id_photo && (
+                        <div className="p-3 bg-slate-50 rounded-lg">
+                            <h4 className="font-bold text-slate-900 mb-2">ID Photo</h4>
+                            <div className="text-sm text-slate-600 space-y-1">
+                                <div className="flex justify-between">
+                                    <span>Filename:</span>
+                                    <span className="font-medium">{owner.id_photo.filename}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Type:</span>
+                                    <span className="font-medium">{owner.id_photo.content_type}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Size:</span>
+                                    <span className="font-medium">{formatFileSize(owner.id_photo.size)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
 
                 {/* Footer */}
