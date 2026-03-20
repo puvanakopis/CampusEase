@@ -37,7 +37,7 @@ const AdminUserManagement = () => {
     const allUsers = users;
 
     const availableUsers = users.filter(
-        (u) => u.status === "Available"
+        (u) => u.status === "available"
     );
 
     const unavailableUsers = users.filter(
@@ -63,7 +63,7 @@ const AdminUserManagement = () => {
     // Get current list based on available tab
     const getCurrentList = () => {
         switch (availableTab) {
-            case "Available":
+            case "available":
                 return availableUsers;
             case "unavailable":
                 return unavailableUsers;
@@ -97,7 +97,7 @@ const AdminUserManagement = () => {
     // Get item name for pagination based on available tab
     const getItemName = () => {
         switch (availableTab) {
-            case "Available":
+            case "available":
                 return "available users";
             case "unavailable":
                 return "unavailable users";
@@ -122,8 +122,8 @@ const AdminUserManagement = () => {
             count: users.length,
         },
         {
-            id: "Available",
-            label: "Available",
+            id: "available",
+            label: "available",
             count: availableUsers.length,
         },
         {
@@ -186,7 +186,7 @@ const AdminUserManagement = () => {
     const handleApproveRequest = async (request) => {
         try {
             const updatePayload = {
-                status: "Available",
+                status: "available",
                 verified: true,
                 decline_reason: null,
             };
@@ -234,7 +234,7 @@ const AdminUserManagement = () => {
     const handleConfirmStatusChange = async (reason) => {
         if (!userToChangeStatus) return;
 
-        const newStatus = userToChangeStatus.status === "Available" ? "unavailable" : "Available";
+        const newStatus = userToChangeStatus.status === "available" ? "unavailable" : "available";
 
         try {
             const updatePayload = {
@@ -244,7 +244,7 @@ const AdminUserManagement = () => {
 
             await updateUser(userToChangeStatus._id, updatePayload);
             toast.success(
-                `User ${newStatus === "Available" ? "activated" : "deactivated"} successfully`
+                `User ${newStatus === "available" ? "activated" : "deactivated"} successfully`
             );
             await fetchUsers();
         } catch (error) {
@@ -336,7 +336,7 @@ const AdminUserManagement = () => {
                 </>
             )}
 
-            {availableTab == "Available" && (
+            {availableTab == "available" && (
                 <>
                     <UserTable
                         length={availableUsers.length}
