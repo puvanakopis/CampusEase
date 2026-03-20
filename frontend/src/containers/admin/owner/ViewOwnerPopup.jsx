@@ -72,7 +72,7 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                     <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
                         <div className="w-20 h-20 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
-                                src={buildPhotoUrl(owner.photo?.filename, "user_photo", owner.first_name)}
+                                src={buildPhotoUrl(owner.photo?.filename, "owner_photo", owner.first_name)}
                                 alt={owner.first_name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {

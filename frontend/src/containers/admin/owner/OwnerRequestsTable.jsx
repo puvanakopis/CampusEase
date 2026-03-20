@@ -91,7 +91,7 @@ const OwnerRequestsTable = ({
                                     <div className="flex items-start gap-3">
                                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={buildPhotoUrl(request.photo?.filename, "user_photo", request.first_name)}
+                                                src={buildPhotoUrl(request.photo?.filename, "owner_photo", request.first_name)}
                                                 alt={`${request.first_name} ${request.last_name || ''}`}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {

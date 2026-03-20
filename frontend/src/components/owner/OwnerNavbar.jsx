@@ -15,7 +15,7 @@ const OwnerNavbar = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
     const first_name = currentUser ? `${currentUser.first_name} `.trim() : "";
-    const avatar = buildPhotoUrl(currentUser?.photo?.filename, "user_photo", first_name);
+    const avatar = buildPhotoUrl(currentUser?.photo?.filename, "owner_photo", first_name);
     const role = currentUser?.role || "Owner";
     const email = currentUser?.email || "";
 

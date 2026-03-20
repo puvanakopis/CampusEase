@@ -213,14 +213,26 @@ async def update_current_user(current_user, update_data=None, photo: UploadFile 
             if val is not None:
                 update_payload[key] = val
 
+    if role in ["student", "staff"]:
+        photo_folder = "uploads/user_photo"
+        id_photo_folder = "uploads/user_id"
+    elif role == "owner":
+        photo_folder = "uploads/owner_photo"
+        id_photo_folder = "uploads/owner_id"
+    elif role == "admin":
+        photo_folder = "uploads/admin_photo"
+        id_photo_folder = "uploads/admin_id"
+    else:
+        raise HTTPException(400, "Role not supported for file upload")
+
     if photo:
         filename = f"{user_id}_photo"
-        photo_meta = await save_file(photo, filename, "uploads/user_photo")
+        photo_meta = await save_file(photo, filename, photo_folder)
         update_payload["photo"] = photo_meta
 
     if id_photo:
         filename = f"{user_id}_id_photo"
-        id_meta = await save_file(id_photo, filename, "uploads/user_id")
+        id_meta = await save_file(id_photo, filename, id_photo_folder)
         update_payload["id_photo"] = id_meta
 
     if not update_payload:

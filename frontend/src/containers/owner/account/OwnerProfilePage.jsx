@@ -10,7 +10,7 @@ const OwnerProfilePage = ({
     handleSave,
 }) => {
     const [photoPreview, setPhotoPreview] = useState(
-        buildPhotoUrl(currentUser?.photo?.filename, "user_photo", currentUser?.first_name)
+        buildPhotoUrl(currentUser?.photo?.filename, "owner_photo", currentUser?.first_name)
     );
 
     const handleFileInputChange = (e) => {

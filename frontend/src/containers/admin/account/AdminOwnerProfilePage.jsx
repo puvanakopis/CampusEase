@@ -1,30 +1,22 @@
 import React, { useState } from "react";
-import { buildPhotoUrl } from '../../../utils/photoUtils'
+import { buildPhotoUrl } from '../../../utils/photoUtils';
 
 const AdminProfilePage = ({
-    firstName,
-    lastName,
-    email,
-    phone,
-    roleDescription,
-    setFirstName,
-    setLastName,
-    setEmail,
-    setPhone,
-    setRoleDescription,
-    handleSaveChanges,
     currentUser,
     authLoading,
+    formData,
+    handleChange,
+    handleFileChange,
+    handleSave,
 }) => {
     const [photoPreview, setPhotoPreview] = useState(
-        buildPhotoUrl(currentUser?.photo?.filename, "user_photo", currentUser?.first_name)
+        buildPhotoUrl(currentUser?.photo?.filename, "admin_photo", currentUser?.first_name)
     );
 
     const handleFileInputChange = (e) => {
         const { name, files } = e.target;
         if (files && files[0]) {
-            // Handle file change if you have a handler
-
+            handleFileChange(e);
             if (name === "photo") {
                 const previewUrl = URL.createObjectURL(files[0]);
                 setPhotoPreview(previewUrl);
@@ -46,8 +38,8 @@ const AdminProfilePage = ({
                 {/* Header Section */}
                 <div className="">
                     <div className="flex flex-col gap-1">
-                        <h1 className="text-3xl font-bold text-slate-900">
-                            Welcome, {firstName}!
+                        <h1 className="text-2xl font-bold text-slate-900">
+                            Welcome, {currentUser?.first_name}!
                         </h1>
                         <p className="text-sm text-slate-500">
                             Manage users, view platform stats, and update your admin settings.
@@ -83,7 +75,7 @@ const AdminProfilePage = ({
                         <div className="flex-1 text-center md:text-left">
                             <div className="flex flex-col md:flex-row items-center gap-3 mb-2">
                                 <h2 className="text-xl font-bold text-slate-900">
-                                    {firstName} {lastName}
+                                    {currentUser?.first_name} {currentUser?.last_name}
                                 </h2>
                                 <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium bg-green-100 text-green-700">
                                     <span className="material-symbols-outlined text-sm">
@@ -128,7 +120,7 @@ const AdminProfilePage = ({
                         </div>
                     </div>
 
-                    {/* Platform Age */}
+                    {/* Platform Since */}
                     <div className="bg-white rounded-xl border border-slate-200 p-5">
                         <div className="flex flex-col gap-1">
                             <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
@@ -154,8 +146,9 @@ const AdminProfilePage = ({
                                 </label>
                                 <input
                                     type="text"
-                                    value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
+                                    name="first_name"
+                                    value={formData.first_name}
+                                    onChange={handleChange}
                                     className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 />
                             </div>
@@ -165,8 +158,9 @@ const AdminProfilePage = ({
                                 </label>
                                 <input
                                     type="text"
-                                    value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
+                                    name="last_name"
+                                    value={formData.last_name}
+                                    onChange={handleChange}
                                     className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 />
                             </div>
@@ -180,9 +174,10 @@ const AdminProfilePage = ({
                                 </label>
                                 <input
                                     type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                    name="email"
+                                    value={formData.email}
+                                    readOnly
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-sm cursor-not-allowed focus:outline-none"
                                 />
                             </div>
                             <div>
@@ -191,8 +186,9 @@ const AdminProfilePage = ({
                                 </label>
                                 <input
                                     type="tel"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleChange}
                                     className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                                 />
                             </div>
@@ -206,7 +202,8 @@ const AdminProfilePage = ({
                                 </label>
                                 <input
                                     type="text"
-                                    value="Super Admin"
+                                    name="role"
+                                    value={formData.role}
                                     readOnly
                                     className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-sm cursor-not-allowed focus:outline-none"
                                 />
@@ -217,24 +214,24 @@ const AdminProfilePage = ({
                                 </label>
                                 <input
                                     type="text"
-                                    value="Available"
+                                    value={currentUser?.status || "Available"}
                                     readOnly
                                     className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-sm cursor-not-allowed focus:outline-none"
                                 />
                             </div>
                         </div>
 
-                        {/* Fourth Row: Role Description - Full Width */}
+                        {/* Fourth Row: Address - Full Width */}
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">
-                                Role Description
+                                Address
                             </label>
                             <textarea
-                                value={roleDescription}
-                                onChange={(e) => setRoleDescription(e.target.value)}
+                                name="address"
+                                value={formData.address}
+                                onChange={handleChange}
                                 rows="3"
                                 className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
-                                placeholder="Describe your role and responsibilities..."
                             />
                         </div>
                     </div>
@@ -249,7 +246,7 @@ const AdminProfilePage = ({
                         </button>
                         <button
                             type="button"
-                            onClick={handleSaveChanges}
+                            onClick={handleSave}
                             className="bg-primary text-white py-2 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm flex items-center gap-1"
                         >
                             <span className="material-symbols-outlined text-sm">save</span>

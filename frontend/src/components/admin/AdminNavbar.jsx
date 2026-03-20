@@ -16,7 +16,7 @@ const AdminNavbar = () => {
     const profileRef = useRef(null);
 
     const first_name = currentUser ? `${currentUser.first_name} `.trim() : "Admin";
-    const avatar = buildPhotoUrl(currentUser?.photo.filename, "user_photo", currentUser.first_name);
+    const avatar = buildPhotoUrl(currentUser?.photo.filename, "admin_photo", currentUser.first_name);
     const role = currentUser?.role || "admin";
     const email = currentUser?.email || "";
 
