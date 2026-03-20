@@ -8,17 +8,16 @@ const OwnerApplication = () => {
     const { currentUser, updateCurrentUser } = useContext(AuthContext);
 
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        nic: "",
-        address: "",
-        description: "",
-        termsAgreed: false,
-        identityDocument: null
-    });
-
+    firstName: currentUser?.first_name || "",
+    lastName: currentUser?.last_name || "",
+    email: currentUser?.email || "",
+    phone: currentUser?.phone || "",
+    nic: currentUser?.id_number || "",
+    address: currentUser?.address || "",
+    description: currentUser?.description || "",
+    termsAgreed: false,
+    identityDocument: null
+});
     const [currentStep, setCurrentStep] = useState(1);
     const [showApplicationPopup, setShowApplicationPopup] = useState(false);
     const [showUnavailablePopup, setShowUnavailablePopup] = useState(false);

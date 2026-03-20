@@ -2,9 +2,7 @@ import React from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 
 const ViewOwnerPopup = ({ owner, onClose }) => {
-    const getStatusDisplay = (status) => {
-        return status || 'N/A';
-    };
+    const getStatusDisplay = (status) => status || "N/A";
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -24,26 +22,20 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
     };
 
     const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
+        if (!dateString) return "N/A";
         try {
-            return new Date(dateString).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
+            return new Date(dateString).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
             });
         } catch {
-            return 'N/A';
+            return "N/A";
         }
     };
 
-    const formatFileSize = (size) => {
-        if (!size) return 'N/A';
-        return size < 1024
-            ? `${size} B`
-            : size < 1024 * 1024
-            ? `${(size / 1024).toFixed(2)} KB`
-            : `${(size / 1024 / 1024).toFixed(2)} MB`;
-    };
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -52,10 +44,9 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                 <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
                     <div>
                         <h3 className="text-lg font-bold text-slate-900">
-                            {owner.first_name} {owner.last_name || ''}
+                            {owner.first_name} {owner.last_name || ""}
                         </h3>
                         <p className="text-xs text-slate-500 mt-1">ID: {owner._id || owner.id}</p>
-                        <p className="text-xs text-slate-500 mt-1">Role: {owner.role}</p>
                     </div>
                     <button
                         onClick={onClose}
@@ -67,7 +58,6 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
 
                 {/* Content */}
                 <div className="px-6 py-4 space-y-4">
-
                     {/* Profile Summary */}
                     <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
                         <div className="w-20 h-20 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
@@ -82,14 +72,19 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                         </div>
                         <div className="flex-1">
                             <p className="text-sm font-semibold text-slate-900">
-                                {owner.first_name} {owner.last_name || ''}
+                                {owner.first_name} {owner.last_name || ""}
                             </p>
-                            <div className="flex items-center gap-2 mt-1">
-                                <span className={`px-2 py-0.5 rounded-full text-xs ${getStatusColor(owner.status)}`}>
+                            <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                <span
+                                    className={`px-2 py-0.5 rounded-full text-xs ${getStatusColor(owner.status)}`}
+                                >
                                     Status: {getStatusDisplay(owner.status)}
                                 </span>
-                                <span className={`text-xs font-medium ${owner.verified ? 'text-green-600' : 'text-yellow-600'}`}>
-                                    {owner.verified ? '✓ Verified' : '○ Unverified'}
+                                <span
+                                    className={`text-xs font-medium ${owner.verified ? "text-green-600" : "text-yellow-600"
+                                        }`}
+                                >
+                                    {owner.verified ? "✓ Verified" : "○ Unverified"}
                                 </span>
                             </div>
                         </div>
@@ -105,18 +100,57 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                             </div>
                             <div className="flex justify-between">
                                 <span>Phone:</span>
-                                <span className="font-medium">{owner.phone || 'Not provided'}</span>
+                                <span className="font-medium">{owner.phone || "Not provided"}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span>Address:</span>
-                                <span className="font-medium">{owner.address || 'Not provided'}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span>ID Number:</span>
-                                <span className="font-medium">{owner.id_number || 'Not provided'}</span>
+                                <span className="font-medium">{owner.address || "Not provided"}</span>
                             </div>
                         </div>
                     </div>
+
+                    {/* Identification */}
+                    {(owner.id_number || owner.id_photo) && (
+                        <div className="p-3 bg-slate-50 rounded-lg">
+                            <h4 className="font-bold text-slate-900 mb-2">Identification</h4>
+                            <div className="text-sm text-slate-600 space-y-1">
+                                {owner.id_number && (
+                                    <div className="flex justify-between">
+                                        <span>ID Number:</span>
+                                        <span className="font-medium">{owner.id_number}</span>
+                                    </div>
+                                )}
+                                {owner.id_photo && (
+                                    <div className="flex flex-col">
+                                        <div className="flex items-center justify-between">
+                                            <span>ID Photo:</span>
+                                            <img
+                                                src={buildPhotoUrl(owner.id_photo.filename, "owner_id", owner.first_name)}
+                                                alt="ID Photo"
+                                                className="mt-1 w-40 h-28 object-cover rounded-lg border"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Description */}
+                    {owner.description && (
+                        <div className="p-3 bg-slate-50 rounded-lg">
+                            <h4 className="font-bold text-slate-900 mb-2">Description</h4>
+                            <p className="text-sm text-slate-700 whitespace-pre-line">{owner.description}</p>
+                        </div>
+                    )}
+
+                    {/* Decline/Deactivation Reason */}
+                    {owner.decline_reason && (
+                        <div className="p-3 bg-slate-50 rounded-lg">
+                            <h4 className="font-bold text-slate-900 mb-2">Decline/Deactivation Reason</h4>
+                            <p className="text-sm text-slate-700 whitespace-pre-line">{owner.decline_reason}</p>
+                        </div>
+                    )}
 
                     {/* Account Timeline */}
                     <div className="p-3 bg-slate-50 rounded-lg">
@@ -132,65 +166,6 @@ const ViewOwnerPopup = ({ owner, onClose }) => {
                             </div>
                         </div>
                     </div>
-
-                    {/* Description */}
-                    {owner.description && (
-                        <div className="p-3 bg-slate-50 rounded-lg">
-                            <h4 className="font-bold text-slate-900 mb-2">Description</h4>
-                            <p className="text-sm text-slate-700 whitespace-pre-line">{owner.description}</p>
-                        </div>
-                    )}
-
-                    {/* Decline Reason */}
-                    {owner.decline_reason && (
-                        <div className="p-3 bg-red-50 rounded-lg">
-                            <h4 className="font-bold text-red-800 mb-2">Decline/Deactivation Reason</h4>
-                            <p className="text-sm text-red-600">{owner.decline_reason}</p>
-                        </div>
-                    )}
-
-                    {/* Profile Photo */}
-                    {owner.photo && (
-                        <div className="p-3 bg-slate-50 rounded-lg">
-                            <h4 className="font-bold text-slate-900 mb-2">Profile Photo</h4>
-                            <div className="text-sm text-slate-600 space-y-1">
-                                <div className="flex justify-between">
-                                    <span>Filename:</span>
-                                    <span className="font-medium">{owner.photo.filename}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Type:</span>
-                                    <span className="font-medium">{owner.photo.content_type}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Size:</span>
-                                    <span className="font-medium">{formatFileSize(owner.photo.size)}</span>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* ID Photo */}
-                    {owner.id_photo && (
-                        <div className="p-3 bg-slate-50 rounded-lg">
-                            <h4 className="font-bold text-slate-900 mb-2">ID Photo</h4>
-                            <div className="text-sm text-slate-600 space-y-1">
-                                <div className="flex justify-between">
-                                    <span>Filename:</span>
-                                    <span className="font-medium">{owner.id_photo.filename}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Type:</span>
-                                    <span className="font-medium">{owner.id_photo.content_type}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Size:</span>
-                                    <span className="font-medium">{formatFileSize(owner.id_photo.size)}</span>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
                 </div>
 
                 {/* Footer */}

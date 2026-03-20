@@ -23,7 +23,6 @@ const OwnerAccommodation = () => {
         createAccommodation,
         updateAccommodation,
         deleteAccommodation,
-        fetchMyAccommodations
     } = useContext(AccommodationContext);
 
     const { currentUser } = useContext(AuthContext);
@@ -38,9 +37,6 @@ const OwnerAccommodation = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
 
-    useEffect(() => {
-        fetchMyAccommodations();
-    }, []);
 
     useEffect(() => {
         setCurrentPage(1);

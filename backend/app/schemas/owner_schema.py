@@ -37,7 +37,6 @@ class OwnerUpdateRequest(BaseModel):
     last_name: Optional[str] = None
     email: Optional[EmailStr] = None
     address: Optional[str] = None
-    phone: Optional[str] = None
     photo: Optional[OwnerPhoto] = None
     status: OwnerStatus = OwnerStatus.pending
     id_number: Optional[str] = None

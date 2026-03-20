@@ -70,7 +70,6 @@ export const AccommodationProvider = ({ children }) => {
       toast.success("Accommodation created successfully!", { id: toastId });
 
       await fetchAccommodations();
-      await fetchMyAccommodations();
 
       return res.data;
     } catch (err) {
@@ -106,7 +105,6 @@ export const AccommodationProvider = ({ children }) => {
 
       toast.success("Review added successfully!", { id: toastId });
 
-      // Refresh the accommodation data to show the new review
       await fetchAccommodations();
       
       return res.data;
@@ -142,7 +140,6 @@ export const AccommodationProvider = ({ children }) => {
       toast.success("Updated successfully!", { id: toastId });
 
       await fetchAccommodations();
-      await fetchMyAccommodations();
 
       return res.data;
     } catch (err) {
@@ -164,7 +161,6 @@ export const AccommodationProvider = ({ children }) => {
       toast.success("Deleted successfully!", { id: toastId });
 
       await fetchAccommodations();
-      await fetchMyAccommodations();
     } catch (err) {
       toast.error(err.message || "Delete failed", { id: toastId });
       throw err;

@@ -7,12 +7,12 @@ from app.models.user_model import UserStatus, UserRole, Photo
 
 class UserResponse(BaseModel):
     id: str = Field(..., alias="_id")
-    first_name: str
+    first_name: Optional[str] = None
     last_name: Optional[str] = None
-    email: EmailStr
+    email: Optional[EmailStr] = None
     address: Optional[str] = None
     phone: Optional[str] = None
-    role: UserRole
+    role: Optional[UserRole] = None
     photo: Optional[Photo] = None
     status: Optional[UserStatus] = None
     id_number: Optional[str] = None
@@ -20,10 +20,10 @@ class UserResponse(BaseModel):
     verified: Optional[bool] = None
     decline_reason: Optional[str] = None
     description: Optional[str] = None
-    save_accommodations: List[str] = []
-    save_transports: List[str] = []
-    created_at: datetime
-    last_updated: datetime
+    save_accommodations: Optional[List[str]] = None
+    save_transports: Optional[List[str]] = None
+    created_at: Optional[datetime] = None
+    last_updated: Optional[datetime] = None
 
     model_config = {
         "from_attributes": True,
