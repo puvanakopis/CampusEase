@@ -8,6 +8,7 @@ import UserRequestsTable from "../../containers/admin/user/UserRequestsTable";
 import ViewUserPopup from "../../containers/admin/user/ViewUserPopup";
 import StatusChangePopup from "../../containers/admin/user/StatusChangePopup";
 import RejectPopup from "../../containers/admin/user/RejectPopup";
+import LoadingSpinner from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
 import { ADMIN_ITEMS_PER_PAGE } from "../../constants/pagination";
 import toast from "react-hot-toast";
@@ -255,18 +256,9 @@ const AdminUserManagement = () => {
         }
     };
 
-    if (loading && users.length === 0) {
+    if (loading) {
         return (
-            <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-                <div className="flex justify-center items-center h-64">
-                    <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                        <p className="mt-4 text-slate-600">
-                            Loading users...
-                        </p>
-                    </div>
-                </div>
-            </main>
+            <LoadingSpinner />
         );
     }
 

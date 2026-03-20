@@ -5,6 +5,7 @@ import Tabs from "../../containers/admin/common/Tabs";
 import BookingTable from "../../containers/admin/booking/BookingTable";
 import ViewBookingPopup from "../../containers/admin/booking/ViewBookingPopup";
 import EditBookingPopup from "../../containers/admin/booking/EditBookingPopup";
+import LoadingSpinner from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
 import { ADMIN_ITEMS_PER_PAGE } from "../../constants/pagination";
 import { BookingContext } from "../../context/BookingContext";
@@ -149,14 +150,9 @@ const AdminBookingManagement = () => {
         }
     };
 
-    if (loading && bookings.length === 0) {
+    if (loading) {
         return (
-            <main className="flex justify-center items-center min-h-screen bg-[#f6f7f8]">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                    <p className="mt-4 text-slate-600">Loading bookings...</p>
-                </div>
-            </main>
+            <LoadingSpinner />
         );
     }
 

@@ -8,6 +8,7 @@ import OwnerRequestsTable from "../../containers/admin/owner/OwnerRequestsTable"
 import ViewOwnerPopup from "../../containers/admin/owner/ViewOwnerPopup";
 import StatusChangePopup from "../../containers/admin/owner/StatusChangePopup";
 import RejectPopup from "../../containers/admin/owner/RejectPopup";
+import LoadingSpinner from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
 import { ADMIN_ITEMS_PER_PAGE } from "../../constants/pagination";
 import toast from "react-hot-toast";
@@ -17,7 +18,7 @@ const AdminOwnerManagement = () => {
 
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [selectedOwner, setSelectedOwner] = useState(null);
-    const [availableTab, setAvailableTab] = useState("all");
+    const [availableTab, setavailableTab] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [showStatusPopup, setShowStatusPopup] = useState(false);
     const [ownerToChangeStatus, setOwnerToChangeStatus] = useState(null);
@@ -37,7 +38,7 @@ const AdminOwnerManagement = () => {
     const allOwners = owners;
 
     const availableOwners = owners.filter(
-        (o) => o.status === "Available"
+        (o) => o.status === "available"
     );
 
     const unavailableOwners = owners.filter(
@@ -55,7 +56,7 @@ const AdminOwnerManagement = () => {
     // Get current list based on available tab
     const getCurrentList = () => {
         switch (availableTab) {
-            case "Available":
+            case "available":
                 return availableOwners;
             case "unavailable":
                 return unavailableOwners;
@@ -85,7 +86,7 @@ const AdminOwnerManagement = () => {
     // Get item name for pagination based on available tab
     const getItemName = () => {
         switch (availableTab) {
-            case "Available":
+            case "available":
                 return "available owners";
             case "unavailable":
                 return "unavailable owners";
@@ -107,8 +108,8 @@ const AdminOwnerManagement = () => {
             count: owners.length,
         },
         {
-            id: "Available",
-            label: "Available",
+            id: "available",
+            label: "available",
             count: availableOwners.length,
         },
         {
@@ -163,7 +164,7 @@ const AdminOwnerManagement = () => {
     const handleApproveRequest = async (request) => {
         try {
             const updatePayload = {
-                status: "Available",
+                status: "available",
                 verified: true,
                 decline_reason: null,
             };
@@ -211,7 +212,7 @@ const AdminOwnerManagement = () => {
     const handleConfirmStatusChange = async (reason) => {
         if (!ownerToChangeStatus) return;
 
-        const newStatus = ownerToChangeStatus.status === "Available" ? "unavailable" : "Available";
+        const newStatus = ownerToChangeStatus.status === "available" ? "unavailable" : "available";
 
         try {
             const updatePayload = {
@@ -221,7 +222,7 @@ const AdminOwnerManagement = () => {
 
             await updateOwner(ownerToChangeStatus._id, updatePayload);
             toast.success(
-                `Owner ${newStatus === "Available" ? "activated" : "deactivated"} successfully`
+                `Owner ${newStatus === "available" ? "activated" : "deactivated"} successfully`
             );
             await fetchOwners();
         } catch (error) {
@@ -233,18 +234,9 @@ const AdminOwnerManagement = () => {
         }
     };
 
-    if (loading && owners.length === 0) {
+    if (loading) {
         return (
-            <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-                <div className="flex justify-center items-center h-64">
-                    <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                        <p className="mt-4 text-slate-600">
-                            Loading owners...
-                        </p>
-                    </div>
-                </div>
-            </main>
+            <LoadingSpinner />
         );
     }
 
@@ -296,7 +288,7 @@ const AdminOwnerManagement = () => {
             <Tabs
                 tabs={tabs}
                 availableTab={availableTab}
-                onTabChange={setAvailableTab}
+                onTabChange={setavailableTab}
             />
 
             {availableTab === "all" && (
@@ -322,11 +314,11 @@ const AdminOwnerManagement = () => {
                 </>
             )}
 
-            {availableTab === "Available" && (
+            {availableTab === "available" && (
                 <>
                     <OwnerTable
                         length={availableOwners.length}
-                        title="Available Owners"
+                        title="available Owners"
                         owners={paginatedList}
                         onView={handleViewOwner}
                         onToggleStatus={handleToggleOwnerStatus}

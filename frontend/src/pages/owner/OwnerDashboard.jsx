@@ -3,6 +3,7 @@ import { AccommodationContext } from "../../context/AccommodationContext";
 import { VehicleContext } from "../../context/VehicleContext";
 import { BookingContext } from "../../context/BookingContext";
 import { AuthContext } from "../../context/AuthContext";
+import LoadingSpinner from "../../components/common/Loading";
 import Heading from "../../containers/owner/common/Heading";
 import StatsCards from "../../containers/owner/common/StatsCards";
 import RevenueOverview from "../../containers/owner/dashboard/RevenueOverview";
@@ -204,18 +205,11 @@ const OwnerDashboard = () => {
     setRecentBookings(recent);
   };
 
-  if (loading) {
-    return (
-      <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-slate-600">Loading dashboard...</p>
-          </div>
-        </div>
-      </main>
-    );
+
+  if (loading && bookings.length === 0) {
+    return <LoadingSpinner />;
   }
+
 
   return (
     <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">

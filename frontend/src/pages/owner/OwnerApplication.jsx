@@ -21,10 +21,10 @@ const OwnerApplication = () => {
 
     const [currentStep, setCurrentStep] = useState(1);
     const [showApplicationPopup, setShowApplicationPopup] = useState(false);
-    const [showunavailablePopup, setShowunavailablePopup] = useState(false);
+    const [showUnavailablePopup, setShowUnavailablePopup] = useState(false);
     const [currentStatus, setCurrentStatus] = useState(null);
     const [declineReason, setDeclineReason] = useState(null);
-    const [unavailableDetails, setunavailableDetails] = useState(null);
+    const [unavailableDetails, setUnavailableDetails] = useState(null);
 
     // ---------------- FETCH STATUS ----------------
     useEffect(() => {
@@ -34,7 +34,7 @@ const OwnerApplication = () => {
 
             // Collect all unavailable-related details
             if (currentUser.status === "unavailable") {
-                setunavailableDetails({
+                setUnavailableDetails({
                     decline_reason: currentUser.decline_reason,
                     deactivation_details: currentUser.deactivation_details,
                     policy_violation: currentUser.policy_violation,
@@ -95,7 +95,6 @@ const OwnerApplication = () => {
                 );
             case 2:
                 return formData.termsAgreed;
-
             default:
                 return false;
         }
@@ -115,7 +114,8 @@ const OwnerApplication = () => {
             id_number: formData.nic,
             address: formData.address,
             description: formData.description,
-            id_photo: formData.identityDocument
+            id_photo: formData.identityDocument,
+            status: "pending" 
         };
 
         const res = await updateCurrentUser(updateData);
@@ -125,7 +125,7 @@ const OwnerApplication = () => {
             setDeclineReason(res.data.decline_reason || null);
 
             if (res.data.status === "unavailable") {
-                setunavailableDetails({
+                setUnavailableDetails({
                     decline_reason: res.data.decline_reason,
                     deactivation_details: res.data.deactivation_details,
                     policy_violation: res.data.policy_violation,
@@ -153,7 +153,7 @@ const OwnerApplication = () => {
     };
 
     // ---------------- ACTIVE OWNER REDIRECT ----------------
-    if (currentStatus === "Available") {
+    if (currentStatus === "available") {
         return <Navigate to="/owner/dashboard" replace />;
     }
 
@@ -176,8 +176,8 @@ const OwnerApplication = () => {
                     income by renting to verified university members.
                 </p>
 
-                {/* ---------------- NO STATUS (NEW OWNER) ---------------- */}
-                {!currentStatus && (
+                {/* ---------------- NEW OWNER ---------------- */}
+                {currentStatus === "draft" && (
                     <button
                         onClick={() => setShowApplicationPopup(true)}
                         className="bg-primary text-white py-3 px-8 rounded-lg font-medium hover:bg-primary/80 transition-colors inline-flex items-center gap-2"
@@ -243,7 +243,6 @@ const OwnerApplication = () => {
                             Your owner account has been temporarily disabled.
                         </p>
 
-                        {/* Preview of deactivation reason */}
                         {declineReason && (
                             <div className="bg-white/50 rounded-lg p-3 mb-3 text-left">
                                 <p className="text-xs font-medium text-red-700 mb-1">
@@ -256,7 +255,7 @@ const OwnerApplication = () => {
                         )}
 
                         <button
-                            onClick={() => setShowunavailablePopup(true)}
+                            onClick={() => setShowUnavailablePopup(true)}
                             className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 inline-flex items-center gap-2"
                         >
                             <span className="material-symbols-outlined text-sm">
@@ -285,9 +284,9 @@ const OwnerApplication = () => {
             )}
 
             {/* ---------------- INACTIVE POPUP ---------------- */}
-            {showunavailablePopup && (
+            {showUnavailablePopup && (
                 <InactiveAccountPopup
-                    setShowunavailablePopup={setShowunavailablePopup}
+                    setShowUnavailablePopup={setShowUnavailablePopup}
                     declineReason={declineReason}
                     currentUser={{
                         ...currentUser,

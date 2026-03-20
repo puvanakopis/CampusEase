@@ -39,7 +39,7 @@ const Accommodations = () => {
 
   const filteredAccommodations = accommodations
     .filter((acc) => acc.status === "available")
-    .filter((acc) => acc.owner?.status === "Available")
+    .filter((acc) => acc.owner?.status === "available")
     .filter((acc) => {
       if (filters.types.length > 0 && !filters.types.includes(acc.accommodation_type)) {
         return false;

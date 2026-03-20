@@ -79,7 +79,7 @@ const ProtectedRoute = ({ role, user }) => {
 
   useEffect(() => {
     if (role === "owner") {
-      const notAvailable = user?.status !== "Available";
+      const notAvailable = user?.status !== "available";
 
       if (notAvailable && location.pathname !== "/owner") {
         navigateTo("/owner");

@@ -240,7 +240,7 @@ const OwnerAccommodation = () => {
         }
     };
 
-    if (accoLoading && ownerAccommodations.length === 0) {
+    if (accoLoading) {
         return <LoadingSpinner />;
     }
 

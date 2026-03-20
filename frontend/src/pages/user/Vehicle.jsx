@@ -39,7 +39,7 @@ const Vehicle = () => {
 
     const filteredVehicles = vehicles
         .filter((vehicle) => vehicle.status === "available")
-        .filter((vehicle) => vehicle.owner?.status === "Available")
+        .filter((vehicle) => vehicle.owner?.status === "available")
         .filter((vehicle) => {
             if (filters.types.length > 0 && !filters.types.includes(vehicle.vehicle_type)) {
                 return false;

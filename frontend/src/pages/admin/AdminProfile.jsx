@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import LoadingSpinner from "../../components/common/Loading";
 import AdminProfilePage from "../../containers/admin/account/AdminOwnerProfilePage";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -35,6 +36,13 @@ function AdminProfile() {
             console.error("Failed to update profile:", err);
         }
     };
+
+
+    if (authLoading) {
+        return (
+            <LoadingSpinner />
+        );
+    }
 
     return (
         <div className="bg-[#f6f7f8]">

@@ -7,6 +7,7 @@ import VehicleRequestsTable from "../../containers/admin/vehicles/VehicleRequest
 import ViewVehiclePopup from "../../containers/admin/vehicles/ViewVehiclePopup";
 import VehicleStatusChangePopup from "../../containers/admin/vehicles/VehicleStatusChangePopup";
 import VehicleRejectPopup from "../../containers/admin/vehicles/VehicleRejectPopup";
+import LoadingSpinner from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
 import { ADMIN_ITEMS_PER_PAGE } from "../../constants/pagination";
 import { VehicleContext } from "../../context/VehicleContext";
@@ -247,18 +248,9 @@ const AdminVehicles = () => {
         }
     };
 
-    if (vehicleLoading && vehicles.length === 0) {
+    if (vehicleLoading) {
         return (
-            <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-                <div className="flex justify-center items-center h-64">
-                    <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                        <p className="mt-4 text-slate-600">
-                            Loading vehicles...
-                        </p>
-                    </div>
-                </div>
-            </main>
+            <LoadingSpinner />
         );
     }
 

@@ -7,6 +7,7 @@ import AcceptPopup from "../../containers/owner/booking/AcceptPopup";
 import DeclinePopup from "../../containers/owner/booking/DeclinePopup";
 import EditBookingPopup from "../../containers/owner/booking/EditBookingPopup";
 import ViewDetailsPopup from "../../containers/owner/booking/ViewDetailsPopup";
+import LoadingSpinner from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
 import { OWNER_ITEMS_PER_PAGE } from "../../constants/pagination";
 import { BookingContext } from "../../context/BookingContext";
@@ -189,7 +190,7 @@ const OwnerBooking = () => {
     };
 
     if (loading && bookings.length === 0) {
-        // return <LoadingSpinner />;
+        return <LoadingSpinner />;
     }
 
     return (

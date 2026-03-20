@@ -33,27 +33,28 @@ async def get_saved_items(user_id: str):
                 reviews.append(AccommodationReview(
                     user=user_obj.dict() if user_obj else None, **rev))
 
-        acc_doc_copy = acc_doc.copy()
-        acc_doc_copy.pop("reviews", None)
+            acc_doc_copy = acc_doc.copy()
+            acc_doc_copy.pop("reviews", None)
 
-        accommodations.append(AccommodationResponse(
-            **acc_doc_copy, reviews=reviews, owner=None))
+            accommodations.append(AccommodationResponse(
+                **acc_doc_copy, reviews=reviews, owner=None))
 
-        vehicles = []
-        for veh_id in user_doc.get("save_transports", []):
-            veh_doc = await vehicles_collection.find_one({"_id": veh_id})
-            if veh_doc:
-                reviews = []
-                for rev in veh_doc.get("reviews", []):
-                    user_obj = await get_user_by_id(rev.get("user_id"))
+    vehicles = []
+    for veh_id in user_doc.get("save_transports", []):
+        veh_doc = await vehicles_collection.find_one({"_id": veh_id})
+        if veh_doc:
+            reviews = []
+            for rev in veh_doc.get("reviews", []):
+                user_obj = await get_user_by_id(rev.get("user_id"))
                 reviews.append(VehicleReview(
                     user=user_obj.dict() if user_obj else None, **rev))
 
-                veh_doc_copy = veh_doc.copy()
-                veh_doc_copy.pop("reviews", None)
+            veh_doc_copy = veh_doc.copy()
+            veh_doc_copy.pop("reviews", None)
 
-        vehicles.append(VehicleResponse(
-            **veh_doc_copy, reviews=reviews, owner=None))
+            vehicles.append(VehicleResponse(
+                **veh_doc_copy, reviews=reviews, owner=None))
+
     return {
         "success": True,
         "status_code": 200,

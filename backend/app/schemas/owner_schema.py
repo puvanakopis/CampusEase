@@ -1,7 +1,7 @@
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
-from app.models.owner_model import OwnerStatus,    OwnerPhoto
+from app.models.owner_model import OwnerStatus, OwnerPhoto
 from app.schemas.accommodation_schema import AccommodationResponse
 from app.schemas.vehicle_schema import VehicleResponse
 

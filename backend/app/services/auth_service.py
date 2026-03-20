@@ -36,8 +36,6 @@ async def find_user_by_email(email: str):
     return None, None, None
 
 
-
-# -------------------- Signup OTP Request --------------------
 async def request_signup_otp(role: str, first_name: str, last_name: str, email: str, password: str):
 
     if role == "admin":
@@ -49,7 +47,6 @@ async def request_signup_otp(role: str, first_name: str, last_name: str, email: 
 
     email_lower = email.lower()
 
-    # Check if email already exists in ANY role
     for col, _ in collections_map.values():
         if await col.find_one({"email": email_lower}):
             return response(False, 409, "Email already in use")
@@ -77,8 +74,6 @@ async def request_signup_otp(role: str, first_name: str, last_name: str, email: 
 
     return response(True, 200, "Signup OTP sent", {"email": email_lower})
 
-
-# -------------------- Signup OTP Verify --------------------
 
 async def verify_signup_otp(role: str, email: str, otp: str):
 
@@ -114,17 +109,18 @@ async def verify_signup_otp(role: str, email: str, otp: str):
         "email": otp_record["email"],
         "password": otp_record["temp_password"],
         "role": role,
-        "status": "pending",
+        "status": "draft",
         "created_at": datetime.utcnow(),
         "last_updated": datetime.utcnow(),
     }
 
     await collection.insert_one(user_data)
     await otps_collection.delete_one({"email": email_lower, "type": "signup"})
-    
+
     user_obj = model_cls(**user_data)
-    token = create_jwt_token({"id": new_id, "email": email_lower, "role": role})
-    
+    token = create_jwt_token(
+        {"id": new_id, "email": email_lower, "role": role})
+
     return response(
         True,
         201,
@@ -132,8 +128,6 @@ async def verify_signup_otp(role: str, email: str, otp: str):
         {"token": token, "user": user_obj.dict(by_alias=True)}
     )
 
-
-# -------------------- Login --------------------
 
 async def login_user(email: str, password: str):
 
@@ -152,8 +146,6 @@ async def login_user(email: str, password: str):
         {"token": token, "user": user_obj.dict(by_alias=True)}
     )
 
-
-# -------------------- Password Reset Request --------------------
 
 async def request_password_reset(email: str):
 
@@ -181,8 +173,6 @@ async def request_password_reset(email: str):
     return response(True, 200, "Password reset OTP sent", {"email": email.lower()})
 
 
-# -------------------- Password Reset --------------------
-
 async def reset_password(email: str, otp: str, new_password: str):
 
     user, collection, _ = await find_user_by_email(email)
@@ -206,8 +196,6 @@ async def reset_password(email: str, otp: str, new_password: str):
 
     return response(True, 200, "Password reset successful")
 
-
-# -------------------- Update Current User --------------------
 
 async def update_current_user(current_user, update_data=None, photo: UploadFile = None, id_photo: UploadFile = None):
 
@@ -247,8 +235,6 @@ async def update_current_user(current_user, update_data=None, photo: UploadFile 
 
     return response(True, 200, "Profile updated successfully", user_obj.dict(by_alias=True))
 
-
-# -------------------- Update Password --------------------
 
 async def update_password(current_user, current_password: str, new_password: str):
 
