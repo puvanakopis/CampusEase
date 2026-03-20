@@ -92,6 +92,18 @@ const ProtectedRoute = ({ role, user }) => {
       }
     }
 
+    if (role === "student" || role === "staff") {
+      const notAvailable = user?.status !== "available";
+
+      if (
+        notAvailable &&
+        (location.pathname === "/booking" || location.pathname === "/payment")
+      ) {
+        navigateTo("/application");
+        return;
+      }
+    }
+
     const allowedPaths = ALLOWED_PATHS[role] || [];
 
     const isAllowed = allowedPaths.some((path) => {
