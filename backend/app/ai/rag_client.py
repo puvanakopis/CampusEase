@@ -125,5 +125,4 @@ def query_ai(user_id: str, question: str, top_k: int = 3):
     answer = completion.choices[0].message.content.strip()
 
     memory.add_ai_message(user_id, answer)
-    print(f"User: {question}\nAI: {answer}\n---")
     return answer

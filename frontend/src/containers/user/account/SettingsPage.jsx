@@ -130,7 +130,7 @@ const SettingsPage = ({
                 {/* Notification Preferences Section */}
                 <section className="space-y-4">
                     <div className="flex items-center gap-2 px-1">
-                        <span className="material-symbols-outlined text-primary text-lg">notifications_available</span>
+                        <span className="material-symbols-outlined text-primary text-lg">notifications</span>
                         <h2 className="text-lg font-bold text-slate-900">Notification Preferences</h2>
                     </div>
 
