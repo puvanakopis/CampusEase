@@ -8,23 +8,22 @@ const OwnerApplication = () => {
     const { currentUser, updateCurrentUser } = useContext(AuthContext);
 
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        nic: "",
-        address: "",
-        description: "", 
-        termsAgreed: false,
-        identityDocument: null
-    });
-
+    firstName: currentUser?.first_name || "",
+    lastName: currentUser?.last_name || "",
+    email: currentUser?.email || "",
+    phone: currentUser?.phone || "",
+    nic: currentUser?.id_number || "",
+    address: currentUser?.address || "",
+    description: currentUser?.description || "",
+    termsAgreed: false,
+    identityDocument: null
+});
     const [currentStep, setCurrentStep] = useState(1);
     const [showApplicationPopup, setShowApplicationPopup] = useState(false);
-    const [showInactivePopup, setShowInactivePopup] = useState(false);
+    const [showUnavailablePopup, setShowUnavailablePopup] = useState(false);
     const [currentStatus, setCurrentStatus] = useState(null);
     const [declineReason, setDeclineReason] = useState(null);
-    const [inactiveDetails, setInactiveDetails] = useState(null);
+    const [unavailableDetails, setUnavailableDetails] = useState(null);
 
     // ---------------- FETCH STATUS ----------------
     useEffect(() => {
@@ -32,9 +31,9 @@ const OwnerApplication = () => {
             setCurrentStatus(currentUser.status);
             setDeclineReason(currentUser.decline_reason || null);
 
-            // Collect all inactive-related details
-            if (currentUser.status === "Inactive") {
-                setInactiveDetails({
+            // Collect all unavailable-related details
+            if (currentUser.status === "unavailable") {
+                setUnavailableDetails({
                     decline_reason: currentUser.decline_reason,
                     deactivation_details: currentUser.deactivation_details,
                     policy_violation: currentUser.policy_violation,
@@ -90,12 +89,11 @@ const OwnerApplication = () => {
                     formData.phone &&
                     formData.nic &&
                     formData.address &&
-                    formData.description && 
+                    formData.description &&
                     formData.identityDocument
                 );
             case 2:
                 return formData.termsAgreed;
-
             default:
                 return false;
         }
@@ -114,8 +112,9 @@ const OwnerApplication = () => {
             phone: formData.phone,
             id_number: formData.nic,
             address: formData.address,
-            description: formData.description, 
-            id_photo: formData.identityDocument
+            description: formData.description,
+            id_photo: formData.identityDocument,
+            status: "pending" 
         };
 
         const res = await updateCurrentUser(updateData);
@@ -124,8 +123,8 @@ const OwnerApplication = () => {
             setCurrentStatus(res.data.status);
             setDeclineReason(res.data.decline_reason || null);
 
-            if (res.data.status === "Inactive") {
-                setInactiveDetails({
+            if (res.data.status === "unavailable") {
+                setUnavailableDetails({
                     decline_reason: res.data.decline_reason,
                     deactivation_details: res.data.deactivation_details,
                     policy_violation: res.data.policy_violation,
@@ -153,7 +152,7 @@ const OwnerApplication = () => {
     };
 
     // ---------------- ACTIVE OWNER REDIRECT ----------------
-    if (currentStatus === "Active") {
+    if (currentStatus === "available") {
         return <Navigate to="/owner/dashboard" replace />;
     }
 
@@ -176,8 +175,8 @@ const OwnerApplication = () => {
                     income by renting to verified university members.
                 </p>
 
-                {/* ---------------- NO STATUS (NEW OWNER) ---------------- */}
-                {!currentStatus && (
+                {/* ---------------- NEW OWNER ---------------- */}
+                {currentStatus === "draft" && (
                     <button
                         onClick={() => setShowApplicationPopup(true)}
                         className="bg-primary text-white py-3 px-8 rounded-lg font-medium hover:bg-primary/80 transition-colors inline-flex items-center gap-2"
@@ -190,7 +189,7 @@ const OwnerApplication = () => {
                 )}
 
                 {/* ---------------- PENDING ---------------- */}
-                {currentStatus === "Pending Approval" && (
+                {currentStatus === "pending" && (
                     <div className="mt-6 text-yellow-600">
                         <p className="font-medium">
                             Your application is currently under review.
@@ -202,10 +201,10 @@ const OwnerApplication = () => {
                 )}
 
                 {/* ---------------- DECLINED ---------------- */}
-                {currentStatus === "Declined Approval" && (
+                {currentStatus === "rejected" && (
                     <div className="mt-6 text-center">
                         <p className="text-red-600 font-medium">
-                            Your application was declined.
+                            Your application was rejected.
                         </p>
 
                         {declineReason && (
@@ -229,21 +228,20 @@ const OwnerApplication = () => {
                 )}
 
                 {/* ---------------- INACTIVE ---------------- */}
-                {currentStatus === "Inactive" && (
+                {currentStatus === "unavailable" && (
                     <div className="mt-6 bg-red-50 border border-red-200 p-6 rounded-lg text-center max-w-md">
                         <span className="material-symbols-outlined text-red-500 text-4xl mb-2">
                             block
                         </span>
 
                         <h3 className="text-lg font-semibold text-red-700 mb-2">
-                            Your Owner Account is Inactive
+                            Your Owner Account is unavailable
                         </h3>
 
                         <p className="text-sm text-red-600 mb-3">
                             Your owner account has been temporarily disabled.
                         </p>
 
-                        {/* Preview of deactivation reason */}
                         {declineReason && (
                             <div className="bg-white/50 rounded-lg p-3 mb-3 text-left">
                                 <p className="text-xs font-medium text-red-700 mb-1">
@@ -256,7 +254,7 @@ const OwnerApplication = () => {
                         )}
 
                         <button
-                            onClick={() => setShowInactivePopup(true)}
+                            onClick={() => setShowUnavailablePopup(true)}
                             className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 inline-flex items-center gap-2"
                         >
                             <span className="material-symbols-outlined text-sm">
@@ -285,13 +283,13 @@ const OwnerApplication = () => {
             )}
 
             {/* ---------------- INACTIVE POPUP ---------------- */}
-            {showInactivePopup && (
+            {showUnavailablePopup && (
                 <InactiveAccountPopup
-                    setShowInactivePopup={setShowInactivePopup}
+                    setShowUnavailablePopup={setShowUnavailablePopup}
                     declineReason={declineReason}
                     currentUser={{
                         ...currentUser,
-                        ...inactiveDetails
+                        ...unavailableDetails
                     }}
                 />
             )}

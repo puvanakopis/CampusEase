@@ -229,7 +229,7 @@ const BookingTable = ({
                                 <td colSpan="7" className="px-6 py-12 text-center">
                                     <div className="text-slate-400">
                                         <span className="material-symbols-outlined text-4xl mb-2">
-                                            {searchQuery || filterType !== "All" ? "search_off" : "booking"}
+                                            booking
                                         </span>
                                         <p className="text-sm">
                                             {searchQuery || filterType !== "All"

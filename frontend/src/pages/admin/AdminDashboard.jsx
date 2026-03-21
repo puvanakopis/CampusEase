@@ -3,6 +3,7 @@ import AdminHeading from "../../containers/admin/common/Heading";
 import AdminTopStats from "../../containers/admin/dashboard/AdminTopStats";
 import AdminRevenueOverview from "../../containers/admin/dashboard/AdminRevenueOverview";
 import AdminRecentActivities from "../../containers/admin/dashboard/AdminRecentActivities";
+import LoadingSpinner from "../../components/common/Loading";
 import { UserContext } from "../../context/UserContext";
 import { OwnerContext } from "../../context/OwnerContext";
 import { AccommodationContext } from "../../context/AccommodationContext";
@@ -49,7 +50,7 @@ const AdminDashboard = () => {
       iconColor: "text-blue-600",
       label: "Users",
       value: users.length,
-      badgeText: `${users.filter(u => u.status === "Pending Approval").length} Pending`,
+      badgeText: `${users.filter(u => u.status === "pending").length} Pending`,
       badgeColor: "text-blue-600",
       badgeBg: "bg-blue-50",
     },
@@ -79,7 +80,7 @@ const AdminDashboard = () => {
       iconColor: "text-red-500",
       label: "Owners",
       value: owners.length,
-      badgeText: `${owners.filter(o => o.status === "Pending Approval").length} Pending`,
+      badgeText: `${owners.filter(o => o.status === "pending").length} Pending`,
       badgeColor: "text-red-600",
       badgeBg: "bg-red-50",
     },
@@ -176,15 +177,7 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-        <AdminHeading
-          title="Admin Dashboard"
-          subtitle="Loading dashboard data..."
-        />
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
-      </div>
+      <LoadingSpinner />
     );
   }
 

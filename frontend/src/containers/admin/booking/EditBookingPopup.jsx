@@ -107,7 +107,7 @@ const EditBookingPopup = ({ booking, onClose, onSave }) => {
                                 >
                                     <option value="pending">Pending</option>
                                     <option value="confirmed">Confirmed</option>
-                                    <option value="active">Active</option>
+                                    <option value="available">Available</option>
                                     <option value="completed">Completed</option>
                                     <option value="canceled">Canceled</option>
                                 </select>

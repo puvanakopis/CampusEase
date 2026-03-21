@@ -35,13 +35,13 @@ class BookingPayment(BaseModel):
 class Booking(BaseModel):
     id: str = Field(..., alias="_id")
     booking_type: BookingType
-    resource_id: str   
+    resource_id: str
     owner_id: str
     user_id: str
-    unit_price: float  
+    unit_price: float
     start_date: datetime
     end_date: datetime
-    duration: int     
+    duration: int
     total_price: float
     status: Optional[BookingStatus] = None
     payment: Optional[BookingPayment] = None
@@ -49,6 +49,6 @@ class Booking(BaseModel):
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 
     model_config = {
-        "from_attributes": True,  
-        "validate_by_name": True 
+        "from_attributes": True,
+        "validate_by_name": True
     }

@@ -141,7 +141,10 @@ const VehicleDetails = () => {
 
                         <ReviewsSection reviews={vehicleData.reviews || []} />
 
-                        <HostInfo owner={vehicleData.owner} />
+                        <HostInfo
+                            currentUser={currentUser}
+                            owner={vehicleData.owner}
+                        />
                     </div>
 
                     <VehicleBookingCard

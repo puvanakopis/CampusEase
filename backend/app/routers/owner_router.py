@@ -1,12 +1,8 @@
 from fastapi import APIRouter, Depends
-from app.services.owner_service import (
-    get_all_owners,
-    get_owner_by_id,
-    update_owner,
-    delete_owner
-)
 from app.schemas.owner_schema import OwnerUpdateRequest
+from app.services.owner_service import get_all_owners, get_owner_by_id, update_owner, delete_owner
 from app.middlewares.auth_middleware import role_required
+
 
 router = APIRouter(prefix="/owner", tags=["Owner"])
 

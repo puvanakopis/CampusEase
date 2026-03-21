@@ -21,4 +21,3 @@ class TempBooking(BaseModel):
     total_price: Optional[float] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_updated: datetime = Field(default_factory=datetime.utcnow)
-    

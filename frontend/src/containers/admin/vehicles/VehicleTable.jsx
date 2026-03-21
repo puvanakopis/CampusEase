@@ -122,10 +122,10 @@ const VehicleTable = ({
                 </div>
             </div>
 
-            {/* Active Filters Display */}
+            {/* Available Filters Display */}
             {(searchQuery || filterStatus !== 'All' || filterType !== 'All') && (
                 <div className="px-6 py-2 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center gap-2">
-                    <span className="text-xs text-slate-500">Active filters:</span>
+                    <span className="text-xs text-slate-500">Available filters:</span>
                     {searchQuery && (
                         <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
                             Search: "{searchQuery}"

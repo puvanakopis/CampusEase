@@ -6,11 +6,13 @@ import VehicleGrid from "../../containers/user/vehicle/VehicleGrid";
 import Pagination from "../../components/user/Pagination";
 import { VehicleContext } from "../../context/VehicleContext";
 import { SaveItemContext } from "../../context/SaveItemContext";
+import { AuthContext } from "../../context/AuthContext";
 import { PAGINATION } from "../../constants/constants";
 
 const Vehicle = () => {
     const { vehicles, loading, fetchVehicles } = useContext(VehicleContext);
     const { fetchSavedItems } = useContext(SaveItemContext);
+    const { currentUser } = useContext(AuthContext);
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -39,7 +41,7 @@ const Vehicle = () => {
 
     const filteredVehicles = vehicles
         .filter((vehicle) => vehicle.status === "available")
-        .filter((acc) => acc.owner?.status === "Active")
+        .filter((vehicle) => vehicle.owner?.status === "available")
         .filter((vehicle) => {
             if (filters.types.length > 0 && !filters.types.includes(vehicle.vehicle_type)) {
                 return false;
@@ -93,13 +95,12 @@ const Vehicle = () => {
     };
 
     return (
-        <div className="bg-[#f6f7f8]">
-            <div className="flex flex-col lg:flex-row px-4 py-10 md:px-24 max-w-8xl mx-auto gap-6">
+        <div className="bg-[#f6f7f8] min-h-screen">
+            <div className="flex flex-col lg:flex-row px-4 py-6 md:px-24 max-w-8xl mx-auto gap-6">
 
                 <VehicleFiltersSidebar filters={filters} onFilterChange={handleFilterChange} />
 
                 <main className="flex-1 flex flex-col gap-6">
-
                     <VehiclePageHeader
                         title="Vehicle Rentals"
                         description="Scooters, cars, vans, and bikes available for rent near Sabaragamuwa University."
@@ -117,15 +118,26 @@ const Vehicle = () => {
                             Loading vehicles...
                         </div>
                     ) : (
-                        <VehicleGrid vehicles={currentVehicles} />
+                        <>
+                            {currentVehicles.length === 0 ? (
+                                <div className="text-center py-20 text-lg font-semibold text-gray-500">
+                                    No vehicles found matching your filters.
+                                </div>
+                            ) : (
+                                <VehicleGrid 
+                                currentUser={currentUser} 
+                                vehicles={currentVehicles} />
+                            )}
+                        </>
                     )}
 
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    />
-
+                    {totalPages > 1 && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    )}
                 </main>
             </div>
         </div>

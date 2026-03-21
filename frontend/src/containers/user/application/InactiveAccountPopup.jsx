@@ -1,6 +1,6 @@
 import React from "react";
 
-const InactiveAccountPopup = ({ setShowInactivePopup, declineReason, currentUser }) => {
+const InactiveAccountPopup = ({ setShowUnavailablePopup, declineReason, currentUser }) => {
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl p-6 max-w-2xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
@@ -9,15 +9,15 @@ const InactiveAccountPopup = ({ setShowInactivePopup, declineReason, currentUser
                 <div className="flex justify-between items-start mb-6">
                     <div>
                         <h3 className="text-2xl font-bold text-slate-900">
-                            Account Inactive
+                            Account Unavailable
                         </h3>
                         <p className="text-slate-500">
-                            Your user account is currently inactive. Please review the details below.
+                            Your user account is currently unavailable. Please review the details below.
                         </p>
                     </div>
 
                     <button
-                        onClick={() => setShowInactivePopup(false)}
+                        onClick={() => setShowUnavailablePopup(false)}
                         className="text-slate-400 hover:text-slate-600 transition-colors"
                     >
                         <span className="material-symbols-outlined">close</span>
@@ -33,7 +33,7 @@ const InactiveAccountPopup = ({ setShowInactivePopup, declineReason, currentUser
                     </div>
 
                     <span className="bg-red-100 text-red-700 text-xs font-medium px-3 py-1 rounded-full">
-                        {currentUser?.status || "Inactive"}
+                        {currentUser?.status || "unavailable"}
                     </span>
                 </div>
 
@@ -73,7 +73,7 @@ const InactiveAccountPopup = ({ setShowInactivePopup, declineReason, currentUser
                         </div>
                         <div className="flex justify-between">
                             <span className="text-slate-500">Account Status:</span>
-                            <span className="font-medium text-red-600">Inactive</span>
+                            <span className="font-medium text-red-600">unavailable</span>
                         </div>
                         {currentUser?.verified !== undefined && (
                             <div className="flex justify-between">
@@ -205,7 +205,7 @@ const InactiveAccountPopup = ({ setShowInactivePopup, declineReason, currentUser
                 <div className="flex justify-between mt-6 pt-4 border-t border-slate-200">
                     <div className="flex-1">
                         <button
-                            onClick={() => setShowInactivePopup(false)}
+                            onClick={() => setShowUnavailablePopup(false)}
                             className="border border-slate-200 text-slate-700 py-2 px-6 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm flex items-center justify-center gap-1"
                         >
                             <span className="material-symbols-outlined text-sm">close</span>
@@ -216,7 +216,7 @@ const InactiveAccountPopup = ({ setShowInactivePopup, declineReason, currentUser
                     <div className="flex-1 flex justify-end">
                         <button
                             onClick={() => {
-                                const subject = encodeURIComponent("Inactive Account Reactivation Request");
+                                const subject = encodeURIComponent("Unavailable Account Reactivation Request");
                                 const body = encodeURIComponent(
                                     `Account Information:\n` +
                                     `Name: ${currentUser?.first_name || ''} ${currentUser?.last_name || ''}\n` +

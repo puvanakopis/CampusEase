@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { buildPhotoUrl } from "../../../utils/photoUtils";
 import toast from "react-hot-toast";
 
-const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) => {
+const EditAccommodationPopup = ({ accommodation, onClose, onSave, availableTab }) => {
     const formatAccommodationData = (acc) => {
         return {
             _id: acc._id,
@@ -150,13 +150,13 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
             },
             total_users: parseInt(formData.total_users),
             available_users: parseInt(formData.available_users),
-            status: activeTab === "pending" ? "pending" : formData.status,
+            status: availableTab === "pending" ? "pending" : formData.status,
             existing_images: existingImages.map(img => img.filename),
             images_to_delete: imagesToDelete,
             gender: formData.gender
         };
 
-        if (activeTab === "rejected") {
+        if (availableTab === "rejected") {
             accommodationData.reject_reason = null;
         }
 
@@ -543,12 +543,12 @@ const EditAccommodationPopup = ({ accommodation, onClose, onSave, activeTab }) =
                     <div>
                         <h3 className="text-lg font-bold text-slate-900">Edit Accommodation</h3>
                         <p className="text-xs text-slate-500 mt-1">ID: {accommodation._id}</p>
-                        {activeTab === "pending" && (
+                        {availableTab === "pending" && (
                             <p className="text-xs text-yellow-600 mt-2">
                                 Note: Editing a pending accommodation will keep it in the pending queue for review.
                             </p>
                         )}
-                        {activeTab === "rejected" && (
+                        {availableTab === "rejected" && (
                             <p className="text-xs text-red-600 mt-2">
                                 Note: After editing, this accommodation will be resubmitted for review.
                             </p>

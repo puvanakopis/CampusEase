@@ -5,6 +5,7 @@ import Tabs from "../../containers/admin/common/Tabs";
 import BookingTable from "../../containers/admin/booking/BookingTable";
 import ViewBookingPopup from "../../containers/admin/booking/ViewBookingPopup";
 import EditBookingPopup from "../../containers/admin/booking/EditBookingPopup";
+import LoadingSpinner from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
 import { ADMIN_ITEMS_PER_PAGE } from "../../constants/pagination";
 import { BookingContext } from "../../context/BookingContext";
@@ -15,7 +16,7 @@ const AdminBookingManagement = () => {
     const { bookings, loading, getAllBookings, updateBooking, deleteBooking } = useContext(BookingContext);
     const { currentUser } = useContext(AuthContext);
 
-    const [activeTab, setActiveTab] = useState("all");
+    const [availableTab, setAvailableTab] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
 
     const [selectedBooking, setSelectedBooking] = useState(null);
@@ -30,21 +31,21 @@ const AdminBookingManagement = () => {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeTab]);
+    }, [availableTab]);
 
     // ------------------- FILTER BOOKINGS -------------------
     const allList = useMemo(() => bookings, [bookings]);
     const pendingList = useMemo(() => bookings.filter(b => b.status === "pending"), [bookings]);
     const confirmedList = useMemo(() => bookings.filter(b => b.status === "confirmed"), [bookings]);
-    const activeList = useMemo(() => bookings.filter(b => b.status === "active"), [bookings]);
+    const availableList = useMemo(() => bookings.filter(b => b.status === "available"), [bookings]);
     const completedList = useMemo(() => bookings.filter(b => b.status === "completed"), [bookings]);
     const canceledList = useMemo(() => bookings.filter(b => b.status === "canceled"), [bookings]);
 
     const getCurrentList = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "pending": return pendingList;
             case "confirmed": return confirmedList;
-            case "active": return activeList;
+            case "available": return availableList;
             case "completed": return completedList;
             case "canceled": return canceledList;
             default: return allList;
@@ -70,7 +71,7 @@ const AdminBookingManagement = () => {
         { id: "all", label: "All", count: allList.length },
         { id: "pending", label: "Pending", count: pendingList.length },
         { id: "confirmed", label: "Confirmed", count: confirmedList.length },
-        { id: "active", label: "Active", count: activeList.length },
+        { id: "available", label: "Available", count: availableList.length },
         { id: "completed", label: "Completed", count: completedList.length },
         { id: "canceled", label: "Canceled", count: canceledList.length },
     ];
@@ -81,7 +82,7 @@ const AdminBookingManagement = () => {
             label: "Total Bookings",
             icon: "receipt_long",
             value: allList.length,
-            subtext: `${activeList.length} active, ${pendingList.length} pending`,
+            subtext: `${availableList.length} available, ${pendingList.length} pending`,
             subtextColor: "text-green-600",
         },
         {
@@ -139,24 +140,19 @@ const AdminBookingManagement = () => {
     };
 
     const getItemName = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "pending": return "pending bookings";
             case "confirmed": return "confirmed bookings";
-            case "active": return "active bookings";
+            case "available": return "available bookings";
             case "completed": return "completed bookings";
             case "canceled": return "canceled bookings";
             default: return "bookings";
         }
     };
 
-    if (loading && bookings.length === 0) {
+    if (loading) {
         return (
-            <main className="flex justify-center items-center min-h-screen bg-[#f6f7f8]">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                    <p className="mt-4 text-slate-600">Loading bookings...</p>
-                </div>
-            </main>
+            <LoadingSpinner />
         );
     }
 
@@ -198,13 +194,13 @@ const AdminBookingManagement = () => {
             <StatsCards stats={stats} />
 
             {/* Tabs */}
-            <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+            <Tabs tabs={tabs} availableTab={availableTab} onTabChange={setAvailableTab} />
 
             {/* Booking Table */}
             <BookingTable
                 length={currentList.length}
                 bookings={paginatedList}
-                activeTab={activeTab}
+                availableTab={availableTab}
                 onView={handleViewBooking}
                 onEdit={handleEditBooking}
                 onDelete={handleDeleteBooking}

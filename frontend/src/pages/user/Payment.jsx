@@ -31,7 +31,7 @@ const Payment = () => {
     useEffect(() => {
         if (!tempLoading && !tempBooking && currentUser) {
             console.error(
-                "No active booking found. Please select a property first."
+                "No available booking found. Please select a property first."
             );
             navigateTo("/");
         }
@@ -91,7 +91,7 @@ const Payment = () => {
         return (
             <div className="py-20 text-center">
                 <h2 className="text-2xl font-semibold text-gray-700">
-                    No Active Booking
+                    No Available Booking
                 </h2>
                 <p className="text-gray-500 mt-2">
                     Please select a property to book first.

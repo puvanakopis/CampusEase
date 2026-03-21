@@ -1,6 +1,3 @@
-# Ignore uploads directories
-uploads/
-app/uploads/
 app/chroma_db/
 chroma_db/
 

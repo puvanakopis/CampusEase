@@ -9,7 +9,7 @@ const ViewAccommodationPopup = ({ accommodation, onClose }) => {
             'Available': 'Available',
             'Rejected': 'Rejected',
             'booked': 'Booked',
-            'unavailable': 'Unavailable'
+            'unavailable': 'unavailable'
         };
         return statusMap[status] || status;
     };

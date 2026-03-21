@@ -12,9 +12,9 @@ class AccommodationGender(str, Enum):
 class AccommodationStatus(str, Enum):
     pending = "pending"
     available = "available"
+    unavailable = "unavailable"
     rejected = "rejected"
     booked = "booked"
-    unavailable = "unavailable"
 
 
 class AccommodationType(str, Enum):

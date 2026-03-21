@@ -30,7 +30,7 @@ const ViewBookingPopup = ({ booking, onClose, onEdit }) => {
         switch (status) {
             case "pending": return "bg-yellow-100 text-yellow-800";
             case "confirmed": return "bg-blue-100 text-primary";
-            case "active": return "bg-green-100 text-green-800";
+            case "available": return "bg-green-100 text-green-800";
             case "completed": return "bg-purple-100 text-purple-800";
             case "canceled": return "bg-red-100 text-red-800";
             default: return "bg-gray-100 text-gray-800";
@@ -69,7 +69,7 @@ const ViewBookingPopup = ({ booking, onClose, onEdit }) => {
                             <span className="material-symbols-outlined">
                                 {booking.status === "pending" ? "hourglass_bottom" :
                                     booking.status === "confirmed" ? "check_circle" :
-                                        booking.status === "active" ? "play_arrow" :
+                                        booking.status === "available" ? "play_arrow" :
                                             booking.status === "completed" ? "task_alt" : "cancel"}
                             </span>
                             <span className="font-medium">Status: {booking.status}</span>

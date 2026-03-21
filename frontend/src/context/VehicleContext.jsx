@@ -74,7 +74,6 @@ export const VehicleProvider = ({ children }) => {
             toast.success("Vehicle created successfully!", { id: toastId });
 
             await fetchVehicles();
-            await fetchMyVehicles();
 
             return res.data;
         } catch (err) {
@@ -113,7 +112,6 @@ export const VehicleProvider = ({ children }) => {
 
             toast.success("Review added successfully!", { id: toastId });
 
-            // Refresh the vehicle data to show the new review
             await fetchVehicles();
 
             return res.data;
@@ -150,7 +148,6 @@ export const VehicleProvider = ({ children }) => {
             toast.success("Vehicle updated successfully!", { id: toastId });
 
             await fetchVehicles();
-            await fetchMyVehicles();
 
             return res.data;
         } catch (err) {
@@ -173,7 +170,6 @@ export const VehicleProvider = ({ children }) => {
             toast.success("Vehicle deleted successfully!", { id: toastId });
 
             await fetchVehicles();
-            await fetchMyVehicles();
         } catch (err) {
             toast.error(err.message || "Delete failed", { id: toastId });
             throw err;

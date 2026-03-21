@@ -6,7 +6,7 @@ const OwnerSidebar = () => {
     const navigateTo = useNavigateTo();
     const location = useLocation();
 
-    const isActive = (path) => location.pathname === path;
+    const isAvailable = (path) => location.pathname === path;
 
     return (
         <aside className="w-full md:w-64 flex flex-col gap-2">
@@ -14,9 +14,9 @@ const OwnerSidebar = () => {
                 <div className="py-1">
                     <button
                         onClick={() => navigateTo("/owner/profile")}
-                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/owner/profile")
-                                ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                : "text-slate-600"
+                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/owner/profile")
+                            ? "bg-primary/5 text-primary border-l-4 border-primary"
+                            : "text-slate-600"
                             }`}
                     >
                         <span className="material-symbols-outlined text-lg">person</span>
@@ -25,9 +25,9 @@ const OwnerSidebar = () => {
 
                     <button
                         onClick={() => navigateTo("/owner/settings")}
-                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/owner/settings")
-                                ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                : "text-slate-600"
+                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/owner/settings")
+                            ? "bg-primary/5 text-primary border-l-4 border-primary"
+                            : "text-slate-600"
                             }`}
                     >
                         <span className="material-symbols-outlined text-lg">settings</span>
@@ -36,9 +36,9 @@ const OwnerSidebar = () => {
 
                     <button
                         onClick={() => navigateTo("/owner/support")}
-                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isActive("/owner/support")
-                                ? "bg-primary/5 text-primary border-l-4 border-primary"
-                                : "text-slate-600"
+                        className={`flex items-center gap-3 px-6 py-3.5 text-sm font-medium transition-colors w-full text-left hover:bg-slate-50 ${isAvailable("/owner/support")
+                            ? "bg-primary/5 text-primary border-l-4 border-primary"
+                            : "text-slate-600"
                             }`}
                     >
                         <span className="material-symbols-outlined text-lg">help</span>

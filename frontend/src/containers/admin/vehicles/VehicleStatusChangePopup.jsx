@@ -31,7 +31,7 @@ const VehicleStatusChangePopup = ({ vehicle, currentStatus, onClose, onConfirm }
             'available': 'Available',
             'rejected': 'Rejected',
             'booked': 'Booked',
-            'unavailable': 'Unavailable'
+            'unavailable': 'unavailable'
         };
         return statusMap[status] || status;
     };
@@ -81,7 +81,7 @@ const VehicleStatusChangePopup = ({ vehicle, currentStatus, onClose, onConfirm }
                                 </span>
                                 <span className="text-xs text-slate-400">→</span>
                                 <span className={`px-2 py-0.5 rounded-full text-xs ${currentStatus === "available" ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}>
-                                    New: {currentStatus === "available" ? "Unavailable" : "Available"}
+                                    New: {currentStatus === "available" ? "unavailable" : "Available"}
                                 </span>
                             </div>
                         </div>

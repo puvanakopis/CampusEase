@@ -148,14 +148,20 @@ const VehicleBookingCard = ({
                         </div>
                     </div>
                 </div>
-
                 <PrimaryButton
                     disabled={!startDate || !endDate}
-                    onClick={handleBooking}
+                    onClick={() => {
+                        if (!currentUser) {
+                            navigateTo("/login");
+                            return;
+                        }
+                        handleBooking();
+                    }}
                     className="w-full py-3.5 text-lg mb-4"
                 >
                     Request Booking
                 </PrimaryButton>
+
 
                 <p className="text-center text-xs text-slate-500 mb-6 font-medium">
                     Your request will be sent to {vehicle.owner?.first_name}

@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
     const [authLoading, setAuthLoading] = useState(true);
     const navigateTo = useNavigateTo();
 
-    // ------------------ LOGIN ------------------
+
     const login = async (email, password) => {
         const toastId = toast.loading("Authenticating...");
         try {
@@ -40,15 +40,15 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ LOGOUT ------------------
+
     const logout = () => {
         Cookies.remove("token");
         setCurrentUser(null);
         toast.success("Logged out successfully");
-        navigateTo("/"); 
+        navigateTo("/");
     };
 
-    // ------------------ FETCH CURRENT USER ------------------
+
     const fetchCurrentUser = async () => {
         const token = Cookies.get("token");
         if (!token) {
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ FORGOT PASSWORD ------------------
+
     const requestPasswordReset = async (email) => {
         const toastId = toast.loading("Sending OTP...");
         try {
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ RESET PASSWORD ------------------
+
     const resetPassword = async (email, otp, newPassword) => {
         const toastId = toast.loading("Resetting password...");
         try {
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ SIGNUP REQUEST OTP ------------------
+
     const requestSignupOtp = async (role, firstName, lastName, email, password) => {
         const toastId = toast.loading("Sending OTP...");
         try {
@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ SIGNUP VERIFY OTP ------------------
+
     const verifySignupOtp = async (role, email, otp) => {
         const toastId = toast.loading("Verifying OTP...");
         try {
@@ -147,7 +147,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ UPDATE PROFILE ------------------
+
     const updateCurrentUserProfile = async (updateData) => {
         const toastId = toast.loading("Updating profile...");
         try {
@@ -166,7 +166,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ UPDATE PASSWORD ------------------
+
     const updatePassword = async (currentPassword, newPassword) => {
         const toastId = toast.loading("Updating password...");
         try {

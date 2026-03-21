@@ -9,13 +9,13 @@ const OwnerNavbar = () => {
     const location = useLocation();
     const { currentUser, logout } = useContext(AuthContext);
 
-    const activeKey = location.pathname.split("/")[2] || "";
+    const availableKey = location.pathname.split("/")[2] || "";
 
     const [isOpen, setIsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
     const first_name = currentUser ? `${currentUser.first_name} `.trim() : "";
-    const avatar = buildPhotoUrl(currentUser?.photo?.filename, "user_photo", first_name);
+    const avatar = buildPhotoUrl(currentUser?.photo?.filename, "owner_photo", first_name);
     const role = currentUser?.role || "Owner";
     const email = currentUser?.email || "";
 
@@ -76,12 +76,12 @@ const OwnerNavbar = () => {
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex flex-1 justify-center gap-8">
                     {navItems.map((item) => {
-                        const isActive = activeKey === item.key;
+                        const isAvailable = availableKey === item.key;
                         return (
                             <button
                                 key={item.key}
                                 onClick={() => navigateTo(item.path)}
-                                className={`text-sm font-medium transition-colors ${isActive ? "text-primary font-bold" : "text-slate-600 hover:text-primary"}`}
+                                className={`text-sm font-medium transition-colors ${isAvailable ? "text-primary font-bold" : "text-slate-600 hover:text-primary"}`}
                             >
                                 {item.label}
                             </button>
@@ -153,7 +153,7 @@ const OwnerNavbar = () => {
                             <button
                                 key={item.key}
                                 onClick={() => { navigateTo(item.path); setIsOpen(false); }}
-                                className={`w-full text-center text-sm font-medium transition-colors ${activeKey === item.key ? "text-primary" : "text-slate-600 hover:text-primary"}`}
+                                className={`w-full text-center text-sm font-medium transition-colors ${availableKey === item.key ? "text-primary" : "text-slate-600 hover:text-primary"}`}
                             >
                                 {item.label}
                             </button>

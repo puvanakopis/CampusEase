@@ -6,7 +6,7 @@ const ProfileHeader = ({ owner }) => {
     const [showShareSheet, setShowShareSheet] = useState(false);
     const currentUrl = typeof window !== "undefined" ? window.location.href : "";
     const title = `${owner.first_name} ${owner.last_name || ""}`;
-    const userPhotoUrl = buildPhotoUrl(owner.photo?.filename, "user_photo", owner.first_name);
+    const userPhotoUrl = buildPhotoUrl(owner.photo?.filename, "owner_photo", owner.first_name);
 
     const vehicleReviews = owner.vehicles?.flatMap(v => v.reviews || []) || [];
     const accommodationReviews = owner.accommodations?.flatMap(a => a.reviews || []) || [];

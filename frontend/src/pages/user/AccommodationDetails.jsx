@@ -83,6 +83,7 @@ const AccommodationDetails = () => {
                 {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
 
                 <HeaderInfo
+                    currentUser={currentUser}
                     name={accommodationData.name}
                     address={accommodationData.address}
                     time_from_uni={accommodationData.time_from_uni}
@@ -118,7 +119,10 @@ const AccommodationDetails = () => {
 
                         <ReviewsSection reviews={accommodationData.reviews || []} />
 
-                        <HostInfo owner={accommodationData.owner} />
+                        <HostInfo
+                            currentUser={currentUser}
+                            owner={accommodationData.owner}
+                        />
                     </div>
 
                     <BookingCard

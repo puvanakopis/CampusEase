@@ -1,12 +1,7 @@
 import os
 from groq import Groq
 from app.core.config import settings
-from app.db.chroma import (
-    knowledge_vectors,
-    vehicle_vectors,
-    accommodation_vectors,
-    owner_vectors
-)
+from app.db.chroma import knowledge_vectors, vehicle_vectors, accommodation_vectors, owner_vectors
 from app.ai.embedding_model import create_embedding
 from app.ai.conversation_memory import ConversationBufferMemory
 
@@ -130,5 +125,4 @@ def query_ai(user_id: str, question: str, top_k: int = 3):
     answer = completion.choices[0].message.content.strip()
 
     memory.add_ai_message(user_id, answer)
-    print(f"User: {question}\nAI: {answer}\n---")
     return answer

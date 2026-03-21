@@ -181,7 +181,7 @@ const RegisterForm = ({
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 available:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             {loading ? "Sending OTP..." : "Send OTP"}
                             <span className="material-symbols-outlined text-xl">send</span>
@@ -213,7 +213,7 @@ const RegisterForm = ({
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 available:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             {loading ? "Verifying..." : "Verify OTP"}
                             <span className="material-symbols-outlined text-xl">verified</span>
@@ -253,7 +253,7 @@ const RegisterForm = ({
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 available:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             {loading ? "Completing..." : "Complete Registration"}
                             <span className="material-symbols-outlined text-xl">check_circle</span>

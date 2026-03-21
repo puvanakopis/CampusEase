@@ -7,13 +7,14 @@ import AcceptPopup from "../../containers/owner/booking/AcceptPopup";
 import DeclinePopup from "../../containers/owner/booking/DeclinePopup";
 import EditBookingPopup from "../../containers/owner/booking/EditBookingPopup";
 import ViewDetailsPopup from "../../containers/owner/booking/ViewDetailsPopup";
+import LoadingSpinner from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
 import { OWNER_ITEMS_PER_PAGE } from "../../constants/pagination";
 import { BookingContext } from "../../context/BookingContext";
 import { AuthContext } from "../../context/AuthContext";
 
 const OwnerBooking = () => {
-    const [activeTab, setActiveTab] = useState("all");
+    const [availableTab, setAvailableTab] = useState("all");
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [showAcceptPopup, setShowAcceptPopup] = useState(false);
     const [showDeclinePopup, setShowDeclinePopup] = useState(false);
@@ -33,20 +34,20 @@ const OwnerBooking = () => {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeTab]);
+    }, [availableTab]);
 
     // Filter bookings by status
     const allList = useMemo(() => bookings, [bookings]);
     const pendingList = useMemo(() => bookings.filter(b => b.status === "pending"), [bookings]);
-    const activeList = useMemo(() => bookings.filter(b => b.status === "confirmed"), [bookings]);
+    const availableList = useMemo(() => bookings.filter(b => b.status === "confirmed"), [bookings]);
     const completedList = useMemo(() => bookings.filter(b => b.status === "completed"), [bookings]);
     const canceledList = useMemo(() => bookings.filter(b => b.status === "canceled"), [bookings]);
 
     const getCurrentList = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "all": return allList;
             case "pending": return pendingList;
-            case "active": return activeList;
+            case "available": return availableList;
             case "completed": return completedList;
             case "canceled": return canceledList;
             default: return allList;
@@ -70,7 +71,7 @@ const OwnerBooking = () => {
     const tabs = [
         { id: "all", label: "All Bookings", count: allList.length },
         { id: "pending", label: "Pending Requests", count: pendingList.length },
-        { id: "active", label: "Active Bookings", count: activeList.length },
+        { id: "available", label: "Available Bookings", count: availableList.length },
         { id: "completed", label: "Completed Bookings", count: completedList.length },
         { id: "canceled", label: "Canceled Bookings", count: canceledList.length }
     ];
@@ -89,9 +90,9 @@ const OwnerBooking = () => {
             trendIcon: "trending_up"
         },
         {
-            label: "Active Bookings",
+            label: "Available Bookings",
             icon: "assignment_turned_in",
-            value: activeList.length,
+            value: availableList.length,
             subtext: "Currently ongoing",
             subtextColor: "text-green-600",
             trendIcon: "trending_flat"
@@ -178,10 +179,10 @@ const OwnerBooking = () => {
     };
 
     const getItemName = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "all": return "bookings";
             case "pending": return "pending bookings";
-            case "active": return "active bookings";
+            case "available": return "available bookings";
             case "completed": return "completed bookings";
             case "canceled": return "canceled bookings";
             default: return "bookings";
@@ -189,7 +190,7 @@ const OwnerBooking = () => {
     };
 
     if (loading && bookings.length === 0) {
-        // return <LoadingSpinner />;
+        return <LoadingSpinner />;
     }
 
     return (
@@ -255,13 +256,13 @@ const OwnerBooking = () => {
             <StatsCards stats={stats} />
 
             {/* Tabs */}
-            <BookingTabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+            <BookingTabs tabs={tabs} availableTab={availableTab} onTabChange={setAvailableTab} />
 
             {/* Tab Content */}
             <BookingTable
                 length={currentList.length}
                 bookings={paginatedList}
-                activeTab={activeTab}
+                availableTab={availableTab}
                 onView={handleViewDetails}
                 onAccept={handleAccept}
                 onDecline={handleDecline}

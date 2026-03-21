@@ -23,7 +23,6 @@ const BookingCard = ({ currentUser, accommodation, averageRating, tempBooking, s
         if (tempBooking?.end_date) setEndDate(new Date(tempBooking.end_date));
     }, [tempBooking]);
 
-    // Convert selected month to the first day of month in UTC
     const getFirstDayUTC = (date) => {
         if (!date) return null;
         return new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1, 0, 0, 0));
@@ -47,7 +46,7 @@ const BookingCard = ({ currentUser, accommodation, averageRating, tempBooking, s
         if (!startDate || !endDate) return;
 
         const payload = {
-            user_id: currentUser._id, // add from auth context
+            user_id: currentUser._id,
             booking_type: "accommodation",
             resource_id: accommodation._id,
             owner_id: accommodation.owner?._id,
@@ -65,7 +64,7 @@ const BookingCard = ({ currentUser, accommodation, averageRating, tempBooking, s
         }
     };
 
-   return (
+    return (
         <div className="lg:col-span-1">
             <div className="sticky top-28 bg-white border border-slate-200 rounded-xl shadow-sm p-6">
 
@@ -133,9 +132,14 @@ const BookingCard = ({ currentUser, accommodation, averageRating, tempBooking, s
                 <PrimaryButton
                     disabled={!startDate || !endDate}
                     onClick={() => {
+                        if (!currentUser) {
+                            navigateTo("/login");
+                            return;
+                        }
                         handleBooking();
                         handleGoToAbout();
-                    }} className="w-full py-3.5 text-lg mb-4"
+                    }}
+                    className="w-full py-3.5 text-lg mb-4"
                 >
                     Request Booking
                 </PrimaryButton>

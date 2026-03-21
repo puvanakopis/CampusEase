@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ShareSheet from "../../../components/common/ShareSheet";
 
-const HeaderInfo = ({ title, location, walkDistance, rating, reviewsCount, isSaved, onSaveToggle }) => {
+const HeaderInfo = ({ currentUser, title, location, walkDistance, rating, reviewsCount, isSaved, onSaveToggle }) => {
     const [showShareSheet, setShowShareSheet] = useState(false);
     const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
@@ -40,16 +40,18 @@ const HeaderInfo = ({ title, location, walkDistance, rating, reviewsCount, isSav
                     </button>
 
                     {/* Save/Unsave Button */}
-                    <button
-                        onClick={onSaveToggle}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors text-sm font-medium ${isSaved ? "text-rose-500" : "text-gray-700"
-                            }`}
-                    >
-                        <span className={`material-symbols-outlined text-lg fill-current ${isSaved ? "text-rose-500" : "text-gray-700"}`}>
-                            favorite
-                        </span>
-                        <span className="hidden sm:inline">{isSaved ? "Saved" : "Save"}</span>
-                    </button>
+                    {currentUser && (
+                        <button
+                            onClick={onSaveToggle}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors text-sm font-medium ${isSaved ? "text-rose-500" : "text-gray-700"
+                                }`}
+                        >
+                            <span className={`material-symbols-outlined text-lg fill-current ${isSaved ? "text-rose-500" : "text-gray-700"}`}>
+                                favorite
+                            </span>
+                            <span className="hidden sm:inline">{isSaved ? "Saved" : "Save"}</span>
+                        </button>
+                    )}
                 </div>
             </div>
 

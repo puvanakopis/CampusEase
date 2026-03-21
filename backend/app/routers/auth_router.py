@@ -1,9 +1,6 @@
-from fastapi import APIRouter, Body, Depends , File, Form, UploadFile
+from fastapi import APIRouter, Body, Depends, File, Form, UploadFile
 from typing import Optional
-from app.services.auth_service import (
-    request_signup_otp, verify_signup_otp, login_user,
-    request_password_reset, reset_password , update_current_user, update_password
-)
+from app.services.auth_service import request_signup_otp, verify_signup_otp, login_user, request_password_reset, reset_password, update_current_user, update_password
 from app.middlewares.auth_middleware import get_current_user
 
 
@@ -69,7 +66,7 @@ async def update_profile_endpoint(
     id_number: Optional[str] = Form(None),
     photo: Optional[UploadFile] = File(None),
     id_photo: Optional[UploadFile] = File(None),
-
+    status: Optional[str] = Form(None), 
     current_user=Depends(get_current_user)
 ):
     update_data = {
@@ -79,6 +76,7 @@ async def update_profile_endpoint(
         "description": description,
         "phone": phone,
         "id_number": id_number,
+        "status": status  
     }
 
     return await update_current_user(

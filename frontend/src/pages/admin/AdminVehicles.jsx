@@ -7,6 +7,7 @@ import VehicleRequestsTable from "../../containers/admin/vehicles/VehicleRequest
 import ViewVehiclePopup from "../../containers/admin/vehicles/ViewVehiclePopup";
 import VehicleStatusChangePopup from "../../containers/admin/vehicles/VehicleStatusChangePopup";
 import VehicleRejectPopup from "../../containers/admin/vehicles/VehicleRejectPopup";
+import LoadingSpinner from "../../components/common/Loading";
 import Pagination from "../../components/common/Pagination";
 import { ADMIN_ITEMS_PER_PAGE } from "../../constants/pagination";
 import { VehicleContext } from "../../context/VehicleContext";
@@ -20,7 +21,7 @@ const AdminVehicles = () => {
         loading: vehicleLoading
     } = useContext(VehicleContext);
 
-    const [activeTab, setActiveTab] = useState("all");
+    const [availableTab, setAvailableTab] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
 
     const [showViewPopup, setShowViewPopup] = useState(false);
@@ -36,7 +37,7 @@ const AdminVehicles = () => {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeTab]);
+    }, [availableTab]);
 
     // ------------------- FILTERS -------------------
     const allVehicles = vehicles;
@@ -61,9 +62,9 @@ const AdminVehicles = () => {
         (v) => v.status === "pending"
     );
 
-    // Get current list based on active tab
+    // Get current list based on available tab
     const getCurrentList = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "available": return availableVehicles;
             case "booked": return bookedVehicles;
             case "unavailable": return unavailableVehicles;
@@ -87,9 +88,9 @@ const AdminVehicles = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Get item name for pagination based on active tab
+    // Get item name for pagination based on available tab
     const getItemName = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "available": return "available vehicles";
             case "booked": return "booked vehicles";
             case "unavailable": return "unavailable vehicles";
@@ -118,7 +119,7 @@ const AdminVehicles = () => {
         },
         {
             id: "unavailable",
-            label: "Unavailable",
+            label: "unavailable",
             count: unavailableVehicles.length,
         },
         {
@@ -247,18 +248,9 @@ const AdminVehicles = () => {
         }
     };
 
-    if (vehicleLoading && vehicles.length === 0) {
+    if (vehicleLoading) {
         return (
-            <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto space-y-8">
-                <div className="flex justify-center items-center h-64">
-                    <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                        <p className="mt-4 text-slate-600">
-                            Loading vehicles...
-                        </p>
-                    </div>
-                </div>
-            </main>
+            <LoadingSpinner />
         );
     }
 
@@ -309,12 +301,12 @@ const AdminVehicles = () => {
 
             <Tabs
                 tabs={tabs}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
+                availableTab={availableTab}
+                onTabChange={setAvailableTab}
             />
 
             {/* All Vehicles Tab */}
-            {activeTab === "all" && (
+            {availableTab === "all" && (
                 <>
                     <VehicleTable
                         length={vehicles.length}
@@ -338,7 +330,7 @@ const AdminVehicles = () => {
             )}
 
             {/* Available Vehicles Tab */}
-            {activeTab === "available" && (
+            {availableTab === "available" && (
                 <>
                     <VehicleTable
                         length={availableVehicles.length}
@@ -362,7 +354,7 @@ const AdminVehicles = () => {
             )}
 
             {/* Booked Vehicles Tab */}
-            {activeTab === "booked" && (
+            {availableTab === "booked" && (
                 <>
                     <VehicleTable
                         length={bookedVehicles.length}
@@ -385,12 +377,12 @@ const AdminVehicles = () => {
                 </>
             )}
 
-            {/* Unavailable Vehicles Tab */}
-            {activeTab === "unavailable" && (
+            {/* unavailable Vehicles Tab */}
+            {availableTab === "unavailable" && (
                 <>
                     <VehicleTable
                         length={unavailableVehicles.length}
-                        title="Unavailable Vehicles"
+                        title="unavailable Vehicles"
                         vehicles={paginatedList}
                         onView={handleViewVehicle}
                         onToggleStatus={handleToggleVehicleStatus}
@@ -410,7 +402,7 @@ const AdminVehicles = () => {
             )}
 
             {/* Rejected Vehicles Tab */}
-            {activeTab === "rejected" && (
+            {availableTab === "rejected" && (
                 <>
                     <VehicleTable
                         length={rejectedVehicles.length}
@@ -434,7 +426,7 @@ const AdminVehicles = () => {
             )}
 
             {/* Vehicle Requests Tab */}
-            {activeTab === "requests" && (
+            {availableTab === "requests" && (
                 <>
                     <VehicleRequestsTable
                         length={requestVehicles.length}

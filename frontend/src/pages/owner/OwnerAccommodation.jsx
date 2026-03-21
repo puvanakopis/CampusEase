@@ -23,12 +23,11 @@ const OwnerAccommodation = () => {
         createAccommodation,
         updateAccommodation,
         deleteAccommodation,
-        fetchMyAccommodations
     } = useContext(AccommodationContext);
 
     const { currentUser } = useContext(AuthContext);
 
-    const [activeTab, setActiveTab] = useState("all");
+    const [availableTab, setAvailableTab] = useState("all");
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showViewPopup, setShowViewPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
@@ -38,13 +37,10 @@ const OwnerAccommodation = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
 
-    useEffect(() => {
-        fetchMyAccommodations();
-    }, []);
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeTab]);
+    }, [availableTab]);
 
     const getStatus = (accommodation) =>
         accommodation?.status?.toLowerCase() || "";
@@ -77,9 +73,9 @@ const OwnerAccommodation = () => {
         [ownerAccommodations]
     );
 
-    // Get current list based on active tab
+    // Get current list based on available tab
     const getCurrentList = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "pending": return pendingList;
             case "rejected": return rejectedList;
             case "available": return availableList;
@@ -109,7 +105,7 @@ const OwnerAccommodation = () => {
         { id: "available", label: "Available", count: availableList.length },
         { id: "pending", label: "Pending", count: pendingList.length },
         { id: "booked", label: "Booked", count: bookedList.length },
-        { id: "unavailable", label: "Unavailable", count: unavailableList.length },
+        { id: "unavailable", label: "unavailable", count: unavailableList.length },
         { id: "rejected", label: "Rejected", count: rejectedList.length },
     ];
 
@@ -228,9 +224,9 @@ const OwnerAccommodation = () => {
         }
     };
 
-    // Get item name for pagination based on active tab
+    // Get item name for pagination based on available tab
     const getItemName = () => {
-        switch (activeTab) {
+        switch (availableTab) {
             case "pending": return "pending accommodations";
             case "rejected": return "rejected accommodations";
             case "available": return "available accommodations";
@@ -240,7 +236,7 @@ const OwnerAccommodation = () => {
         }
     };
 
-    if (accoLoading && ownerAccommodations.length === 0) {
+    if (accoLoading) {
         return <LoadingSpinner />;
     }
 
@@ -266,7 +262,7 @@ const OwnerAccommodation = () => {
                         setShowViewPopup(false);
                         setShowEditPopup(true);
                     }}
-                    activeTab={activeTab}
+                    availableTab={availableTab}
                 />
             )}
 
@@ -279,7 +275,7 @@ const OwnerAccommodation = () => {
                         setResubmitMode(false);
                     }}
                     onSave={handleEditAccommodation}
-                    activeTab={activeTab}
+                    availableTab={availableTab}
                     resubmitMode={resubmitMode}
                 />
             )}
@@ -307,11 +303,11 @@ const OwnerAccommodation = () => {
             <StatsCards stats={stats} />
 
             {/* Tabs */}
-            <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+            <Tabs tabs={tabs} availableTab={availableTab} onTabChange={setAvailableTab} />
 
             {/* Tab Content */}
 
-            {activeTab === "all" && (
+            {availableTab === "all" && (
                 <>
                     <AccommodationTable
                         length={allList.length}
@@ -337,7 +333,7 @@ const OwnerAccommodation = () => {
                 </>
             )}
 
-            {activeTab === "available" && (
+            {availableTab === "available" && (
                 <>
                     <AccommodationTable
                         length={availableList.length}
@@ -363,7 +359,7 @@ const OwnerAccommodation = () => {
                 </>
             )}
 
-            {activeTab === "pending" && (
+            {availableTab === "pending" && (
                 <>
                     <PendingAccommodationTable
                         length={pendingList.length}
@@ -385,7 +381,7 @@ const OwnerAccommodation = () => {
                 </>
             )}
 
-            {activeTab === "booked" && (
+            {availableTab === "booked" && (
                 <>
                     <AccommodationTable
                         length={bookedList.length}
@@ -411,12 +407,12 @@ const OwnerAccommodation = () => {
                 </>
             )}
 
-            {activeTab === "unavailable" && (
+            {availableTab === "unavailable" && (
                 <>
                     <AccommodationTable
                         length={unavailableList.length}
                         accommodations={paginatedList}
-                        heading="Unavailable Accommodations"
+                        heading="unavailable Accommodations"
                         onView={handleViewAccommodation}
                         onEdit={handleEditClick}
                         onDelete={handleDeleteClick}
@@ -437,7 +433,7 @@ const OwnerAccommodation = () => {
                 </>
             )}
 
-            {activeTab === "rejected" && (
+            {availableTab === "rejected" && (
                 <>
                     <RejectedAccommodationTable
                         length={rejectedList.length}

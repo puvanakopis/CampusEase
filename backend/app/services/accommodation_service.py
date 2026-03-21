@@ -2,16 +2,10 @@ from datetime import datetime
 from typing import List, Optional
 from fastapi import UploadFile, HTTPException
 from app.db.mongodb import accommodations_collection, owners_collection, users_collection
+from app.schemas.accommodation_schema import AccommodationCreateRequest, AccommodationUpdateRequest, AccommodationResponse, OwnerResponse, AccommodationReview
+from app.schemas.user_schema import UserResponse
 from app.utils.file_utils import save_file
 from app.services.counter_service import get_next_sequence
-from app.schemas.accommodation_schema import (
-    AccommodationCreateRequest,
-    AccommodationUpdateRequest,
-    AccommodationResponse,
-    OwnerResponse,
-    AccommodationReview,
-    UserResponse
-)
 from app.ai.chroma_service import add_accommodation_vector, update_accommodation_vector, delete_accommodation_vector
 
 
@@ -37,8 +31,9 @@ async def get_user_by_id(user_id: str) -> Optional[UserResponse]:
 async def create_accommodation(accom_request: AccommodationCreateRequest, files: Optional[List[UploadFile]] = None) -> dict:
     new_id = await get_next_sequence("accommodation")
     accom_data = accom_request.dict(exclude={"images"})
-    accom_data["gender"] = accom_data.get("gender").value if accom_data.get("gender") else None    
-    
+    accom_data["gender"] = accom_data.get(
+        "gender").value if accom_data.get("gender") else None
+
     accom_data.update({
         "_id": new_id,
         "status": accom_data.get("status", "pending"),
@@ -57,7 +52,8 @@ async def create_accommodation(accom_request: AccommodationCreateRequest, files:
 
     result = await accommodations_collection.insert_one(accom_data)
     if not result.acknowledged:
-        raise HTTPException(status_code=500, detail="Failed to create accommodation")
+        raise HTTPException(
+            status_code=500, detail="Failed to create accommodation")
 
     await add_accommodation_vector(accom_data)
 
@@ -81,12 +77,17 @@ async def get_accommodation_by_id(accom_id: str) -> dict:
     for rev in doc.get("reviews", []):
         user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
         user_obj = await get_user_by_id(user_id)
-        reviews.append(AccommodationReview(user=user_obj, **rev))
+        if user_obj:
+            user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+        else:
+            user_data = None
+        reviews.append(AccommodationReview(user=user_data, **rev))
 
     doc_copy = doc.copy()
     doc_copy.pop("reviews", None)
 
-    accom_obj = AccommodationResponse(**doc_copy, owner=owner_data, reviews=reviews)
+    accom_obj = AccommodationResponse(
+        **doc_copy, owner=owner_data, reviews=reviews)
     return {
         "success": True,
         "status_code": 200,
@@ -105,12 +106,17 @@ async def get_all_accommodations() -> dict:
         for rev in doc.get("reviews", []):
             user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
             user_obj = await get_user_by_id(user_id)
-            reviews.append(AccommodationReview(user=user_obj, **rev))
+            if user_obj:
+                user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+            else:
+                user_data = None
+            reviews.append(AccommodationReview(user=user_data, **rev))
 
         doc_copy = doc.copy()
         doc_copy.pop("reviews", None)
 
-        accom_obj = AccommodationResponse(**doc_copy, owner=owner_data, reviews=reviews)
+        accom_obj = AccommodationResponse(
+            **doc_copy, owner=owner_data, reviews=reviews)
         accom_list.append(accom_obj.dict(by_alias=True))
 
     return {
@@ -133,7 +139,11 @@ async def get_accommodations_by_owner(owner_id: str) -> dict:
         for rev in doc.get("reviews", []):
             user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
             user_obj = await get_user_by_id(user_id)
-            reviews.append(AccommodationReview(user=user_obj, **rev))
+            if user_obj:
+                user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+            else:
+                user_data = None
+            reviews.append(AccommodationReview(user=user_data, **rev))
 
         doc_copy = doc.copy()
         doc_copy.pop("reviews", None)
@@ -178,8 +188,13 @@ async def add_accommodation_review(
 
     user_obj = await get_user_by_id(current_user.id)
 
+    if user_obj:
+        user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+    else:
+        user_data = None
+
     review_obj = AccommodationReview(
-        user=user_obj,
+        user=user_data,
         message=review_request.message,
         rating=review_request.rating,
         created_at=review_data["created_at"]
@@ -229,12 +244,17 @@ async def update_accommodation(accom_id: str, update_request: AccommodationUpdat
     for rev in updated_doc.get("reviews", []):
         user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
         user_obj = await get_user_by_id(user_id)
-        reviews.append(AccommodationReview(user=user_obj, **rev))
+        if user_obj:
+            user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+        else:
+            user_data = None
+        reviews.append(AccommodationReview(user=user_data, **rev))
 
     updated_doc_copy = updated_doc.copy()
     updated_doc_copy.pop("reviews", None)
 
-    accom_obj = AccommodationResponse(**updated_doc_copy, owner=owner_data, reviews=reviews)
+    accom_obj = AccommodationResponse(
+        **updated_doc_copy, owner=owner_data, reviews=reviews)
     return {
         "success": True,
         "status_code": 200,
