@@ -21,9 +21,9 @@ async def get_user_by_id(user_id: str):
         return None
 
     return UserResponse(
-        id=user_doc["_id"],
-        first_name=user_doc.get("first_name"),
-        role=user_doc.get("role"),
+        _id=user_doc["_id"],  # Changed from id to _id
+        first_name=user_doc.get("first_name", ""),  # Added default empty string
+        role=user_doc.get("role", ""),  # Added default empty string
         photo=user_doc.get("photo")
     )
 
@@ -81,8 +81,13 @@ async def get_all_vehicles():
 
         reviews = []
         for rev in doc.get("reviews", []):
-            user = await get_user_by_id(rev.get("user_id"))
-            reviews.append(VehicleReview(user=user, **rev))
+            user_obj = await get_user_by_id(rev.get("user_id"))
+            # Convert user_obj to dict if it exists
+            if user_obj:
+                user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+            else:
+                user_data = None
+            reviews.append(VehicleReview(user=user_data, **rev))
 
         doc_copy = doc.copy()
         doc_copy.pop("reviews", None)
@@ -111,8 +116,13 @@ async def get_vehicle_by_owner(owner_id: str):
 
         reviews = []
         for rev in doc.get("reviews", []):
-            user = await get_user_by_id(rev.get("user_id"))
-            reviews.append(VehicleReview(user=user, **rev))
+            user_obj = await get_user_by_id(rev.get("user_id"))
+            # Convert user_obj to dict if it exists
+            if user_obj:
+                user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+            else:
+                user_data = None
+            reviews.append(VehicleReview(user=user_data, **rev))
 
         doc_copy = doc.copy()
         doc_copy.pop("reviews", None)
@@ -140,8 +150,13 @@ async def get_vehicle_by_id(vehicle_id: str):
 
     reviews = []
     for rev in doc.get("reviews", []):
-        user = await get_user_by_id(rev.get("user_id"))
-        reviews.append(VehicleReview(user=user, **rev))
+        user_obj = await get_user_by_id(rev.get("user_id"))
+        # Convert user_obj to dict if it exists
+        if user_obj:
+            user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+        else:
+            user_data = None
+        reviews.append(VehicleReview(user=user_data, **rev))
 
     doc_copy = doc.copy()
     doc_copy.pop("reviews", None)
@@ -177,8 +192,14 @@ async def add_vehicle_review(vehicle_id: str, review_request, current_user):
 
     user_obj = await get_user_by_id(current_user.id)
 
+    # Convert user_obj to dict if it exists
+    if user_obj:
+        user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+    else:
+        user_data = None
+
     review_obj = VehicleReview(
-        user=user_obj,
+        user=user_data,
         message=review_request.message,
         rating=review_request.rating,
         created_at=review_data["created_at"]

@@ -25,17 +25,15 @@ async def enrich_booking_response(booking_data: dict) -> BookingResponse:
     if booking_data["booking_type"] == "vehicle":
         doc = await vehicles_collection.find_one({"_id": booking_data["resource_id"]})
         if doc:
-            # Enrich reviews
             reviews = []
             for review in doc.get("reviews", []):
-                # or users_collection
-                user_doc = await owners_collection.find_one({"_id": review["user_id"]})
+                user_doc = await users_collection.find_one({"_id": review["user_id"]})
                 user_obj = None
                 if user_doc:
                     user_obj = {
-                        "id": user_doc["_id"],
-                        "first_name": user_doc["first_name"],
-                        "role": user_doc["role"],
+                        "_id": user_doc["_id"],  
+                        "first_name": user_doc.get("first_name", ""),
+                        "role": user_doc.get("role", ""),
                         "photo": user_doc.get("photo")
                     }
                 reviews.append({
@@ -51,7 +49,6 @@ async def enrich_booking_response(booking_data: dict) -> BookingResponse:
     elif booking_data["booking_type"] == "accommodation":
         doc = await accommodations_collection.find_one({"_id": booking_data["resource_id"]})
         if doc:
-            # Enrich reviews for accommodations
             reviews = []
             for rev in doc.get("reviews", []):
                 user_id = rev.get("user_id") or (
@@ -60,7 +57,7 @@ async def enrich_booking_response(booking_data: dict) -> BookingResponse:
                 user_obj = None
                 if user_doc:
                     user_obj = {
-                        "id": user_doc["_id"],
+                        "_id": user_doc["_id"], 
                         "first_name": user_doc.get("first_name", ""),
                         "role": user_doc.get("role", ""),
                         "photo": user_doc.get("photo")

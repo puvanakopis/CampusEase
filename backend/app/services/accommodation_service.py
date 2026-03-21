@@ -77,7 +77,11 @@ async def get_accommodation_by_id(accom_id: str) -> dict:
     for rev in doc.get("reviews", []):
         user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
         user_obj = await get_user_by_id(user_id)
-        reviews.append(AccommodationReview(user=user_obj, **rev))
+        if user_obj:
+            user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+        else:
+            user_data = None
+        reviews.append(AccommodationReview(user=user_data, **rev))
 
     doc_copy = doc.copy()
     doc_copy.pop("reviews", None)
@@ -102,7 +106,11 @@ async def get_all_accommodations() -> dict:
         for rev in doc.get("reviews", []):
             user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
             user_obj = await get_user_by_id(user_id)
-            reviews.append(AccommodationReview(user=user_obj, **rev))
+            if user_obj:
+                user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+            else:
+                user_data = None
+            reviews.append(AccommodationReview(user=user_data, **rev))
 
         doc_copy = doc.copy()
         doc_copy.pop("reviews", None)
@@ -131,7 +139,11 @@ async def get_accommodations_by_owner(owner_id: str) -> dict:
         for rev in doc.get("reviews", []):
             user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
             user_obj = await get_user_by_id(user_id)
-            reviews.append(AccommodationReview(user=user_obj, **rev))
+            if user_obj:
+                user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+            else:
+                user_data = None
+            reviews.append(AccommodationReview(user=user_data, **rev))
 
         doc_copy = doc.copy()
         doc_copy.pop("reviews", None)
@@ -176,8 +188,13 @@ async def add_accommodation_review(
 
     user_obj = await get_user_by_id(current_user.id)
 
+    if user_obj:
+        user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+    else:
+        user_data = None
+
     review_obj = AccommodationReview(
-        user=user_obj,
+        user=user_data,
         message=review_request.message,
         rating=review_request.rating,
         created_at=review_data["created_at"]
@@ -227,7 +244,11 @@ async def update_accommodation(accom_id: str, update_request: AccommodationUpdat
     for rev in updated_doc.get("reviews", []):
         user_id = rev.get("user_id") or (rev.get("user") or {}).get("id")
         user_obj = await get_user_by_id(user_id)
-        reviews.append(AccommodationReview(user=user_obj, **rev))
+        if user_obj:
+            user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+        else:
+            user_data = None
+        reviews.append(AccommodationReview(user=user_data, **rev))
 
     updated_doc_copy = updated_doc.copy()
     updated_doc_copy.pop("reviews", None)

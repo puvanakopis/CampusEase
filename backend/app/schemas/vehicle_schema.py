@@ -8,14 +8,14 @@ from app.models.vehicle_model import VehicleStatus, VehicleType, FuelType, Trans
 
 
 class UserResponse(BaseModel):
-    id: str
+    id: str = Field(..., alias="_id")
     first_name: str
     role: str
     photo: Optional[Photo] = None
 
 
 class VehicleReview(BaseModel):
-    user: Optional[UserResponse]
+    user: Optional[UserResponse] = None
     message: str
     rating: float = Field(..., ge=0, le=5)
     created_at: datetime = Field(default_factory=datetime.utcnow)

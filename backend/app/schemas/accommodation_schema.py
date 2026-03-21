@@ -7,7 +7,7 @@ from app.models.user_model import Photo
 
 
 class UserResponse(BaseModel):
-    id: str
+    id: str = Field(..., alias="_id")
     first_name: str
     role: str
     photo: Optional[Photo] = None
