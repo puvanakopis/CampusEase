@@ -22,3 +22,16 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+@keyframes slideRight {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-right {
+  animation: slideRight 0.3s ease-out;
+}

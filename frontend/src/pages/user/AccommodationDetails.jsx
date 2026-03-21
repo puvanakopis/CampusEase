@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { AccommodationContext } from "../../context/AccommodationContext";
+import { SaveItemContext } from "../../context/SaveItemContext";
+import { TempBookingContext } from "../../context/TempBookingContext";
+import { AuthContext } from "../../context/AuthContext";
+
 import Breadcrumbs from "../../containers/user/accommodationDetails/Breadcrumbs";
 import HeaderInfo from "../../containers/user/accommodationDetails/HeaderInfo";
 import PhotoGrid from "../../containers/user/accommodationDetails/PhotoGrid";
@@ -15,21 +19,23 @@ import Loading from "../../components/user/Loading";
 const AccommodationDetails = () => {
     const { id } = useParams();
     const { getAccommodationById } = useContext(AccommodationContext);
+    const { savedAccommodations, saveAccommodation, unsaveAccommodation } = useContext(SaveItemContext);
+    const { tempBooking, saveTempBooking } = useContext(TempBookingContext);
+    const { currentUser } = useContext(AuthContext);
 
     const [accommodationData, setAccommodationData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
 
+    // Fetch accommodation details
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getAccommodationById(id);
-
                 if (!data) {
                     setNotFound(true);
                     return;
                 }
-
                 setAccommodationData(data);
             } catch (err) {
                 console.error(err);
@@ -38,86 +44,61 @@ const AccommodationDetails = () => {
                 setLoading(false);
             }
         };
-
         fetchData();
     }, [id, getAccommodationById]);
 
-
-    const generateBreadcrumbs = (data) => {
-        return [
-            {
-                label: "Home",
-                link: "/"
-            },
-            {
-                label: "Accommodations",
-                link: "/accommodations"
-            },
-            {
-                label: data?.name || "Details",
-                link: `/accommodations/${data?._id || data?.id}`
-            }
-        ];
-    };
-
+    // Breadcrumb generator
+    const generateBreadcrumbs = (data) => [
+        { label: "Home", link: "/" },
+        { label: "Accommodations", link: "/accommodations" },
+        { label: data?.name || "Details", link: `/accommodations/${data?._id || data?.id}` }
+    ];
     const breadcrumbs = generateBreadcrumbs(accommodationData);
 
-    // Loading State
-    if (loading) {
-        return (
-            <Loading
-                mainText="Loading accommodation details..."
-                subText="Please wait"
-            />
-        );
-    }
+    // Loading fallback
+    if (loading) return <Loading mainText="Loading accommodation details..." subText="Please wait" />;
 
     // Not found fallback
-    if (notFound || !accommodationData) {
+    if (notFound || !accommodationData)
         return (
             <div className="py-20 text-center">
-                <h2 className="text-3xl font-semibold text-gray-700">
-                    Accommodation Not Found
-                </h2>
-                <p className="text-gray-500 mt-2">
-                    The listing you are looking for does not exist.
-                </p>
+                <h2 className="text-3xl font-semibold text-gray-700">Accommodation Not Found</h2>
+                <p className="text-gray-500 mt-2">The listing you are looking for does not exist.</p>
             </div>
         );
-    }
 
     const averageRating =
         accommodationData.reviews?.length > 0
             ? (
-                accommodationData.reviews.reduce(
-                    (acc, r) => acc + Number(r.rating || 0),
-                    0
-                ) / accommodationData.reviews.length
+                accommodationData.reviews.reduce((acc, r) => acc + Number(r.rating || 0), 0) /
+                accommodationData.reviews.length
             ).toFixed(2)
             : 0;
+
+    const isSaved = savedAccommodations.some((item) => item._id === accommodationData._id);
 
     return (
         <div className="bg-background-light">
             <div className="px-4 py-10 md:px-24 max-w-8xl mx-auto">
-
-                {breadcrumbs && (
-                    <Breadcrumbs items={breadcrumbs} />
-                )}
+                {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
 
                 <HeaderInfo
+                    currentUser={currentUser}
                     name={accommodationData.name}
                     address={accommodationData.address}
                     time_from_uni={accommodationData.time_from_uni}
                     rating={averageRating}
                     reviews={accommodationData.reviews}
+                    isSaved={isSaved}
+                    onSaveToggle={() =>
+                        isSaved ? unsaveAccommodation(accommodationData._id) : saveAccommodation(accommodationData._id)
+                    }
                 />
 
                 <PhotoGrid images={accommodationData.images || []} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative">
-
                     <div className="lg:col-span-2 space-y-10">
-
                         <PropertyInfo
                             accommodation_type={accommodationData.accommodation_type}
                             no_of_rooms={accommodationData.no_of_rooms}
@@ -139,17 +120,17 @@ const AccommodationDetails = () => {
                         <ReviewsSection reviews={accommodationData.reviews || []} />
 
                         <HostInfo
+                            currentUser={currentUser}
                             owner={accommodationData.owner}
                         />
-
                     </div>
 
                     <BookingCard
-                        month_rent={accommodationData.month_rent}
-                        rating={averageRating}
-                        owner={accommodationData.owner}
-                        available_users={accommodationData.available_users}
-                        total_users={accommodationData.total_users}
+                        currentUser={currentUser}
+                        accommodation={accommodationData}
+                        averageRating={averageRating}
+                        tempBooking={tempBooking}
+                        saveTempBooking={saveTempBooking}
                     />
                 </div>
             </div>

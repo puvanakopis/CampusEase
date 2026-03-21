@@ -27,20 +27,19 @@ export const OwnerProvider = ({ children }) => {
             setLoading(false);
         }
     };
+    
 
     // ------------------ GET OWNER BY ID ------------------
     const getOwnerById = async (id) => {
-        const toastId = toast.loading("Loading owner...");
         try {
             const res = await ownerApi.getOwnerById(id);
             if (!res.success) {
-                toast.error(res.message, { id: toastId });
+                toast.error(res.message);
                 throw new Error(res.message);
             }
-            toast.success("Owner loaded", { id: toastId });
             return res.data;
         } catch (err) {
-            toast.error(err.message || "Failed to load owner", { id: toastId });
+            toast.error(err.message || "Failed to load owner");
             throw err;
         }
     };

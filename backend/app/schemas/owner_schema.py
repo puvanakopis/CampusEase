@@ -1,20 +1,9 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
-from enum import Enum
-
-
-class OwnerStatus(str, Enum):
-    pending = "Pending Approval"
-    active = "Active"
-    inactive = "Inactive"
-    declined = "Declined Approval"
-
-
-class OwnerPhoto(BaseModel):
-    filename: str
-    content_type: str
-    size: int
+from app.models.owner_model import OwnerStatus, OwnerPhoto
+from app.schemas.accommodation_schema import AccommodationResponse
+from app.schemas.vehicle_schema import VehicleResponse
 
 
 class OwnerResponse(BaseModel):
@@ -27,15 +16,20 @@ class OwnerResponse(BaseModel):
     role: str = "owner"
     photo: Optional[OwnerPhoto] = None
     status: Optional[str] = None
+    id_number: Optional[str] = None
+    id_photo: Optional[OwnerPhoto] = None
     verified: Optional[bool] = None
     decline_reason: Optional[str] = None
     description: Optional[str] = None
+    accommodations: Optional[List["AccommodationResponse"]] = []
+    vehicles: Optional[List["VehicleResponse"]] = []
     created_at: datetime
     last_updated: datetime
 
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+    model_config = {
+        "from_attributes": True,
+        "validate_by_name": True
+    }
 
 
 class OwnerUpdateRequest(BaseModel):
@@ -43,11 +37,12 @@ class OwnerUpdateRequest(BaseModel):
     last_name: Optional[str] = None
     email: Optional[EmailStr] = None
     address: Optional[str] = None
-    phone: Optional[str] = None
     photo: Optional[OwnerPhoto] = None
+    status: OwnerStatus = OwnerStatus.pending
+    id_number: Optional[str] = None
+    id_photo: Optional[OwnerPhoto] = None
     status: Optional[OwnerStatus] = None
     verified: Optional[bool] = None
     decline_reason: Optional[str] = None
     description: Optional[str] = None
     last_updated: datetime = Field(default_factory=datetime.utcnow)
-    

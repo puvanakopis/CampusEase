@@ -5,21 +5,23 @@ const ViewAccommodationPopup = ({ accommodation, onClose }) => {
     const getStatusDisplay = (status) => {
         const statusMap = {
             'pending': 'Pending',
+            'approved': 'Available',
             'Available': 'Available',
             'Rejected': 'Rejected',
             'booked': 'Booked',
-            'unavailable': 'Unavailable'
+            'unavailable': 'unavailable'
         };
         return statusMap[status] || status;
     };
 
     const getStatusColor = (status) => {
-        switch (status) {
-            case 'Available':
+        switch (status?.toLowerCase()) {
+            case 'available':
+            case 'approved':
                 return 'bg-green-100 text-green-800';
             case 'pending':
                 return 'bg-yellow-100 text-yellow-800';
-            case 'Rejected':
+            case 'rejected':
             case 'unavailable':
                 return 'bg-red-100 text-red-800';
             case 'booked':
@@ -33,7 +35,7 @@ const ViewAccommodationPopup = ({ accommodation, onClose }) => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl w-full max-w-2xl shadow-lg overflow-y-auto max-h-[90vh]">
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white z-10">
                     <div>
                         <h3 className="text-lg font-bold text-slate-900">{accommodation.name}</h3>
                         <p className="text-xs text-slate-500 mt-1">ID: {accommodation._id}</p>
@@ -46,8 +48,9 @@ const ViewAccommodationPopup = ({ accommodation, onClose }) => {
                     </button>
                 </div>
 
-                {/* Image & Status */}
+                {/* Content */}
                 <div className="px-6 py-4">
+                    {/* Image & Status */}
                     <div className="flex items-start gap-3 mb-4 p-3 bg-slate-50 rounded-lg">
                         <div className="w-24 h-24 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                             <img
@@ -72,25 +75,48 @@ const ViewAccommodationPopup = ({ accommodation, onClose }) => {
                     </div>
 
                     {/* Description */}
-                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
-                        <h4 className="font-bold text-slate-900 mb-2">Description</h4>
-                        <p className="text-sm text-slate-700 whitespace-pre-line">{accommodation.description}</p>
-                    </div>
+                    {accommodation.description && (
+                        <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                            <h4 className="font-bold text-slate-900 mb-2">Description</h4>
+                            <p className="text-sm text-slate-700 whitespace-pre-line">{accommodation.description}</p>
+                        </div>
+                    )}
 
                     {/* Accommodation Details */}
                     <div className="mb-4 p-3 bg-slate-50 rounded-lg">
                         <h4 className="font-bold text-slate-900 mb-2">Accommodation Details</h4>
-                        <div className="text-sm text-slate-600 space-y-1">
-                            <div className="flex justify-between"><span>Type:</span> <span className="font-medium">{accommodation.accommodation_type}</span></div>
-                            <div className="flex justify-between"><span>Monthly Price:</span> <span className="font-medium text-green-600">LKR {accommodation.month_rent.toLocaleString()}</span></div>
-                            <div className="flex justify-between"><span>Total Rooms:</span> <span className="font-medium">{accommodation.no_of_rooms}</span></div>
-                            <div className="flex justify-between"><span>Total Beds:</span> <span className="font-medium">{accommodation.no_of_beds}</span></div>
-                            <div className="flex justify-between"><span>Bathrooms:</span> <span className="font-medium">{accommodation.no_of_bathrooms}</span></div>
-                            <div className="flex justify-between"><span>Available Users:</span> <span className="font-medium">{accommodation.available_users}/{accommodation.total_users}</span></div>
-                            <div className="flex justify-between"><span>Verified:</span> <span className="font-medium">{accommodation.verified ? 'Yes' : 'No'}</span></div>
-                            <div className="flex justify-between"><span>Highly Rated:</span> <span className="font-medium">{accommodation.highly_rated ? 'Yes' : 'No'}</span></div>
+                        <div className="text-sm text-slate-600 space-y-2">
+                            <div className="grid grid-cols-2 gap-2">
+                                <div><span className="text-slate-500">Type:</span></div>
+                                <div className="font-medium">{accommodation.accommodation_type || 'N/A'}</div>
+
+                                <div><span className="text-slate-500">Monthly Price:</span></div>
+                                <div className="font-medium text-green-600">LKR {accommodation.month_rent?.toLocaleString() || 'N/A'}</div>
+
+                                <div><span className="text-slate-500">Total Rooms:</span></div>
+                                <div className="font-medium">{accommodation.no_of_rooms || 0}</div>
+
+                                <div><span className="text-slate-500">Total Beds:</span></div>
+                                <div className="font-medium">{accommodation.no_of_beds || 0}</div>
+
+                                <div><span className="text-slate-500">Bathrooms:</span></div>
+                                <div className="font-medium">{accommodation.no_of_bathrooms || 0}</div>
+
+                                <div><span className="text-slate-500">Available Users:</span></div>
+                                <div className="font-medium">{accommodation.available_users || 0}/{accommodation.total_users || 0}</div>
+
+                                <div><span className="text-slate-500">Verified:</span></div>
+                                <div className="font-medium">{accommodation.verified ? 'Yes' : 'No'}</div>
+
+                                <div><span className="text-slate-500">Highly Rated:</span></div>
+                                <div className="font-medium">{accommodation.highly_rated ? 'Yes' : 'No'}</div>
+                            </div>
+
                             {accommodation.reject_reason && (
-                                <div className="flex justify-between"><span>Reason:</span> <span className="font-medium text-red-600">{accommodation.reject_reason}</span></div>
+                                <div className="mt-2 pt-2 border-t border-slate-200">
+                                    <span className="text-slate-500">Rejection Reason:</span>
+                                    <div className="font-medium text-red-600 mt-1">{accommodation.reject_reason}</div>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -102,7 +128,7 @@ const ViewAccommodationPopup = ({ accommodation, onClose }) => {
                             <div className="flex flex-wrap gap-2">
                                 {accommodation.amenities.map((amenity, idx) => (
                                     <span key={idx} className="bg-white px-3 py-1.5 rounded-lg text-sm text-slate-700 border border-slate-200">
-                                        {amenity.name}
+                                        {amenity}
                                     </span>
                                 ))}
                             </div>
@@ -110,34 +136,36 @@ const ViewAccommodationPopup = ({ accommodation, onClose }) => {
                     )}
 
                     {/* Time from University */}
-                    {accommodation.time_from_uni && (
+                    {accommodation.time_from_uni && Object.keys(accommodation.time_from_uni).length > 0 && (
                         <div className="mb-4 p-3 bg-slate-50 rounded-lg">
                             <h4 className="font-bold text-slate-900 mb-2">Time from University</h4>
-                            <div className="text-sm text-slate-600 space-y-1">
+                            <div className="grid grid-cols-2 gap-2 text-sm">
                                 {Object.entries(accommodation.time_from_uni).map(([mode, time]) => (
-                                    <div key={mode} className="flex justify-between capitalize">
-                                        <span>{mode}:</span>
-                                        <span className="font-medium">{time}</span>
-                                    </div>
+                                    <React.Fragment key={mode}>
+                                        <div className="text-slate-500 capitalize">{mode}:</div>
+                                        <div className="font-medium">{time}</div>
+                                    </React.Fragment>
                                 ))}
                             </div>
                         </div>
                     )}
 
                     {/* Location Coordinates */}
-                    {accommodation.location && (
+                    {accommodation.location && (accommodation.location.latitude || accommodation.location.longitude) && (
                         <div className="mb-4 p-3 bg-slate-50 rounded-lg">
                             <h4 className="font-bold text-slate-900 mb-2">Location Coordinates</h4>
-                            <div className="text-sm text-slate-600 space-y-1">
-                                <div className="flex justify-between"><span>Latitude:</span> <span className="font-medium">{accommodation.location.latitude}</span></div>
-                                <div className="flex justify-between"><span>Longitude:</span> <span className="font-medium">{accommodation.location.longitude}</span></div>
+                            <div className="grid grid-cols-2 gap-2 text-sm">
+                                <div><span className="text-slate-500">Latitude:</span></div>
+                                <div className="font-medium">{accommodation.location.latitude || 'N/A'}</div>
+                                <div><span className="text-slate-500">Longitude:</span></div>
+                                <div className="font-medium">{accommodation.location.longitude || 'N/A'}</div>
                             </div>
                         </div>
                     )}
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-slate-200 flex justify-end">
+                <div className="px-6 py-4 border-t border-slate-200 flex justify-end sticky bottom-0 bg-white">
                     <button
                         onClick={onClose}
                         className="px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary hover:bg-primary/90 transition-colors"

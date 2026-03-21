@@ -5,32 +5,50 @@ import { AuthContext } from "../../context/AuthContext";
 function AdminProfile() {
     const { currentUser, updateCurrentUser, authLoading } = useContext(AuthContext);
 
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [roleDescription, setRoleDescription] = useState(
-        "Responsible for managing platform-wide settings, monitoring user activity, approving content, and ensuring smooth operation of the system."
-    );
+    const [formData, setFormData] = useState({
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        address: "",
+        role: "",
+        photo: null,
+    });
 
     useEffect(() => {
         if (currentUser) {
-            setFirstName(currentUser.first_name || "");
-            setLastName(currentUser.last_name || "");
-            setEmail(currentUser.email || "");
-            setPhone(currentUser.phone || "");
+            setFormData({
+                first_name: currentUser.first_name || "",
+                last_name: currentUser.last_name || "",
+                email: currentUser.email || "",
+                phone: currentUser.phone || "",
+                address: currentUser.address || "",
+                role: currentUser.role || "",
+                photo: null,
+            });
         }
     }, [currentUser]);
 
-    const handleSaveChanges = async () => {
-        const updateData = {
-            first_name: firstName,
-            last_name: lastName,
-            email,
-            phone,
-        };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleFileChange = (e) => {
+        const { name, files } = e.target;
+
+        if (files && files[0]) {
+            const file = files[0];
+            setFormData((prev) => ({
+                ...prev,
+                [name]: file,
+            }));
+        }
+    };
+
+    const handleSave = async () => {
         try {
-            await updateCurrentUser(updateData);
+            await updateCurrentUser(formData);
         } catch (err) {
             console.error("Failed to update profile:", err);
         }
@@ -39,20 +57,15 @@ function AdminProfile() {
     return (
         <div className="bg-[#f6f7f8]">
             <div className="px-4 py-10 md:px-24 max-w-8xl mx-auto gap-6 min-h-screen flex">
+                {/* <AdminSidebar /> */}
+
                 <AdminProfilePage
-                    firstName={firstName}
-                    lastName={lastName}
-                    email={email}
-                    phone={phone}
-                    roleDescription={roleDescription}
-                    setFirstName={setFirstName}
-                    setLastName={setLastName}
-                    setEmail={setEmail}
-                    setPhone={setPhone}
-                    setRoleDescription={setRoleDescription}
-                    handleSaveChanges={handleSaveChanges}
                     currentUser={currentUser}
                     authLoading={authLoading}
+                    formData={formData}
+                    handleChange={handleChange}
+                    handleFileChange={handleFileChange}
+                    handleSave={handleSave}
                 />
             </div>
         </div>

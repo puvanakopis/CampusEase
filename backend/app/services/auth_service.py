@@ -1,15 +1,14 @@
 from datetime import datetime
 from fastapi import HTTPException, UploadFile
 from app.db.mongodb import users_collection, admins_collection, owners_collection, otps_collection
+from app.models.user_model import User
+from app.models.owner_model import Owner
+from app.models.admin_model import Admin
 from app.utils.otp_utils import generate_otp, get_expiry
 from app.utils.email_utils import send_otp_email
 from app.utils.auth_utils import hash_password, verify_password, create_jwt_token
 from app.utils.file_utils import save_file
 from app.services.counter_service import get_next_sequence
-from app.models.user_model import User
-from app.models.owner_model import Owner
-from app.models.admin_model import Admin
-
 
 collections_map = {
     "admin": (admins_collection, Admin),
@@ -37,8 +36,6 @@ async def find_user_by_email(email: str):
     return None, None, None
 
 
-
-# -------------------- Signup OTP Request --------------------
 async def request_signup_otp(role: str, first_name: str, last_name: str, email: str, password: str):
 
     if role == "admin":
@@ -50,7 +47,6 @@ async def request_signup_otp(role: str, first_name: str, last_name: str, email: 
 
     email_lower = email.lower()
 
-    # Check if email already exists in ANY role
     for col, _ in collections_map.values():
         if await col.find_one({"email": email_lower}):
             return response(False, 409, "Email already in use")
@@ -78,8 +74,6 @@ async def request_signup_otp(role: str, first_name: str, last_name: str, email: 
 
     return response(True, 200, "Signup OTP sent", {"email": email_lower})
 
-
-# -------------------- Signup OTP Verify --------------------
 
 async def verify_signup_otp(role: str, email: str, otp: str):
 
@@ -115,17 +109,18 @@ async def verify_signup_otp(role: str, email: str, otp: str):
         "email": otp_record["email"],
         "password": otp_record["temp_password"],
         "role": role,
-        "status": "Pending Approval",
+        "status": "draft",
         "created_at": datetime.utcnow(),
         "last_updated": datetime.utcnow(),
     }
 
     await collection.insert_one(user_data)
     await otps_collection.delete_one({"email": email_lower, "type": "signup"})
-    
+
     user_obj = model_cls(**user_data)
-    token = create_jwt_token({"id": new_id, "email": email_lower, "role": role})
-    
+    token = create_jwt_token(
+        {"id": new_id, "email": email_lower, "role": role})
+
     return response(
         True,
         201,
@@ -133,8 +128,6 @@ async def verify_signup_otp(role: str, email: str, otp: str):
         {"token": token, "user": user_obj.dict(by_alias=True)}
     )
 
-
-# -------------------- Login --------------------
 
 async def login_user(email: str, password: str):
 
@@ -153,8 +146,6 @@ async def login_user(email: str, password: str):
         {"token": token, "user": user_obj.dict(by_alias=True)}
     )
 
-
-# -------------------- Password Reset Request --------------------
 
 async def request_password_reset(email: str):
 
@@ -182,8 +173,6 @@ async def request_password_reset(email: str):
     return response(True, 200, "Password reset OTP sent", {"email": email.lower()})
 
 
-# -------------------- Password Reset --------------------
-
 async def reset_password(email: str, otp: str, new_password: str):
 
     user, collection, _ = await find_user_by_email(email)
@@ -208,8 +197,6 @@ async def reset_password(email: str, otp: str, new_password: str):
     return response(True, 200, "Password reset successful")
 
 
-# -------------------- Update Current User --------------------
-
 async def update_current_user(current_user, update_data=None, photo: UploadFile = None, id_photo: UploadFile = None):
 
     role = current_user.role
@@ -226,14 +213,26 @@ async def update_current_user(current_user, update_data=None, photo: UploadFile 
             if val is not None:
                 update_payload[key] = val
 
+    if role in ["student", "staff"]:
+        photo_folder = "uploads/user_photo"
+        id_photo_folder = "uploads/user_id"
+    elif role == "owner":
+        photo_folder = "uploads/owner_photo"
+        id_photo_folder = "uploads/owner_id"
+    elif role == "admin":
+        photo_folder = "uploads/admin_photo"
+        id_photo_folder = "uploads/admin_id"
+    else:
+        raise HTTPException(400, "Role not supported for file upload")
+
     if photo:
         filename = f"{user_id}_photo"
-        photo_meta = await save_file(photo, filename, "uploads/user_photo")
+        photo_meta = await save_file(photo, filename, photo_folder)
         update_payload["photo"] = photo_meta
 
     if id_photo:
         filename = f"{user_id}_id_photo"
-        id_meta = await save_file(id_photo, filename, "uploads/user_id")
+        id_meta = await save_file(id_photo, filename, id_photo_folder)
         update_payload["id_photo"] = id_meta
 
     if not update_payload:
@@ -248,8 +247,6 @@ async def update_current_user(current_user, update_data=None, photo: UploadFile 
 
     return response(True, 200, "Profile updated successfully", user_obj.dict(by_alias=True))
 
-
-# -------------------- Update Password --------------------
 
 async def update_password(current_user, current_password: str, new_password: str):
 

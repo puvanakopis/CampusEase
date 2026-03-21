@@ -29,7 +29,6 @@ import AccommodationDetails from "./pages/user/AccommodationDetails";
 import Vehicle from "./pages/user/Vehicle";
 import VehicleDetails from "./pages/user/VehicleDetails";
 import Owner from "./pages/user/Owner";
-import Booking from "./pages/user/Booking";
 import Payment from "./pages/user/Payment";
 import Profile from "./pages/user/Profile";
 import MyBookings from "./pages/user/MyBookings";
@@ -61,7 +60,9 @@ import AdminProfile from "./pages/admin/AdminProfile";
 import AdminSupport from "./pages/admin/Support";
 import AdminNotFound from "./pages/admin/AdminNotFound";
 
+// Components
 import Loading from "./components/user/Loading";
+import ChatBot from "./components/user/ChatBot"; 
 
 function App() {
   const { currentUser, authLoading } = useContext(AuthContext);
@@ -105,6 +106,8 @@ function App() {
         return <Footer />;
     }
   };
+
+  const showChatBot = role === "student" || role === "staff";
 
   return (
     <>
@@ -153,7 +156,6 @@ function App() {
           <Route path="/vehicle" element={<Vehicle />} />
           <Route path="/vehicle/:id" element={<VehicleDetails />} />
           <Route path="/owner/:id" element={<Owner />} />
-          <Route path="/booking" element={<Booking />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/my-bookings" element={<MyBookings />} />
@@ -192,6 +194,13 @@ function App() {
           }
         />
       </Routes>
+
+      {/* ChatBot only for student and staff */}
+      {showChatBot && (
+        <div className="fixed bottom-5 right-5 z-50 w-[350px] md:w-[400px]">
+          <ChatBot />
+        </div>
+      )}
 
       {renderFooter()}
     </>

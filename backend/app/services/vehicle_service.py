@@ -1,19 +1,11 @@
 from datetime import datetime
 from typing import List, Optional
 from fastapi import UploadFile, HTTPException
-
 from app.db.mongodb import vehicles_collection, owners_collection, users_collection
+from app.schemas.vehicle_schema import VehicleCreateRequest, VehicleUpdateRequest, VehicleResponse, VehicleReview, OwnerResponse, UserResponse
 from app.utils.file_utils import save_file
 from app.services.counter_service import get_next_sequence
-
-from app.schemas.vehicle_schema import (
-    VehicleCreateRequest,
-    VehicleUpdateRequest,
-    VehicleResponse,
-    VehicleReview,
-    OwnerResponse,
-    UserResponse
-)
+from app.ai.chroma_service import add_vehicle_vector, update_vehicle_vector, delete_vehicle_vector
 
 
 async def get_owner_by_id(owner_id: str):
@@ -29,9 +21,9 @@ async def get_user_by_id(user_id: str):
         return None
 
     return UserResponse(
-        id=user_doc["_id"],
-        first_name=user_doc.get("first_name"),
-        role=user_doc.get("role"),
+        _id=user_doc["_id"],  # Changed from id to _id
+        first_name=user_doc.get("first_name", ""),  # Added default empty string
+        role=user_doc.get("role", ""),  # Added default empty string
         photo=user_doc.get("photo")
     )
 
@@ -65,6 +57,8 @@ async def create_vehicle(vehicle_request: VehicleCreateRequest, files: Optional[
     if not result.acknowledged:
         raise HTTPException(status_code=500, detail="Vehicle creation failed")
 
+    await add_vehicle_vector(vehicle_data)
+
     vehicle_obj = VehicleResponse(**vehicle_data, owner=None, reviews=[])
 
     return {
@@ -87,8 +81,13 @@ async def get_all_vehicles():
 
         reviews = []
         for rev in doc.get("reviews", []):
-            user = await get_user_by_id(rev.get("user_id"))
-            reviews.append(VehicleReview(user=user, **rev))
+            user_obj = await get_user_by_id(rev.get("user_id"))
+            # Convert user_obj to dict if it exists
+            if user_obj:
+                user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+            else:
+                user_data = None
+            reviews.append(VehicleReview(user=user_data, **rev))
 
         doc_copy = doc.copy()
         doc_copy.pop("reviews", None)
@@ -117,8 +116,13 @@ async def get_vehicle_by_owner(owner_id: str):
 
         reviews = []
         for rev in doc.get("reviews", []):
-            user = await get_user_by_id(rev.get("user_id"))
-            reviews.append(VehicleReview(user=user, **rev))
+            user_obj = await get_user_by_id(rev.get("user_id"))
+            # Convert user_obj to dict if it exists
+            if user_obj:
+                user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+            else:
+                user_data = None
+            reviews.append(VehicleReview(user=user_data, **rev))
 
         doc_copy = doc.copy()
         doc_copy.pop("reviews", None)
@@ -146,8 +150,13 @@ async def get_vehicle_by_id(vehicle_id: str):
 
     reviews = []
     for rev in doc.get("reviews", []):
-        user = await get_user_by_id(rev.get("user_id"))
-        reviews.append(VehicleReview(user=user, **rev))
+        user_obj = await get_user_by_id(rev.get("user_id"))
+        # Convert user_obj to dict if it exists
+        if user_obj:
+            user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+        else:
+            user_data = None
+        reviews.append(VehicleReview(user=user_data, **rev))
 
     doc_copy = doc.copy()
     doc_copy.pop("reviews", None)
@@ -159,6 +168,48 @@ async def get_vehicle_by_id(vehicle_id: str):
         "status_code": 200,
         "message": "Vehicle fetched successfully",
         "data": vehicle_obj.dict(by_alias=True)
+    }
+
+
+async def add_vehicle_review(vehicle_id: str, review_request, current_user):
+
+    vehicle = await vehicles_collection.find_one({"_id": vehicle_id})
+
+    if not vehicle:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+
+    review_data = {
+        "user_id": current_user.id,
+        "message": review_request.message,
+        "rating": review_request.rating,
+        "created_at": datetime.utcnow()
+    }
+
+    await vehicles_collection.update_one(
+        {"_id": vehicle_id},
+        {"$push": {"reviews": review_data}}
+    )
+
+    user_obj = await get_user_by_id(current_user.id)
+
+    # Convert user_obj to dict if it exists
+    if user_obj:
+        user_data = user_obj.dict(by_alias=True) if hasattr(user_obj, 'dict') else user_obj
+    else:
+        user_data = None
+
+    review_obj = VehicleReview(
+        user=user_data,
+        message=review_request.message,
+        rating=review_request.rating,
+        created_at=review_data["created_at"]
+    )
+
+    return {
+        "success": True,
+        "status_code": 201,
+        "message": "Vehicle review added successfully",
+        "data": review_obj.dict()
     }
 
 
@@ -174,7 +225,8 @@ async def update_vehicle(vehicle_id: str, update_request: VehicleUpdateRequest, 
     existing_images = doc.get("images", [])
 
     if update_request.remove_images:
-        existing_images = [img for img in existing_images if img["filename"] not in update_request.remove_images]
+        existing_images = [
+            img for img in existing_images if img["filename"] not in update_request.remove_images]
 
     if files:
         for idx, file in enumerate(files, start=1):
@@ -192,6 +244,9 @@ async def update_vehicle(vehicle_id: str, update_request: VehicleUpdateRequest, 
     if result.modified_count == 0 and not files and not update_request.remove_images:
         raise HTTPException(status_code=400, detail="No changes applied")
 
+    updated_doc = {**doc, **update_data}
+    await update_vehicle_vector(updated_doc)
+
     return await get_vehicle_by_id(vehicle_id)
 
 
@@ -201,6 +256,8 @@ async def delete_vehicle(vehicle_id: str):
 
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Vehicle not found")
+
+    await delete_vehicle_vector(vehicle_id)
 
     return {
         "success": True,

@@ -16,10 +16,11 @@ const Navbar = () => {
     const authPages = ["/login", "/register", "/forgot-password"];
     if (authPages.includes(location.pathname)) return null;
 
-    const isActive = (path) => location.pathname === path;
+    const isAvailable = (path) => location.pathname === path;
 
     const first_name = currentUser ? `${currentUser.first_name}`.trim() : "";
-    const avatar = buildPhotoUrl(currentUser?.photo.filename, "user_photo", first_name);
+    const avatar = buildPhotoUrl(currentUser?.photo?.filename, "user_photo", first_name);
+
     const email = currentUser?.email || "";
     const role = currentUser?.role || "Student";
 
@@ -34,7 +35,7 @@ const Navbar = () => {
     const profileMenuItems = [
         { name: "Profile", path: "/profile", icon: "person" },
         { name: "Saved Items", path: "/saved-items", icon: "favorite" },
-                { name: "My Bookings", path: "/my-bookings", icon: "bookmarks" },
+        { name: "My Bookings", path: "/my-bookings", icon: "bookmarks" },
         { name: "Logout", icon: "logout", isLogout: true },
     ];
 
@@ -81,7 +82,7 @@ const Navbar = () => {
                         <button
                             key={item.path}
                             onClick={() => navigateTo(item.path)}
-                            className={`text-sm font-medium transition-colors ${isActive(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
+                            className={`text-sm font-medium transition-colors ${isAvailable(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
                                 }`}
                         >
                             {item.name}
@@ -110,9 +111,9 @@ const Navbar = () => {
                                     />
                                 </button>
 
+                                {/* Profile Dropdown Animation */}
                                 {isProfileOpen && (
-                                    <div className="absolute right-0 mt-3 w-72 bg-white rounded-xl border border-slate-200 shadow-md overflow-hidden z-50">
-
+                                    <div className="absolute right-0 mt-3 w-72 bg-white rounded-xl border border-slate-200 shadow-md overflow-hidden z-50 transform opacity-0 scale-95 animate-slide-fade-in">
                                         {/* Profile Header */}
                                         <div className="p-4 border-b border-slate-200">
                                             <div className="flex items-center gap-3">
@@ -123,14 +124,9 @@ const Navbar = () => {
                                                         className="w-full h-full object-cover"
                                                     />
                                                 </div>
-
                                                 <div className="flex flex-col">
-                                                    <p className="text-sm font-bold text-slate-900">
-                                                        {first_name}
-                                                    </p>
-                                                    <p className="text-xs text-slate-500">
-                                                        {email}
-                                                    </p>
+                                                    <p className="text-sm font-bold text-slate-900">{first_name}</p>
+                                                    <p className="text-xs text-slate-500">{email}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -149,7 +145,6 @@ const Navbar = () => {
                                                     >
                                                         {item.icon}
                                                     </span>
-
                                                     <span className={item.isLogout ? "text-red-600" : ""}>
                                                         {item.name}
                                                     </span>
@@ -198,50 +193,45 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu Animation */}
             {isOpen && (
-                <div className="md:hidden bg-white border-t border-slate-200">
-                    <div className="flex flex-col items-center px-4 py-4 gap-4">
-                        {navItems.map((item) => (
-                            <button
-                                key={item.path}
-                                onClick={() => {
-                                    navigateTo(item.path);
-                                    setIsOpen(false);
-                                }}
-                                className={`w-full text-center text-sm font-medium transition-colors ${isActive(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
-                                    }`}
-                            >
-                                {item.name}
-                            </button>
-                        ))}
-
-                        {currentUser && (
-                            <div className="w-full border-t border-slate-200 pt-4">
-                                <div className="flex items-center gap-3 mb-4 px-4">
-                                    <img src={avatar} alt={first_name} className="w-12 h-12 rounded-full" />
-                                    <div>
-                                        <p className="font-semibold text-slate-900">{first_name} </p>
-                                        <p className="text-sm text-slate-500">{email}</p>
-                                    </div>
-                                </div>
-
-                                {profileMenuItems.map((item) => (
-                                    <button
-                                        key={item.name}
-                                        onClick={() => handleProfileAction(item)}
-                                        className={`flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors ${item.isLogout ? "text-red-600" : "text-slate-700"
-                                            }`}
-                                    >
-                                        <span className="material-symbols-outlined">{item.icon}</span>
-                                        <span className="text-sm font-medium">{item.name}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        )}
+                <div className="absolute right-0 w-full bg-white rounded-xl border border-slate-200 shadow-md overflow-hidden z-50 transform opacity-0 scale-95 animate-slide-fade-in">
+                    <div className="md:hidden bg-white border-t border-slate-200">
+                        <div className="flex flex-col items-center px-4 py-4 gap-4">
+                            {/* Combine nav items + profile items */}
+                            {[...navItems, ...(currentUser ? profileMenuItems : [])].map((item) => (
+                                <button
+                                    key={item.path || item.name}
+                                    onClick={() => {
+                                        if (item.isLogout) {
+                                            logout();
+                                        } else {
+                                            navigateTo(item.path);
+                                        }
+                                        setIsOpen(false);
+                                    }}
+                                    className={`w-full text-center text-sm font-medium transition-colors ${isAvailable(item.path) ? "text-primary" : "text-slate-600 hover:text-primary"
+                                        } ${item.isLogout ? "text-red-600" : ""}`}
+                                >
+                                    {item.name}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
             )}
+
+            <style>
+                {`
+                @keyframes slide-fade-in {
+                    0% { opacity: 0; transform: translateY(-10px) scale(0.95); }
+                    100% { opacity: 1; transform: translateY(0) scale(1); }
+                }
+                .animate-slide-fade-in {
+                    animation: slide-fade-in 0.2s ease-out forwards;
+                }
+                `}
+            </style>
         </header>
     );
 };

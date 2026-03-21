@@ -56,7 +56,8 @@ const ApplicationPopup = ({
                             onChange={handleInputChange}
                             placeholder="your.email@example.com"
                             required
-                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            readOnly
+                            className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-100 text-slate-500 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                         />
                     </div>
                     <div>
@@ -114,7 +115,7 @@ const ApplicationPopup = ({
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    placeholder="Tell us about yourself and your business. Include details about your experience, types of vehicles/properties you plan to list, and why you want to become an owner on our platform."
+                    placeholder="Tell us about yourself and your business. Include details about your experience, types of vehicles/Accommodations you plan to list, and why you want to become an owner on our platform."
                     required
                     rows="4"
                     className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out resize-y"
@@ -193,8 +194,8 @@ const ApplicationPopup = ({
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
                     <div>
-                        <h3 className="text-lg font-bold text-slate-900">Vehicle Owner Application</h3>
-                        <p className="text-xs text-slate-500 mt-1">Register as a vehicle owner to rent your vehicles</p>
+                        <h3 className="text-lg font-bold text-slate-900">Owner Application</h3>
+                        <p className="text-xs text-slate-500 mt-1">Register as a owner to rent your vehicles and accommodations</p>
                     </div>
                     <button
                         onClick={() => setShowApplicationPopup(false)}

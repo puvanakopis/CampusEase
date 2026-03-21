@@ -10,7 +10,7 @@ const OwnerProfilePage = ({
     handleSave,
 }) => {
     const [photoPreview, setPhotoPreview] = useState(
-        buildPhotoUrl(currentUser?.photo?.filename, "user_photo", currentUser?.first_name)
+        buildPhotoUrl(currentUser?.photo?.filename, "owner_photo", currentUser?.first_name)
     );
 
     const handleFileInputChange = (e) => {
@@ -31,6 +31,8 @@ const OwnerProfilePage = ({
             </div>
         );
     }
+
+    console.log("Current User Data:", formData);
 
     return (
         <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10">
@@ -78,8 +80,8 @@ const OwnerProfilePage = ({
                                     {currentUser?.first_name} {currentUser?.last_name}
                                 </h2>
                                 <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium ${currentUser?.verified
-                                        ? "bg-green-100 text-green-700"
-                                        : "bg-red-100 text-red-700"
+                                    ? "bg-green-100 text-green-700"
+                                    : "bg-red-100 text-red-700"
                                     }`}>
                                     <span className="material-symbols-outlined text-sm">
                                         {currentUser?.verified ? "verified" : "error"}
@@ -95,7 +97,7 @@ const OwnerProfilePage = ({
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     {/* Total Properties */}
                     <div className="bg-white rounded-xl border border-slate-200 p-5">
                         <div className="flex flex-col gap-1">
@@ -103,7 +105,19 @@ const OwnerProfilePage = ({
                                 Total Properties
                             </span>
                             <span className="text-2xl font-bold text-slate-900">
-                                {currentUser?.totalProperties || 0}
+                                {currentUser?.accommodations?.length || 0}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Total Vehicles */}
+                    <div className="bg-white rounded-xl border border-slate-200 p-5">
+                        <div className="flex flex-col gap-1">
+                            <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                Total Vehicles
+                            </span>
+                            <span className="text-2xl font-bold text-slate-900">
+                                {currentUser?.vehicles?.length || 0}
                             </span>
                         </div>
                     </div>
@@ -188,8 +202,8 @@ const OwnerProfilePage = ({
                                     type="text"
                                     name="id_number"
                                     value={formData.id_number}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                                    readOnly
+                                    className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-sm cursor-not-allowed focus:outline-none"
                                 />
                             </div>
                         </div>
@@ -232,6 +246,20 @@ const OwnerProfilePage = ({
                                 value={formData.address}
                                 onChange={handleChange}
                                 rows="3"
+                                className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
+                            />
+                        </div>
+
+                        {/* - Full Width */}
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                                Description
+                            </label>
+                            <textarea
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                rows="6"
                                 className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-white text-slate-900 text-sm focus:ring-primary focus:border-primary focus:outline-none transition duration-200 ease-in-out"
                             />
                         </div>

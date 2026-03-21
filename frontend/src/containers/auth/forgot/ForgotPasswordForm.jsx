@@ -50,7 +50,7 @@ const ForgotPasswordForm = ({
 
                         <button
                             type="submit"
-                            className="w-full flex items-center justify-center rounded-xl h-12 bg-primary text-white text-base font-bold transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98] mt-4"
+                            className="w-full flex items-center justify-center rounded-xl h-12 bg-primary text-white text-base font-bold transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 available:scale-[0.98] mt-4"
                         >
                             Send Reset Link
                         </button>
@@ -74,7 +74,7 @@ const ForgotPasswordForm = ({
 
                         <button
                             type="submit"
-                            className="w-full flex items-center justify-center rounded-xl h-12 bg-primary text-white text-base font-bold transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98] mt-4"
+                            className="w-full flex items-center justify-center rounded-xl h-12 bg-primary text-white text-base font-bold transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 available:scale-[0.98] mt-4"
                         >
                             Next
                         </button>
@@ -88,7 +88,7 @@ const ForgotPasswordForm = ({
                             <label className="text-slate-700 text-sm font-semibold">New Password</label>
                             <div className="relative">
                                 <input
-                                    type={showNewPassword ? "text" : "password"} 
+                                    type={showNewPassword ? "text" : "password"}
                                     placeholder="Enter new password"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
@@ -106,7 +106,7 @@ const ForgotPasswordForm = ({
 
                         <button
                             type="submit"
-                            className="w-full flex items-center justify-center rounded-xl h-12 bg-primary text-white text-base font-bold transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98] mt-4"
+                            className="w-full flex items-center justify-center rounded-xl h-12 bg-primary text-white text-base font-bold transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 available:scale-[0.98] mt-4"
                         >
                             Reset Password
                         </button>

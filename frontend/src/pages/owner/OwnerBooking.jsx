@@ -1,347 +1,112 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import Heading from "../../containers/owner/common/Heading";
 import StatsCards from "../../containers/owner/common/StatsCards";
-import AcceptPopup from "../../containers/owner/booking/AcceptPopup";
 import BookingTabs from "../../containers/owner/common/Tabs";
 import BookingTable from "../../containers/owner/booking/BookingTable";
+import AcceptPopup from "../../containers/owner/booking/AcceptPopup";
 import DeclinePopup from "../../containers/owner/booking/DeclinePopup";
 import EditBookingPopup from "../../containers/owner/booking/EditBookingPopup";
-import BookingPagination from "../../containers/owner/booking/Pagination";
 import ViewDetailsPopup from "../../containers/owner/booking/ViewDetailsPopup";
-import ViewInvoicePopup from "../../containers/owner/booking/ViewInvoicePopup";
+import LoadingSpinner from "../../components/common/Loading";
+import Pagination from "../../components/common/Pagination";
+import { OWNER_ITEMS_PER_PAGE } from "../../constants/pagination";
+import { BookingContext } from "../../context/BookingContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const OwnerBooking = () => {
-    const [activeTab, setActiveTab] = useState("pending");
+    const [availableTab, setAvailableTab] = useState("all");
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [showAcceptPopup, setShowAcceptPopup] = useState(false);
     const [showDeclinePopup, setShowDeclinePopup] = useState(false);
     const [showViewDetailsPopup, setShowViewDetailsPopup] = useState(false);
-    const [showViewInvoicePopup, setShowViewInvoicePopup] = useState(false);
     const [showEditBookingPopup, setShowEditBookingPopup] = useState(false);
     const [declineReason, setDeclineReason] = useState("");
-    const [editedBooking, setEditedBooking] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    const [pendingBookings, setPendingBookings] = useState([
-        {
-            id: "#ORD-8821",
-            customer: {
-                initials: "KM",
-                name: "Kasun Madushanka",
-                studentId: "19/AS/042",
-                email: "kasun.m@example.com",
-                phone: "+94 77 123 4567",
-                faculty: "Applied Sciences",
-                year: "3rd Year"
-            },
-            service: {
-                icon: "apartment",
-                type: "Accommodation",
-                title: "Lakeside Villa - Single Room",
-                details: "Pambahinna, Belihuloya",
-                provider: "Lakeside Properties",
-                providerContact: "+94 11 234 5678",
-                amenities: ["WiFi", "Laundry", "24/7 Security", "Study Room"]
-            },
-            period: {
-                main: "Aug 15 - Dec 15",
-                sub: "1 Semester",
-                startDate: "2024-08-15",
-                endDate: "2024-12-15",
-                duration: "4 months"
-            },
-            amount: "LKR 45,000",
-            paymentStatus: "Paid",
-            paymentMethod: "Bank Transfer",
-            status: "pending",
-            submitted: "2 hours ago",
-            priority: "High"
-        },
-        {
-            id: "#ORD-8819",
-            customer: {
-                initials: "SN",
-                name: "S. Nirmala",
-                studentId: "20/BS/015",
-                email: "nirmala.s@example.com",
-                phone: "+94 76 234 5678",
-                faculty: "Biological Sciences",
-                year: "2nd Year"
-            },
-            service: {
-                icon: "directions_bus",
-                type: "Transport",
-                title: "Campus Shuttle - Monthly Pass",
-                details: "Route A: Hostel to Uni",
-                provider: "UniShuttle Services",
-                providerContact: "+94 11 345 6789",
-                amenities: ["AC Bus", "WiFi", "GPS Tracking", "Student Discount"]
-            },
-            period: {
-                main: "Sept 01 - Sept 30",
-                sub: "Daily 7:30 AM",
-                startDate: "2024-09-01",
-                endDate: "2024-09-30",
-                duration: "1 month"
-            },
-            amount: "LKR 3,500",
-            paymentStatus: "Pending",
-            paymentMethod: "Credit Card",
-            status: "pending",
-            submitted: "4 hours ago",
-            priority: "Medium"
-        },
-        {
-            id: "#ORD-8815",
-            customer: {
-                initials: "RP",
-                name: "Roshini Perera",
-                studentId: "21/SS/112",
-                email: "roshini.p@example.com",
-                phone: "+94 71 345 6789",
-                faculty: "Social Sciences",
-                year: "1st Year"
-            },
-            service: {
-                icon: "apartment",
-                type: "Accommodation",
-                title: "Greenwood Annexe",
-                details: "Non-AC Double Room",
-                provider: "Greenwood Hostels",
-                providerContact: "+94 11 456 7890",
-                amenities: ["Shared Kitchen", "Study Area", "Security", "Cleaning Service"]
-            },
-            period: {
-                main: "Aug 20 - Nov 20",
-                sub: "3 Months",
-                startDate: "2024-08-20",
-                endDate: "2024-11-20",
-                duration: "3 months"
-            },
-            amount: "LKR 12,000",
-            paymentStatus: "Paid",
-            paymentMethod: "Online Banking",
-            status: "pending",
-            submitted: "1 day ago",
-            priority: "Low"
-        },
-        {
-            id: "#ORD-8813",
-            customer: {
-                initials: "DJ",
-                name: "Dinesh Jayasuriya",
-                studentId: "22/CS/078",
-                email: "dinesh.j@example.com",
-                phone: "+94 72 456 7890",
-                faculty: "Computer Science",
-                year: "1st Year"
-            },
-            service: {
-                icon: "apartment",
-                type: "Accommodation",
-                title: "Hilltop Hostel - Triple",
-                details: "Belihuloya Town",
-                provider: "Hilltop Accommodation",
-                providerContact: "+94 11 567 8901",
-                amenities: ["WiFi", "Common Room", "Laundry", "24/7 Reception"]
-            },
-            period: {
-                main: "Sep 01 - Jan 31",
-                sub: "5 Months",
-                startDate: "2024-09-01",
-                endDate: "2025-01-31",
-                duration: "5 months"
-            },
-            amount: "LKR 25,000",
-            paymentStatus: "Partial",
-            paymentMethod: "Cash",
-            status: "pending",
-            submitted: "2 days ago",
-            priority: "Medium"
-        }
-    ]);
+    const { bookings, loading, updateBooking, getOwnerBookings } = useContext(BookingContext);
+    const { currentUser } = useContext(AuthContext);
 
-    const [activeBookings, setActiveBookings] = useState([
-        {
-            id: "#ORD-8805",
-            customer: {
-                initials: "AS",
-                name: "Amal Silva",
-                studentId: "19/ENG/045",
-                email: "amal.s@example.com",
-                phone: "+94 77 567 8901",
-                faculty: "Engineering",
-                year: "4th Year"
-            },
-            service: {
-                icon: "apartment",
-                type: "Accommodation",
-                title: "University Hostel - Block B",
-                details: "Single Room with AC",
-                provider: "University Housing",
-                providerContact: "+94 11 678 9012",
-                amenities: ["AC", "Private Bathroom", "Study Desk", "Wardrobe"]
-            },
-            period: {
-                main: "Jul 15 - Dec 15",
-                sub: "5 Months",
-                startDate: "2024-07-15",
-                endDate: "2024-12-15",
-                duration: "5 months"
-            },
-            amount: "LKR 40,000",
-            paymentStatus: "Paid",
-            paymentMethod: "Bank Transfer",
-            status: "active",
-            activatedDate: "2024-07-10",
-            progress: 60,
-            nextPayment: "2024-10-15",
-            manager: "Mr. Perera"
-        },
-        {
-            id: "#ORD-8798",
-            customer: {
-                initials: "NK",
-                name: "Nadeesha Kumari",
-                studentId: "20/MED/112",
-                email: "nadeesha.k@example.com",
-                phone: "+94 76 678 9012",
-                faculty: "Medicine",
-                year: "3rd Year"
-            },
-            service: {
-                icon: "directions_bus",
-                type: "Transport",
-                title: "Student Bus Pass",
-                details: "Route B: City to Campus",
-                provider: "City Transit",
-                providerContact: "+94 11 789 0123",
-                amenities: ["Monthly Pass", "Student ID Required", "Route Flexibility"]
-            },
-            period: {
-                main: "Aug 01 - Aug 31",
-                sub: "Monthly",
-                startDate: "2024-08-01",
-                endDate: "2024-08-31",
-                duration: "1 month"
-            },
-            amount: "LKR 4,500",
-            paymentStatus: "Paid",
-            paymentMethod: "Credit Card",
-            status: "active",
-            activatedDate: "2024-07-28",
-            progress: 30,
-            nextPayment: "2024-09-01",
-            manager: "Ms. Fernando"
+    useEffect(() => {
+        if (currentUser && currentUser.role === "owner") {
+            getOwnerBookings(currentUser._id);
         }
-    ]);
+    }, []);
 
-    const [completedBookings, setCompletedBookings] = useState([
-        {
-            id: "#ORD-8789",
-            customer: {
-                initials: "RS",
-                name: "Ravi Sandaruwan",
-                studentId: "18/CS/089",
-                email: "ravi.s@example.com",
-                phone: "+94 77 789 0123",
-                faculty: "Computer Science",
-                year: "Graduated"
-            },
-            service: {
-                icon: "apartment",
-                type: "Accommodation",
-                title: "City Apartments",
-                details: "Studio Apartment",
-                provider: "City Living Ltd",
-                providerContact: "+94 11 890 1234",
-                amenities: ["Fully Furnished", "Kitchenette", "Parking", "Security"]
-            },
-            period: {
-                main: "Jan 15 - Jun 15",
-                sub: "Completed",
-                startDate: "2024-01-15",
-                endDate: "2024-06-15",
-                duration: "5 months"
-            },
-            amount: "LKR 35,000",
-            paymentStatus: "Paid",
-            paymentMethod: "Online Banking",
-            status: "completed",
-            completionDate: "2024-06-15",
-            rating: 4.5,
-            feedback: "Excellent service, very responsive management.",
-            invoiceNumber: "INV-2024-0879",
-            invoiceDate: "2024-06-10",
-            totalPaid: "LKR 175,000"
-        },
-        {
-            id: "#ORD-8775",
-            customer: {
-                initials: "MP",
-                name: "Malini Perera",
-                studentId: "19/BUS/034",
-                email: "malini.p@example.com",
-                phone: "+94 76 890 1234",
-                faculty: "Business",
-                year: "4th Year"
-            },
-            service: {
-                icon: "directions_bus",
-                type: "Transport",
-                title: "Semester Bus Pass",
-                details: "Route C: Suburbs to Uni",
-                provider: "Suburban Transport",
-                providerContact: "+94 11 901 2345",
-                amenities: ["Semester Pass", "Unlimited Rides", "Student Discount"]
-            },
-            period: {
-                main: "Feb 01 - May 31",
-                sub: "Completed",
-                startDate: "2024-02-01",
-                endDate: "2024-05-31",
-                duration: "4 months"
-            },
-            amount: "LKR 15,000",
-            paymentStatus: "Paid",
-            paymentMethod: "Credit Card",
-            status: "completed",
-            completionDate: "2024-05-31",
-            rating: 5.0,
-            feedback: "Very convenient and reliable service.",
-            invoiceNumber: "INV-2024-0755",
-            invoiceDate: "2024-05-25",
-            totalPaid: "LKR 60,000"
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [availableTab]);
+
+    // Filter bookings by status
+    const allList = useMemo(() => bookings, [bookings]);
+    const pendingList = useMemo(() => bookings.filter(b => b.status === "pending"), [bookings]);
+    const availableList = useMemo(() => bookings.filter(b => b.status === "confirmed"), [bookings]);
+    const completedList = useMemo(() => bookings.filter(b => b.status === "completed"), [bookings]);
+    const canceledList = useMemo(() => bookings.filter(b => b.status === "canceled"), [bookings]);
+
+    const getCurrentList = () => {
+        switch (availableTab) {
+            case "all": return allList;
+            case "pending": return pendingList;
+            case "available": return availableList;
+            case "completed": return completedList;
+            case "canceled": return canceledList;
+            default: return allList;
         }
-    ]);
+    };
+
+    const currentList = getCurrentList();
+    const totalPages = Math.ceil(currentList.length / OWNER_ITEMS_PER_PAGE);
+
+    const paginatedList = React.useMemo(() => {
+        const startIndex = (currentPage - 1) * OWNER_ITEMS_PER_PAGE;
+        const endIndex = startIndex + OWNER_ITEMS_PER_PAGE;
+        return currentList.slice(startIndex, endIndex);
+    }, [currentList, currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     const tabs = [
-        { id: "pending", label: "Pending Requests", count: pendingBookings.length },
-        { id: "active", label: "Active Bookings", count: activeBookings.length },
-        { id: "completed", label: "Completed Bookings", count: completedBookings.length }
+        { id: "all", label: "All Bookings", count: allList.length },
+        { id: "pending", label: "Pending Requests", count: pendingList.length },
+        { id: "available", label: "Available Bookings", count: availableList.length },
+        { id: "completed", label: "Completed Bookings", count: completedList.length },
+        { id: "canceled", label: "Canceled Bookings", count: canceledList.length }
     ];
 
     const stats = [
         {
             label: "Pending Bookings",
-            icon: "hourglass_bottom",
-            value: pendingBookings.length.toString(),
-            subtext: `${pendingBookings.filter(b => b.submitted.includes('hour')).length} new today`,
+            icon: "hourglass_empty",
+            value: pendingList.length,
+            subtext: `${pendingList.filter(b => {
+                const submittedDate = new Date(b.created_at || b.createdAt);
+                const today = new Date();
+                return submittedDate.toDateString() === today.toDateString();
+            }).length} new today`,
             subtextColor: "text-orange-500",
             trendIcon: "trending_up"
         },
         {
-            label: "Active Bookings",
+            label: "Available Bookings",
             icon: "assignment_turned_in",
-            value: activeBookings.length.toString(),
-            subtext: "Stable this week",
+            value: availableList.length,
+            subtext: "Currently ongoing",
             subtextColor: "text-green-600",
             trendIcon: "trending_flat"
         },
         {
             label: "Completed Bookings",
             icon: "check_circle",
-            value: completedBookings.length.toString(),
-            subtext: "2 completed this week",
+            value: completedList.length,
+            subtext: `${completedList.filter(b => {
+                const completedDate = new Date(b.updated_at || b.updatedAt || b.last_updated);
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return completedDate >= weekAgo;
+            }).length} completed this week`,
             subtextColor: "text-green-600",
             trendIcon: "trending_up"
         }
@@ -362,251 +127,158 @@ const OwnerBooking = () => {
         setShowViewDetailsPopup(true);
     };
 
-    const handleViewInvoice = (booking) => {
-        setSelectedBooking(booking);
-        setShowViewInvoicePopup(true);
-    };
-
     const handleEditBooking = (booking) => {
         setSelectedBooking(booking);
-        setEditedBooking({ ...booking });
         setShowEditBookingPopup(true);
     };
 
-    const confirmAccept = () => {
+    const confirmAccept = async () => {
         if (!selectedBooking) return;
-
-        const updatedPending = pendingBookings.filter(b => b.id !== selectedBooking.id);
-        const acceptedBooking = {
-            ...selectedBooking,
-            status: "active",
-            activatedDate: new Date().toISOString().split('T')[0],
-            progress: 0,
-            manager: "John Doe",
-            nextPayment: calculateNextPayment(selectedBooking.period.startDate)
-        };
-
-        setPendingBookings(updatedPending);
-        setActiveBookings([...activeBookings, acceptedBooking]);
-        setShowAcceptPopup(false);
-        setSelectedBooking(null);
-    };
-
-    const confirmDecline = () => {
-        if (!selectedBooking || !declineReason.trim()) {
-            alert("Please provide a reason for declining");
-            return;
-        }
-
-        const updatedPending = pendingBookings.filter(b => b.id !== selectedBooking.id);
-        const declinedBooking = {
-            ...selectedBooking,
-            status: "declined",
-            declineReason: declineReason,
-            declinedDate: new Date().toISOString().split('T')[0]
-        };
-
-        setPendingBookings(updatedPending);
-        setCompletedBookings([...completedBookings, declinedBooking]);
-        setShowDeclinePopup(false);
-        setSelectedBooking(null);
-        setDeclineReason("");
-    };
-
-    const confirmEdit = () => {
-        if (!editedBooking) return;
-
-        const updateBookings = (bookings) =>
-            bookings.map(b => b.id === editedBooking.id ? editedBooking : b);
-
-        if (editedBooking.status === "pending") {
-            setPendingBookings(updateBookings(pendingBookings));
-        } else if (editedBooking.status === "active") {
-            setActiveBookings(updateBookings(activeBookings));
-        } else {
-            setCompletedBookings(updateBookings(completedBookings));
-        }
-
-        setShowEditBookingPopup(false);
-        setSelectedBooking(null);
-        setEditedBooking(null);
-    };
-
-    const calculateNextPayment = (startDate) => {
-        const date = new Date(startDate);
-        date.setMonth(date.getMonth() + 1);
-        return date.toISOString().split('T')[0];
-    };
-
-    const getCurrentBookings = () => {
-        switch (activeTab) {
-            case "pending": return pendingBookings;
-            case "active": return activeBookings;
-            case "completed": return completedBookings;
-            default: return pendingBookings;
+        try {
+            await updateBooking(selectedBooking._id, {
+                status: "confirmed",
+                payment: {
+                    ...selectedBooking.payment,
+                    paid: true
+                }
+            });
+            setShowAcceptPopup(false);
+            setSelectedBooking(null);
+        } catch (error) {
+            console.error("Failed to accept booking:", error);
         }
     };
 
-    const getStatusBadge = (status) => {
-        const badges = {
-            pending: { class: "bg-yellow-100 text-yellow-800", text: "Pending" },
-            active: { class: "bg-green-100 text-green-800", text: "Active" },
-            completed: { class: "bg-blue-100 text-primary", text: "Completed" },
-            declined: { class: "bg-red-100 text-red-800", text: "Declined" }
-        };
-        const badge = badges[status] || badges.pending;
-        return <span className={`${badge.class} text-xs px-2 py-1 rounded-full`}>{badge.text}</span>;
-    };
-
-    const getPriorityBadge = (priority) => {
-        const badges = {
-            High: { class: "bg-red-100 text-red-800", icon: "priority_high" },
-            Medium: { class: "bg-yellow-100 text-yellow-800", icon: "remove" },
-            Low: { class: "bg-green-100 text-green-800", icon: "low_priority" }
-        };
-        const badge = badges[priority] || badges.Medium;
-        return (
-            <span className={`${badge.class} text-xs px-2 py-1 rounded-full flex items-center gap-1`}>
-                <span className="material-symbols-outlined text-xs">{badge.icon}</span>
-                {priority}
-            </span>
-        );
-    };
-
-    const getActionButtons = (booking) => {
-        switch (booking.status) {
-            case "pending":
-                return (
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={(e) => { e.stopPropagation(); handleAccept(booking); }}
-                            className="bg-primary hover:bg-primary/80 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
-                        >
-                            Accept
-                        </button>
-                        <button
-                            onClick={(e) => { e.stopPropagation(); handleDecline(booking); }}
-                            className="bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
-                        >
-                            Decline
-                        </button>
-                        <button
-                            onClick={(e) => { e.stopPropagation(); handleEditBooking(booking); }}
-                            className="bg-green-600 hover:bg-green-500 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
-                        >
-                            Edit
-                        </button>
-                    </div>
-                );
-            case "active":
-                return (
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={(e) => { e.stopPropagation(); handleViewDetails(booking); }}
-                            className="bg-green-500 hover:bg-green-600 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
-                        >
-                            View Details
-                        </button>
-                        <button
-                            onClick={(e) => { e.stopPropagation(); handleEditBooking(booking); }}
-                            className="border border-slate-200 hover:bg-slate-100 text-slate-600 text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
-                        >
-                            Edit
-                        </button>
-                    </div>
-                );
-            case "completed":
-                return (
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={(e) => { e.stopPropagation(); handleViewInvoice(booking); }}
-                            className="bg-primary hover:bg-primary/90 text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
-                        >
-                            View Invoice
-                        </button>
-                        <button
-                            onClick={(e) => { e.stopPropagation(); handleViewDetails(booking); }}
-                            className="border border-slate-200 hover:bg-slate-100 text-slate-600 text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors"
-                        >
-                            Details
-                        </button>
-                    </div>
-                );
-            default:
-                return null;
+    const confirmDecline = async () => {
+        if (!selectedBooking || !declineReason.trim()) return;
+        try {
+            await updateBooking(selectedBooking._id, {
+                status: "canceled",
+                payment: {
+                    ...selectedBooking.payment,
+                    paid: false
+                }
+            });
+            setShowDeclinePopup(false);
+            setSelectedBooking(null);
+            setDeclineReason("");
+        } catch (error) {
+            console.error("Failed to decline booking:", error);
         }
     };
+
+    const confirmEdit = async (updatedData) => {
+        if (!selectedBooking) return;
+        try {
+            await updateBooking(selectedBooking._id, updatedData);
+            setShowEditBookingPopup(false);
+            setSelectedBooking(null);
+        } catch (error) {
+            console.error("Failed to update booking:", error);
+        }
+    };
+
+    const getItemName = () => {
+        switch (availableTab) {
+            case "all": return "bookings";
+            case "pending": return "pending bookings";
+            case "available": return "available bookings";
+            case "completed": return "completed bookings";
+            case "canceled": return "canceled bookings";
+            default: return "bookings";
+        }
+    };
+
+    if (loading && bookings.length === 0) {
+        return <LoadingSpinner />;
+    }
 
     return (
-        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto ">
+        <main className="bg-[#f6f7f8] p-8 md:px-24 max-w-8xl mx-auto">
             {/* Popups */}
-            {showAcceptPopup && (
+            {showAcceptPopup && selectedBooking && (
                 <AcceptPopup
-                    selectedBooking={selectedBooking}
-                    onClose={() => setShowAcceptPopup(false)}
+                    booking={selectedBooking}
+                    onClose={() => {
+                        setShowAcceptPopup(false);
+                        setSelectedBooking(null);
+                    }}
                     onConfirm={confirmAccept}
-                    getPriorityBadge={getPriorityBadge}
                 />
             )}
 
-            {showDeclinePopup && (
+            {showDeclinePopup && selectedBooking && (
                 <DeclinePopup
-                    selectedBooking={selectedBooking}
+                    booking={selectedBooking}
                     declineReason={declineReason}
                     onDeclineReasonChange={setDeclineReason}
-                    onClose={() => { setShowDeclinePopup(false); setDeclineReason(""); }}
+                    onClose={() => {
+                        setShowDeclinePopup(false);
+                        setSelectedBooking(null);
+                        setDeclineReason("");
+                    }}
                     onConfirm={confirmDecline}
                 />
             )}
 
-            {showViewDetailsPopup && (
+            {showViewDetailsPopup && selectedBooking && (
                 <ViewDetailsPopup
-                    selectedBooking={selectedBooking}
-                    onClose={() => setShowViewDetailsPopup(false)}
-                    onEdit={() => { setShowViewDetailsPopup(false); handleEditBooking(selectedBooking); }}
+                    booking={selectedBooking}
+                    onClose={() => {
+                        setShowViewDetailsPopup(false);
+                        setSelectedBooking(null);
+                    }}
+                    onEdit={() => {
+                        setShowViewDetailsPopup(false);
+                        setShowEditBookingPopup(true);
+                    }}
                 />
             )}
 
-            {showViewInvoicePopup && (
-                <ViewInvoicePopup
-                    selectedBooking={selectedBooking}
-                    onClose={() => setShowViewInvoicePopup(false)}
-                />
-            )}
-
-            {showEditBookingPopup && (
+            {showEditBookingPopup && selectedBooking && (
                 <EditBookingPopup
-                    editedBooking={editedBooking}
-                    onEditedBookingChange={setEditedBooking}
-                    onClose={() => setShowEditBookingPopup(false)}
-                    onConfirm={confirmEdit}
+                    booking={selectedBooking}
+                    onClose={() => {
+                        setShowEditBookingPopup(false);
+                        setSelectedBooking(null);
+                    }}
+                    onSave={confirmEdit}
                 />
             )}
 
+            {/* Header */}
             <Heading
                 title="Booking Management"
                 subtitle="Review and manage all student service requests."
             />
 
+            {/* Stats */}
             <StatsCards stats={stats} />
 
-            <BookingTabs
-                tabs={tabs}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-            />
+            {/* Tabs */}
+            <BookingTabs tabs={tabs} availableTab={availableTab} onTabChange={setAvailableTab} />
 
+            {/* Tab Content */}
             <BookingTable
-                bookings={getCurrentBookings()}
-                getStatusBadge={getStatusBadge}
-                getPriorityBadge={getPriorityBadge}
-                getActionButtons={getActionButtons}
+                length={currentList.length}
+                bookings={paginatedList}
+                availableTab={availableTab}
+                onView={handleViewDetails}
+                onAccept={handleAccept}
+                onDecline={handleDecline}
+                onEdit={handleEditBooking}
             />
 
-            <BookingPagination
-                currentCount={getCurrentBookings().length}
-                totalCount={getCurrentBookings().length}
-            />
+            {currentList.length > OWNER_ITEMS_PER_PAGE && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={currentList.length}
+                    itemsPerPage={OWNER_ITEMS_PER_PAGE}
+                    onPageChange={handlePageChange}
+                    itemName={getItemName()}
+                />
+            )}
         </main>
     );
 };

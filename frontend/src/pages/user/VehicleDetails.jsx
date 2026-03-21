@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { VehicleContext } from "../../context/VehicleContext";
+import { SaveItemContext } from "../../context/SaveItemContext";
+import { TempBookingContext } from "../../context/TempBookingContext";
+import { AuthContext } from "../../context/AuthContext";
+
 import Breadcrumbs from "../../containers/user/vehicleDetails/Breadcrumbs";
 import HeaderInfo from "../../containers/user/vehicleDetails/HeaderInfo";
 import PhotoGrid from "../../containers/user/vehicleDetails/PhotoGrid";
@@ -9,12 +13,16 @@ import AmenitiesList from "../../containers/user/vehicleDetails/AmenitiesList";
 import LocationMap from "../../containers/user/vehicleDetails/LocationMap";
 import ReviewsSection from "../../containers/user/vehicleDetails/ReviewsSection";
 import HostInfo from "../../containers/user/vehicleDetails/HostInfo";
-import BookingCard from "../../containers/user/vehicleDetails/BookingCard";
+import VehicleBookingCard from "../../containers/user/vehicleDetails/VehicleBookingCard";
 import Loading from "../../components/user/Loading";
 
 const VehicleDetails = () => {
     const { id } = useParams();
+
     const { getVehicleById } = useContext(VehicleContext);
+    const { savedTransports, saveTransport, unsaveTransport } = useContext(SaveItemContext);
+    const { tempBooking, saveTempBooking } = useContext(TempBookingContext);
+    const { currentUser } = useContext(AuthContext);
 
     const [vehicleData, setVehicleData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -24,12 +32,10 @@ const VehicleDetails = () => {
         const fetchData = async () => {
             try {
                 const data = await getVehicleById(id);
-
                 if (!data) {
                     setNotFound(true);
                     return;
                 }
-
                 setVehicleData(data);
             } catch (err) {
                 console.error(err);
@@ -42,48 +48,26 @@ const VehicleDetails = () => {
         fetchData();
     }, [id, getVehicleById]);
 
-    const generateBreadcrumbs = (data) => {
-        return [
-            {
-                label: "Home",
-                link: "/"
-            },
-            {
-                label: "Vehicles",
-                link: "/vehicles"
-            },
-            {
-                label: data?.name || "Details",
-                link: `/vehicles/${data?._id || data?.id}`
-            }
-        ];
-    };
+    const generateBreadcrumbs = (data) => [
+        { label: "Home", link: "/" },
+        { label: "Vehicles", link: "/vehicles" },
+        { label: data?.brand || "Details", link: `/vehicles/${data?._id || data?.id}` }
+    ];
 
     const breadcrumbs = generateBreadcrumbs(vehicleData);
 
-    // Loading State
-    if (loading) {
-        return (
-            <Loading
-                mainText="Loading vehicle details..."
-                subText="Please wait"
-            />
-        );
-    }
+    if (loading)
+        return <Loading mainText="Loading vehicle details..." subText="Please wait" />;
 
-    // Not found fallback
-    if (notFound || !vehicleData) {
+    if (notFound || !vehicleData)
         return (
             <div className="py-20 text-center">
-                <h2 className="text-3xl font-semibold text-gray-700">
-                    Vehicle Not Found
-                </h2>
+                <h2 className="text-3xl font-semibold text-gray-700">Vehicle Not Found</h2>
                 <p className="text-gray-500 mt-2">
                     The vehicle listing you are looking for does not exist.
                 </p>
             </div>
         );
-    }
 
     const averageRating =
         vehicleData.reviews?.length > 0
@@ -96,19 +80,34 @@ const VehicleDetails = () => {
             : 0;
 
     const vehicleTitle = `${vehicleData.brand} ${vehicleData.model} ${vehicleData.year}`;
-    const vehicleSubtitle = `${vehicleData.fuel_type} • ${vehicleData.no_of_seats} Seats • ${vehicleData.transmission} • ${vehicleData.air_conditioning ? 'AC' : 'Non-AC'}`;
+
+    const vehicleSubtitle = `${vehicleData.fuel_type} • ${vehicleData.no_of_seats} Seats • ${vehicleData.transmission} • ${vehicleData.air_conditioning ? "AC" : "Non-AC"
+        }`;
+
+    const isSaved = savedTransports.some(
+        (item) => item._id === vehicleData._id
+    );
 
     return (
         <div className="bg-background-light">
             <div className="px-4 py-10 md:px-24 max-w-8xl mx-auto">
-                <Breadcrumbs items={breadcrumbs} />
+                {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
 
                 <HeaderInfo
                     title={vehicleTitle}
                     location={vehicleData.address?.city || "Belihuloya"}
-                    walkDistance={vehicleData.time_from_uni?.susl_main_gate || "Available for pickup"}
+                    walkDistance={
+                        vehicleData.time_from_uni?.susl_main_gate ||
+                        "Available for pickup"
+                    }
                     rating={averageRating}
                     reviewsCount={vehicleData.reviews?.length || 0}
+                    isSaved={isSaved}
+                    onSaveToggle={() =>
+                        isSaved
+                            ? unsaveTransport(vehicleData._id)
+                            : saveTransport(vehicleData._id)
+                    }
                 />
 
                 <PhotoGrid images={vehicleData.images || []} />
@@ -142,14 +141,18 @@ const VehicleDetails = () => {
 
                         <ReviewsSection reviews={vehicleData.reviews || []} />
 
-                        <HostInfo owner={vehicleData.owner} />
+                        <HostInfo
+                            currentUser={currentUser}
+                            owner={vehicleData.owner}
+                        />
                     </div>
 
-                    <BookingCard
-                        day_rent={vehicleData.day_rent}
+                    <VehicleBookingCard
+                        currentUser={currentUser}
+                        vehicle={vehicleData}
                         rating={averageRating}
-                        owner={vehicleData.owner}
-                        vehicle_name={vehicleTitle}
+                        tempBooking={tempBooking}
+                        saveTempBooking={saveTempBooking}
                     />
                 </div>
             </div>

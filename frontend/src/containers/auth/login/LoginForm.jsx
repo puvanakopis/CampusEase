@@ -81,7 +81,7 @@ const LoginForm = ({
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 available:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         {loading ? "Logging in..." : "Log in"}
                         <span className="material-symbols-outlined text-xl">login</span>

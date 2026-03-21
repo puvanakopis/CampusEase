@@ -5,7 +5,6 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 
 export const axiosAuth = axios.create({
   baseURL: API_BASE,
-  headers: { "Content-Type": "application/json" },
 });
 
 axiosAuth.interceptors.request.use((config) => {
@@ -60,22 +59,36 @@ export const authApi = {
   },
 
   updateProfile: async (updateData) => {
-    const formData = new FormData();
+    let formData;
 
-    Object.keys(updateData).forEach((key) => {
-      if (updateData[key] !== undefined && updateData[key] !== null) {
-        formData.append(key, updateData[key]);
-      }
-    });
+    if (updateData instanceof FormData) {
+      formData = updateData;
+    } else {
+      formData = new FormData();
 
-    if (updateData.photo) formData.append("photo", updateData.photo);
-    if (updateData.id_photo) formData.append("id_photo", updateData.id_photo);
+      // Only include fields that the backend accepts for update-profile
+      const allowedFields = [
+        "first_name",
+        "last_name",
+        "address",
+        "description",
+        "phone",
+        "id_number",
+        "status",
+      ];
 
-    const res = await axiosAuth.patch("/auth/update-profile", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+      allowedFields.forEach((key) => {
+        if (updateData[key] !== undefined && updateData[key] !== null) {
+          formData.append(key, updateData[key]);
+        }
+      });
+
+      if (updateData.photo) formData.append("photo", updateData.photo);
+      if (updateData.id_photo) formData.append("id_photo", updateData.id_photo);
+    }
+
+    // Let axios set multipart/form-data boundary automatically
+    const res = await axiosAuth.patch("/auth/update-profile", formData);
 
     return res.data;
   },

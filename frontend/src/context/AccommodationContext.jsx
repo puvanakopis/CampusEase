@@ -9,7 +9,6 @@ export const AccommodationProvider = ({ children }) => {
   const [ownerAccommodations, setOwnerAccommodations] = useState([]);
   const [accoLoading, setAccoLoading] = useState(false);
 
-  // ------------------ FETCH ALL ------------------
   const fetchAccommodations = async () => {
     setAccoLoading(true);
     try {
@@ -27,7 +26,6 @@ export const AccommodationProvider = ({ children }) => {
     }
   };
 
-  // ------------------ FETCH OWNER ACCOMMODATIONS ------------------
   const fetchMyAccommodations = async () => {
     setAccoLoading(true);
     try {
@@ -45,12 +43,10 @@ export const AccommodationProvider = ({ children }) => {
     }
   };
 
-  // Load once
   useEffect(() => {
     fetchAccommodations();
   }, []);
 
-  // ------------------ CREATE ------------------
   const createAccommodation = async (payload) => {
     const toastId = toast.loading("Creating accommodation...");
     try {
@@ -74,7 +70,6 @@ export const AccommodationProvider = ({ children }) => {
       toast.success("Accommodation created successfully!", { id: toastId });
 
       await fetchAccommodations();
-      await fetchMyAccommodations();
 
       return res.data;
     } catch (err) {
@@ -83,26 +78,42 @@ export const AccommodationProvider = ({ children }) => {
     }
   };
 
-  // ------------------ GET BY ID ------------------
   const getAccommodationById = async (id) => {
-    const toastId = toast.loading("Loading accommodation...");
     try {
       const res = await accommodationApi.getById(id);
+
+      if (!res.success) {
+        toast.error(res.message);
+        throw new Error(res.message);
+      }
+      return res.data;
+    } catch (err) {
+      toast.error(err.message || "Failed to load accommodation");
+      throw err;
+    }
+  };
+
+  const addAccommodationReview = async (accommodationId, reviewData) => {
+    const toastId = toast.loading("Submitting review...");
+    try {
+      const res = await accommodationApi.addReview(accommodationId, reviewData);
 
       if (!res.success) {
         toast.error(res.message, { id: toastId });
         throw new Error(res.message);
       }
 
-      toast.success("Loaded", { id: toastId });
+      toast.success("Review added successfully!", { id: toastId });
+
+      await fetchAccommodations();
+      
       return res.data;
     } catch (err) {
-      toast.error(err.message || "Failed to load accommodation", { id: toastId });
+      toast.error(err.message || "Failed to add review", { id: toastId });
       throw err;
     }
   };
 
-  // ------------------ UPDATE ------------------
   const updateAccommodation = async (id, payload) => {
     const toastId = toast.loading("Updating accommodation...");
     try {
@@ -129,7 +140,6 @@ export const AccommodationProvider = ({ children }) => {
       toast.success("Updated successfully!", { id: toastId });
 
       await fetchAccommodations();
-      await fetchMyAccommodations();
 
       return res.data;
     } catch (err) {
@@ -138,7 +148,6 @@ export const AccommodationProvider = ({ children }) => {
     }
   };
 
-  // ------------------ DELETE ------------------
   const deleteAccommodation = async (id) => {
     const toastId = toast.loading("Deleting accommodation...");
     try {
@@ -152,7 +161,6 @@ export const AccommodationProvider = ({ children }) => {
       toast.success("Deleted successfully!", { id: toastId });
 
       await fetchAccommodations();
-      await fetchMyAccommodations();
     } catch (err) {
       toast.error(err.message || "Delete failed", { id: toastId });
       throw err;
@@ -171,6 +179,7 @@ export const AccommodationProvider = ({ children }) => {
 
         createAccommodation,
         getAccommodationById,
+        addAccommodationReview,
         updateAccommodation,
         deleteAccommodation,
       }}

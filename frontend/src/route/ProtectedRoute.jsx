@@ -1,5 +1,6 @@
-import React from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import useNavigateTo from "../hooks/useNavigateTo";
 
 const ALLOWED_PATHS = {
   admin: [
@@ -72,39 +73,71 @@ const ALLOWED_PATHS = {
   ],
 };
 
+const PROTECTED_STUDENT_ROUTES = [
+  "/booking",
+  "/payment",
+  "/profile",
+  "/my-bookings",
+  "/saved-items",
+  "/settings",
+  "/support",
+  "/application",
+];
+
 const ProtectedRoute = ({ role, user }) => {
   const location = useLocation();
+  const navigateTo = useNavigateTo();
 
-  if (role === "owner") {
-    const notActive = user.status !== "Active";
-
-    if (notActive) {
-      if (location.pathname !== "/owner") {
-        return <Navigate to="/owner" replace />;
+  useEffect(() => {
+    if (!role || !user) {
+      if (PROTECTED_STUDENT_ROUTES.some((path) => location.pathname.startsWith(path))) {
+        navigateTo("/login");
+        return;
       }
-      return <Outlet />;
     }
 
-    if (location.pathname === "/owner") {
-      return <Navigate to="/owner/dashboard" replace />;
+    if (role === "owner") {
+      const notAvailable = user?.status !== "available";
+
+      if (notAvailable && location.pathname !== "/owner") {
+        navigateTo("/owner");
+        return;
+      }
+
+      if (!notAvailable && location.pathname === "/owner") {
+        navigateTo("/owner/dashboard");
+        return;
+      }
     }
-  }
 
-  const allowedPaths = ALLOWED_PATHS[role] || [];
+    if (role === "student" || role === "staff") {
+      const notAvailable = user?.status !== "available";
 
-  const isAllowed = allowedPaths.some((path) => {
-    const regexPath = new RegExp("^" + path.replace(/:\w+/g, "\\w+") + "$");
-    return regexPath.test(location.pathname);
-  });
+      if (
+        notAvailable &&
+        (location.pathname === "/booking" || location.pathname === "/payment")
+      ) {
+        navigateTo("/application");
+        return;
+      }
+    }
 
-  if (isAllowed) {
-    return <Outlet />;
-  } else {
-    if (role === "owner") return <Navigate to="/owner/dashboard" replace />;
-    if (role === "admin") return <Navigate to="/admin/dashboard" replace />;
-    if (role === "student" || role === "staff") return <Navigate to="/" replace />;
-    return <Navigate to="/" replace />;
-  }
+    const allowedPaths = ALLOWED_PATHS[role] || [];
+
+    const isAllowed = allowedPaths.some((path) => {
+      const regexPath = new RegExp("^" + path.replace(/:\w+/g, "\\w+") + "$");
+      return regexPath.test(location.pathname);
+    });
+
+    if (!isAllowed) {
+      if (role === "owner") navigateTo("/owner/dashboard");
+      else if (role === "admin") navigateTo("/admin/dashboard");
+      else if (role === "student" || role === "staff") navigateTo("/login");
+      else navigateTo("/");
+    }
+  }, [role, user, location.pathname]);
+
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

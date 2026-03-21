@@ -1,6 +1,5 @@
-# Ignore uploads directories
-uploads/
-app/uploads/
+app/chroma_db/
+chroma_db/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

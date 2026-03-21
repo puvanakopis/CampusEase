@@ -20,13 +20,13 @@ const OwnerTable = ({
 
     const getStatusColor = (status) => {
         switch (status) {
-            case "Active":
+            case "Available":
                 return "bg-green-100 text-green-800";
-            case "Pending Approval":
+            case "pending":
                 return "bg-yellow-100 text-yellow-800";
-            case "Declined Approval":
+            case "rejected":
                 return "bg-red-100 text-red-800";
-            case "Inactive":
+            case "unavailable":
                 return "bg-gray-100 text-gray-800";
             default:
                 return "bg-gray-100 text-gray-800";
@@ -121,10 +121,10 @@ const OwnerTable = ({
                 </div>
             </div>
 
-            {/* Active Filters Display */}
+            {/* Available Filters Display */}
             {(searchQuery || filterStatus !== 'All' || filterVerified !== 'All') && (
                 <div className="px-6 py-2 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center gap-2">
-                    <span className="text-xs text-slate-500">Active filters:</span>
+                    <span className="text-xs text-slate-500">Available filters:</span>
                     {searchQuery && (
                         <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
                             Search: "{searchQuery}"
@@ -180,7 +180,7 @@ const OwnerTable = ({
                                     <div className="flex items-center gap-3">
                                         <div className="size-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                                             <img
-                                                src={buildPhotoUrl(owner.photo?.filename, "user_photo", owner.first_name)}
+                                                src={buildPhotoUrl(owner.photo?.filename, "owner_photo", owner.first_name)}
                                                 alt={`${owner.first_name} ${owner.last_name || ''}`}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {
@@ -247,17 +247,17 @@ const OwnerTable = ({
                                                     e.stopPropagation();
                                                     onToggleStatus(owner);
                                                 }}
-                                                className={`${owner.status === "Active"
+                                                className={`${owner.status === "Available"
                                                     ? "bg-yellow-600 hover:bg-yellow-500"
                                                     : "bg-primary hover:bg-primary/90"
                                                     } text-white text-[10px] font-bold py-1.5 px-3 rounded-md uppercase tracking-wider transition-colors`}
                                                 title={
-                                                    owner.status === "Active"
+                                                    owner.status === "Available"
                                                         ? "Deactivate Owner"
                                                         : "Activate Owner"
                                                 }
                                             >
-                                                {owner.status === "Active" ? "Deactivate" : "Activate"}
+                                                {owner.status === "Available" ? "Deactivate" : "Activate"}
                                             </button>
                                         )}
                                     </div>

@@ -102,14 +102,14 @@ const ViewAccommodationPopup = ({ accommodation, onClose }) => {
                         </div>
                     </div>
 
-                    {/* Amenities */}
+                    {/* Amenities - Updated to handle array of strings */}
                     {accommodation.amenities?.length > 0 && (
                         <div className="mb-4 p-3 bg-slate-50 rounded-lg">
                             <h4 className="font-bold text-slate-900 mb-2">Amenities</h4>
                             <div className="flex flex-wrap gap-2">
                                 {accommodation.amenities.map((amenity, idx) => (
                                     <span key={idx} className="bg-white px-3 py-1.5 rounded-lg text-sm text-slate-700 border border-slate-200">
-                                        {amenity.name}
+                                        {amenity}
                                     </span>
                                 ))}
                             </div>

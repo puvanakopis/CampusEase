@@ -1,19 +1,10 @@
 import json
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from typing import List, Optional
-from app.schemas.accommodation_schema import (
-    AccommodationCreateRequest,
-    AccommodationUpdateRequest
-)
-from app.services.accommodation_service import (
-    get_accommodation_by_id,
-    update_accommodation,
-    delete_accommodation,
-    create_accommodation,
-    get_all_accommodations,
-    get_accommodations_by_owner
-)
+from app.schemas.accommodation_schema import AccommodationCreateRequest, AccommodationUpdateRequest, AccommodationReviewCreateRequest
+from app.services.accommodation_service import get_accommodation_by_id, update_accommodation, delete_accommodation, create_accommodation, get_all_accommodations, get_accommodations_by_owner, add_accommodation_review
 from app.middlewares.auth_middleware import get_current_user, role_required
+
 
 router = APIRouter(prefix="/accommodation", tags=["Accommodation"])
 
@@ -33,13 +24,28 @@ async def create_accommodation_endpoint(
 async def list_accommodations():
     return await get_all_accommodations()
 
+
 @router.get("/owner", dependencies=[Depends(role_required(["owner"]))])
 async def get_my_accommodations(current_user=Depends(get_current_user)):
     return await get_accommodations_by_owner(current_user.id)
 
+
 @router.get("/{accommodation_id}")
 async def get_accommodation_endpoint(accommodation_id: str):
     return await get_accommodation_by_id(accommodation_id)
+
+
+@router.post("/{accommodation_id}/review", dependencies=[Depends(role_required(["student", "admin"]))])
+async def add_review_endpoint(
+    accommodation_id: str,
+    review_request: AccommodationReviewCreateRequest,
+    current_user=Depends(get_current_user)
+):
+    return await add_accommodation_review(
+        accommodation_id,
+        review_request,
+        current_user
+    )
 
 
 @router.patch("/{accommodation_id}", dependencies=[Depends(role_required(["owner", "admin"]))])

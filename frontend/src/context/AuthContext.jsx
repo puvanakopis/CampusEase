@@ -2,16 +2,16 @@ import React, { createContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import { authApi } from "../service/authService";
-import { useNavigate } from "react-router-dom";
+import useNavigateTo from "../hooks/useNavigateTo";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [authLoading, setAuthLoading] = useState(true);
-    const navigate = useNavigate();
+    const navigateTo = useNavigateTo();
 
-    // ------------------ LOGIN ------------------
+
     const login = async (email, password) => {
         const toastId = toast.loading("Authenticating...");
         try {
@@ -22,18 +22,17 @@ export const AuthProvider = ({ children }) => {
                 throw new Error(res.message);
             }
 
-            const token = res.data.token;
-            const usr = res.data.user;
+            const { token, user } = res.data;
 
             Cookies.set("token", token, { expires: 7 });
-            setCurrentUser(usr);
+            setCurrentUser(user);
 
             toast.success("Login successful!", { id: toastId });
 
-            const role = usr.role;
-            if (role === "admin") navigate("/admin/dashboard");
-            else if (role === "owner") navigate("/owner");
-            else navigate("/");
+            const role = user.role;
+            if (role === "admin") navigateTo("/admin/dashboard");
+            else if (role === "owner") navigateTo("/owner");
+            else navigateTo("/");
 
         } catch (err) {
             toast.error(err.message || "Login failed", { id: toastId });
@@ -41,14 +40,15 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ LOGOUT ------------------
+
     const logout = () => {
         Cookies.remove("token");
         setCurrentUser(null);
         toast.success("Logged out successfully");
+        navigateTo("/");
     };
 
-    // ------------------ FETCH CURRENT USER ------------------
+
     const fetchCurrentUser = async () => {
         const token = Cookies.get("token");
         if (!token) {
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ FORGOT PASSWORD ------------------
+
     const requestPasswordReset = async (email) => {
         const toastId = toast.loading("Sending OTP...");
         try {
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ RESET PASSWORD ------------------
+
     const resetPassword = async (email, otp, newPassword) => {
         const toastId = toast.loading("Resetting password...");
         try {
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ SIGNUP REQUEST OTP ------------------
+
     const requestSignupOtp = async (role, firstName, lastName, email, password) => {
         const toastId = toast.loading("Sending OTP...");
         try {
@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ SIGNUP VERIFY OTP ------------------
+
     const verifySignupOtp = async (role, email, otp) => {
         const toastId = toast.loading("Verifying OTP...");
         try {
@@ -129,28 +129,25 @@ export const AuthProvider = ({ children }) => {
                 throw new Error(res.message);
             }
 
-            const token = res.data.token;
-            const usr = res.data.user;
+            const { token, user } = res.data;
 
             Cookies.set("token", token, { expires: 7 });
-            setCurrentUser(usr);
+            setCurrentUser(user);
 
             toast.success("Signup successful!", { id: toastId });
 
-            const userRole = usr.role;
+            if (user.role === "admin") navigateTo("/admin/dashboard");
+            else if (user.role === "owner") navigateTo("/owner");
+            else navigateTo("/");
 
-            if (userRole === "admin") navigate("/admin/dashboard");
-            else if (userRole === "owner") navigate("/owner");
-            else navigate("/");
-
-            return usr;
+            return user;
         } catch (err) {
             toast.error(err.message || "Failed to verify OTP", { id: toastId });
             throw err;
         }
     };
 
-    // ------------------ UPDATE PROFILE ------------------
+
     const updateCurrentUserProfile = async (updateData) => {
         const toastId = toast.loading("Updating profile...");
         try {
@@ -169,7 +166,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ------------------ UPDATE PASSWORD ------------------
+
     const updatePassword = async (currentPassword, newPassword) => {
         const toastId = toast.loading("Updating password...");
         try {
@@ -191,18 +188,20 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{
-            currentUser,
-            authLoading,
-            login,
-            logout,
-            requestPasswordReset,
-            resetPassword,
-            requestSignupOtp,
-            verifySignupOtp,
-            updateCurrentUser: updateCurrentUserProfile,
-            updatePassword
-        }}>
+        <AuthContext.Provider
+            value={{
+                currentUser,
+                authLoading,
+                login,
+                logout,
+                requestPasswordReset,
+                resetPassword,
+                requestSignupOtp,
+                verifySignupOtp,
+                updateCurrentUser: updateCurrentUserProfile,
+                updatePassword
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );

@@ -1,15 +1,15 @@
 import React from "react";
 
-const Tabs = ({ tabs, activeTab, onTabChange }) => {
+const Tabs = ({ tabs, availableTab, onTabChange }) => {
     return (
-        <div className="flex border-b border-slate-200 mb-6">
+        <div className="border-b border-slate-200 py-8">
             {tabs.map((tab) => (
                 <button
                     key={tab.id}
                     onClick={() => onTabChange(tab.id)}
-                    className={`px-6 py-3 text-sm font-medium transition-colors ${activeTab === tab.id
-                            ? "border-b-2 border-primary text-primary font-bold"
-                            : "text-slate-500 hover:text-primary"
+                    className={`px-6 py-3 text-sm font-medium transition-colors ${availableTab === tab.id
+                        ? "border-b-2 border-primary text-primary font-bold"
+                        : "text-slate-500 hover:text-primary"
                         }`}
                 >
                     {tab.label}
