@@ -342,8 +342,12 @@ backend/
 
 <br>
 
-## 👥 Authors
-- Puvanakopis - puvanakopis@example.com
+## 👤 Author
+
+**Name:** Puvanakopis  
+**GitHub:** [@puvanakopis](https://github.com/puvanakopis)  
+**LinkedIn:** [Puvanakopis](https://www.linkedin.com/in/puvanakopis/)  
+**Email:** puvanakopis@gamil.com
 
 <br>
 
